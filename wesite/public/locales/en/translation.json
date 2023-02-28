@@ -1,0 +1,12 @@
+{
+  "brandName": "Admin panel",
+  "menu":{
+    "dashboard": "Dashboard"
+  },
+  "settings": {
+    "title": "Configuration"
+  },
+  "tasks":{
+    "active": "Active tasks"
+  }
+}

@@ -1,0 +1,265 @@
+openapi: 3.0.1
+info:
+  title: API продавца
+  version: '1.8'
+  x-logo:
+    url: ./lang/ru.png
+    altText: ru
+    href: ./en/index.html
+  description: "# Общее описание\n<style> .version {\n  border: 0.1rem #b3b3b3 solid;\n\
+    \  background-color: #F9F9F9;\n  color: #32329FE6;\n  height: 25px;\n  width:\
+    \ 150px;\n  text-align: center\n}, </style> <style> .warning {\n  border: 1.6rem\
+    \ #b3b3b3 solid;\n  background-color: #F9F9F9;\n  color: #247706;\n  text-align:\
+    \ center\n} </style> <style> .langChange {\n  text-align: left;\n  padding: 2px\
+    \ 222px 2px 18px;\n} </style>\n\nWildberries API предоставляет продавцам возможность\
+    \ управления магазином и получения оперативной и статистической информации по\
+    \ протоколу HTTP RestAPI. <br> Описание API предоставляется в формате [Swagger](https://swagger.io/)\
+    \ (Open API) и может быть использовано для импорта в другие инструменты (такие\
+    \ как PostMan) или генерации клиентского кода на различных языках программирования\
+    \ с помощью [Swagger CodeGen](https://swagger.io/tools/swagger-codegen/)\n\n<ul>\
+    \ <li> Описание в оригинальном swagger-формате <a href=\"/swagger\">swagger</a>\
+    \ <li> OpenAPI-файл <a href=\"/swagger.yaml\">swagger.yaml</a> </ul>\n\n<br> Для\
+    \ ручной проверки API вы можете использовать: <ul> <li> Под ОС Windows - [PostMan](https://www.postman.com/)\
+    \ <li> Под ОС Linux - [curl](https://curl.se/)  </ul> <br>\n\n## Поддержка\nТехническая\
+    \ поддержка осуществляется через диалоги в личном кабинете продавца. При создании\
+    \ нового обращения в техподдержку используйте категорию API.\n<br> Новости и изменения,\
+    \ касающиеся API, публикуются в [новостной ленте Wildberries](https://seller.wildberries.ru/news).\n\
+    <br> Также готовятся к публикации Release Notes по API на сайте.  После их выхода\
+    \ будет сделан соответствующий анонс. <br> <br> <br>\n\n## Авторизация\nАвторизация\
+    \ осуществляется по токенам API, которые  владелец личного кабинета (главный пользователь)\
+    \ самостоятельно\n генерирует в разделе \n [Профиль --> Настройки --> Доступ к\
+    \ новому API](https://seller.wildberries.ru/supplier-settings/access-to-new-api).\n\
+    <br>Обратите внимание, что токен отображается ТОЛЬКО в момент создания. Его надо\
+    \ сохранить, потому что больше его отобразить будет нельзя. <br>Созданный токен\
+    \ следует добавлять в каждый запрос, прибавляя к запросу заголовок (http-header)\
+    \ формата `Authorization: .........`. <br> <br>Внимание! Изменился домен для методов\
+    \ статистики, актуальный: https://statistics-api.wildberries.ru <br> <br> <br>\n\
+    ## Форматы\n### Дата и время\nВо всех методах API статистики дата и время передаются\
+    \ в формате [RFC3339](https://datatracker.ietf.org/doc/html/rfc3339).  <br> В\
+    \ большинстве случаев вы можете передать дату или дату со временем. Если время\
+    \ не указано, оно принимается равным 00:00:00. Время можно указывать с точностью\
+    \ до секунд или миллисекунд.  Литера `Z` в конце строки означает часовой пояс\
+    \ UTC. При ее отсутствии время считается в часовом поясе МСК (UTC+3). <br> Примеры:\
+    \ <ul> <li> `2019-06-20` <li> `2019-06-20T00:00:00Z` <li> `2019-06-20T23:59:59`\
+    \ <li> `2019-06-20T00:00:00.12345Z` <li> `2019-06-20T00:00:00.12345` <li> `2017-03-25T00:00:00`\
+    \ </ul> <br>\n## Обновления\n#### 2023.02.14 v1.8\n  \nДобавлено описание API\
+    \ рекомендаций\n#### 2023.01.13 v1.7\n  \nДобавлено описание API рекламы\n####\
+    \ 2022.12.21 v1.6\nДобавлена инструкция по загрузке статистики в Excel\n#### 2022.12.15\
+    \ v1.5 \nНовая авторизация для методов API статистики 2022.12.15 в v1.5:\n####\
+    \ 2022.10.31 v1.4 \nМетод будет отключен 2022.10.31 в v1.4: <ul> <li> `/content/v1/cards/list`\
+    \ </ul>\n\n#### 2022.09.20 v1.2 \nВ связи с переходом на новое API Контента старые\
+    \ методы будут отключены. К их числу относятся: <ul> <li> `/card/*` <li> `/api/v1/config/*`\
+    \ <li> `/api/v1/directory/*` </ul>\nДанные методы теперь возвращают код 404. \
+    \ Новое API Контента описано в данном документе в разделах Контент / * <br> <br>\n"
+security:
+  - HeaderApiKey: []
+components:
+  securitySchemes:
+    HeaderApiKey:
+      type: apiKey
+      name: Authorization
+      in: header
+  parameters:
+    dateFrom:
+      in: query
+      name: dateFrom
+      schema:
+        type: string
+        format: date
+      required: true
+      description: 'Дата в формате RFC3339. Можно передать дату или дату со временем.  Время
+        можно указывать с точностью до секунд или миллисекунд.  Литера `Z` в конце
+        строки означает, что время передается в UTC-часовом поясе.  При ее отсутствии
+        время считается в часовом поясе МСК (UTC+3). <br>Примеры: <ul> <li> `2019-06-20`
+        <li> `2019-06-20T00:00:00Z` <li> `2019-06-20T23:59:59` <li> `2019-06-20T00:00:00.12345Z`
+        <li> `2019-06-20T00:00:00.12345` <li> `2017-03-25T00:00:00` </ul>
+        '
+    Warehouse:
+      name: warehouse
+      in: path
+      required: true
+      description: Идентификатор склада продавца
+      schema:
+        type: integer
+        example: 1234
+  schemas:
+    StocksItem:
+      type: object
+      properties:
+        lastChangeDate:
+          type: string
+          description: Дата и время обновления информации в сервисе. Это поле соответствует
+            параметру `dateFrom` в запросе. Если часовой пояс не указан, то берется
+            Московское время UTC+3.
+        supplierArticle:
+          type: string
+          maxLength: 75
+          description: Артикул поставщика
+        techSize:
+          type: string
+          maxLength: 30
+          description: Размер
+        barcode:
+          type: string
+          maxLength: 30
+          description: Бар-код
+        quantity:
+          type: integer
+          description: Количество, доступное для продажи (сколько можно добавить в
+            корзину)
+        isSupply:
+          type: boolean
+          description: Договор поставки
+        isRealization:
+          type: boolean
+          description: Договор реализации
+        quantityFull:
+          type: integer
+          description: Полное (непроданное) количество, которое числится за складом
+            (= `quantity` + в пути)
+        warehouseName:
+          type: string
+          maxLength: 50
+          description: Название склада
+        nmId:
+          type: integer
+          description: Код WB
+        subject:
+          type: string
+          maxLength: 50
+          description: Предмет
+        category:
+          type: string
+          maxLength: 50
+          description: Категория
+        daysOnSite:
+          type: integer
+          description: Количество дней на сайте
+        brand:
+          type: string
+          maxLength: 50
+          description: Бренд
+        SCCode:
+          type: string
+          maxLength: 50
+          description: Код контракта
+        Price:
+          type: number
+          description: Цена
+        Discount:
+          type: number
+          description: Скидка
+    Error:
+      type: object
+      nullable: false
+      properties:
+        code:
+          type: string
+          description: Код ошибки
+          nullable: false
+        message:
+          type: string
+          description: Описание ошибки
+          nullable: false
+        data:
+          type: object
+          description: Дополнительные данные, обогащающие ошибку
+          nullable: true
+  examples:
+    IncorrectRequestBody:
+      value:
+        code: IncorrectRequestBody
+        message: Некорректное тело запроса
+    IncorrectRequest:
+      value:
+        code: IncorrectRequest
+        message: Переданы некорректные данные
+    IncorrectParameter:
+      value:
+        code: IncorrectParameter
+        message: Передан некорректный параметр
+  responses:
+    NotFound:
+      description: Запрашиваемый ресурс не найден
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: NotFound
+            message: Не найдено
+    Unauthorized:
+      description: Пользователь не авторизован
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: Unauthorized
+            message: Пользователь не авторизован
+    AccessDenied:
+      description: Доступ запрещён
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: AccessDenied
+            message: Доступ запрещён
+    InternalServerError:
+      description: Внутренняя ошибка сервиса
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: InternalServerError
+            message: Внутренняя ошибка сервиса
+tags:
+  - name: Statistic
+    description: 'Методы статистики <br><b>Лимит по запросам:</b> один запрос одного
+    метода по одному токену в одну минуту. <br><br> <a href="./excel/stat-excel.html">Инструкция:
+    Сохранение статистики в Excel</a>'
+paths:
+  /api/v1/supplier/stocks:
+    servers:
+      - url: https://statistics-api.wildberries.ru/
+    get:
+      security:
+        - HeaderApiKey: [ ]
+      summary: Склад
+      operationId: getSupplierStocks
+      description: Склад. Данные обновляются раз в сутки. Сервис статистики не хранит
+        историю остатков товаров, поэтому получить данные об остатках товаров на прошедшую,
+        не сегодняшнюю, дату - невозможно.
+      tags:
+        - Statistic
+      parameters:
+        - $ref: '#/components/parameters/dateFrom'
+      responses:
+        200:
+          description: Список товаров на складе
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StocksItem'
+              example:
+                - lastChangeDate: '2022-04-28T05:57:24.787'
+                  supplierArticle: '12345'
+                  techSize: '48'
+                  barcode: ''
+                  quantity: 0
+                  isSupply: false
+                  isRealization: true
+                  quantityFull: 3
+                  warehouseName: Коледино
+                  nmId: 1234567
+                  subject: Брюки
+                  category: Одежда
+                  daysOnSite: 0
+                  brand: M
+                  SCCode: 3200-1234
+                  Price: 5000
+                  Discount: 0
