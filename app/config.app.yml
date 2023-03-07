@@ -1,1 +1,3 @@
 dsn: postgres://user:password@localhost:5432/db
+sqlLogger:
+  level: info #info, error, warn

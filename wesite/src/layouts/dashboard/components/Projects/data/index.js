@@ -1,24 +1,25 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/function-component-definition */
 /**
-=========================================================
-* Material Dashboard 2 React - v2.1.0
-=========================================================
+ =========================================================
+ * Material Dashboard 2 React - v2.1.0
+ =========================================================
 
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
+ * Product Page: https://www.creative-tim.com/product/material-dashboard-react
+ * Copyright 2022 Creative Tim (https://www.creative-tim.com)
 
-Coded by www.creative-tim.com
+ Coded by www.creative-tim.com
 
  =========================================================
 
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+ */
 
 // @mui material components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDProgress from "components/MDProgress";
+import Icon from "@mui/material/Icon";
 
 export default function data(tasks) {
   const rows = tasks.map(({ company, jobName }) => ({
@@ -37,6 +38,11 @@ export default function data(tasks) {
         <MDProgress value={90} color="info" variant="gradient" label={false} />
       </MDBox>
     ),
+    action: (
+      <MDTypography component="a" href="#" color="text">
+        <Icon>more_vert</Icon>
+      </MDTypography>
+    ),
   }));
 
   return {
@@ -44,6 +50,7 @@ export default function data(tasks) {
       { Header: "companies", accessor: "companies", width: "25%", align: "left" },
       { Header: "tasks", accessor: "tasks", align: "left" },
       { Header: "completion", accessor: "completion", align: "center" },
+      { Header: "action", accessor: "action", align: "center" },
     ],
 
     rows,

@@ -93,8 +93,7 @@ function MaterialUIControllerProvider({ children }) {
       },
       {
         company: "Организация 2",
-        jobName:
-          "Наименование задачи hhhhhhhhhhhhhhhhhgttt      tttttttttt123456789012345678901234567890",
+        jobName: "Наименование задачи",
         status: "BEGIN",
       },
     ],

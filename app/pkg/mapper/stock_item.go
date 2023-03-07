@@ -14,19 +14,44 @@ func MapStockItem(s *wbclient.StocksItem) (*model.StockItem, error) {
 	if err != nil {
 		return nil, err
 	}
+	qp := int32(0)
 	return &model.StockItem{
-		LastChangeDate:  changeDate,
-		LastChangeTime:  changeDate,
-		SupplierArticle: s.SupplierArticle,
-		Barcode:         s.Barcode,
-		WarehouseName:   s.WarehouseName,
-		ExternalCode:    &externalCode,
-		Subject:         s.Subject,
-		Category:        s.Category,
-		Brand:           s.Brand,
-		Price:           utils.Float32ToFloat64(s.Price),
-		Discount:        utils.Float32ToFloat64(s.Discount),
-		Quantity:        utils.IntToInt32(s.Quantity),
-		QuantityFull:    utils.IntToInt32(s.QuantityFull),
+		LastChangeDate:   changeDate,
+		LastChangeTime:   changeDate,
+		SupplierArticle:  s.SupplierArticle,
+		Barcode:          s.Barcode,
+		WarehouseName:    s.WarehouseName,
+		ExternalCode:     &externalCode,
+		Subject:          s.Subject,
+		Category:         s.Category,
+		Brand:            s.Brand,
+		Price:            utils.Float32ToFloat64(s.Price),
+		Discount:         utils.Float32ToFloat64(s.Discount),
+		Quantity:         utils.IntToInt32(s.Quantity),
+		QuantityFull:     utils.IntToInt32(s.QuantityFull),
+		QuantityPromised: &qp,
+	}, nil
+}
+
+func MapRowItem(s *wbclient.RowItem, d *time.Time) (*model.StockItem, error) {
+	externalCode := strconv.Itoa(*s.Sku)
+	q := int32(*s.FreeToSellAmount)
+	qf := int32(*s.FreeToSellAmount) + int32(*s.ReservedAmount)
+	qp := int32(*s.PromisedAmount)
+	return &model.StockItem{
+		LastChangeDate:   *d,
+		LastChangeTime:   *d,
+		SupplierArticle:  s.ItemCode,
+		Barcode:          nil,
+		WarehouseName:    s.WarehouseName,
+		ExternalCode:     &externalCode,
+		Name:             s.ItemName,
+		Category:         nil,
+		Brand:            nil,
+		Price:            nil,
+		Discount:         nil,
+		Quantity:         &q,
+		QuantityFull:     &qf,
+		QuantityPromised: &qp,
 	}, nil
 }

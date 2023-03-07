@@ -1,0 +1,83 @@
+{
+  "result": {
+    "items": [
+      {
+        "product_id": 337113536,
+        "offer_id": "ИР078723",
+        "price": {
+          "price": "1538.0000",
+          "old_price": "1691.0000",
+          "premium_price": "",
+          "recommended_price": "882.0000",
+          "retail_price": "",
+          "vat": "0.200000",
+          "min_ozon_price": "",
+          "marketing_price": "1298.0000",
+          "marketing_seller_price": "1538.0000",
+          "min_price": "",
+          "currency_code": "RUB",
+          "auto_action_enabled": false
+        },
+        "price_index": "1.32",
+        "commissions": {
+          "sales_percent": 10,
+          "fbo_fulfillment_amount": 0,
+          "fbo_direct_flow_trans_min_amount": 76.9,
+          "fbo_direct_flow_trans_max_amount": 76.9,
+          "fbo_deliv_to_customer_amount": 84.59,
+          "fbo_return_flow_amount": 50,
+          "fbo_return_flow_trans_min_amount": 76.9,
+          "fbo_return_flow_trans_max_amount": 76.9,
+          "fbs_first_mile_min_amount": 0,
+          "fbs_first_mile_max_amount": 0,
+          "fbs_direct_flow_trans_min_amount": 76.9,
+          "fbs_direct_flow_trans_max_amount": 76.9,
+          "fbs_deliv_to_customer_amount": 84.59,
+          "fbs_return_flow_amount": 50,
+          "fbs_return_flow_trans_min_amount": 76.9,
+          "fbs_return_flow_trans_max_amount": 76.9
+        },
+        "marketing_actions": {
+          "current_period_from": "2022-11-18T00:00:00Z",
+          "current_period_to": "2200-01-01T03:00:00Z",
+          "actions": [
+            {
+              "date_from": "2022-11-18T00:00:00Z",
+              "date_to": "2200-01-01T03:00:00Z",
+              "title": "Скидка (за счет Озон) - DD by SKU 3G18",
+              "discount_value": "15.6310"
+            },
+            {
+              "date_from": "2023-02-06T09:11:19Z",
+              "date_to": "2200-01-01T03:00:00Z",
+              "title": "Скидка (за счет Озон) - DD by AI benefit system",
+              "discount_value": ""
+            },
+            {
+              "date_from": "2023-02-06T09:11:19Z",
+              "date_to": "2200-01-01T03:00:00Z",
+              "title": "Скидка (за счет Озон) - OA by AI benefit system",
+              "discount_value": ""
+            },
+            {
+              "date_from": "2023-02-28T00:00:00Z",
+              "date_to": "2200-01-01T03:00:00Z",
+              "title": "Скидка (за счет Озон) - OA by AI benefit system (Mesh)",
+              "discount_value": ""
+            },
+            {
+              "date_from": "2023-02-28T00:00:00Z",
+              "date_to": "2200-01-01T03:00:00Z",
+              "title": "Скидка (за счет Озон) - DD by AI benefit system (Mesh)",
+              "discount_value": ""
+            }
+          ],
+          "ozon_actions_exist": false
+        },
+        "volume_weight": 0.3
+      }
+    ],
+    "total": 1,
+    "last_id": "WzMzNzExMzUzNiwzMzcxMTM1MzZd"
+  }
+}

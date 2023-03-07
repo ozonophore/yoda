@@ -35,13 +35,7 @@ import reportsLineChartData from "layouts/dashboard/data/reportsLineChartData";
 import Projects from "layouts/dashboard/components/Projects";
 import OrdersOverview from "layouts/dashboard/components/OrdersOverview";
 import TextField from "@mui/material/TextField";
-import {
-  LocalizationProvider,
-  StaticTimePicker,
-  TimePicker,
-  ruRU,
-  enUS,
-} from "@mui/x-date-pickers";
+import { LocalizationProvider, StaticTimePicker, TimePicker } from "@mui/x-date-pickers";
 import { useState } from "react";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { InputAdornment, Popover } from "@mui/material";
@@ -50,15 +44,12 @@ import PopupState, { bindTrigger, bindPopover } from "material-ui-popup-state";
 import IconButton from "@mui/material/IconButton";
 import Icon from "@mui/material/Icon";
 import { useMaterialUIController } from "../../context";
-import MDTimePicker from "../../components/MDTimePicker";
 
 function Dashboard() {
   const { sales, tasks } = reportsLineChartData;
   const [value, setValue] = useState();
   const [controller] = useMaterialUIController();
   const { language } = controller;
-  console.log(ruRU);
-  console.log(enUS);
 
   return (
     <DashboardLayout>
@@ -90,7 +81,6 @@ function Dashboard() {
           />
         </LocalizationProvider>
 
-        <MDTimePicker />
         <PopupState variant="popover">
           {(popupState) => (
             <div>

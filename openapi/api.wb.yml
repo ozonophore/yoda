@@ -83,6 +83,209 @@ components:
         type: integer
         example: 1234
   schemas:
+    ProductAttributesDictionaryValue:
+      type: object
+      properties:
+        dictionaryValueId:
+          type: integer
+        value:
+          type: string
+    ProductAttributesComplexAttribute:
+      type: object
+      properties:
+        attribute_id:
+          type: integer
+          description: Идентификатор характеристики.
+        complex_id:
+          type: integer
+          description: Идентификатор характеристики, которая поддерживает вложенные свойства. Например, у характеристики «Процессор» есть вложенные характеристики «Производитель» и «L2 Cache». У каждой из вложенных характеристик может быть несколько вариантов значений.
+        values:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductAttributesDictionaryValue'
+    ProductAttributesImage:
+      type: object
+      properties:
+        default:
+          type: boolean
+        file_name:
+          type: string
+        index:
+          type: integer
+    ProductAttribute:
+      type: object
+      properties:
+        attributes:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductAttributesComplexAttribute'
+        barcode:
+          type: string
+          description: Штрихкод.
+        category_id:
+          type: integer
+          description: Идентификатор категории.
+        color_image:
+          type: string
+          description: Маркетинговый цвет.
+        complex_attributes:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductAttributesComplexAttribute'
+        depth:
+          type: integer
+          description: Глубина.
+        dimension_unit:
+          type: string
+          description: Единица измерения габаритов
+        height:
+          type: integer
+          description: Высота упаковки.
+        id:
+          type: integer
+          description: Идентификатор характеристики товара.
+        image_group_id:
+          type: string
+          description: Идентификатор для последующей пакетной загрузки изображений.
+        images:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductAttributesImage'
+        name:
+          type: string
+          description: Название товара. До 500 символов.
+        offer_id:
+          type: string
+          description: Идентификатор товара в системе продавца — артикул.
+        weight:
+          type: integer
+          description: Вес товара в упаковке.
+        weight_unit:
+          type: string
+          description: Единица измерения веса.
+        width:
+          type: integer
+          description: Ширина упаковки.
+    ProductInfo:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        offer_id:
+          type: string
+        barcode:
+          type: string
+        barcodes:
+          type: array
+          items:
+            type: string
+        buybox_price:
+          type: string
+        category_id:
+          type: integer
+        created_at:
+          type: string
+        currency_code:
+          type: string
+        marketing_price:
+          type: string
+        old_price:
+          type: string
+        min_price:
+          type: string
+        vat:
+          type: string
+        fbo_sku:
+          type: integer
+    ProductAttributeFilterFilter:
+      type: object
+      properties:
+        offer_id:
+          type: array
+          items:
+            type: string
+        product_id:
+          type: array
+          items:
+            type: integer
+        visibility:
+          type: string
+          enum:
+            - ALL #все товары, кроме архивных.
+            - VISIBLE # товары, которые видны покупателям.
+            - INVISIBLE
+            - EMPTY_STOCK # товары, у которых не указано наличие.
+            - NOT_MODERATED # товары, которые не прошли модерацию.
+            - MODERATED # товары, которые прошли модерацию.
+            - DISABLED # товары, которые видны покупателям, но недоступны к покупке.
+            - STATE_FAILED # товары, создание которых завершилось ошибкой.
+            - READY_TO_SUPPLY # товары, готовые к поставке.
+            - VALIDATION_STATE_PENDING # товары, которые проходят проверку валидатором на премодерации.
+            - VALIDATION_STATE_FAIL # товары, которые не прошли проверку валидатором на премодерации.
+            - VALIDATION_STATE_SUCCESS # товары, которые прошли проверку валидатором на премодерации.
+            - TO_SUPPLY # товары, готовые к продаже.
+            - IN_SALE # товары в продаже.
+            - REMOVED_FROM_SALE # товары, скрытые от покупателей.
+            - BANNED # заблокированные товары.
+            - OVERPRICED # товары с завышенной ценой.
+            - CRITICALLY_OVERPRICED # товары со слишком завышенной ценой.
+            - EMPTY_BARCODE # товары без штрихкода.
+            - BARCODE_EXISTS # товары со штрихкодом.
+            - QUARANTINE # товары на карантине после изменения цены более чем на 50%.
+            - ARCHIVED # товары в архиве.
+            - OVERPRICED_WITH_STOCK # товары в продаже со стоимостью выше, чем у конкурентов.
+            - PARTIAL_APPROVED # товары в продаже с пустым или неполным описанием.
+            - IMAGE_ABSENT # товары без изображений.
+            - MODERATION_BLOCK # товары, для которых заблокирована модерация.
+    ProductAttributeFilter:
+      type: object
+      properties:
+        filter:
+          $ref: '#/components/schemas/ProductAttributeFilterFilter'
+        last_id:
+          description: Идентификатор последнего значения на странице. Оставьте это поле пустым при выполнении первого запроса.Чтобы получить следующие значения, укажите last_id из ответа предыдущего запроса.
+          type: string
+        limit:
+          type: integer
+          description: Количество значений на странице. Минимум — 1, максимум — 1000.
+        sort_by:
+          type: string
+        sort_dir:
+          type: string
+    ProductFilter:
+      type: object
+      properties:
+        offer_id:
+          type: array
+          items:
+            type: string
+        product_id:
+          type: array
+          items:
+            type: string
+        sku:
+          type: array
+          items:
+            type: string
+    RowItem:
+      type: object
+      properties:
+        sku:
+          type: integer
+        item_code:
+          type: string
+        item_name:
+          type: string
+        free_to_sell_amount:
+          type: integer
+        promised_amount:
+          type: integer
+        reserved_amount:
+          type: integer
+        warehouse_name:
+          type: string
     StocksItem:
       type: object
       properties:
@@ -149,6 +352,26 @@ components:
         Discount:
           type: number
           description: Скидка
+    OzonError:
+      type: object
+      nullable: false
+      properties:
+        code:
+          type: integer
+          description: Код ошибки
+        message:
+          type: string
+          description: Описание ошибки
+        details:
+          type: array
+          description: Дополнительные данные, обогащающие ошибку
+          items:
+            type: object
+            properties:
+              typeUrl:
+                type: string
+              value:
+                type: string
     Error:
       type: object
       nullable: false
@@ -227,7 +450,7 @@ paths:
     get:
       security:
         - HeaderApiKey: [ ]
-      summary: Склад
+      summary: Склад WB
       operationId: getSupplierStocks
       description: Склад. Данные обновляются раз в сутки. Сервис статистики не хранит
         историю остатков товаров, поэтому получить данные об остатках товаров на прошедшую,
@@ -263,3 +486,102 @@ paths:
                   SCCode: 3200-1234
                   Price: 5000
                   Discount: 0
+  /v2/analytics/stock_on_warehouses:
+    servers:
+      - url: https://api-seller.ozon.ru/
+    post:
+      summary: Склад OZON
+      operationId: getOzonSupplierStocks
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                warehouse_type:
+                  type: string
+                  enum:
+                    - EXPRESS_DARK_STORE
+                    - NOT_EXPRESS_DARK_STORE
+                    - ALL
+                limit:
+                  type: integer
+                offset:
+                  type: integer
+      responses:
+        200:
+          description: Список товаров на складе
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: object
+                    properties:
+                      rows:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/RowItem'
+  /v2/product/info/list:
+    servers:
+      - url: https://api-seller.ozon.ru/
+    post:
+      summary: Склад OZON
+      operationId: getOzonProductInfo
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductFilter'
+      responses:
+        200:
+          description: Список информации о товаре
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: object
+                    properties:
+                      items:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/ProductInfo'
+  /v3/products/info/attributes:
+    servers:
+      - url: https://api-seller.ozon.ru/
+    post:
+      summary: Атрибуты продукта
+      operationId: getOzonProductAttributes
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductAttributeFilter'
+      responses:
+        200:
+          description: Список информации о товаре
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  last_id:
+                    type: string
+                  total:
+                    type: integer
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProductAttribute'
+        404:
+          description: Ответ не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OzonError'

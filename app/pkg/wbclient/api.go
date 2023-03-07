@@ -4,6 +4,7 @@
 package wbclient
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -19,6 +20,186 @@ import (
 const (
 	HeaderApiKeyScopes = "HeaderApiKey.Scopes"
 )
+
+// Defines values for ProductAttributeFilterFilterVisibility.
+const (
+	ProductAttributeFilterFilterVisibilityALL                    ProductAttributeFilterFilterVisibility = "ALL"
+	ProductAttributeFilterFilterVisibilityARCHIVED               ProductAttributeFilterFilterVisibility = "ARCHIVED"
+	ProductAttributeFilterFilterVisibilityBANNED                 ProductAttributeFilterFilterVisibility = "BANNED"
+	ProductAttributeFilterFilterVisibilityBARCODEEXISTS          ProductAttributeFilterFilterVisibility = "BARCODE_EXISTS"
+	ProductAttributeFilterFilterVisibilityCRITICALLYOVERPRICED   ProductAttributeFilterFilterVisibility = "CRITICALLY_OVERPRICED"
+	ProductAttributeFilterFilterVisibilityDISABLED               ProductAttributeFilterFilterVisibility = "DISABLED"
+	ProductAttributeFilterFilterVisibilityEMPTYBARCODE           ProductAttributeFilterFilterVisibility = "EMPTY_BARCODE"
+	ProductAttributeFilterFilterVisibilityEMPTYSTOCK             ProductAttributeFilterFilterVisibility = "EMPTY_STOCK"
+	ProductAttributeFilterFilterVisibilityIMAGEABSENT            ProductAttributeFilterFilterVisibility = "IMAGE_ABSENT"
+	ProductAttributeFilterFilterVisibilityINSALE                 ProductAttributeFilterFilterVisibility = "IN_SALE"
+	ProductAttributeFilterFilterVisibilityINVISIBLE              ProductAttributeFilterFilterVisibility = "INVISIBLE"
+	ProductAttributeFilterFilterVisibilityMODERATED              ProductAttributeFilterFilterVisibility = "MODERATED"
+	ProductAttributeFilterFilterVisibilityMODERATIONBLOCK        ProductAttributeFilterFilterVisibility = "MODERATION_BLOCK"
+	ProductAttributeFilterFilterVisibilityNOTMODERATED           ProductAttributeFilterFilterVisibility = "NOT_MODERATED"
+	ProductAttributeFilterFilterVisibilityOVERPRICED             ProductAttributeFilterFilterVisibility = "OVERPRICED"
+	ProductAttributeFilterFilterVisibilityOVERPRICEDWITHSTOCK    ProductAttributeFilterFilterVisibility = "OVERPRICED_WITH_STOCK"
+	ProductAttributeFilterFilterVisibilityPARTIALAPPROVED        ProductAttributeFilterFilterVisibility = "PARTIAL_APPROVED"
+	ProductAttributeFilterFilterVisibilityQUARANTINE             ProductAttributeFilterFilterVisibility = "QUARANTINE"
+	ProductAttributeFilterFilterVisibilityREADYTOSUPPLY          ProductAttributeFilterFilterVisibility = "READY_TO_SUPPLY"
+	ProductAttributeFilterFilterVisibilityREMOVEDFROMSALE        ProductAttributeFilterFilterVisibility = "REMOVED_FROM_SALE"
+	ProductAttributeFilterFilterVisibilitySTATEFAILED            ProductAttributeFilterFilterVisibility = "STATE_FAILED"
+	ProductAttributeFilterFilterVisibilityTOSUPPLY               ProductAttributeFilterFilterVisibility = "TO_SUPPLY"
+	ProductAttributeFilterFilterVisibilityVALIDATIONSTATEFAIL    ProductAttributeFilterFilterVisibility = "VALIDATION_STATE_FAIL"
+	ProductAttributeFilterFilterVisibilityVALIDATIONSTATEPENDING ProductAttributeFilterFilterVisibility = "VALIDATION_STATE_PENDING"
+	ProductAttributeFilterFilterVisibilityVALIDATIONSTATESUCCESS ProductAttributeFilterFilterVisibility = "VALIDATION_STATE_SUCCESS"
+	ProductAttributeFilterFilterVisibilityVISIBLE                ProductAttributeFilterFilterVisibility = "VISIBLE"
+)
+
+// Defines values for GetOzonSupplierStocksJSONBodyWarehouseType.
+const (
+	GetOzonSupplierStocksJSONBodyWarehouseTypeALL                 GetOzonSupplierStocksJSONBodyWarehouseType = "ALL"
+	GetOzonSupplierStocksJSONBodyWarehouseTypeEXPRESSDARKSTORE    GetOzonSupplierStocksJSONBodyWarehouseType = "EXPRESS_DARK_STORE"
+	GetOzonSupplierStocksJSONBodyWarehouseTypeNOTEXPRESSDARKSTORE GetOzonSupplierStocksJSONBodyWarehouseType = "NOT_EXPRESS_DARK_STORE"
+)
+
+// OzonError defines model for OzonError.
+type OzonError struct {
+	// Code Код ошибки
+	Code *int `json:"code,omitempty"`
+
+	// Details Дополнительные данные, обогащающие ошибку
+	Details *[]struct {
+		TypeUrl *string `json:"typeUrl,omitempty"`
+		Value   *string `json:"value,omitempty"`
+	} `json:"details,omitempty"`
+
+	// Message Описание ошибки
+	Message *string `json:"message,omitempty"`
+}
+
+// ProductAttribute defines model for ProductAttribute.
+type ProductAttribute struct {
+	Attributes *[]ProductAttributesComplexAttribute `json:"attributes,omitempty"`
+
+	// Barcode Штрихкод.
+	Barcode *string `json:"barcode,omitempty"`
+
+	// CategoryId Идентификатор категории.
+	CategoryId *int `json:"category_id,omitempty"`
+
+	// ColorImage Маркетинговый цвет.
+	ColorImage        *string                              `json:"color_image,omitempty"`
+	ComplexAttributes *[]ProductAttributesComplexAttribute `json:"complex_attributes,omitempty"`
+
+	// Depth Глубина.
+	Depth *int `json:"depth,omitempty"`
+
+	// DimensionUnit Единица измерения габаритов
+	DimensionUnit *string `json:"dimension_unit,omitempty"`
+
+	// Height Высота упаковки.
+	Height *int `json:"height,omitempty"`
+
+	// Id Идентификатор характеристики товара.
+	Id *int `json:"id,omitempty"`
+
+	// ImageGroupId Идентификатор для последующей пакетной загрузки изображений.
+	ImageGroupId *string                   `json:"image_group_id,omitempty"`
+	Images       *[]ProductAttributesImage `json:"images,omitempty"`
+
+	// Name Название товара. До 500 символов.
+	Name *string `json:"name,omitempty"`
+
+	// OfferId Идентификатор товара в системе продавца — артикул.
+	OfferId *string `json:"offer_id,omitempty"`
+
+	// Weight Вес товара в упаковке.
+	Weight *int `json:"weight,omitempty"`
+
+	// WeightUnit Единица измерения веса.
+	WeightUnit *string `json:"weight_unit,omitempty"`
+
+	// Width Ширина упаковки.
+	Width *int `json:"width,omitempty"`
+}
+
+// ProductAttributeFilter defines model for ProductAttributeFilter.
+type ProductAttributeFilter struct {
+	Filter *ProductAttributeFilterFilter `json:"filter,omitempty"`
+
+	// LastId Идентификатор последнего значения на странице. Оставьте это поле пустым при выполнении первого запроса.Чтобы получить следующие значения, укажите last_id из ответа предыдущего запроса.
+	LastId *string `json:"last_id,omitempty"`
+
+	// Limit Количество значений на странице. Минимум — 1, максимум — 1000.
+	Limit   *int    `json:"limit,omitempty"`
+	SortBy  *string `json:"sort_by,omitempty"`
+	SortDir *string `json:"sort_dir,omitempty"`
+}
+
+// ProductAttributeFilterFilter defines model for ProductAttributeFilterFilter.
+type ProductAttributeFilterFilter struct {
+	OfferId    *[]string                               `json:"offer_id,omitempty"`
+	ProductId  *[]int                                  `json:"product_id,omitempty"`
+	Visibility *ProductAttributeFilterFilterVisibility `json:"visibility,omitempty"`
+}
+
+// ProductAttributeFilterFilterVisibility defines model for ProductAttributeFilterFilter.Visibility.
+type ProductAttributeFilterFilterVisibility string
+
+// ProductAttributesComplexAttribute defines model for ProductAttributesComplexAttribute.
+type ProductAttributesComplexAttribute struct {
+	// AttributeId Идентификатор характеристики.
+	AttributeId *int `json:"attribute_id,omitempty"`
+
+	// ComplexId Идентификатор характеристики, которая поддерживает вложенные свойства. Например, у характеристики «Процессор» есть вложенные характеристики «Производитель» и «L2 Cache». У каждой из вложенных характеристик может быть несколько вариантов значений.
+	ComplexId *int                                `json:"complex_id,omitempty"`
+	Values    *[]ProductAttributesDictionaryValue `json:"values,omitempty"`
+}
+
+// ProductAttributesDictionaryValue defines model for ProductAttributesDictionaryValue.
+type ProductAttributesDictionaryValue struct {
+	DictionaryValueId *int    `json:"dictionaryValueId,omitempty"`
+	Value             *string `json:"value,omitempty"`
+}
+
+// ProductAttributesImage defines model for ProductAttributesImage.
+type ProductAttributesImage struct {
+	Default  *bool   `json:"default,omitempty"`
+	FileName *string `json:"file_name,omitempty"`
+	Index    *int    `json:"index,omitempty"`
+}
+
+// ProductFilter defines model for ProductFilter.
+type ProductFilter struct {
+	OfferId   *[]string `json:"offer_id,omitempty"`
+	ProductId *[]string `json:"product_id,omitempty"`
+	Sku       *[]string `json:"sku,omitempty"`
+}
+
+// ProductInfo defines model for ProductInfo.
+type ProductInfo struct {
+	Barcode        *string   `json:"barcode,omitempty"`
+	Barcodes       *[]string `json:"barcodes,omitempty"`
+	BuyboxPrice    *string   `json:"buybox_price,omitempty"`
+	CategoryId     *int      `json:"category_id,omitempty"`
+	CreatedAt      *string   `json:"created_at,omitempty"`
+	CurrencyCode   *string   `json:"currency_code,omitempty"`
+	FboSku         *int      `json:"fbo_sku,omitempty"`
+	Id             *int      `json:"id,omitempty"`
+	MarketingPrice *string   `json:"marketing_price,omitempty"`
+	MinPrice       *string   `json:"min_price,omitempty"`
+	Name           *string   `json:"name,omitempty"`
+	OfferId        *string   `json:"offer_id,omitempty"`
+	OldPrice       *string   `json:"old_price,omitempty"`
+	Vat            *string   `json:"vat,omitempty"`
+}
+
+// RowItem defines model for RowItem.
+type RowItem struct {
+	FreeToSellAmount *int    `json:"free_to_sell_amount,omitempty"`
+	ItemCode         *string `json:"item_code,omitempty"`
+	ItemName         *string `json:"item_name,omitempty"`
+	PromisedAmount   *int    `json:"promised_amount,omitempty"`
+	ReservedAmount   *int    `json:"reserved_amount,omitempty"`
+	Sku              *int    `json:"sku,omitempty"`
+	WarehouseName    *string `json:"warehouse_name,omitempty"`
+}
 
 // StocksItem defines model for StocksItem.
 type StocksItem struct {
@@ -82,6 +263,25 @@ type GetSupplierStocksParams struct {
 	// DateFrom Дата в формате RFC3339. Можно передать дату или дату со временем.  Время можно указывать с точностью до секунд или миллисекунд.  Литера `Z` в конце строки означает, что время передается в UTC-часовом поясе.  При ее отсутствии время считается в часовом поясе МСК (UTC+3). <br>Примеры: <ul> <li> `2019-06-20` <li> `2019-06-20T00:00:00Z` <li> `2019-06-20T23:59:59` <li> `2019-06-20T00:00:00.12345Z` <li> `2019-06-20T00:00:00.12345` <li> `2017-03-25T00:00:00` </ul>
 	DateFrom DateFrom `form:"dateFrom" json:"dateFrom"`
 }
+
+// GetOzonSupplierStocksJSONBody defines parameters for GetOzonSupplierStocks.
+type GetOzonSupplierStocksJSONBody struct {
+	Limit         *int                                        `json:"limit,omitempty"`
+	Offset        *int                                        `json:"offset,omitempty"`
+	WarehouseType *GetOzonSupplierStocksJSONBodyWarehouseType `json:"warehouse_type,omitempty"`
+}
+
+// GetOzonSupplierStocksJSONBodyWarehouseType defines parameters for GetOzonSupplierStocks.
+type GetOzonSupplierStocksJSONBodyWarehouseType string
+
+// GetOzonSupplierStocksJSONRequestBody defines body for GetOzonSupplierStocks for application/json ContentType.
+type GetOzonSupplierStocksJSONRequestBody GetOzonSupplierStocksJSONBody
+
+// GetOzonProductInfoJSONRequestBody defines body for GetOzonProductInfo for application/json ContentType.
+type GetOzonProductInfoJSONRequestBody = ProductFilter
+
+// GetOzonProductAttributesJSONRequestBody defines body for GetOzonProductAttributes for application/json ContentType.
+type GetOzonProductAttributesJSONRequestBody = ProductAttributeFilter
 
 // RequestEditorFn  is the function signature for the RequestEditor callback function
 type RequestEditorFn func(ctx context.Context, req *http.Request) error
@@ -158,10 +358,97 @@ func WithRequestEditorFn(fn RequestEditorFn) ClientOption {
 type ClientInterface interface {
 	// GetSupplierStocks request
 	GetSupplierStocks(ctx context.Context, params *GetSupplierStocksParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetOzonSupplierStocks request with any body
+	GetOzonSupplierStocksWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	GetOzonSupplierStocks(ctx context.Context, body GetOzonSupplierStocksJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetOzonProductInfo request with any body
+	GetOzonProductInfoWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	GetOzonProductInfo(ctx context.Context, body GetOzonProductInfoJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetOzonProductAttributes request with any body
+	GetOzonProductAttributesWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	GetOzonProductAttributes(ctx context.Context, body GetOzonProductAttributesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 }
 
 func (c *Client) GetSupplierStocks(ctx context.Context, params *GetSupplierStocksParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetSupplierStocksRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetOzonSupplierStocksWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetOzonSupplierStocksRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetOzonSupplierStocks(ctx context.Context, body GetOzonSupplierStocksJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetOzonSupplierStocksRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetOzonProductInfoWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetOzonProductInfoRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetOzonProductInfo(ctx context.Context, body GetOzonProductInfoJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetOzonProductInfoRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetOzonProductAttributesWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetOzonProductAttributesRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetOzonProductAttributes(ctx context.Context, body GetOzonProductAttributesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetOzonProductAttributesRequest(c.Server, body)
 	if err != nil {
 		return nil, err
 	}
@@ -215,6 +502,126 @@ func NewGetSupplierStocksRequest(server string, params *GetSupplierStocksParams)
 	return req, nil
 }
 
+// NewGetOzonSupplierStocksRequest calls the generic GetOzonSupplierStocks builder with application/json body
+func NewGetOzonSupplierStocksRequest(server string, body GetOzonSupplierStocksJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewGetOzonSupplierStocksRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewGetOzonSupplierStocksRequestWithBody generates requests for GetOzonSupplierStocks with any type of body
+func NewGetOzonSupplierStocksRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v2/analytics/stock_on_warehouses")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetOzonProductInfoRequest calls the generic GetOzonProductInfo builder with application/json body
+func NewGetOzonProductInfoRequest(server string, body GetOzonProductInfoJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewGetOzonProductInfoRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewGetOzonProductInfoRequestWithBody generates requests for GetOzonProductInfo with any type of body
+func NewGetOzonProductInfoRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v2/product/info/list")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetOzonProductAttributesRequest calls the generic GetOzonProductAttributes builder with application/json body
+func NewGetOzonProductAttributesRequest(server string, body GetOzonProductAttributesJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewGetOzonProductAttributesRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewGetOzonProductAttributesRequestWithBody generates requests for GetOzonProductAttributes with any type of body
+func NewGetOzonProductAttributesRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v3/products/info/attributes")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 func (c *Client) applyEditors(ctx context.Context, req *http.Request, additionalEditors []RequestEditorFn) error {
 	for _, r := range c.RequestEditors {
 		if err := r(ctx, req); err != nil {
@@ -260,6 +667,21 @@ func WithBaseURL(baseURL string) ClientOption {
 type ClientWithResponsesInterface interface {
 	// GetSupplierStocks request
 	GetSupplierStocksWithResponse(ctx context.Context, params *GetSupplierStocksParams, reqEditors ...RequestEditorFn) (*GetSupplierStocksResponse, error)
+
+	// GetOzonSupplierStocks request with any body
+	GetOzonSupplierStocksWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*GetOzonSupplierStocksResponse, error)
+
+	GetOzonSupplierStocksWithResponse(ctx context.Context, body GetOzonSupplierStocksJSONRequestBody, reqEditors ...RequestEditorFn) (*GetOzonSupplierStocksResponse, error)
+
+	// GetOzonProductInfo request with any body
+	GetOzonProductInfoWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*GetOzonProductInfoResponse, error)
+
+	GetOzonProductInfoWithResponse(ctx context.Context, body GetOzonProductInfoJSONRequestBody, reqEditors ...RequestEditorFn) (*GetOzonProductInfoResponse, error)
+
+	// GetOzonProductAttributes request with any body
+	GetOzonProductAttributesWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*GetOzonProductAttributesResponse, error)
+
+	GetOzonProductAttributesWithResponse(ctx context.Context, body GetOzonProductAttributesJSONRequestBody, reqEditors ...RequestEditorFn) (*GetOzonProductAttributesResponse, error)
 }
 
 type GetSupplierStocksResponse struct {
@@ -284,6 +706,85 @@ func (r GetSupplierStocksResponse) StatusCode() int {
 	return 0
 }
 
+type GetOzonSupplierStocksResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Result *struct {
+			Rows *[]RowItem `json:"rows,omitempty"`
+		} `json:"result,omitempty"`
+	}
+}
+
+// Status returns HTTPResponse.Status
+func (r GetOzonSupplierStocksResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetOzonSupplierStocksResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetOzonProductInfoResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Result *struct {
+			Items *[]ProductInfo `json:"items,omitempty"`
+		} `json:"result,omitempty"`
+	}
+}
+
+// Status returns HTTPResponse.Status
+func (r GetOzonProductInfoResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetOzonProductInfoResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetOzonProductAttributesResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		LastId *string             `json:"last_id,omitempty"`
+		Result *[]ProductAttribute `json:"result,omitempty"`
+		Total  *int                `json:"total,omitempty"`
+	}
+	JSON404 *OzonError
+}
+
+// Status returns HTTPResponse.Status
+func (r GetOzonProductAttributesResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetOzonProductAttributesResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 // GetSupplierStocksWithResponse request returning *GetSupplierStocksResponse
 func (c *ClientWithResponses) GetSupplierStocksWithResponse(ctx context.Context, params *GetSupplierStocksParams, reqEditors ...RequestEditorFn) (*GetSupplierStocksResponse, error) {
 	rsp, err := c.GetSupplierStocks(ctx, params, reqEditors...)
@@ -291,6 +792,57 @@ func (c *ClientWithResponses) GetSupplierStocksWithResponse(ctx context.Context,
 		return nil, err
 	}
 	return ParseGetSupplierStocksResponse(rsp)
+}
+
+// GetOzonSupplierStocksWithBodyWithResponse request with arbitrary body returning *GetOzonSupplierStocksResponse
+func (c *ClientWithResponses) GetOzonSupplierStocksWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*GetOzonSupplierStocksResponse, error) {
+	rsp, err := c.GetOzonSupplierStocksWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetOzonSupplierStocksResponse(rsp)
+}
+
+func (c *ClientWithResponses) GetOzonSupplierStocksWithResponse(ctx context.Context, body GetOzonSupplierStocksJSONRequestBody, reqEditors ...RequestEditorFn) (*GetOzonSupplierStocksResponse, error) {
+	rsp, err := c.GetOzonSupplierStocks(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetOzonSupplierStocksResponse(rsp)
+}
+
+// GetOzonProductInfoWithBodyWithResponse request with arbitrary body returning *GetOzonProductInfoResponse
+func (c *ClientWithResponses) GetOzonProductInfoWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*GetOzonProductInfoResponse, error) {
+	rsp, err := c.GetOzonProductInfoWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetOzonProductInfoResponse(rsp)
+}
+
+func (c *ClientWithResponses) GetOzonProductInfoWithResponse(ctx context.Context, body GetOzonProductInfoJSONRequestBody, reqEditors ...RequestEditorFn) (*GetOzonProductInfoResponse, error) {
+	rsp, err := c.GetOzonProductInfo(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetOzonProductInfoResponse(rsp)
+}
+
+// GetOzonProductAttributesWithBodyWithResponse request with arbitrary body returning *GetOzonProductAttributesResponse
+func (c *ClientWithResponses) GetOzonProductAttributesWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*GetOzonProductAttributesResponse, error) {
+	rsp, err := c.GetOzonProductAttributesWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetOzonProductAttributesResponse(rsp)
+}
+
+func (c *ClientWithResponses) GetOzonProductAttributesWithResponse(ctx context.Context, body GetOzonProductAttributesJSONRequestBody, reqEditors ...RequestEditorFn) (*GetOzonProductAttributesResponse, error) {
+	rsp, err := c.GetOzonProductAttributes(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetOzonProductAttributesResponse(rsp)
 }
 
 // ParseGetSupplierStocksResponse parses an HTTP response from a GetSupplierStocksWithResponse call
@@ -313,6 +865,103 @@ func ParseGetSupplierStocksResponse(rsp *http.Response) (*GetSupplierStocksRespo
 			return nil, err
 		}
 		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetOzonSupplierStocksResponse parses an HTTP response from a GetOzonSupplierStocksWithResponse call
+func ParseGetOzonSupplierStocksResponse(rsp *http.Response) (*GetOzonSupplierStocksResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetOzonSupplierStocksResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Result *struct {
+				Rows *[]RowItem `json:"rows,omitempty"`
+			} `json:"result,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetOzonProductInfoResponse parses an HTTP response from a GetOzonProductInfoWithResponse call
+func ParseGetOzonProductInfoResponse(rsp *http.Response) (*GetOzonProductInfoResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetOzonProductInfoResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Result *struct {
+				Items *[]ProductInfo `json:"items,omitempty"`
+			} `json:"result,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetOzonProductAttributesResponse parses an HTTP response from a GetOzonProductAttributesWithResponse call
+func ParseGetOzonProductAttributesResponse(rsp *http.Response) (*GetOzonProductAttributesResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetOzonProductAttributesResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			LastId *string             `json:"last_id,omitempty"`
+			Result *[]ProductAttribute `json:"result,omitempty"`
+			Total  *int                `json:"total,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest OzonError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
 
 	}
 
