@@ -52,7 +52,7 @@ info:
     \ <li> `/api/v1/directory/*` </ul>\nДанные методы теперь возвращают код 404. \
     \ Новое API Контента описано в данном документе в разделах Контент / * <br> <br>\n"
 security:
-  - HeaderApiKey: []
+  - HeaderApiKey: [ ]
 components:
   securitySchemes:
     HeaderApiKey:
@@ -74,6 +74,12 @@ components:
         <li> `2019-06-20T00:00:00Z` <li> `2019-06-20T23:59:59` <li> `2019-06-20T00:00:00.12345Z`
         <li> `2019-06-20T00:00:00.12345` <li> `2017-03-25T00:00:00` </ul>
         '
+    flag:
+      in: query
+      name: flag
+      schema:
+        type: integer
+        default: 0
     Warehouse:
       name: warehouse
       in: path
@@ -83,6 +89,211 @@ components:
         type: integer
         example: 1234
   schemas:
+    OrdersItem:
+      type: object
+      properties:
+        gNumber:
+          type: string
+          maxLength: 50
+          description: Номер заказа. Объединяет все позиции одного заказа.
+        date:
+          type: string
+          description: Дата и время заказа. Это поле соответствует параметру `dateFrom`
+            в запросе, если параметр `flag=1`. Если часовой пояс не указан, то берется
+            Московское время UTC+3.
+        lastChangeDate:
+          type: string
+          description: Дата и время обновления информации в сервисе. Это поле соответствует
+            параметру `dateFrom` в запросе, если параметр `flag=0` или не указан.
+            Если часовой пояс не указан, то берется Московское время UTC+3.
+        supplierArticle:
+          type: string
+          maxLength: 75
+          description: Артикул поставщика
+        techSize:
+          type: string
+          maxLength: 30
+          description: Размер
+        barcode:
+          type: string
+          maxLength: 30
+          description: Бар-код
+        totalPrice:
+          type: number
+          description: Цена до согласованной итоговой скидки/промо/спп. Для получения
+            цены со скидкой можно воспользоваться формулой `priceWithDiscount = totalPrice
+            * (1 - discountPercent/100)`
+        discountPercent:
+          type: integer
+          description: Согласованный итоговый дисконт. Будучи примененным к `totalPrice`,
+            даёт сумму к оплате.
+        warehouseName:
+          type: string
+          maxLength: 50
+          description: Название склада отгрузки
+        oblast:
+          type: string
+          maxLength: 200
+          description: Область
+        incomeID:
+          type: integer
+          description: Номер поставки (от продавца на склад)
+        odid:
+          type: integer
+          description: Уникальный идентификатор позиции заказа. Может использоваться
+            для поиска соответствия между заказами и продажами.
+        nmId:
+          type: integer
+          description: Код WB
+        subject:
+          type: string
+          maxLength: 50
+          description: Предмет
+        category:
+          type: string
+          maxLength: 50
+          description: Категория
+        brand:
+          type: string
+          maxLength: 50
+          description: Бренд
+        isCancel:
+          type: boolean
+          description: Отмена заказа. true - заказ отменен до оплаты.
+        cancel_dt:
+          type: string
+          description: Дата и время отмены заказа. Если заказ не был отменен, то `"0001-01-01T00:00:00"`.
+            Если часовой пояс не указан, то берется Московское время UTC+3.
+        sticker:
+          type: string
+          description: Цифровое значение стикера, который клеится на товар в процессе
+            сборки заказа по системе Маркетплейс.
+        srid:
+          type: string
+          description: 'Уникальный идентификатор заказа, функционально аналогичный
+                `odid`/`rid`.  Данный параметр введен в июле''22 и в течение переходного
+                периода может быть заполнен не во всех ответах. Примечание для работающих
+                по системе Маркетплейс: `srid` равен `rid` в ответе на метод `GET /api/v2/orders`.'
+    SalesItem:
+      type: object
+      properties:
+        gNumber:
+          type: string
+          maxLength: 50
+          description: Номер заказа. Объединяет все позиции одного заказа.
+        date:
+          type: string
+          description: Дата и время продажи. Это поле соответствует параметру `dateFrom`
+            в запросе, если параметр `flag=1`. Если часовой пояс не указан, то берется
+            Московское время UTC+3.
+        lastChangeDate:
+          type: string
+          description: Дата и время обновления информации в сервисе. Это поле соответствует
+            параметру `dateFrom` в запросе, если параметр `flag=0` или не указан.
+            Если часовой пояс не указан, то берется Московское время UTC+3.
+        supplierArticle:
+          type: string
+          maxLength: 75
+          description: Артикул поставщика
+        techSize:
+          type: string
+          maxLength: 30
+          description: Размер
+        barcode:
+          type: string
+          maxLength: 30
+          description: Бар-код
+        totalPrice:
+          type: number
+          description: Цена до согласованной скидки/промо/спп. Для получения цены
+            со скидкой можно воспользоваться формулой `priceWithDiscount = totalPrice
+            * (1 - discountPercent/100)`
+        discountPercent:
+          type: integer
+          description: Согласованный итоговый дисконт
+        isSupply:
+          type: boolean
+          description: Договор поставки
+        isRealization:
+          type: boolean
+          description: Договор реализации
+        promoCodeDiscount:
+          type: number
+          description: Скидка по промокоду
+        warehouseName:
+          type: string
+          maxLength: 50
+          description: Название склада отгрузки
+        countryName:
+          type: string
+          maxLength: 200
+          description: Страна
+        oblastOkrugName:
+          type: string
+          maxLength: 200
+          description: Округ
+        regionName:
+          type: string
+          maxLength: 200
+          description: Регион
+        incomeID:
+          type: integer
+          description: Номер поставки (от продавца на склад)
+        saleID:
+          type: string
+          maxLength: 15
+          description: 'Уникальный идентификатор продажи/возврата. <ul>  <li> `SXXXXXXXXXX`
+                — продажа  <li> `RXXXXXXXXXX` — возврат  <li> `DXXXXXXXXXXX` — доплата
+                <li> `AXXXXXXXXX` – сторно продаж (все значения полей как у продажи, но
+                поля с суммами и кол-вом с минусом как в возврате) <li> `BXXXXXXXXX` -
+                сторно возврата (все значения полей как у возврата, но поля с суммами
+                и кол-вом с плюсом, в противоположность возврату) </ul>'
+        odid:
+          type: integer
+          description: Уникальный идентификатор позиции заказа. Может использоваться
+            для поиска соответствия между заказами и продажами.
+        spp:
+          type: number
+          format: float
+          description: Согласованная скидка постоянного покупателя
+        forPay:
+          type: number
+          description: К перечислению поставщику
+        finishedPrice:
+          type: number
+          description: Фактическая цена заказа с учетом всех скидок
+        priceWithDisc:
+          type: number
+          description: Цена, от которой считается вознаграждение поставщика `forpay`
+            (с учетом всех согласованных скидок)
+        nmId:
+          type: integer
+          description: Код WB
+        subject:
+          type: string
+          maxLength: 50
+          description: Предмет
+        category:
+          type: string
+          maxLength: 50
+          description: Категория
+        brand:
+          type: string
+          maxLength: 50
+          description: Бренд
+        isStorno:
+          type: integer
+          description: Для сторно-операций `1`, для остальных `0`
+        sticker:
+          type: string
+          description: Цифровое значение стикера, который клеится на товар в процессе
+            сборки заказа по системе Маркетплейс.
+        srid:
+          type: string
+          description: 'Уникальный идентификатор заказа, функционально аналогичный
+                `odid`/`rid`.  Данный параметр введен в июле''22 и в течение переходного
+                периода может быть заполнен не во всех ответах. Примечание для работающих
+                по системе Маркетплейс: `srid` равен `rid` в ответе на метод `GET /api/v2/orders`.'
     ProductAttributesDictionaryValue:
       type: object
       properties:
@@ -486,6 +697,135 @@ paths:
                   SCCode: 3200-1234
                   Price: 5000
                   Discount: 0
+  /api/v1/supplier/sales:
+    servers:
+      - url: https://statistics-api.wildberries.ru/
+    get:
+      operationId: getWBSales
+      security:
+        - HeaderApiKey: [ ]
+      summary: Продажи
+      description: 'Продажи. <br> Важно: гарантируется хранение данных по заказам
+            не более 90 дней от даты заказа. Данные обновляются раз в 30 минут. Точное
+            время обновления информации в сервисе можно увидеть в поле `lastChangeDate`.
+            <br> Для идентификации товаров из одного заказа, а также продаж по ним, следует
+            использовать  поле `gNumber` (строки с одинаковым значением этого поля относятся
+            к одному заказу) и номер  уникальной позиции в заказе `odid` (`rid`).  <br>
+            Для расчета окончательной стоимости (суммы к оплате) следует пользоваться
+            следующей формулой: <br> `PriceWithDiscount = totalPrice * ((100 – discountPercent)/100)
+            * ((100 – promoCodeDiscount)/100) *((100 – spp)/100)`
+
+            '
+      tags:
+        - Статистика
+      parameters:
+        - $ref: '#/components/parameters/dateFrom'
+        - $ref: '#/components/parameters/flag'
+      responses:
+        200:
+          description: Список продаж
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SalesItem'
+              example:
+                - date: '2022-03-04T00:00:00'
+                  lastChangeDate: '2022-03-06T10:11:07'
+                  supplierArticle: '12345'
+                  techSize: ''
+                  barcode: '123453559000'
+                  totalPrice: 0
+                  discountPercent: 0
+                  isSupply: false
+                  isRealization: true
+                  promoCodeDiscount: 0
+                  warehouseName: Подольск
+                  countryName: Россия
+                  oblastOkrugName: Центральный федеральный округ
+                  regionName: Московская
+                  incomeID: 0
+                  saleID: D99937000247
+                  odid: 456739003897
+                  spp: 0
+                  forPay: 0
+                  finishedPrice: 0
+                  priceWithDisc: 0
+                  nmId: 1234567
+                  subject: Мультистайлеры
+                  category: Бытовая техника
+                  brand: Тест
+                  IsStorno: 0
+                  gNumber: '34343462218572569531'
+                  sticker: ''
+        429:
+          description: Слишком много запросов
+        400:
+          description: Ошибка в запросе
+          content:
+            application/json:
+              example:
+                errors:
+                  - can't parse dateFrom
+  /api/v1/supplier/orders:
+    servers:
+      - url: https://statistics-api.wildberries.ru/
+    get:
+      operationId: getWBOrders
+      security:
+        - HeaderApiKey: [ ]
+      summary: Заказы
+      description: "Заказы. <br>  Важно: гарантируется хранение данных по заказам\
+          \ не более 90 дней от даты заказа. Данные обновляются раз в 30 минут.  Точное\
+          \ время обновления информации в сервисе можно увидеть в поле `lastChangeDate`.\
+          \ <br> Для идентификации товаров из одного заказа, а также продаж по ним,\
+          \ следует использовать  поле `gNumber` (строки с одинаковым значением этого\
+          \ поля относятся к одному заказу) и номер  уникальной позиции в заказе `odid`\
+          \ (`rid`). \n"
+      tags:
+        - Статистика
+      parameters:
+        - $ref: '#/components/parameters/dateFrom'
+        - $ref: '#/components/parameters/flag'
+      responses:
+        200:
+          description: Список заказов
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OrdersItem'
+              example:
+                - date: '2022-03-02T14:34:05'
+                  lastChangeDate: '2022-03-02T19:30:16'
+                  supplierArticle: '12345'
+                  techSize: '0'
+                  barcode: '9990016520011'
+                  totalPrice: 120.56
+                  discountPercent: 0
+                  warehouseName: Екатеринбург
+                  oblast: Московская
+                  incomeID: 123456
+                  odid: 12345678
+                  nmId: 12345678
+                  subject: Респираторы
+                  category: Спецодежда и СИЗы
+                  brand: wildberries
+                  isCancel: false
+                  cancel_dt: '0001-01-01T00:00:00'
+                  gNumber: '12345678'
+                  sticker: ''
+        429:
+          description: Слишком много запросов
+        400:
+          description: Ошибка в запросе
+          content:
+            application/json:
+              example:
+                errors:
+                  - can't parse dateFrom
   /v2/analytics/stock_on_warehouses:
     servers:
       - url: https://api-seller.ozon.ru/

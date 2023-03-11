@@ -1,4 +1,4 @@
-package db
+package repository
 
 import (
 	"github.com/yoda/app/pkg/configuration"
@@ -54,14 +54,14 @@ func NewRepositoryDAO(db *gorm.DB) *RepositoryDAO {
 	}
 }
 
-func (p *RepositoryDAO) BeginOperation(o, t *string, jobId *int) *int64 {
+func (p *RepositoryDAO) BeginOperation(owner, source *string, jobId *int) *int64 {
 	timeNow := time.Now()
 	status := types.StatusTypeBegin
 	m := model.Transaction{
 		StartDate: &timeNow,
-		Source:    t,
+		Source:    source,
 		Status:    &status,
-		OwnerCode: o,
+		OwnerCode: owner,
 		JobId:     jobId,
 	}
 	p.db.Create(&m)
@@ -85,7 +85,7 @@ func (p *RepositoryDAO) UpdatePrices(models *[]model.StockItem) error {
 	for _, model := range *models {
 		tx.Model(&model).
 			Select("\"price\"", "\"discount\"", "\"price_after_discount\"").
-			Where(map[string]interface{}{"\"transaction_id\"": *model.TransactionId, "\"external_code\"": *model.ExternalCode}).
+			Where(map[string]interface{}{"\"transaction_id\"": model.TransactionID, "\"external_code\"": *model.ExternalCode}).
 			UpdateColumns(model)
 	}
 	return tx.Commit().Error
@@ -105,12 +105,20 @@ func (p *RepositoryDAO) SaveStocks(items *[]model.StockItem) error {
 	return nil
 }
 
+func (p *RepositoryDAO) SaveSales(items *[]model.Sale) error {
+	tx := p.db.CreateInBatches(items, len(*items))
+	if tx.Error != nil {
+		return tx.Error
+	}
+	return nil
+}
+
 func (p *RepositoryDAO) UpdateAttributes(models *[]model.StockItem) error {
 	tx := p.db.Begin()
 	for _, model := range *models {
 		tx.Model(&model).
 			Select("\"subject\"", "\"category\"", "\"brand\"", "\"name\"").
-			Where(map[string]interface{}{"\"transaction_id\"": *model.TransactionId, "\"supplier_article\"": *model.SupplierArticle}).
+			Where(map[string]interface{}{"\"transaction_id\"": model.TransactionID, "\"supplier_article\"": *model.SupplierArticle}).
 			UpdateColumns(model)
 	}
 	return tx.Commit().Error

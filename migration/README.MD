@@ -6,5 +6,5 @@ brew install golang-migrate
 
 To init migration
 ```shell
-migrate create -ext sql -dir db/migration -seq init_schema
+migrate create -ext sql -dir repository/migration -seq init_schema
 ```

@@ -1,13 +1,13 @@
-package client
+package service
 
 import (
 	"context"
 	"fmt"
 	"github.com/pkg/errors"
+	"github.com/yoda/app/pkg/api"
 	"github.com/yoda/app/pkg/configuration"
-	"github.com/yoda/app/pkg/db"
 	"github.com/yoda/app/pkg/mapper"
-	"github.com/yoda/app/pkg/wbclient"
+	"github.com/yoda/app/pkg/repository"
 	"github.com/yoda/common/pkg/model"
 	"github.com/yoda/common/pkg/types"
 	"log"
@@ -22,6 +22,28 @@ type OzonService struct {
 	apiKey    string
 	ownerCode string
 	config    *configuration.Configuration
+}
+
+type CallbackFunc[T any] func(items *[]T) error
+
+func CallbackBatch[T any](items *[]T, batchSize int, callback CallbackFunc[T]) error {
+	var low int
+	low = 0
+	highest := len(*items)
+	for {
+		step := int(math.Min(float64(batchSize), float64(highest-low)))
+		high := low + step
+		batches := (*items)[low:high]
+		err := callback(&batches)
+		if err != nil {
+			return err
+		}
+		low = high
+		if high == highest {
+			break
+		}
+	}
+	return nil
 }
 
 func NewOzonService(ownerCode, clientId, apiKey string, config *configuration.Configuration) *OzonService {
@@ -39,18 +61,18 @@ func (c *OzonService) customProvider(ctx context.Context, req *http.Request) err
 	return nil
 }
 
-func (c *OzonService) Parsing(listener *db.RepositoryDAO, jobId *int) error {
-	clnt, err := wbclient.NewClientWithResponses("https://api-seller.ozon.ru", wbclient.WithRequestEditorFn(c.customProvider))
+func (c *OzonService) Parsing(listener *repository.RepositoryDAO, jobId *int) error {
+	clnt, err := api.NewClientWithResponses("https://api-seller.ozon.ru", api.WithRequestEditorFn(c.customProvider))
 	if err != nil {
 		return err
 	}
 	offset := 0
-	whType := wbclient.GetOzonSupplierStocksJSONBodyWarehouseTypeALL
+	whType := api.GetOzonSupplierStocksJSONBodyWarehouseTypeALL
 	source := types.SourceTypeOzon
 	transactionId := (*listener).BeginOperation(&c.ownerCode, &source, jobId)
 	dt := time.Now()
 	for {
-		resp, err := clnt.GetOzonSupplierStocksWithResponse(context.Background(), wbclient.GetOzonSupplierStocksJSONRequestBody{
+		resp, err := clnt.GetOzonSupplierStocksWithResponse(context.Background(), api.GetOzonSupplierStocksJSONRequestBody{
 			Limit:         c.config.BatchSize,
 			Offset:        &offset,
 			WarehouseType: &whType,
@@ -76,7 +98,7 @@ func (c *OzonService) Parsing(listener *db.RepositoryDAO, jobId *int) error {
 	for {
 		high := low + int(math.Min(float64(*c.config.BatchSize), float64(highest-low)))
 		batch := (*suppArt)[low:high]
-		req := wbclient.GetOzonProductInfoJSONRequestBody{
+		req := api.GetOzonProductInfoJSONRequestBody{
 			OfferId: &batch,
 		}
 		resp, err := clnt.GetOzonProductInfoWithResponse(context.Background(), req)
@@ -99,9 +121,9 @@ func (c *OzonService) Parsing(listener *db.RepositoryDAO, jobId *int) error {
 		limit := int(math.Min(float64(*c.config.BatchSize), float64(highest-low)))
 		high := low + limit
 		batch := (*suppArt)[low:high]
-		visibility := wbclient.ProductAttributeFilterFilterVisibilityALL
-		request := wbclient.ProductAttributeFilter{
-			Filter: &wbclient.ProductAttributeFilterFilter{
+		visibility := api.ProductAttributeFilterFilterVisibilityALL
+		request := api.ProductAttributeFilter{
+			Filter: &api.ProductAttributeFilterFilter{
 				OfferId:    &batch,
 				Visibility: &visibility,
 			},
@@ -113,7 +135,7 @@ func (c *OzonService) Parsing(listener *db.RepositoryDAO, jobId *int) error {
 			return err
 		}
 		if resp.StatusCode() == 404 {
-			return errors.New(fmt.Sprintf("Ozon resp 404: $s", *resp.JSON404.Message))
+			return errors.New(fmt.Sprintf("Ozon resp 404: %s", *resp.JSON404.Message))
 		}
 		lastId = *resp.JSON200.LastId
 		newItems := c.prepareAttributes(resp, transactionId)
@@ -130,12 +152,12 @@ func (c *OzonService) Parsing(listener *db.RepositoryDAO, jobId *int) error {
 	return nil
 }
 
-func (c *OzonService) prepareAttributes(resp *wbclient.GetOzonProductAttributesResponse, transactionId *int64) *[]model.StockItem {
+func (c *OzonService) prepareAttributes(resp *api.GetOzonProductAttributesResponse, transactionId *int64) *[]model.StockItem {
 	length := len(*resp.JSON200.Result)
 	newItems := make([]model.StockItem, length)
 	for index, item := range *resp.JSON200.Result {
 		si := &model.StockItem{
-			TransactionId:   transactionId,
+			TransactionID:   *transactionId,
 			SupplierArticle: item.OfferId,
 		}
 		for _, attr := range *item.Attributes {
@@ -154,7 +176,7 @@ func (c *OzonService) prepareAttributes(resp *wbclient.GetOzonProductAttributesR
 	return &newItems
 }
 
-func (c *OzonService) preparePrices(repository *db.RepositoryDAO, resp *wbclient.GetOzonProductInfoResponse, transactionId *int64) error {
+func (c *OzonService) preparePrices(repository *repository.RepositoryDAO, resp *api.GetOzonProductInfoResponse, transactionId *int64) error {
 	length := len(*resp.JSON200.Result.Items)
 	newItems := make([]model.StockItem, length)
 	for index, info := range *resp.JSON200.Result.Items {
@@ -173,7 +195,7 @@ func (c *OzonService) preparePrices(repository *db.RepositoryDAO, resp *wbclient
 			PriceAfterDiscount: &priceAfterDisc,
 			Discount:           &disc,
 			Barcode:            info.Barcode,
-			TransactionId:      transactionId,
+			TransactionID:      *transactionId,
 			ExternalCode:       &extCode,
 		}
 		newItems[index] = *si
@@ -181,7 +203,7 @@ func (c *OzonService) preparePrices(repository *db.RepositoryDAO, resp *wbclient
 	return (*repository).UpdatePrices(&newItems)
 }
 
-func (c *OzonService) prepareItems(repository *db.RepositoryDAO, items *[]wbclient.RowItem, dt time.Time, transactionId *int64, source string) error {
+func (c *OzonService) prepareItems(repository *repository.RepositoryDAO, items *[]api.RowItem, dt time.Time, transactionId *int64, source string) error {
 	newItems := make([]model.StockItem, len(*items))
 	for index, item := range *items {
 		si, err := mapper.MapRowItem(&item, &dt)
@@ -190,8 +212,8 @@ func (c *OzonService) prepareItems(repository *db.RepositoryDAO, items *[]wbclie
 			log.Printf("Couldn't map a value at row %d (%s)", index, err)
 			return err
 		}
-		si.Source = &source
-		si.TransactionId = transactionId
+		si.Source = source
+		si.TransactionID = *transactionId
 		newItems[index] = *si
 	}
 	return repository.SaveStocks(&newItems)

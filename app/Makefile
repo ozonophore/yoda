@@ -3,5 +3,7 @@ build:
 	go build -o ./bin/${BINARY_NAME} main.go
 
 generate:
-	oapi-codegen --package=wbclient -generate=types,client -o pkg/wbclient/api.go ../openapi/api.wb.yml
+	oapi-codegen --package=api -generate=types,client -o pkg/api/api.go ../openapi/api.wb.yml
 #go mod tidy
+test:
+	go test -v ./... -coverprofile=coverage.out
