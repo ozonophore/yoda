@@ -8,6 +8,14 @@ import (
 	"time"
 )
 
+func MapSaleArray(sales *[]api.SalesItem, transactionId *int64, source *string) []model.Sale {
+	var result []model.Sale
+	for _, s := range *sales {
+		result = append(result, *MapSale(s, transactionId, source))
+	}
+	return result
+}
+
 func MapSale(s api.SalesItem, transactionId *int64, source *string) *model.Sale {
 	changeDate, _ := time.Parse(time.DateOnly+"T"+time.TimeOnly, *s.LastChangeDate)
 	date, _ := time.Parse(time.DateOnly+"T"+time.TimeOnly, *s.Date)

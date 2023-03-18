@@ -12,7 +12,6 @@ import (
 	"github.com/yoda/common/pkg/model"
 	"github.com/yoda/common/pkg/types"
 	"log"
-	"math"
 	"time"
 )
 
@@ -57,7 +56,7 @@ func (c *WBService) Parsing(repository *repository.RepositoryDAO, jobId *int) er
 	source := types.SourceTypeWB
 	transactionId := (*repository).BeginOperation(&c.ownerCode, &source, jobId)
 
-	newItems, err := c.prepareStocks(repository, length, items, transactionId, source)
+	newItems, err := c.prepareStocks(length, items, transactionId, source)
 	if err != nil {
 		(*repository).EndOperation(transactionId, types.StatusTypeRejected)
 		return err
@@ -77,31 +76,22 @@ func (c *WBService) Parsing(repository *repository.RepositoryDAO, jobId *int) er
 		return fmt.Errorf("Sales response status : %d", respSales.StatusCode())
 	}
 	salesItems := respSales.JSON200
-	var low int
-	low = 0
-	highest := len(*salesItems)
-	for {
-		size := int(math.Min(float64(*c.config.BatchSize), float64(highest-low)))
-		high := low + size
-		newItems := make([]model.Sale, size)
-		for index, salesItem := range (*salesItems)[low:high] {
-			model := mapper.MapSale(salesItem, transactionId, &source)
-			newItems[index] = *model
-		}
-		if err = repository.SaveSales(&newItems); err != nil {
+
+	if err = CallbackBatch[api.SalesItem](salesItems, c.config.BatchSize, func(items *[]api.SalesItem) error {
+		newItems := mapper.MapSaleArray(items, transactionId, &source)
+		if err := repository.SaveSales(&newItems); err != nil {
 			return err
 		}
-		low += high
-		if high == highest {
-			break
-		}
+		return nil
+	}); err != nil {
+		return err
 	}
 
 	(*repository).EndOperation(transactionId, types.StatusTypeCompleted)
 	return nil
 }
 
-func (c *WBService) prepareStocks(repository *repository.RepositoryDAO, length int, items []api.StocksItem, transactionId *int64, source string) ([]model.StockItem, error) {
+func (c *WBService) prepareStocks(length int, items []api.StocksItem, transactionId *int64, source string) ([]model.StockItem, error) {
 	newItems := make([]model.StockItem, length)
 	for index, item := range items {
 		si, err := mapper.MapStockItem(&item)

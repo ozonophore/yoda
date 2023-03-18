@@ -1,0 +1,46 @@
+name: Go
+
+on:
+  push:
+    branches: ['*']
+    tags: ['v*']
+  pull_request:
+    branches: ['*']
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go: ["1.20.x"]
+        include:
+          - go: 1.20.x
+            latest: true
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: ${{ matrix.go }}
+          cache: true
+          cache-dependency-path: '**/go.sum'
+
+      - name: Download Dependencies
+        run: |
+          go mod download
+          (cd tools && go mod download)
+          (cd benchmarks && go mod download)
+          (cd zapgrpc/internal/test && go mod download)
+
+      - name: Download Dependencies
+        run: |
+          cd app
+      - name: Test
+        run: make test
+
+      - name: Upload coverage to codecov.io
+        uses: codecov/codecov-action@v3

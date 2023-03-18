@@ -1,0 +1,38 @@
+version: "3.8"
+services:
+  database:
+    image: postgres:15-alpine
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: pdb
+    healthcheck:
+      test: pg_isready -U root -d pdb
+      interval: 10s
+      timeout: 3s
+      retries: 5
+  migration:
+    image: migrate/migrate
+    tty: true
+    stdin_open: false
+    links:
+      - database
+    volumes:
+      - ../migration/db/migration:/migrations
+    command: [ "-path", "/migrations", "-database",  "postgres://root:secret@database:5432/pdb?sslmode=disable", "up" ]
+    depends_on:
+      database:
+        condition: service_healthy
+  mockServer:
+    image: mockserver/mockserver:5.14.0
+    ports:
+      - 1080:1080
+    environment:
+      MOCKSERVER_PROPERTY_FILE: /mockserver/mockserver.properties
+      MOCKSERVER_INITIALIZATION_JSON_PATH: /mockserver/*.json
+    volumes:
+      - type: bind
+        source: ./mockserver
+        target: /mockserver

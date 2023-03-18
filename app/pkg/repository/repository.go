@@ -1,12 +1,14 @@
 package repository
 
 import (
+	"context"
 	"github.com/yoda/app/pkg/configuration"
 	"github.com/yoda/common/pkg/model"
 	"github.com/yoda/common/pkg/types"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
+	"gorm.io/gorm/schema"
 	"log"
 	"strings"
 	"time"
@@ -31,7 +33,7 @@ func stringToLogLevel(s *string) logger.LogLevel {
 
 func InitDatabase(config *configuration.Configuration) *gorm.DB {
 	db, err := gorm.Open(postgres.Open(config.Dsn), &gorm.Config{
-		Logger: logger.Default.LogMode(stringToLogLevel(config.SqlLogger.Level)),
+		Logger: logger.Default.LogMode(stringToLogLevel(&config.SqlLogger.Level)),
 	})
 	if err != nil {
 		log.Fatalln(err)
@@ -45,6 +47,7 @@ func InitDatabase(config *configuration.Configuration) *gorm.DB {
 	if err != nil {
 		log.Fatalln("Connection was rejected")
 	}
+	schema.RegisterSerializer("time", types.TimeSerializer{})
 	return db
 }
 
@@ -52,6 +55,11 @@ func NewRepositoryDAO(db *gorm.DB) *RepositoryDAO {
 	return &RepositoryDAO{
 		db: db,
 	}
+}
+
+func (p *RepositoryDAO) CreateJob(job *model.Job) error {
+	tx := p.db.WithContext(context.Background()).Create(job)
+	return tx.Error
 }
 
 func (p *RepositoryDAO) BeginOperation(owner, source *string, jobId *int) *int64 {
@@ -83,17 +91,20 @@ func (p *RepositoryDAO) EndOperation(transaction *int64, status string) {
 func (p *RepositoryDAO) UpdatePrices(models *[]model.StockItem) error {
 	tx := p.db.Begin()
 	for _, model := range *models {
-		tx.Model(&model).
-			Select("\"price\"", "\"discount\"", "\"price_after_discount\"").
-			Where(map[string]interface{}{"\"transaction_id\"": model.TransactionID, "\"external_code\"": *model.ExternalCode}).
-			UpdateColumns(model)
+		err := tx.Exec(`UPDATE "stock" SET "price" = ?, "discount" = ?, "price_after_discount" = ? WHERE "transaction_id" = ? AND "external_code" = ?`,
+			model.Price, model.Discount, model.PriceAfterDiscount, model.TransactionID, model.ExternalCode,
+		).Error
+		if err != nil {
+			tx.Rollback()
+			return err
+		}
 	}
 	return tx.Commit().Error
 }
 
 func (p *RepositoryDAO) SelectUniqueStockItem(transactionId *int64) *[]string {
 	var ex []string
-	p.db.Model(&model.StockItem{}).Distinct().Pluck("supplier_article", &ex).Where("transaction_id = ?", transactionId)
+	p.db.Table("stock").Select(`"supplier_article"`).Distinct().Where(`"transaction_id" = ?`, transactionId).Find(&ex)
 	return &ex
 }
 

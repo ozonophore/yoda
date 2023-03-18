@@ -20,7 +20,7 @@ func main() {
 		log.Panicf("Error after parsing: %s", err)
 	}
 
-	ozonService := service.NewOzonService("OWNER", "538358", "8539be7e-a37f-4b4f-b5e1-3879e5f1738c", config)
+	ozonService := service.NewOzonService("OWNER", "538358", "8539be7e-a37f-4b4f-b5e1-3879e5f1738c", "http://localhost:1080/ozon", config)
 
 	err = ozonService.Parsing(repository, &jobId)
 	if err != nil {

@@ -9,7 +9,7 @@ import (
 )
 
 func TestMapStockItem(t *testing.T) {
-	discout := float32(10)
+	discount := float32(10)
 	price := float32(100)
 	scCode := "scCode"
 	barcode := "barcode"
@@ -27,7 +27,7 @@ func TestMapStockItem(t *testing.T) {
 	warehouseName := "warehouseName"
 
 	s := api.StocksItem{
-		Discount:        &discout,
+		Discount:        &discount,
 		Price:           &price,
 		SCCode:          &scCode,
 		Barcode:         &barcode,

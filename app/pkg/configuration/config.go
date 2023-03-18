@@ -11,13 +11,13 @@ import (
 )
 
 type Logger struct {
-	Level *string
+	Level string
 }
 
 type Configuration struct {
 	Version   string
 	Dsn       string
-	BatchSize *int
+	BatchSize int
 	SqlLogger Logger
 }
 
@@ -36,13 +36,12 @@ func InitConfig() *Configuration {
 	k.Load(file.Provider(conf), yaml.Parser())
 	var c Configuration
 	k.Unmarshal("", &c)
-	if c.BatchSize == nil {
+	if c.BatchSize == 0 {
 		batchSize := 200
-		c.BatchSize = &batchSize
+		c.BatchSize = batchSize
 	}
-	if c.SqlLogger.Level == nil {
-		lvl := "Silent"
-		c.SqlLogger.Level = &lvl
+	if len(c.SqlLogger.Level) == 0 {
+		c.SqlLogger.Level = "Silent"
 	}
 	return &c
 }

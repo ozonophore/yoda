@@ -11,7 +11,6 @@ import (
 	"github.com/yoda/common/pkg/model"
 	"github.com/yoda/common/pkg/types"
 	"log"
-	"math"
 	"net/http"
 	"strconv"
 	"time"
@@ -21,37 +20,23 @@ type OzonService struct {
 	clientId  string
 	apiKey    string
 	ownerCode string
+	host      string
 	config    *configuration.Configuration
+	client    *api.ClientWithResponses
 }
 
-type CallbackFunc[T any] func(items *[]T) error
-
-func CallbackBatch[T any](items *[]T, batchSize int, callback CallbackFunc[T]) error {
-	var low int
-	low = 0
-	highest := len(*items)
-	for {
-		step := int(math.Min(float64(batchSize), float64(highest-low)))
-		high := low + step
-		batches := (*items)[low:high]
-		err := callback(&batches)
-		if err != nil {
-			return err
-		}
-		low = high
-		if high == highest {
-			break
-		}
-	}
-	return nil
+func NewOzonService(ownerCode, clientId, apiKey, host string, config *configuration.Configuration) *OzonService {
+	return NewOzonServiceWIthClient(ownerCode, clientId, apiKey, host, nil, config)
 }
 
-func NewOzonService(ownerCode, clientId, apiKey string, config *configuration.Configuration) *OzonService {
+func NewOzonServiceWIthClient(ownerCode, clientId, apiKey, host string, client *api.ClientWithResponses, config *configuration.Configuration) *OzonService {
 	return &OzonService{
 		clientId:  clientId,
 		apiKey:    apiKey,
 		config:    config,
+		host:      host,
 		ownerCode: ownerCode,
+		client:    client,
 	}
 }
 
@@ -61,19 +46,19 @@ func (c *OzonService) customProvider(ctx context.Context, req *http.Request) err
 	return nil
 }
 
-func (c *OzonService) Parsing(listener *repository.RepositoryDAO, jobId *int) error {
-	clnt, err := api.NewClientWithResponses("https://api-seller.ozon.ru", api.WithRequestEditorFn(c.customProvider))
+func (c *OzonService) Parsing(repository *repository.RepositoryDAO, jobId *int) error {
+	client, err := c.getClient()
 	if err != nil {
 		return err
 	}
 	offset := 0
 	whType := api.GetOzonSupplierStocksJSONBodyWarehouseTypeALL
 	source := types.SourceTypeOzon
-	transactionId := (*listener).BeginOperation(&c.ownerCode, &source, jobId)
+	transactionId := (*repository).BeginOperation(&c.ownerCode, &source, jobId)
 	dt := time.Now()
 	for {
-		resp, err := clnt.GetOzonSupplierStocksWithResponse(context.Background(), api.GetOzonSupplierStocksJSONRequestBody{
-			Limit:         c.config.BatchSize,
+		resp, err := client.GetOzonSupplierStocksWithResponse(context.Background(), api.GetOzonSupplierStocksJSONRequestBody{
+			Limit:         &c.config.BatchSize,
 			Offset:        &offset,
 			WarehouseType: &whType,
 		})
@@ -81,75 +66,79 @@ func (c *OzonService) Parsing(listener *repository.RepositoryDAO, jobId *int) er
 			return err
 		}
 		items := resp.JSON200.Result.Rows
-		if err = c.prepareItems(listener, items, dt, transactionId, source); err != nil {
+		if err = c.prepareItems(repository, items, dt, transactionId, source); err != nil {
 			return err
 		}
 		length := len(*items)
-		if length < *c.config.BatchSize {
+		if length < c.config.BatchSize {
 			break
 		}
 		offset = length
 	}
 	log.Println("Take an information about prices")
-	suppArt := (*listener).SelectUniqueStockItem(transactionId)
-	var low int
-	low = 0
-	highest := len(*suppArt)
-	for {
-		high := low + int(math.Min(float64(*c.config.BatchSize), float64(highest-low)))
-		batch := (*suppArt)[low:high]
+	suppArt := (*repository).SelectUniqueStockItem(transactionId)
+
+	err = CallbackBatch[string](suppArt, c.config.BatchSize, func(batch *[]string) error {
 		req := api.GetOzonProductInfoJSONRequestBody{
-			OfferId: &batch,
+			OfferId: batch,
 		}
-		resp, err := clnt.GetOzonProductInfoWithResponse(context.Background(), req)
+		resp, err := client.GetOzonProductInfoWithResponse(context.Background(), req)
 		if err != nil {
 			return err
 		}
-		err = c.preparePrices(listener, resp, transactionId)
+		err = c.preparePrices(repository, resp, transactionId)
 		if err != nil {
 			return err
 		}
-		low += high
-		if high == highest {
-			break
-		}
+		return nil
+	})
+	if err != nil {
+		return err
 	}
 	log.Println("Take an information about product")
-	low = 0
-	var lastId string
-	for {
-		limit := int(math.Min(float64(*c.config.BatchSize), float64(highest-low)))
-		high := low + limit
-		batch := (*suppArt)[low:high]
-		visibility := api.ProductAttributeFilterFilterVisibilityALL
+	visibility := api.ProductAttributeFilterFilterVisibilityALL
+	var lastId *string
+	err = CallbackBatch[string](suppArt, c.config.BatchSize, func(batch *[]string) error {
+		limit := len(*batch)
 		request := api.ProductAttributeFilter{
 			Filter: &api.ProductAttributeFilterFilter{
-				OfferId:    &batch,
+				OfferId:    batch,
 				Visibility: &visibility,
 			},
-			LastId: &lastId,
+			LastId: lastId,
 			Limit:  &limit,
 		}
-		resp, err := clnt.GetOzonProductAttributesWithResponse(context.Background(), request)
+		resp, err := client.GetOzonProductAttributesWithResponse(context.Background(), request)
 		if err != nil {
 			return err
 		}
 		if resp.StatusCode() == 404 {
 			return errors.New(fmt.Sprintf("Ozon resp 404: %s", *resp.JSON404.Message))
 		}
-		lastId = *resp.JSON200.LastId
+		lastId = resp.JSON200.LastId
 		newItems := c.prepareAttributes(resp, transactionId)
-		if err = (*listener).UpdateAttributes(newItems); err != nil {
+		if err = (*repository).UpdateAttributes(newItems); err != nil {
 			return err
 		}
-		low += high
-		if high == highest {
-			break
-		}
-	}
-	(*listener).EndOperation(transactionId, types.StatusTypeCompleted)
+		return nil
+	})
+	(*repository).EndOperation(transactionId, types.StatusTypeCompleted)
 	log.Printf("Transaction %d was complited", *transactionId)
 	return nil
+}
+
+func (c *OzonService) getClient() (*api.ClientWithResponses, error) {
+	if c.client != nil {
+		return c.client, nil
+	}
+	return api.NewClientWithResponses(c.mustHost(c.host), api.WithRequestEditorFn(c.customProvider))
+}
+
+func (c *OzonService) mustHost(host string) string {
+	if len(host) == 0 {
+		return "https://api-seller.ozon.ru"
+	}
+	return host
 }
 
 func (c *OzonService) prepareAttributes(resp *api.GetOzonProductAttributesResponse, transactionId *int64) *[]model.StockItem {
