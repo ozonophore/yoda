@@ -34,7 +34,7 @@ jobs:
           cd app && go mod download
 
       - name: Test
-        run: make test
+        run: cd app && make test
 
       - name: Upload coverage to codecov.io
         uses: codecov/codecov-action@v3
