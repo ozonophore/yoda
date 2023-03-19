@@ -7,4 +7,5 @@ generate:
 	oapi-codegen --package=api -generate=types,client -o pkg/api/api.go ../openapi/api.wb.yml
 #go mod tidy
 test:
-	go test -v ./... -coverprofile=cover.out
+	go test -v ./... -coverprofile=coverage.out
+	go tool cover -html=coverage.out -o coverage.html

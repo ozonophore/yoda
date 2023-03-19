@@ -3,8 +3,11 @@ comment:
 
 coverage:
   status:
-    project: off
     patch: off
+    project:
+      default:
+        flags:
+          - app
 
 flag_management:
   individual_flags:
@@ -14,7 +17,6 @@ flag_management:
       statuses:
         - type: project
           target: auto
-          threshold: 1%
 
 component_management:
   individual_components:
@@ -22,3 +24,8 @@ component_management:
       name: app
       paths:
         - app
+
+flags:
+  app:
+    paths:
+      - app/
