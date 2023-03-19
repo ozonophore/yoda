@@ -46,10 +46,10 @@ func (c *OzonService) customProvider(ctx context.Context, req *http.Request) err
 	return nil
 }
 
-func (c *OzonService) Parsing(repository *repository.RepositoryDAO, jobId *int) error {
+func (c *OzonService) Parsing(repository *repository.RepositoryDAO, jobId *int) (*int64, error) {
 	client, err := c.getClient()
 	if err != nil {
-		return err
+		return nil, err
 	}
 	offset := 0
 	whType := api.GetOzonSupplierStocksJSONBodyWarehouseTypeALL
@@ -63,11 +63,11 @@ func (c *OzonService) Parsing(repository *repository.RepositoryDAO, jobId *int) 
 			WarehouseType: &whType,
 		})
 		if err != nil {
-			return err
+			return nil, err
 		}
 		items := resp.JSON200.Result.Rows
 		if err = c.prepareItems(repository, items, dt, transactionId, source); err != nil {
-			return err
+			return nil, err
 		}
 		length := len(*items)
 		if length < c.config.BatchSize {
@@ -93,7 +93,7 @@ func (c *OzonService) Parsing(repository *repository.RepositoryDAO, jobId *int) 
 		return nil
 	})
 	if err != nil {
-		return err
+		return nil, err
 	}
 	log.Println("Take an information about product")
 	visibility := api.ProductAttributeFilterFilterVisibilityALL
@@ -124,7 +124,7 @@ func (c *OzonService) Parsing(repository *repository.RepositoryDAO, jobId *int) 
 	})
 	(*repository).EndOperation(transactionId, types.StatusTypeCompleted)
 	log.Printf("Transaction %d was complited", *transactionId)
-	return nil
+	return transactionId, nil
 }
 
 func (c *OzonService) getClient() (*api.ClientWithResponses, error) {

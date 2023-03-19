@@ -1,0 +1,3575 @@
+[
+  {
+    "httpRequest": {
+      "method": "POST",
+      "path": "/ozon/v2/product/info/list"
+    },
+    "httpResponse": {
+      "statusCode": 200,
+      "body": {
+        "result": {
+          "items": [
+            {
+              "id": 337113507,
+              "name": "Витамин Д3 D3 капли Grassberg, 10 мкг, 400МЕ, витаминно-минеральный комплекс для иммунитета, метаболизма, костей и зубов, жидкая форма, 50 мл",
+              "offer_id": "ИР078795",
+              "barcode": "5060244091740",
+              "buybox_price": "",
+              "category_id": 45365531,
+              "created_at": "2022-08-09T06:52:27.109337Z",
+              "images": [
+                "https://cdn1.ozone.ru/s3/multimedia-x/6360328209.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-z/6360328211.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-0/6360328212.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-2/6360328214.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-6/6360328218.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-3/6360328215.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-7/6360328219.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-5/6360328217.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-1/6360328213.jpg"
+              ],
+              "marketing_price": "1700.0000",
+              "min_ozon_price": "",
+              "old_price": "1870.0000",
+              "premium_price": "",
+              "price": "1700.0000",
+              "recommended_price": "1122.0000",
+              "min_price": "",
+              "sources": [
+                {
+                  "is_enabled": true,
+                  "sku": 665489126,
+                  "source": "fbo"
+                },
+                {
+                  "is_enabled": true,
+                  "sku": 665489127,
+                  "source": "fbs"
+                }
+              ],
+              "stocks": {
+                "coming": 0,
+                "present": 25,
+                "reserved": 0
+              },
+              "errors": [],
+              "vat": "0.200000",
+              "visible": true,
+              "visibility_details": {
+                "has_price": false,
+                "has_stock": true,
+                "active_product": false,
+                "reasons": {}
+              },
+              "price_index": "1.40",
+              "images360": [],
+              "color_image": "",
+              "primary_image": "https://cdn1.ozone.ru/s3/multimedia-4/6360328216.jpg",
+              "status": {
+                "state": "price_sent",
+                "state_failed": "",
+                "moderate_status": "approved",
+                "decline_reasons": [],
+                "validation_state": "success",
+                "state_name": "Продается",
+                "state_description": "",
+                "is_failed": false,
+                "is_created": true,
+                "state_tooltip": "",
+                "item_errors": [],
+                "state_updated_at": "2022-08-17T07:42:35.967743Z"
+              },
+              "state": "",
+              "service_type": "IS_CODE_SERVICE",
+              "fbo_sku": 665489126,
+              "fbs_sku": 665489127,
+              "currency_code": "RUB",
+              "is_kgt": false,
+              "rating": "",
+              "discounted_stocks": {
+                "coming": 0,
+                "present": 0,
+                "reserved": 0
+              },
+              "is_discounted": false,
+              "has_discounted_item": false,
+              "barcodes": [
+                "5060244091740",
+                "5060244091986"
+              ],
+              "updated_at": "2022-10-19T11:40:27.533352Z"
+            },
+            {
+              "id": 337113508,
+              "name": "Мультивитамины и Минералы Grassberg, витаминно-минеральный комплекс для иммунитета, от простуды, для красоты и молодости, для костей и зубов, капсулы, 90 штук",
+              "offer_id": "ИР078788",
+              "barcode": "5060244091603",
+              "buybox_price": "",
+              "category_id": 45365531,
+              "created_at": "2022-08-09T06:52:27.115418Z",
+              "images": [
+                "https://cdn1.ozone.ru/s3/multimedia-k/6360323480.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-n/6360323483.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-p/6360323485.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-q/6360323486.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-j/6360323479.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-m/6360323482.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-s/6360323488.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-v/6360323491.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-l/6360323481.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-u/6360323490.jpg"
+              ],
+              "marketing_price": "2317.0000",
+              "min_ozon_price": "",
+              "old_price": "2455.0000",
+              "premium_price": "",
+              "price": "2317.0000",
+              "recommended_price": "",
+              "min_price": "",
+              "sources": [
+                {
+                  "is_enabled": true,
+                  "sku": 665481709,
+                  "source": "fbo"
+                },
+                {
+                  "is_enabled": true,
+                  "sku": 665481710,
+                  "source": "fbs"
+                }
+              ],
+              "stocks": {
+                "coming": 0,
+                "present": 60,
+                "reserved": 0
+              },
+              "errors": [],
+              "vat": "0.200000",
+              "visible": true,
+              "visibility_details": {
+                "has_price": false,
+                "has_stock": true,
+                "active_product": false,
+                "reasons": {}
+              },
+              "price_index": "0.00",
+              "images360": [],
+              "color_image": "",
+              "primary_image": "https://cdn1.ozone.ru/s3/multimedia-o/6360323484.jpg",
+              "status": {
+                "state": "price_sent",
+                "state_failed": "",
+                "moderate_status": "approved",
+                "decline_reasons": [],
+                "validation_state": "success",
+                "state_name": "Продается",
+                "state_description": "",
+                "is_failed": false,
+                "is_created": true,
+                "state_tooltip": "",
+                "item_errors": [],
+                "state_updated_at": "2022-08-17T07:42:29.312345Z"
+              },
+              "state": "",
+              "service_type": "IS_CODE_SERVICE",
+              "fbo_sku": 665481709,
+              "fbs_sku": 665481710,
+              "currency_code": "RUB",
+              "is_kgt": false,
+              "rating": "",
+              "discounted_stocks": {
+                "coming": 0,
+                "present": 0,
+                "reserved": 0
+              },
+              "is_discounted": false,
+              "has_discounted_item": false,
+              "barcodes": [
+                "5060244091603"
+              ],
+              "updated_at": "2023-01-12T07:14:43.755065Z"
+            },
+            {
+              "id": 337113509,
+              "name": "Коллаген Премиум Grassberg 500 мг + Витамин С 40 мг, для молодости, красоты, суставов, кожи, капсулы, 60 штук",
+              "offer_id": "ИР078721",
+              "barcode": "5060244091979",
+              "buybox_price": "",
+              "category_id": 45365531,
+              "created_at": "2022-08-09T06:52:27.124813Z",
+              "images": [
+                "https://cdn1.ozone.ru/s3/multimedia-t/6355872557.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-d/6355874701.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-v/6355872559.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-r/6355872555.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-j/6355808935.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-s/6355872556.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-y/6355872562.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-u/6355872558.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-q/6355872554.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-e/6355818974.jpg"
+              ],
+              "marketing_price": "1645.0000",
+              "min_ozon_price": "",
+              "old_price": "1735.0000",
+              "premium_price": "",
+              "price": "1645.0000",
+              "recommended_price": "1311.0000",
+              "min_price": "",
+              "sources": [
+                {
+                  "is_enabled": true,
+                  "sku": 666017211,
+                  "source": "fbs"
+                },
+                {
+                  "is_enabled": true,
+                  "sku": 666017212,
+                  "source": "fbo"
+                }
+              ],
+              "stocks": {
+                "coming": 0,
+                "present": 21,
+                "reserved": 0
+              },
+              "errors": [],
+              "vat": "0.200000",
+              "visible": true,
+              "visibility_details": {
+                "has_price": false,
+                "has_stock": true,
+                "active_product": false,
+                "reasons": {}
+              },
+              "price_index": "1.14",
+              "images360": [],
+              "color_image": "",
+              "primary_image": "https://cdn1.ozone.ru/s3/multimedia-b/6355874699.jpg",
+              "status": {
+                "state": "price_sent",
+                "state_failed": "",
+                "moderate_status": "approved",
+                "decline_reasons": [],
+                "validation_state": "success",
+                "state_name": "Продается",
+                "state_description": "",
+                "is_failed": false,
+                "is_created": true,
+                "state_tooltip": "",
+                "item_errors": [],
+                "state_updated_at": "2022-08-17T07:29:59.452580Z"
+              },
+              "state": "",
+              "service_type": "IS_CODE_SERVICE",
+              "fbo_sku": 666017212,
+              "fbs_sku": 666017211,
+              "currency_code": "RUB",
+              "is_kgt": false,
+              "rating": "",
+              "discounted_stocks": {
+                "coming": 0,
+                "present": 0,
+                "reserved": 0
+              },
+              "is_discounted": false,
+              "has_discounted_item": false,
+              "barcodes": [
+                "5060244091979"
+              ],
+              "updated_at": "2023-01-12T07:14:43.859113Z"
+            },
+            {
+              "id": 337113510,
+              "name": "Витамин Д3 D3 Grassberg 15 мкг, 600МЕ, витаминно-минеральный комплекс для иммунитета, метаболизма, костей и зубов, капсулы, 90 штук",
+              "offer_id": "ИР078794",
+              "barcode": "5060244092051",
+              "buybox_price": "",
+              "category_id": 45365531,
+              "created_at": "2022-08-09T06:52:27.126848Z",
+              "images": [
+                "https://cdn1.ozone.ru/s3/multimedia-x/6360328209.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-k/6360335288.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-i/6360335286.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-q/6360323486.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-g/6360335284.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-2/6360328214.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-x/6360335301.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-7/6360328219.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-n/6360335291.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-3/6360328215.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-t/6360335297.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-y/6360335302.jpg"
+              ],
+              "marketing_price": "1783.0000",
+              "min_ozon_price": "",
+              "old_price": "1961.0000",
+              "premium_price": "",
+              "price": "1783.0000",
+              "recommended_price": "1377.0000",
+              "min_price": "",
+              "sources": [
+                {
+                  "is_enabled": true,
+                  "sku": 665484608,
+                  "source": "fbs"
+                },
+                {
+                  "is_enabled": true,
+                  "sku": 665484611,
+                  "source": "fbo"
+                }
+              ],
+              "stocks": {
+                "coming": 0,
+                "present": 95,
+                "reserved": 0
+              },
+              "errors": [],
+              "vat": "0.200000",
+              "visible": true,
+              "visibility_details": {
+                "has_price": false,
+                "has_stock": true,
+                "active_product": false,
+                "reasons": {}
+              },
+              "price_index": "1.16",
+              "images360": [],
+              "color_image": "",
+              "primary_image": "https://cdn1.ozone.ru/s3/multimedia-h/6360335285.jpg",
+              "status": {
+                "state": "price_sent",
+                "state_failed": "",
+                "moderate_status": "approved",
+                "decline_reasons": [],
+                "validation_state": "success",
+                "state_name": "Продается",
+                "state_description": "",
+                "is_failed": false,
+                "is_created": true,
+                "state_tooltip": "",
+                "item_errors": [],
+                "state_updated_at": "2022-08-17T07:38:44.058604Z"
+              },
+              "state": "",
+              "service_type": "IS_CODE_SERVICE",
+              "fbo_sku": 665484611,
+              "fbs_sku": 665484608,
+              "currency_code": "RUB",
+              "is_kgt": false,
+              "rating": "",
+              "discounted_stocks": {
+                "coming": 0,
+                "present": 0,
+                "reserved": 0
+              },
+              "is_discounted": false,
+              "has_discounted_item": false,
+              "barcodes": [
+                "5060244092051"
+              ],
+              "updated_at": "2022-10-19T11:40:26.863697Z"
+            },
+            {
+              "id": 337113511,
+              "name": "Кальций 600 мг, витамин Д3 и K, Цинк Grassberg, для сердца, костей и зубов, иммунитета, капсулы, 90 штук",
+              "offer_id": "ИР078714",
+              "barcode": "5060244091825",
+              "buybox_price": "",
+              "category_id": 45365531,
+              "created_at": "2022-08-09T06:52:27.133554Z",
+              "images": [
+                "https://cdn1.ozone.ru/s3/multimedia-m/6369770674.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-s/6369770680.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-q/6369770678.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-t/6369770681.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-q/6360323486.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-n/6369770675.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-v/6369770683.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-w/6369770684.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-o/6369770676.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-r/6369770679.jpg"
+              ],
+              "marketing_price": "2470.0000",
+              "min_ozon_price": "",
+              "old_price": "2717.0000",
+              "premium_price": "",
+              "price": "2470.0000",
+              "recommended_price": "",
+              "min_price": "",
+              "sources": [
+                {
+                  "is_enabled": true,
+                  "sku": 672995248,
+                  "source": "fbs"
+                },
+                {
+                  "is_enabled": true,
+                  "sku": 672995249,
+                  "source": "fbo"
+                }
+              ],
+              "stocks": {
+                "coming": 0,
+                "present": 110,
+                "reserved": 0
+              },
+              "errors": [],
+              "vat": "0.0",
+              "visible": true,
+              "visibility_details": {
+                "has_price": false,
+                "has_stock": true,
+                "active_product": false,
+                "reasons": {}
+              },
+              "price_index": "0.00",
+              "images360": [],
+              "color_image": "",
+              "primary_image": "https://cdn1.ozone.ru/s3/multimedia-u/6369770682.jpg",
+              "status": {
+                "state": "price_sent",
+                "state_failed": "",
+                "moderate_status": "approved",
+                "decline_reasons": [],
+                "validation_state": "success",
+                "state_name": "Продается",
+                "state_description": "",
+                "is_failed": false,
+                "is_created": true,
+                "state_tooltip": "",
+                "item_errors": [],
+                "state_updated_at": "2022-09-01T08:12:41.379299Z"
+              },
+              "state": "",
+              "service_type": "IS_CODE_SERVICE",
+              "fbo_sku": 672995249,
+              "fbs_sku": 672995248,
+              "currency_code": "RUB",
+              "is_kgt": false,
+              "rating": "",
+              "discounted_stocks": {
+                "coming": 0,
+                "present": 0,
+                "reserved": 0
+              },
+              "is_discounted": false,
+              "has_discounted_item": false,
+              "barcodes": [
+                "5060244091825"
+              ],
+              "updated_at": "2022-10-19T11:40:26.275887Z"
+            },
+            {
+              "id": 337113512,
+              "name": "Кожа, Волосы, Ногти Grassberg, БАД с витаминами и минералами, витаминный комплекс, капсулы, 120 штук",
+              "offer_id": "ИР078811",
+              "barcode": "5060244092105",
+              "buybox_price": "",
+              "category_id": 45365531,
+              "created_at": "2022-08-09T06:52:27.133702Z",
+              "images": [
+                "https://cdn1.ozone.ru/s3/multimedia-w/6360340520.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-3/6360353523.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-q/6360340514.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-t/6360340517.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-p/6360340513.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-z/6360340523.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-s/6360340516.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-u/6360353514.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-u/6360340518.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-1/6360328213.jpg"
+              ],
+              "marketing_price": "2700.0000",
+              "min_ozon_price": "",
+              "old_price": "2899.0000",
+              "premium_price": "",
+              "price": "2700.0000",
+              "recommended_price": "",
+              "min_price": "",
+              "sources": [
+                {
+                  "is_enabled": true,
+                  "sku": 665484636,
+                  "source": "fbs"
+                },
+                {
+                  "is_enabled": true,
+                  "sku": 665484637,
+                  "source": "fbo"
+                }
+              ],
+              "stocks": {
+                "coming": 0,
+                "present": 72,
+                "reserved": 0
+              },
+              "errors": [],
+              "vat": "0.200000",
+              "visible": true,
+              "visibility_details": {
+                "has_price": false,
+                "has_stock": true,
+                "active_product": false,
+                "reasons": {}
+              },
+              "price_index": "0.00",
+              "images360": [],
+              "color_image": "",
+              "primary_image": "https://cdn1.ozone.ru/s3/multimedia-d/6360353497.jpg",
+              "status": {
+                "state": "price_sent",
+                "state_failed": "",
+                "moderate_status": "approved",
+                "decline_reasons": [],
+                "validation_state": "success",
+                "state_name": "Продается",
+                "state_description": "",
+                "is_failed": false,
+                "is_created": true,
+                "state_tooltip": "",
+                "item_errors": [],
+                "state_updated_at": "2022-08-17T07:33:48.479722Z"
+              },
+              "state": "",
+              "service_type": "IS_CODE_SERVICE",
+              "fbo_sku": 665484637,
+              "fbs_sku": 665484636,
+              "currency_code": "RUB",
+              "is_kgt": false,
+              "rating": "",
+              "discounted_stocks": {
+                "coming": 0,
+                "present": 0,
+                "reserved": 0
+              },
+              "is_discounted": false,
+              "has_discounted_item": false,
+              "barcodes": [
+                "5060244092105"
+              ],
+              "updated_at": "2022-10-12T12:33:57.534923Z"
+            },
+            {
+              "id": 337113513,
+              "name": "Кальций 600 мг, витамин Д3 и K, Цинк Grassberg, для сердца, костей и зубов, иммунитета, капсулы, 60 штук",
+              "offer_id": "ИР078711",
+              "barcode": "5060244091832",
+              "buybox_price": "",
+              "category_id": 45365531,
+              "created_at": "2022-08-09T06:52:27.136233Z",
+              "images": [
+                "https://cdn1.ozone.ru/s3/multimedia-m/6369770674.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-s/6369770680.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-q/6369770678.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-t/6369770681.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-n/6369770675.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-q/6360323486.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-v/6369770683.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-w/6369770684.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-o/6369770676.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-r/6369770679.jpg"
+              ],
+              "marketing_price": "1586.0000",
+              "min_ozon_price": "",
+              "old_price": "1675.0000",
+              "premium_price": "",
+              "price": "1586.0000",
+              "recommended_price": "",
+              "min_price": "",
+              "sources": [
+                {
+                  "is_enabled": true,
+                  "sku": 665484656,
+                  "source": "fbs"
+                },
+                {
+                  "is_enabled": true,
+                  "sku": 665484657,
+                  "source": "fbo"
+                }
+              ],
+              "stocks": {
+                "coming": 0,
+                "present": 36,
+                "reserved": 0
+              },
+              "errors": [],
+              "vat": "0.200000",
+              "visible": true,
+              "visibility_details": {
+                "has_price": false,
+                "has_stock": true,
+                "active_product": false,
+                "reasons": {}
+              },
+              "price_index": "0.00",
+              "images360": [],
+              "color_image": "",
+              "primary_image": "https://cdn1.ozone.ru/s3/multimedia-9/6369771165.jpg",
+              "status": {
+                "state": "price_sent",
+                "state_failed": "",
+                "moderate_status": "approved",
+                "decline_reasons": [],
+                "validation_state": "success",
+                "state_name": "Продается",
+                "state_description": "",
+                "is_failed": false,
+                "is_created": true,
+                "state_tooltip": "",
+                "item_errors": [],
+                "state_updated_at": "2022-09-01T08:11:12.640734Z"
+              },
+              "state": "",
+              "service_type": "IS_CODE_SERVICE",
+              "fbo_sku": 665484657,
+              "fbs_sku": 665484656,
+              "currency_code": "RUB",
+              "is_kgt": false,
+              "rating": "",
+              "discounted_stocks": {
+                "coming": 0,
+                "present": 0,
+                "reserved": 0
+              },
+              "is_discounted": false,
+              "has_discounted_item": false,
+              "barcodes": [
+                "5060244091832"
+              ],
+              "updated_at": "2023-01-12T07:14:46.357395Z"
+            },
+            {
+              "id": 337113514,
+              "name": "Омега Вэлью Grassberg 30%, 1000 мг, рыбий жир, с витамином Е, для cосудов, сердца, иммунитета, капсулы 90 штук",
+              "offer_id": "ИР078798",
+              "barcode": "5060244091924",
+              "buybox_price": "",
+              "category_id": 45365531,
+              "created_at": "2022-08-09T06:52:27.137070Z",
+              "images": [
+                "https://cdn1.ozone.ru/s3/multimedia-d/6382853065.jpg"
+              ],
+              "marketing_price": "1660.0000",
+              "min_ozon_price": "",
+              "old_price": "2142.0000",
+              "premium_price": "",
+              "price": "1988.0000",
+              "recommended_price": "1242.0000",
+              "min_price": "",
+              "sources": [
+                {
+                  "is_enabled": true,
+                  "sku": 672998486,
+                  "source": "fbo"
+                },
+                {
+                  "is_enabled": true,
+                  "sku": 672998487,
+                  "source": "fbs"
+                }
+              ],
+              "stocks": {
+                "coming": 0,
+                "present": 86,
+                "reserved": 0
+              },
+              "errors": [],
+              "vat": "0.200000",
+              "visible": true,
+              "visibility_details": {
+                "has_price": false,
+                "has_stock": true,
+                "active_product": false,
+                "reasons": {}
+              },
+              "price_index": "1.00",
+              "images360": [],
+              "color_image": "",
+              "primary_image": "https://cdn1.ozone.ru/s3/multimedia-w/6355842680.jpg",
+              "status": {
+                "state": "price_sent",
+                "state_failed": "",
+                "moderate_status": "approved",
+                "decline_reasons": [],
+                "validation_state": "success",
+                "state_name": "Продается",
+                "state_description": "",
+                "is_failed": false,
+                "is_created": true,
+                "state_tooltip": "",
+                "item_errors": [],
+                "state_updated_at": "2022-09-01T14:04:49.865623Z"
+              },
+              "state": "",
+              "service_type": "IS_CODE_SERVICE",
+              "fbo_sku": 672998486,
+              "fbs_sku": 672998487,
+              "currency_code": "RUB",
+              "is_kgt": false,
+              "rating": "",
+              "discounted_stocks": {
+                "coming": 0,
+                "present": 0,
+                "reserved": 0
+              },
+              "is_discounted": false,
+              "has_discounted_item": false,
+              "barcodes": [
+                "5060244091924"
+              ],
+              "updated_at": "2022-10-19T11:40:27.533352Z"
+            },
+            {
+              "id": 337113515,
+              "name": "Пиколинат Цинка Grassberg, 15 мг, Zn для укрепления иммунитета и здоровья, для кожи и волос, капсулы, 60 штук",
+              "offer_id": "ИР078816",
+              "barcode": "5060244091900",
+              "buybox_price": "",
+              "category_id": 45365531,
+              "created_at": "2022-08-09T06:52:27.135693Z",
+              "images": [
+                "https://cdn1.ozone.ru/s3/multimedia-4/6355818964.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-w/6355818956.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-3/6355818963.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-j/6355808935.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-6/6355818966.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-p/6355818949.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-d/6355818973.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-x/6355818957.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-o/6355818984.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-s/6355818952.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-e/6355818974.jpg"
+              ],
+              "marketing_price": "1306.0000",
+              "min_ozon_price": "",
+              "old_price": "1662.0000",
+              "premium_price": "",
+              "price": "1550.0000",
+              "recommended_price": "892.0000",
+              "min_price": "",
+              "sources": [
+                {
+                  "is_enabled": true,
+                  "sku": 665489138,
+                  "source": "fbo"
+                },
+                {
+                  "is_enabled": true,
+                  "sku": 665489139,
+                  "source": "fbs"
+                }
+              ],
+              "stocks": {
+                "coming": 0,
+                "present": 24,
+                "reserved": 0
+              },
+              "errors": [],
+              "vat": "0.200000",
+              "visible": true,
+              "visibility_details": {
+                "has_price": false,
+                "has_stock": true,
+                "active_product": false,
+                "reasons": {}
+              },
+              "price_index": "1.16",
+              "images360": [],
+              "color_image": "",
+              "primary_image": "https://cdn1.ozone.ru/s3/multimedia-6/6355825554.jpg",
+              "status": {
+                "state": "price_sent",
+                "state_failed": "",
+                "moderate_status": "approved",
+                "decline_reasons": [],
+                "validation_state": "success",
+                "state_name": "Продается",
+                "state_description": "",
+                "is_failed": false,
+                "is_created": true,
+                "state_tooltip": "",
+                "item_errors": [],
+                "state_updated_at": "2022-08-17T07:25:38.052811Z"
+              },
+              "state": "",
+              "service_type": "IS_CODE_SERVICE",
+              "fbo_sku": 665489138,
+              "fbs_sku": 665489139,
+              "currency_code": "RUB",
+              "is_kgt": false,
+              "rating": "",
+              "discounted_stocks": {
+                "coming": 0,
+                "present": 0,
+                "reserved": 0
+              },
+              "is_discounted": false,
+              "has_discounted_item": false,
+              "barcodes": [
+                "5060244091900"
+              ],
+              "updated_at": "2022-10-22T12:57:29.442195Z"
+            },
+            {
+              "id": 337113516,
+              "name": "Омега 3-6-9 Grassberg, 1000 мг, рыбий жир, для cосудов, сердца, иммунитета, капсулы, 60 штук",
+              "offer_id": "ИР078789",
+              "barcode": "5060244091535",
+              "buybox_price": "",
+              "category_id": 45365531,
+              "created_at": "2022-08-09T06:52:27.133863Z",
+              "images": [
+                "https://cdn1.ozone.ru/s3/multimedia-s/6355857256.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-y/6355867954.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-7/6355857307.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-r/6355857255.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-y/6355839910.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-3/6355857267.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-x/6355857297.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-7/6355857271.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-u/6355857366.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-5/6355839917.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-l/6355857285.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-3/6355839915.jpg"
+              ],
+              "marketing_price": "1898.0000",
+              "min_ozon_price": "",
+              "old_price": "2034.0000",
+              "premium_price": "",
+              "price": "1898.0000",
+              "recommended_price": "1092.0000",
+              "min_price": "",
+              "sources": [
+                {
+                  "is_enabled": true,
+                  "sku": 672929163,
+                  "source": "fbo"
+                },
+                {
+                  "is_enabled": true,
+                  "sku": 672929164,
+                  "source": "fbs"
+                }
+              ],
+              "stocks": {
+                "coming": 0,
+                "present": 47,
+                "reserved": 0
+              },
+              "errors": [],
+              "vat": "0.200000",
+              "visible": true,
+              "visibility_details": {
+                "has_price": false,
+                "has_stock": true,
+                "active_product": false,
+                "reasons": {}
+              },
+              "price_index": "1.29",
+              "images360": [],
+              "color_image": "",
+              "primary_image": "https://cdn1.ozone.ru/s3/multimedia-w/6355867952.jpg",
+              "status": {
+                "state": "price_sent",
+                "state_failed": "",
+                "moderate_status": "approved",
+                "decline_reasons": [],
+                "validation_state": "success",
+                "state_name": "Продается",
+                "state_description": "",
+                "is_failed": false,
+                "is_created": true,
+                "state_tooltip": "",
+                "item_errors": [],
+                "state_updated_at": "2022-09-01T09:08:43.067691Z"
+              },
+              "state": "",
+              "service_type": "IS_CODE_SERVICE",
+              "fbo_sku": 672929163,
+              "fbs_sku": 672929164,
+              "currency_code": "RUB",
+              "is_kgt": false,
+              "rating": "",
+              "discounted_stocks": {
+                "coming": 0,
+                "present": 0,
+                "reserved": 0
+              },
+              "is_discounted": false,
+              "has_discounted_item": false,
+              "barcodes": [
+                "5060244091535"
+              ],
+              "updated_at": "2022-10-22T13:41:44.242614Z"
+            },
+            {
+              "id": 337113517,
+              "name": "Поддержка суставов Grassberg, БАД для здоровья суставов, при физических нагрузках, от боли, хондроитин, глюкозамин, капсулы, 60 штук",
+              "offer_id": "ИР078784",
+              "barcode": "5060244091993",
+              "buybox_price": "",
+              "category_id": 45365531,
+              "created_at": "2022-08-09T06:52:27.219823Z",
+              "images": [
+                "https://cdn1.ozone.ru/s3/multimedia-m/6362499286.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-o/6362499288.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-y/6362499298.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-q/6360323486.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-r/6362499291.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-1/6362499301.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-q/6362499290.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-0/6362499300.jpg"
+              ],
+              "marketing_price": "2020.0000",
+              "min_ozon_price": "",
+              "old_price": "2667.0000",
+              "premium_price": "",
+              "price": "2425.0000",
+              "recommended_price": "1519.0000",
+              "min_price": "",
+              "sources": [
+                {
+                  "is_enabled": true,
+                  "sku": 672962855,
+                  "source": "fbo"
+                },
+                {
+                  "is_enabled": true,
+                  "sku": 672962856,
+                  "source": "fbs"
+                }
+              ],
+              "stocks": {
+                "coming": 0,
+                "present": 25,
+                "reserved": 0
+              },
+              "errors": [],
+              "vat": "0.200000",
+              "visible": true,
+              "visibility_details": {
+                "has_price": false,
+                "has_stock": true,
+                "active_product": false,
+                "reasons": {}
+              },
+              "price_index": "1.14",
+              "images360": [],
+              "color_image": "",
+              "primary_image": "https://cdn1.ozone.ru/s3/multimedia-z/6362499299.jpg",
+              "status": {
+                "state": "price_sent",
+                "state_failed": "",
+                "moderate_status": "approved",
+                "decline_reasons": [],
+                "validation_state": "success",
+                "state_name": "Продается",
+                "state_description": "",
+                "is_failed": false,
+                "is_created": true,
+                "state_tooltip": "",
+                "item_errors": [],
+                "state_updated_at": "2022-09-01T08:09:57.534920Z"
+              },
+              "state": "",
+              "service_type": "IS_CODE_SERVICE",
+              "fbo_sku": 672962855,
+              "fbs_sku": 672962856,
+              "currency_code": "RUB",
+              "is_kgt": false,
+              "rating": "",
+              "discounted_stocks": {
+                "coming": 0,
+                "present": 0,
+                "reserved": 0
+              },
+              "is_discounted": false,
+              "has_discounted_item": false,
+              "barcodes": [
+                "5060244091993"
+              ],
+              "updated_at": "2022-10-22T13:42:22.431581Z"
+            },
+            {
+              "id": 337113518,
+              "name": "Селен Grassberg, 100 мкг, антиоксидант, для иммунитета, волос, кожи, репродуктивной системы, капсулы, 60 штук",
+              "offer_id": "ИР078502",
+              "barcode": "5060244091917",
+              "buybox_price": "",
+              "category_id": 45365531,
+              "created_at": "2022-08-09T06:52:27.232739Z",
+              "images": [
+                "https://cdn1.ozone.ru/s3/multimedia-i/6369772650.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-k/6369772652.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-f/6369772647.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-g/6369772648.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-q/6360323486.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-n/6369772655.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-m/6369772654.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-o/6369772656.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-h/6369772649.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-l/6369772653.jpg"
+              ],
+              "marketing_price": "1450.0000",
+              "min_ozon_price": "",
+              "old_price": "1635.0000",
+              "premium_price": "",
+              "price": "1450.0000",
+              "recommended_price": "1102.0000",
+              "min_price": "",
+              "sources": [
+                {
+                  "is_enabled": true,
+                  "sku": 672960796,
+                  "source": "fbo"
+                },
+                {
+                  "is_enabled": true,
+                  "sku": 672960797,
+                  "source": "fbs"
+                }
+              ],
+              "stocks": {
+                "coming": 0,
+                "present": 25,
+                "reserved": 0
+              },
+              "errors": [],
+              "vat": "0.200000",
+              "visible": true,
+              "visibility_details": {
+                "has_price": false,
+                "has_stock": true,
+                "active_product": false,
+                "reasons": {}
+              },
+              "price_index": "1.32",
+              "images360": [],
+              "color_image": "",
+              "primary_image": "https://cdn1.ozone.ru/s3/multimedia-j/6369772651.jpg",
+              "status": {
+                "state": "price_sent",
+                "state_failed": "",
+                "moderate_status": "approved",
+                "decline_reasons": [],
+                "validation_state": "success",
+                "state_name": "Продается",
+                "state_description": "",
+                "is_failed": false,
+                "is_created": true,
+                "state_tooltip": "",
+                "item_errors": [],
+                "state_updated_at": "2022-08-17T07:43:58.938537Z"
+              },
+              "state": "",
+              "service_type": "IS_CODE_SERVICE",
+              "fbo_sku": 672960796,
+              "fbs_sku": 672960797,
+              "currency_code": "RUB",
+              "is_kgt": false,
+              "rating": "",
+              "discounted_stocks": {
+                "coming": 0,
+                "present": 0,
+                "reserved": 0
+              },
+              "is_discounted": false,
+              "has_discounted_item": false,
+              "barcodes": [
+                "5060244091917"
+              ],
+              "updated_at": "2022-10-19T11:40:27.322264Z"
+            },
+            {
+              "id": 337113519,
+              "name": "Мультивитамины и Минералы Grassberg, витаминно-минеральный комплекс для иммунитета, от простуды, для красоты и молодости, для костей и зубов, капсулы, 60 штук",
+              "offer_id": "ИР078786",
+              "barcode": "5060244091610",
+              "buybox_price": "",
+              "category_id": 45365531,
+              "created_at": "2022-08-09T06:52:27.239410Z",
+              "images": [
+                "https://cdn1.ozone.ru/s3/multimedia-k/6360323480.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-n/6360323483.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-p/6360323485.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-q/6360323486.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-j/6360323479.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-m/6360323482.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-s/6360323488.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-v/6360323491.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-l/6360323481.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-u/6360323490.jpg"
+              ],
+              "marketing_price": "1725.0000",
+              "min_ozon_price": "",
+              "old_price": "1825.0000",
+              "premium_price": "",
+              "price": "1725.0000",
+              "recommended_price": "1175.0000",
+              "min_price": "",
+              "sources": [
+                {
+                  "is_enabled": true,
+                  "sku": 665485977,
+                  "source": "fbs"
+                },
+                {
+                  "is_enabled": true,
+                  "sku": 665485978,
+                  "source": "fbo"
+                }
+              ],
+              "stocks": {
+                "coming": 0,
+                "present": 58,
+                "reserved": 0
+              },
+              "errors": [],
+              "vat": "0.200000",
+              "visible": true,
+              "visibility_details": {
+                "has_price": false,
+                "has_stock": true,
+                "active_product": false,
+                "reasons": {}
+              },
+              "price_index": "1.16",
+              "images360": [],
+              "color_image": "",
+              "primary_image": "https://cdn1.ozone.ru/s3/multimedia-k/6360325820.jpg",
+              "status": {
+                "state": "price_sent",
+                "state_failed": "",
+                "moderate_status": "approved",
+                "decline_reasons": [],
+                "validation_state": "success",
+                "state_name": "Продается",
+                "state_description": "",
+                "is_failed": false,
+                "is_created": true,
+                "state_tooltip": "",
+                "item_errors": [],
+                "state_updated_at": "2022-08-17T07:43:13.934655Z"
+              },
+              "state": "",
+              "service_type": "IS_CODE_SERVICE",
+              "fbo_sku": 665485978,
+              "fbs_sku": 665485977,
+              "currency_code": "RUB",
+              "is_kgt": false,
+              "rating": "",
+              "discounted_stocks": {
+                "coming": 0,
+                "present": 0,
+                "reserved": 0
+              },
+              "is_discounted": false,
+              "has_discounted_item": false,
+              "barcodes": [
+                "5060244091610"
+              ],
+              "updated_at": "2023-01-12T07:14:46.357395Z"
+            },
+            {
+              "id": 337113520,
+              "name": "Пиколинат Цинка Grassberg, 15 мг, Zn для укрепления иммунитета и здоровья, для кожи и волос, капсулы, 180 штук",
+              "offer_id": "ИР078825",
+              "barcode": "5060244091948",
+              "buybox_price": "",
+              "category_id": 45365531,
+              "created_at": "2022-08-09T06:52:27.239392Z",
+              "images": [
+                "https://cdn1.ozone.ru/s3/multimedia-4/6355818964.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-w/6355818956.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-3/6355818963.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-j/6355808935.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-6/6355818966.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-p/6355818949.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-d/6355818973.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-x/6355818957.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-o/6355818984.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-s/6355818952.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-e/6355818974.jpg"
+              ],
+              "marketing_price": "2774.0000",
+              "min_ozon_price": "",
+              "old_price": "3594.0000",
+              "premium_price": "",
+              "price": "3349.0000",
+              "recommended_price": "1929.0000",
+              "min_price": "",
+              "sources": [
+                {
+                  "is_enabled": true,
+                  "sku": 665470415,
+                  "source": "fbo"
+                },
+                {
+                  "is_enabled": true,
+                  "sku": 665470416,
+                  "source": "fbs"
+                }
+              ],
+              "stocks": {
+                "coming": 0,
+                "present": 50,
+                "reserved": 0
+              },
+              "errors": [],
+              "vat": "0.200000",
+              "visible": true,
+              "visibility_details": {
+                "has_price": false,
+                "has_stock": true,
+                "active_product": false,
+                "reasons": {}
+              },
+              "price_index": "1.33",
+              "images360": [],
+              "color_image": "",
+              "primary_image": "https://cdn1.ozone.ru/s3/multimedia-7/6355818967.jpg",
+              "status": {
+                "state": "price_sent",
+                "state_failed": "",
+                "moderate_status": "approved",
+                "decline_reasons": [],
+                "validation_state": "success",
+                "state_name": "Продается",
+                "state_description": "",
+                "is_failed": false,
+                "is_created": true,
+                "state_tooltip": "",
+                "item_errors": [],
+                "state_updated_at": "2022-08-17T07:26:25.796274Z"
+              },
+              "state": "",
+              "service_type": "IS_CODE_SERVICE",
+              "fbo_sku": 665470415,
+              "fbs_sku": 665470416,
+              "currency_code": "RUB",
+              "is_kgt": false,
+              "rating": "",
+              "discounted_stocks": {
+                "coming": 0,
+                "present": 0,
+                "reserved": 0
+              },
+              "is_discounted": false,
+              "has_discounted_item": false,
+              "barcodes": [
+                "5060244091948"
+              ],
+              "updated_at": "2022-10-19T11:40:26.275887Z"
+            },
+            {
+              "id": 337113521,
+              "name": "Кожа, Волосы, Ногти Grassberg, БАД с витаминами и минералами, витаминный комплекс, капсулы, 60 штук",
+              "offer_id": "ИР078807",
+              "barcode": "5060244091634",
+              "buybox_price": "",
+              "category_id": 45365531,
+              "created_at": "2022-08-09T06:52:27.240916Z",
+              "images": [
+                "https://cdn1.ozone.ru/s3/multimedia-w/6360340520.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-o/6360340512.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-q/6360340514.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-t/6360340517.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-p/6360340513.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-z/6360340523.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-s/6360340516.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-v/6360340519.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-u/6360340518.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-1/6360328213.jpg"
+              ],
+              "marketing_price": "1598.0000",
+              "min_ozon_price": "",
+              "old_price": "1689.0000",
+              "premium_price": "",
+              "price": "1598.0000",
+              "recommended_price": "",
+              "min_price": "",
+              "sources": [
+                {
+                  "is_enabled": true,
+                  "sku": 665464748,
+                  "source": "fbs"
+                },
+                {
+                  "is_enabled": true,
+                  "sku": 665464749,
+                  "source": "fbo"
+                }
+              ],
+              "stocks": {
+                "coming": 0,
+                "present": 21,
+                "reserved": 1
+              },
+              "errors": [],
+              "vat": "0.200000",
+              "visible": true,
+              "visibility_details": {
+                "has_price": false,
+                "has_stock": true,
+                "active_product": false,
+                "reasons": {}
+              },
+              "price_index": "0.00",
+              "images360": [],
+              "color_image": "",
+              "primary_image": "https://cdn1.ozone.ru/s3/multimedia-r/6360340515.jpg",
+              "status": {
+                "state": "price_sent",
+                "state_failed": "",
+                "moderate_status": "approved",
+                "decline_reasons": [],
+                "validation_state": "success",
+                "state_name": "Продается",
+                "state_description": "",
+                "is_failed": false,
+                "is_created": true,
+                "state_tooltip": "",
+                "item_errors": [],
+                "state_updated_at": "2022-08-17T07:35:20.146348Z"
+              },
+              "state": "",
+              "service_type": "IS_CODE_SERVICE",
+              "fbo_sku": 665464749,
+              "fbs_sku": 665464748,
+              "currency_code": "RUB",
+              "is_kgt": false,
+              "rating": "",
+              "discounted_stocks": {
+                "coming": 0,
+                "present": 0,
+                "reserved": 0
+              },
+              "is_discounted": false,
+              "has_discounted_item": false,
+              "barcodes": [
+                "5060244091634"
+              ],
+              "updated_at": "2023-01-12T07:14:43.859113Z"
+            },
+            {
+              "id": 337113522,
+              "name": "Лецитин Grassberg, 1200 мг, БАД для мозга, печени, нормализации холестерина, капсулы, 60 штук",
+              "offer_id": "ИР078785",
+              "barcode": "5060244091696",
+              "buybox_price": "",
+              "category_id": 45365531,
+              "created_at": "2022-08-09T06:52:27.251644Z",
+              "images": [
+                "https://cdn1.ozone.ru/s3/multimedia-k/6362142308.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-f/6362142303.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-s/6555667624.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-g/6362976676.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-q/6360323486.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-g/6362142304.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-n/6362142311.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-h/6362142305.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-m/6362142310.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-o/6555681876.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-g/6555681868.jpg"
+              ],
+              "marketing_price": "1210.0000",
+              "min_ozon_price": "",
+              "old_price": "1635.0000",
+              "premium_price": "",
+              "price": "1210.0000",
+              "recommended_price": "1017.0000",
+              "min_price": "",
+              "sources": [
+                {
+                  "is_enabled": true,
+                  "sku": 665489148,
+                  "source": "fbs"
+                },
+                {
+                  "is_enabled": true,
+                  "sku": 665489149,
+                  "source": "fbo"
+                }
+              ],
+              "stocks": {
+                "coming": 0,
+                "present": 39,
+                "reserved": 0
+              },
+              "errors": [],
+              "vat": "0.200000",
+              "visible": true,
+              "visibility_details": {
+                "has_price": false,
+                "has_stock": true,
+                "active_product": false,
+                "reasons": {}
+              },
+              "price_index": "1.07",
+              "images360": [],
+              "color_image": "",
+              "primary_image": "https://cdn1.ozone.ru/s3/multimedia-l/6362142309.jpg",
+              "status": {
+                "state": "price_sent",
+                "state_failed": "",
+                "moderate_status": "approved",
+                "decline_reasons": [],
+                "validation_state": "success",
+                "state_name": "Продается",
+                "state_description": "",
+                "is_failed": false,
+                "is_created": true,
+                "state_tooltip": "",
+                "item_errors": [],
+                "state_updated_at": "2023-02-13T12:34:23.677799Z"
+              },
+              "state": "",
+              "service_type": "IS_CODE_SERVICE",
+              "fbo_sku": 665489149,
+              "fbs_sku": 665489148,
+              "currency_code": "RUB",
+              "is_kgt": false,
+              "rating": "",
+              "discounted_stocks": {
+                "coming": 0,
+                "present": 0,
+                "reserved": 0
+              },
+              "is_discounted": false,
+              "has_discounted_item": false,
+              "barcodes": [
+                "5060244091696"
+              ],
+              "updated_at": "2023-02-13T12:34:23.678555Z"
+            },
+            {
+              "id": 337113523,
+              "name": "Омега 3-6-9 Grassberg, 1000 мг, рыбий жир, для cосудов, сердца, иммунитета, витаминный комплекс для взрослых женщин и мужчин, капсулы, 90 штук",
+              "offer_id": "ИР078790",
+              "barcode": "5060244091528",
+              "buybox_price": "",
+              "category_id": 45365531,
+              "created_at": "2022-08-09T06:52:27.252946Z",
+              "images": [
+                "https://cdn1.ozone.ru/s3/multimedia-s/6355857256.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-p/6355857325.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-7/6355857307.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-r/6355857255.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-y/6355839910.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-3/6355857267.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-x/6355857297.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-7/6355857271.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-u/6355857366.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-5/6355839917.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-l/6355857285.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-3/6355839915.jpg"
+              ],
+              "marketing_price": "2177.0000",
+              "min_ozon_price": "",
+              "old_price": "2913.0000",
+              "premium_price": "",
+              "price": "2649.0000",
+              "recommended_price": "1628.0000",
+              "min_price": "",
+              "sources": [
+                {
+                  "is_enabled": true,
+                  "sku": 665470397,
+                  "source": "fbo"
+                },
+                {
+                  "is_enabled": true,
+                  "sku": 665470398,
+                  "source": "fbs"
+                }
+              ],
+              "stocks": {
+                "coming": 0,
+                "present": 49,
+                "reserved": 0
+              },
+              "errors": [],
+              "vat": "0.200000",
+              "visible": true,
+              "visibility_details": {
+                "has_price": false,
+                "has_stock": true,
+                "active_product": false,
+                "reasons": {}
+              },
+              "price_index": "1.12",
+              "images360": [],
+              "color_image": "",
+              "primary_image": "https://cdn1.ozone.ru/s3/multimedia-w/6355857296.jpg",
+              "status": {
+                "state": "price_sent",
+                "state_failed": "",
+                "moderate_status": "approved",
+                "decline_reasons": [],
+                "validation_state": "success",
+                "state_name": "Продается",
+                "state_description": "",
+                "is_failed": false,
+                "is_created": true,
+                "state_tooltip": "",
+                "item_errors": [],
+                "state_updated_at": "2022-09-01T08:07:00.545682Z"
+              },
+              "state": "",
+              "service_type": "IS_CODE_SERVICE",
+              "fbo_sku": 665470397,
+              "fbs_sku": 665470398,
+              "currency_code": "RUB",
+              "is_kgt": false,
+              "rating": "",
+              "discounted_stocks": {
+                "coming": 0,
+                "present": 0,
+                "reserved": 0
+              },
+              "is_discounted": false,
+              "has_discounted_item": false,
+              "barcodes": [
+                "5060244091528"
+              ],
+              "updated_at": "2022-10-19T11:40:26.455347Z"
+            },
+            {
+              "id": 337113524,
+              "name": "Омега Премиум Grassberg 60%, 1000 мг, рыбий жир, для иммунитета, витаминный комплекс для взрослых женщин и мужчин, капсулы, 60 штук",
+              "offer_id": "ИР078792",
+              "barcode": "5060244091498",
+              "buybox_price": "",
+              "category_id": 45365531,
+              "created_at": "2022-08-09T06:52:27.251731Z",
+              "images": [
+                "https://cdn1.ozone.ru/s3/multimedia-v/6355839907.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-n/6355848395.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-l/6355848393.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-r/6355848399.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-y/6355839910.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-k/6355848392.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-j/6355848391.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-p/6355848397.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-5/6355839917.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-i/6355848390.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-3/6355839915.jpg"
+              ],
+              "marketing_price": "2437.0000",
+              "min_ozon_price": "",
+              "old_price": "2675.0000",
+              "premium_price": "",
+              "price": "2437.0000",
+              "recommended_price": "1403.0000",
+              "min_price": "",
+              "sources": [
+                {
+                  "is_enabled": true,
+                  "sku": 672991939,
+                  "source": "fbs"
+                },
+                {
+                  "is_enabled": true,
+                  "sku": 672991940,
+                  "source": "fbo"
+                }
+              ],
+              "stocks": {
+                "coming": 0,
+                "present": 26,
+                "reserved": 0
+              },
+              "errors": [],
+              "vat": "0.200000",
+              "visible": true,
+              "visibility_details": {
+                "has_price": false,
+                "has_stock": true,
+                "active_product": false,
+                "reasons": {}
+              },
+              "price_index": "1.29",
+              "images360": [],
+              "color_image": "",
+              "primary_image": "https://cdn1.ozone.ru/s3/multimedia-m/6355848394.jpg",
+              "status": {
+                "state": "price_sent",
+                "state_failed": "",
+                "moderate_status": "approved",
+                "decline_reasons": [],
+                "validation_state": "success",
+                "state_name": "Продается",
+                "state_description": "",
+                "is_failed": false,
+                "is_created": true,
+                "state_tooltip": "",
+                "item_errors": [],
+                "state_updated_at": "2022-09-01T08:08:09.443655Z"
+              },
+              "state": "",
+              "service_type": "IS_CODE_SERVICE",
+              "fbo_sku": 672991940,
+              "fbs_sku": 672991939,
+              "currency_code": "RUB",
+              "is_kgt": false,
+              "rating": "",
+              "discounted_stocks": {
+                "coming": 0,
+                "present": 0,
+                "reserved": 0
+              },
+              "is_discounted": false,
+              "has_discounted_item": false,
+              "barcodes": [
+                "5060244091498"
+              ],
+              "updated_at": "2022-10-19T11:40:29.184254Z"
+            },
+            {
+              "id": 337113525,
+              "name": "Альфа-Липоевая кислота, БАД для метаболизма, снижения веса и аппетита, похудения, энергии, капсулы, 60 мг, 60 штук",
+              "offer_id": "ИР078796",
+              "barcode": "5060244091771",
+              "buybox_price": "",
+              "category_id": 45365531,
+              "created_at": "2022-08-09T06:52:27.254958Z",
+              "images": [
+                "https://cdn1.ozone.ru/s3/multimedia-w/6360338576.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-z/6360338579.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-j/6355808935.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-x/6360338577.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-y/6360338578.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-4/6360338584.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-1/6360338581.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-2/6360338582.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-v/6360338575.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-1/6360328213.jpg"
+              ],
+              "marketing_price": "1450.0000",
+              "min_ozon_price": "",
+              "old_price": "1635.0000",
+              "premium_price": "",
+              "price": "1450.0000",
+              "recommended_price": "1425.0000",
+              "min_price": "",
+              "sources": [
+                {
+                  "is_enabled": true,
+                  "sku": 667002927,
+                  "source": "fbs"
+                },
+                {
+                  "is_enabled": true,
+                  "sku": 667002928,
+                  "source": "fbo"
+                }
+              ],
+              "stocks": {
+                "coming": 0,
+                "present": 69,
+                "reserved": 1
+              },
+              "errors": [],
+              "vat": "0.200000",
+              "visible": true,
+              "visibility_details": {
+                "has_price": false,
+                "has_stock": true,
+                "active_product": false,
+                "reasons": {}
+              },
+              "price_index": "0.00",
+              "images360": [],
+              "color_image": "",
+              "primary_image": "https://cdn1.ozone.ru/s3/multimedia-x/6360338721.jpg",
+              "status": {
+                "state": "price_sent",
+                "state_failed": "",
+                "moderate_status": "approved",
+                "decline_reasons": [],
+                "validation_state": "success",
+                "state_name": "Продается",
+                "state_description": "",
+                "is_failed": false,
+                "is_created": true,
+                "state_tooltip": "",
+                "item_errors": [],
+                "state_updated_at": "2022-09-01T08:04:52.580071Z"
+              },
+              "state": "",
+              "service_type": "IS_CODE_SERVICE",
+              "fbo_sku": 667002928,
+              "fbs_sku": 667002927,
+              "currency_code": "RUB",
+              "is_kgt": false,
+              "rating": "",
+              "discounted_stocks": {
+                "coming": 0,
+                "present": 0,
+                "reserved": 0
+              },
+              "is_discounted": false,
+              "has_discounted_item": false,
+              "barcodes": [
+                "5060244091771"
+              ],
+              "updated_at": "2023-01-12T07:14:48.289510Z"
+            },
+            {
+              "id": 337113526,
+              "name": "Коллаген Премиум Grassberg 500 мг + Витамин С 40 мг, для молодости, красоты, суставов, кожи, капсулы, 120 штук",
+              "offer_id": "ИР078722",
+              "barcode": "5060244092099",
+              "buybox_price": "",
+              "category_id": 45365531,
+              "created_at": "2022-08-09T06:52:27.255408Z",
+              "images": [
+                "https://cdn1.ozone.ru/s3/multimedia-t/6355872557.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-x/6355872561.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-v/6355872559.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-j/6355808935.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-r/6355872555.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-s/6355872556.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-y/6355872562.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-u/6355872558.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-q/6355872554.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-e/6355818974.jpg"
+              ],
+              "marketing_price": "2997.0000",
+              "min_ozon_price": "",
+              "old_price": "3210.0000",
+              "premium_price": "",
+              "price": "2997.0000",
+              "recommended_price": "",
+              "min_price": "",
+              "sources": [
+                {
+                  "is_enabled": true,
+                  "sku": 665494430,
+                  "source": "fbs"
+                },
+                {
+                  "is_enabled": true,
+                  "sku": 665494431,
+                  "source": "fbo"
+                }
+              ],
+              "stocks": {
+                "coming": 0,
+                "present": 48,
+                "reserved": 0
+              },
+              "errors": [],
+              "vat": "0.200000",
+              "visible": true,
+              "visibility_details": {
+                "has_price": false,
+                "has_stock": true,
+                "active_product": false,
+                "reasons": {}
+              },
+              "price_index": "1.47",
+              "images360": [],
+              "color_image": "",
+              "primary_image": "https://cdn1.ozone.ru/s3/multimedia-w/6355872560.jpg",
+              "status": {
+                "state": "price_sent",
+                "state_failed": "",
+                "moderate_status": "approved",
+                "decline_reasons": [],
+                "validation_state": "success",
+                "state_name": "Продается",
+                "state_description": "",
+                "is_failed": false,
+                "is_created": true,
+                "state_tooltip": "",
+                "item_errors": [],
+                "state_updated_at": "2022-08-17T07:33:31.322535Z"
+              },
+              "state": "",
+              "service_type": "IS_CODE_SERVICE",
+              "fbo_sku": 665494431,
+              "fbs_sku": 665494430,
+              "currency_code": "RUB",
+              "is_kgt": false,
+              "rating": "",
+              "discounted_stocks": {
+                "coming": 0,
+                "present": 0,
+                "reserved": 0
+              },
+              "is_discounted": false,
+              "has_discounted_item": false,
+              "barcodes": [
+                "5060244092099"
+              ],
+              "updated_at": "2022-10-22T13:40:32.227478Z"
+            },
+            {
+              "id": 337113527,
+              "name": "Магний Премиум+B6 Grassberg, для крепких нервов, cердца, от стресса, тревоги, антистресс, капсулы, 60 штук",
+              "offer_id": "ИР078501",
+              "barcode": "5060244091818",
+              "buybox_price": "",
+              "category_id": 45365531,
+              "created_at": "2022-08-09T06:52:27.332057Z",
+              "images": [
+                "https://cdn1.ozone.ru/s3/multimedia-3/6355882431.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-w/6355882424.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-x/6355882425.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-j/6355808935.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-s/6355882420.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-6/6355882434.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-2/6355882430.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-y/6355882426.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-1/6355882429.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-7/6355882435.jpg"
+              ],
+              "marketing_price": "1800.0000",
+              "min_ozon_price": "",
+              "old_price": "2005.0000",
+              "premium_price": "",
+              "price": "1860.0000",
+              "recommended_price": "",
+              "min_price": "",
+              "sources": [
+                {
+                  "is_enabled": true,
+                  "sku": 666844843,
+                  "source": "fbo"
+                },
+                {
+                  "is_enabled": true,
+                  "sku": 666844846,
+                  "source": "fbs"
+                }
+              ],
+              "stocks": {
+                "coming": 0,
+                "present": 45,
+                "reserved": 0
+              },
+              "errors": [],
+              "vat": "0.200000",
+              "visible": true,
+              "visibility_details": {
+                "has_price": false,
+                "has_stock": true,
+                "active_product": false,
+                "reasons": {}
+              },
+              "price_index": "1.00",
+              "images360": [],
+              "color_image": "",
+              "primary_image": "https://cdn1.ozone.ru/s3/multimedia-v/6355882423.jpg",
+              "status": {
+                "state": "price_sent",
+                "state_failed": "",
+                "moderate_status": "approved",
+                "decline_reasons": [],
+                "validation_state": "success",
+                "state_name": "Продается",
+                "state_description": "",
+                "is_failed": false,
+                "is_created": true,
+                "state_tooltip": "",
+                "item_errors": [],
+                "state_updated_at": "2022-09-01T08:02:38.810464Z"
+              },
+              "state": "",
+              "service_type": "IS_CODE_SERVICE",
+              "fbo_sku": 666844843,
+              "fbs_sku": 666844846,
+              "currency_code": "RUB",
+              "is_kgt": false,
+              "rating": "",
+              "discounted_stocks": {
+                "coming": 0,
+                "present": 0,
+                "reserved": 0
+              },
+              "is_discounted": false,
+              "has_discounted_item": false,
+              "barcodes": [
+                "5060244091818"
+              ],
+              "updated_at": "2023-01-12T07:14:48.957508Z"
+            },
+            {
+              "id": 337113528,
+              "name": "Имму Буст Grassberg для иммунитета, профилактики простуды и вирусных заболеваний, витамин С, Цинк, Бэта глюкан, капсулы, 60 штук",
+              "offer_id": "ИР078724",
+              "barcode": "5060244091894",
+              "buybox_price": "",
+              "category_id": 45365531,
+              "created_at": "2022-08-09T06:52:27.341212Z",
+              "images": [
+                "https://cdn1.ozone.ru/s3/multimedia-2/6369769142.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-y/6369769138.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-5/6369769145.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-4/6369769144.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-q/6360323486.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-1/6369769141.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-0/6369769140.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-z/6369769139.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-3/6369769143.jpg"
+              ],
+              "marketing_price": "2118.0000",
+              "min_ozon_price": "",
+              "old_price": "2285.0000",
+              "premium_price": "",
+              "price": "2118.0000",
+              "recommended_price": "",
+              "min_price": "",
+              "sources": [
+                {
+                  "is_enabled": true,
+                  "sku": 665485989,
+                  "source": "fbs"
+                },
+                {
+                  "is_enabled": true,
+                  "sku": 665485990,
+                  "source": "fbo"
+                }
+              ],
+              "stocks": {
+                "coming": 0,
+                "present": 58,
+                "reserved": 0
+              },
+              "errors": [],
+              "vat": "0.200000",
+              "visible": true,
+              "visibility_details": {
+                "has_price": false,
+                "has_stock": true,
+                "active_product": false,
+                "reasons": {}
+              },
+              "price_index": "1.33",
+              "images360": [],
+              "color_image": "",
+              "primary_image": "https://cdn1.ozone.ru/s3/multimedia-6/6369769146.jpg",
+              "status": {
+                "state": "price_sent",
+                "state_failed": "",
+                "moderate_status": "approved",
+                "decline_reasons": [],
+                "validation_state": "success",
+                "state_name": "Продается",
+                "state_description": "",
+                "is_failed": false,
+                "is_created": true,
+                "state_tooltip": "",
+                "item_errors": [],
+                "state_updated_at": "2022-08-17T07:36:13.550212Z"
+              },
+              "state": "",
+              "service_type": "IS_CODE_SERVICE",
+              "fbo_sku": 665485990,
+              "fbs_sku": 665485989,
+              "currency_code": "RUB",
+              "is_kgt": false,
+              "rating": "",
+              "discounted_stocks": {
+                "coming": 0,
+                "present": 0,
+                "reserved": 0
+              },
+              "is_discounted": false,
+              "has_discounted_item": false,
+              "barcodes": [
+                "5060244091894"
+              ],
+              "updated_at": "2022-11-17T05:35:16.683510Z"
+            },
+            {
+              "id": 337113529,
+              "name": "Масло Печени Трески Grassberg, для сердца, иммунитета, метаболизма, с витамином А и Д, от простуды, для волос, кожи и ногтей, капсулы, 60 штук",
+              "offer_id": "ИР078720",
+              "barcode": "5060244091573",
+              "buybox_price": "",
+              "category_id": 45365531,
+              "created_at": "2022-08-09T06:52:27.350062Z",
+              "images": [
+                "https://cdn1.ozone.ru/s3/multimedia-v/6369772267.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-y/6369772270.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-w/6369772268.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-z/6369772271.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-4/6355839916.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-2/6360328214.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-x/6369772269.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-u/6369772266.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-5/6355839917.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-3/6369772275.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-0/6369772272.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-2/6369772274.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-3/6355839915.jpg"
+              ],
+              "marketing_price": "1205.0000",
+              "min_ozon_price": "",
+              "old_price": "1295.0000",
+              "premium_price": "",
+              "price": "1205.0000",
+              "recommended_price": "1007.0000",
+              "min_price": "",
+              "sources": [
+                {
+                  "is_enabled": true,
+                  "sku": 673016828,
+                  "source": "fbo"
+                },
+                {
+                  "is_enabled": true,
+                  "sku": 673016829,
+                  "source": "fbs"
+                }
+              ],
+              "stocks": {
+                "coming": 0,
+                "present": 100,
+                "reserved": 0
+              },
+              "errors": [],
+              "vat": "0.200000",
+              "visible": true,
+              "visibility_details": {
+                "has_price": false,
+                "has_stock": true,
+                "active_product": false,
+                "reasons": {}
+              },
+              "price_index": "1.21",
+              "images360": [],
+              "color_image": "",
+              "primary_image": "https://cdn1.ozone.ru/s3/multimedia-1/6369772273.jpg",
+              "status": {
+                "state": "price_sent",
+                "state_failed": "",
+                "moderate_status": "approved",
+                "decline_reasons": [],
+                "validation_state": "success",
+                "state_name": "Продается",
+                "state_description": "",
+                "is_failed": false,
+                "is_created": true,
+                "state_tooltip": "",
+                "item_errors": [],
+                "state_updated_at": "2022-08-17T07:43:25.823566Z"
+              },
+              "state": "",
+              "service_type": "IS_CODE_SERVICE",
+              "fbo_sku": 673016828,
+              "fbs_sku": 673016829,
+              "currency_code": "RUB",
+              "is_kgt": false,
+              "rating": "",
+              "discounted_stocks": {
+                "coming": 0,
+                "present": 0,
+                "reserved": 0
+              },
+              "is_discounted": false,
+              "has_discounted_item": false,
+              "barcodes": [
+                "5060244091573"
+              ],
+              "updated_at": "2023-01-12T07:14:41.242992Z"
+            },
+            {
+              "id": 337113530,
+              "name": "Омега Вэлью Grassberg 30%, 1000 мг, рыбий жир, с витамином Е, для cосудов, сердца, иммунитета, капсулы 120 штук",
+              "offer_id": "ИР078800",
+              "barcode": "5060244091931",
+              "buybox_price": "",
+              "category_id": 45365531,
+              "created_at": "2022-08-09T06:52:27.352220Z",
+              "images": [
+                "https://cdn1.ozone.ru/s3/multimedia-v/6355839907.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-2/6355839914.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-l/6355840041.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-1/6355839913.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-y/6355839910.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-4/6355839916.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-z/6355839911.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-5/6355839917.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-x/6355839909.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-w/6355839908.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-3/6355839915.jpg"
+              ],
+              "marketing_price": "1903.0000",
+              "min_ozon_price": "",
+              "old_price": "2005.0000",
+              "premium_price": "",
+              "price": "1903.0000",
+              "recommended_price": "1360.0000",
+              "min_price": "",
+              "sources": [
+                {
+                  "is_enabled": true,
+                  "sku": 673033541,
+                  "source": "fbo"
+                },
+                {
+                  "is_enabled": true,
+                  "sku": 673033542,
+                  "source": "fbs"
+                }
+              ],
+              "stocks": {
+                "coming": 0,
+                "present": 31,
+                "reserved": 0
+              },
+              "errors": [],
+              "vat": "0.200000",
+              "visible": true,
+              "visibility_details": {
+                "has_price": false,
+                "has_stock": true,
+                "active_product": false,
+                "reasons": {}
+              },
+              "price_index": "1.04",
+              "images360": [],
+              "color_image": "",
+              "primary_image": "https://cdn1.ozone.ru/s3/multimedia-0/6355839912.jpg",
+              "status": {
+                "state": "price_sent",
+                "state_failed": "",
+                "moderate_status": "approved",
+                "decline_reasons": [],
+                "validation_state": "success",
+                "state_name": "Продается",
+                "state_description": "",
+                "is_failed": false,
+                "is_created": true,
+                "state_tooltip": "",
+                "item_errors": [],
+                "state_updated_at": "2022-09-01T14:03:24.549564Z"
+              },
+              "state": "",
+              "service_type": "IS_CODE_SERVICE",
+              "fbo_sku": 673033541,
+              "fbs_sku": 673033542,
+              "currency_code": "RUB",
+              "is_kgt": false,
+              "rating": "",
+              "discounted_stocks": {
+                "coming": 0,
+                "present": 0,
+                "reserved": 0
+              },
+              "is_discounted": false,
+              "has_discounted_item": false,
+              "barcodes": [
+                "5060244091931"
+              ],
+              "updated_at": "2023-01-12T07:14:43.859113Z"
+            },
+            {
+              "id": 337113531,
+              "name": "Омега Премиум Grassberg 60%, 1200 мг, рыбий жир, для иммунитета, витаминный комплекс для взрослых женщин и мужчин, витамины для волос, кожи, ногтей, cосудов, капсулы, 90 штук",
+              "offer_id": "ИР078791",
+              "barcode": "5060244091726",
+              "buybox_price": "",
+              "category_id": 45365531,
+              "created_at": "2022-08-09T06:52:27.353159Z",
+              "images": [
+                "https://cdn1.ozone.ru/s3/multimedia-v/6355839907.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-3/6355851255.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-l/6355848393.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-p/6355851241.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-y/6355839910.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-m/6355851238.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-j/6355848391.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-p/6355848397.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-5/6355839917.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-e/6355851230.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-3/6355839915.jpg"
+              ],
+              "marketing_price": "2414.0000",
+              "min_ozon_price": "",
+              "old_price": "3230.0000",
+              "premium_price": "",
+              "price": "2937.0000",
+              "recommended_price": "1427.0000",
+              "min_price": "",
+              "sources": [
+                {
+                  "is_enabled": true,
+                  "sku": 666872753,
+                  "source": "fbs"
+                },
+                {
+                  "is_enabled": true,
+                  "sku": 666872756,
+                  "source": "fbo"
+                }
+              ],
+              "stocks": {
+                "coming": 0,
+                "present": 49,
+                "reserved": 0
+              },
+              "errors": [],
+              "vat": "0.200000",
+              "visible": true,
+              "visibility_details": {
+                "has_price": false,
+                "has_stock": true,
+                "active_product": false,
+                "reasons": {}
+              },
+              "price_index": "1.41",
+              "images360": [],
+              "color_image": "",
+              "primary_image": "https://cdn1.ozone.ru/s3/multimedia-4/6355851292.jpg",
+              "status": {
+                "state": "price_sent",
+                "state_failed": "",
+                "moderate_status": "approved",
+                "decline_reasons": [],
+                "validation_state": "success",
+                "state_name": "Продается",
+                "state_description": "",
+                "is_failed": false,
+                "is_created": true,
+                "state_tooltip": "",
+                "item_errors": [],
+                "state_updated_at": "2022-08-17T07:23:04.316012Z"
+              },
+              "state": "",
+              "service_type": "IS_CODE_SERVICE",
+              "fbo_sku": 666872756,
+              "fbs_sku": 666872753,
+              "currency_code": "RUB",
+              "is_kgt": false,
+              "rating": "",
+              "discounted_stocks": {
+                "coming": 0,
+                "present": 0,
+                "reserved": 0
+              },
+              "is_discounted": false,
+              "has_discounted_item": false,
+              "barcodes": [
+                "5060244091726"
+              ],
+              "updated_at": "2022-10-19T11:40:26.275887Z"
+            },
+            {
+              "id": 337113532,
+              "name": "Антиоксидантная Защита Grassberg профилактика старения, БАД для красоты волос, кожи, ногтей, для иммунитета, от стресса, капсулы, 60 штук",
+              "offer_id": "ИР078710",
+              "barcode": "5060244091658",
+              "buybox_price": "",
+              "category_id": 45365531,
+              "created_at": "2022-08-09T06:52:27.362126Z",
+              "images": [
+                "https://cdn1.ozone.ru/s3/multimedia-i/6369770094.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-o/6369770064.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-0/6369770112.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-q/6360323486.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-5/6369770081.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-t/6369770105.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-x/6369770109.jpg"
+              ],
+              "marketing_price": "1973.0000",
+              "min_ozon_price": "",
+              "old_price": "2170.0000",
+              "premium_price": "",
+              "price": "1973.0000",
+              "recommended_price": "",
+              "min_price": "",
+              "sources": [
+                {
+                  "is_enabled": true,
+                  "sku": 665486448,
+                  "source": "fbs"
+                },
+                {
+                  "is_enabled": true,
+                  "sku": 665486449,
+                  "source": "fbo"
+                }
+              ],
+              "stocks": {
+                "coming": 0,
+                "present": 49,
+                "reserved": 0
+              },
+              "errors": [],
+              "vat": "0.200000",
+              "visible": true,
+              "visibility_details": {
+                "has_price": false,
+                "has_stock": true,
+                "active_product": false,
+                "reasons": {}
+              },
+              "price_index": "0.00",
+              "images360": [],
+              "color_image": "",
+              "primary_image": "https://cdn1.ozone.ru/s3/multimedia-9/6369770121.jpg",
+              "status": {
+                "state": "price_sent",
+                "state_failed": "",
+                "moderate_status": "approved",
+                "decline_reasons": [],
+                "validation_state": "success",
+                "state_name": "Продается",
+                "state_description": "",
+                "is_failed": false,
+                "is_created": true,
+                "state_tooltip": "",
+                "item_errors": [],
+                "state_updated_at": "2022-08-17T07:37:43.485641Z"
+              },
+              "state": "",
+              "service_type": "IS_CODE_SERVICE",
+              "fbo_sku": 665486449,
+              "fbs_sku": 665486448,
+              "currency_code": "RUB",
+              "is_kgt": false,
+              "rating": "",
+              "discounted_stocks": {
+                "coming": 0,
+                "present": 0,
+                "reserved": 0
+              },
+              "is_discounted": false,
+              "has_discounted_item": false,
+              "barcodes": [
+                "5060244091658"
+              ],
+              "updated_at": "2022-10-19T11:40:26.863697Z"
+            },
+            {
+              "id": 337113533,
+              "name": "Омега Вэлью Grassberg 30%, 1000 мг, рыбий жир, с витамином Е, для cосудов, сердца, иммунитета, капсулы, 60 штук",
+              "offer_id": "ИР078797",
+              "barcode": "5060244091474",
+              "buybox_price": "",
+              "category_id": 45365531,
+              "created_at": "2022-08-09T06:52:27.364598Z",
+              "images": [
+                "https://cdn1.ozone.ru/s3/multimedia-v/6355839907.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-2/6355839914.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-l/6355840041.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-y/6355839910.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-1/6355839913.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-4/6355839916.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-z/6355839911.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-5/6355839917.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-w/6355839908.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-x/6355839909.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-3/6355839915.jpg"
+              ],
+              "marketing_price": "1282.0000",
+              "min_ozon_price": "",
+              "old_price": "1698.0000",
+              "premium_price": "",
+              "price": "1522.0000",
+              "recommended_price": "951.0000",
+              "min_price": "",
+              "sources": [
+                {
+                  "is_enabled": true,
+                  "sku": 665487916,
+                  "source": "fbs"
+                },
+                {
+                  "is_enabled": true,
+                  "sku": 665487917,
+                  "source": "fbo"
+                }
+              ],
+              "stocks": {
+                "coming": 0,
+                "present": 22,
+                "reserved": 0
+              },
+              "errors": [],
+              "vat": "0.200000",
+              "visible": true,
+              "visibility_details": {
+                "has_price": false,
+                "has_stock": true,
+                "active_product": false,
+                "reasons": {}
+              },
+              "price_index": "1.32",
+              "images360": [],
+              "color_image": "",
+              "primary_image": "https://cdn1.ozone.ru/s3/multimedia-5/6355843805.jpg",
+              "status": {
+                "state": "price_sent",
+                "state_failed": "",
+                "moderate_status": "approved",
+                "decline_reasons": [],
+                "validation_state": "success",
+                "state_name": "Продается",
+                "state_description": "",
+                "is_failed": false,
+                "is_created": true,
+                "state_tooltip": "",
+                "item_errors": [],
+                "state_updated_at": "2022-09-01T09:07:27.019360Z"
+              },
+              "state": "",
+              "service_type": "IS_CODE_SERVICE",
+              "fbo_sku": 665487917,
+              "fbs_sku": 665487916,
+              "currency_code": "RUB",
+              "is_kgt": false,
+              "rating": "",
+              "discounted_stocks": {
+                "coming": 0,
+                "present": 0,
+                "reserved": 0
+              },
+              "is_discounted": false,
+              "has_discounted_item": false,
+              "barcodes": [
+                "5060244091474"
+              ],
+              "updated_at": "2022-10-19T11:40:28.193119Z"
+            },
+            {
+              "id": 337113534,
+              "name": "Витамин С Grassberg, 500 мг, антиоксидант, БАД для иммунитета, при борьбе с простудой, вирусами и гриппом, капсулы, 60 штук",
+              "offer_id": "ИР078793",
+              "barcode": "5060244091887",
+              "buybox_price": "",
+              "category_id": 45365531,
+              "created_at": "2022-08-09T06:52:27.371272Z",
+              "images": [
+                "https://cdn1.ozone.ru/s3/multimedia-i/6360333738.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-k/6360333740.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-o/6360333744.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-q/6360323486.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-n/6360333743.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-q/6360333746.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-r/6360333747.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-m/6360333742.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-j/6360333739.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-l/6360333741.jpg"
+              ],
+              "marketing_price": "1323.0000",
+              "min_ozon_price": "",
+              "old_price": "1415.0000",
+              "premium_price": "",
+              "price": "1323.0000",
+              "recommended_price": "899.0000",
+              "min_price": "",
+              "sources": [
+                {
+                  "is_enabled": true,
+                  "sku": 665478231,
+                  "source": "fbs"
+                },
+                {
+                  "is_enabled": true,
+                  "sku": 665478232,
+                  "source": "fbo"
+                }
+              ],
+              "stocks": {
+                "coming": 0,
+                "present": 49,
+                "reserved": 0
+              },
+              "errors": [],
+              "vat": "0.200000",
+              "visible": true,
+              "visibility_details": {
+                "has_price": false,
+                "has_stock": true,
+                "active_product": false,
+                "reasons": {}
+              },
+              "price_index": "1.36",
+              "images360": [],
+              "color_image": "",
+              "primary_image": "https://cdn1.ozone.ru/s3/multimedia-p/6360333745.jpg",
+              "status": {
+                "state": "price_sent",
+                "state_failed": "",
+                "moderate_status": "approved",
+                "decline_reasons": [],
+                "validation_state": "success",
+                "state_name": "Продается",
+                "state_description": "",
+                "is_failed": false,
+                "is_created": true,
+                "state_tooltip": "",
+                "item_errors": [],
+                "state_updated_at": "2022-10-04T11:20:48.014344Z"
+              },
+              "state": "",
+              "service_type": "IS_CODE_SERVICE",
+              "fbo_sku": 665478232,
+              "fbs_sku": 665478231,
+              "currency_code": "RUB",
+              "is_kgt": false,
+              "rating": "",
+              "discounted_stocks": {
+                "coming": 0,
+                "present": 0,
+                "reserved": 0
+              },
+              "is_discounted": false,
+              "has_discounted_item": false,
+              "barcodes": [
+                "5060244091887"
+              ],
+              "updated_at": "2023-02-17T11:58:00.964300Z"
+            },
+            {
+              "id": 337113535,
+              "name": "Комплекс Железа Grassberg, с витамином С, для повышения гемоглобина, при анемии, для мужчин и женщин, капсулы, 60 штук",
+              "offer_id": "ИР081864",
+              "barcode": "5060244092204",
+              "buybox_price": "",
+              "category_id": 45365531,
+              "created_at": "2022-08-09T06:52:27.363079Z",
+              "images": [
+                "https://cdn1.ozone.ru/s3/multimedia-h/6355808933.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-q/6355808942.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-o/6355808940.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-j/6355808935.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-m/6355808938.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-g/6355808932.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-r/6355808943.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-p/6355808941.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-l/6355808937.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-i/6355808934.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-n/6355808939.jpg"
+              ],
+              "marketing_price": "1746.0000",
+              "min_ozon_price": "",
+              "old_price": "2244.0000",
+              "premium_price": "",
+              "price": "2097.0000",
+              "recommended_price": "1265.0000",
+              "min_price": "",
+              "sources": [
+                {
+                  "is_enabled": true,
+                  "sku": 665466118,
+                  "source": "fbo"
+                },
+                {
+                  "is_enabled": true,
+                  "sku": 665466119,
+                  "source": "fbs"
+                }
+              ],
+              "stocks": {
+                "coming": 0,
+                "present": 25,
+                "reserved": 0
+              },
+              "errors": [],
+              "vat": "0.200000",
+              "visible": true,
+              "visibility_details": {
+                "has_price": false,
+                "has_stock": true,
+                "active_product": false,
+                "reasons": {}
+              },
+              "price_index": "1.33",
+              "images360": [],
+              "color_image": "",
+              "primary_image": "https://cdn1.ozone.ru/s3/multimedia-k/6355808936.jpg",
+              "status": {
+                "state": "price_sent",
+                "state_failed": "",
+                "moderate_status": "approved",
+                "decline_reasons": [],
+                "validation_state": "success",
+                "state_name": "Продается",
+                "state_description": "",
+                "is_failed": false,
+                "is_created": true,
+                "state_tooltip": "",
+                "item_errors": [],
+                "state_updated_at": "2022-08-17T07:24:10.291405Z"
+              },
+              "state": "",
+              "service_type": "IS_CODE_SERVICE",
+              "fbo_sku": 665466118,
+              "fbs_sku": 665466119,
+              "currency_code": "RUB",
+              "is_kgt": false,
+              "rating": "",
+              "discounted_stocks": {
+                "coming": 0,
+                "present": 0,
+                "reserved": 0
+              },
+              "is_discounted": false,
+              "has_discounted_item": false,
+              "barcodes": [
+                "5060244092204"
+              ],
+              "updated_at": "2022-10-19T11:40:29.184254Z"
+            },
+            {
+              "id": 337113536,
+              "name": "Фолиевая Кислота Grassberg, 400 мкг, витамины для нервной системы, будущих мам, иммунитета, капсулы, 60 штук",
+              "offer_id": "ИР078723",
+              "barcode": "5060244091795",
+              "buybox_price": "",
+              "category_id": 45365531,
+              "created_at": "2022-08-09T06:52:27.383478Z",
+              "images": [
+                "https://cdn1.ozone.ru/s3/multimedia-x/6369771909.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-s/6369771904.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-q/6369771902.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-z/6369771911.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-v/6369771907.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-r/6369771903.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-q/6360323486.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-2/6369771914.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-w/6369771908.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-u/6369771906.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-t/6369771905.jpg"
+              ],
+              "marketing_price": "1538.0000",
+              "min_ozon_price": "",
+              "old_price": "1691.0000",
+              "premium_price": "",
+              "price": "1538.0000",
+              "recommended_price": "1292.0000",
+              "min_price": "",
+              "sources": [
+                {
+                  "is_enabled": true,
+                  "sku": 665464914,
+                  "source": "fbs"
+                },
+                {
+                  "is_enabled": true,
+                  "sku": 665464915,
+                  "source": "fbo"
+                }
+              ],
+              "stocks": {
+                "coming": 0,
+                "present": 39,
+                "reserved": 0
+              },
+              "errors": [],
+              "vat": "0.200000",
+              "visible": true,
+              "visibility_details": {
+                "has_price": false,
+                "has_stock": true,
+                "active_product": false,
+                "reasons": {}
+              },
+              "price_index": "1.43",
+              "images360": [],
+              "color_image": "",
+              "primary_image": "https://cdn1.ozone.ru/s3/multimedia-0/6369771912.jpg",
+              "status": {
+                "state": "price_sent",
+                "state_failed": "",
+                "moderate_status": "approved",
+                "decline_reasons": [],
+                "validation_state": "success",
+                "state_name": "Продается",
+                "state_description": "",
+                "is_failed": false,
+                "is_created": true,
+                "state_tooltip": "",
+                "item_errors": [],
+                "state_updated_at": "2022-08-17T07:40:40.378454Z"
+              },
+              "state": "",
+              "service_type": "IS_CODE_SERVICE",
+              "fbo_sku": 665464915,
+              "fbs_sku": 665464914,
+              "currency_code": "RUB",
+              "is_kgt": false,
+              "rating": "",
+              "discounted_stocks": {
+                "coming": 0,
+                "present": 0,
+                "reserved": 0
+              },
+              "is_discounted": false,
+              "has_discounted_item": false,
+              "barcodes": [
+                "5060244091795"
+              ],
+              "updated_at": "2022-10-22T13:39:55.577259Z"
+            },
+            {
+              "id": 345437126,
+              "name": "Прокладки WellFix Экстра урологические Бельгия 14 штук при недержании мочи",
+              "offer_id": "ИР039735",
+              "barcode": "5411416057956",
+              "buybox_price": "",
+              "category_id": 45365399,
+              "created_at": "2022-08-19T14:38:27.104474Z",
+              "images": [
+                "https://cdn1.ozone.ru/s3/multimedia-8/6422693072.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-9/6422693073.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-b/6422693075.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-f/6422693079.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-c/6422693076.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-u/6073440282.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-x/6073440285.jpg"
+              ],
+              "marketing_price": "384.0000",
+              "min_ozon_price": "",
+              "old_price": "932.0000",
+              "premium_price": "",
+              "price": "419.0000",
+              "recommended_price": "414.0000",
+              "min_price": "",
+              "sources": [
+                {
+                  "is_enabled": true,
+                  "sku": 680000378,
+                  "source": "fbs"
+                },
+                {
+                  "is_enabled": true,
+                  "sku": 680000379,
+                  "source": "fbo"
+                }
+              ],
+              "stocks": {
+                "coming": 0,
+                "present": 269,
+                "reserved": 0
+              },
+              "errors": [],
+              "vat": "0.100000",
+              "visible": true,
+              "visibility_details": {
+                "has_price": false,
+                "has_stock": true,
+                "active_product": false,
+                "reasons": {}
+              },
+              "price_index": "0.92",
+              "images360": [],
+              "color_image": "",
+              "primary_image": "https://cdn1.ozone.ru/s3/multimedia-a/6422693074.jpg",
+              "status": {
+                "state": "price_sent",
+                "state_failed": "",
+                "moderate_status": "approved",
+                "decline_reasons": [],
+                "validation_state": "success",
+                "state_name": "Продается",
+                "state_description": "",
+                "is_failed": false,
+                "is_created": true,
+                "state_tooltip": "",
+                "item_errors": [],
+                "state_updated_at": "2022-09-28T07:59:28.766081Z"
+              },
+              "state": "",
+              "service_type": "IS_CODE_SERVICE",
+              "fbo_sku": 680000379,
+              "fbs_sku": 680000378,
+              "currency_code": "RUB",
+              "is_kgt": false,
+              "rating": "",
+              "discounted_stocks": {
+                "coming": 0,
+                "present": 0,
+                "reserved": 0
+              },
+              "is_discounted": false,
+              "has_discounted_item": false,
+              "barcodes": [
+                "5411416057956"
+              ],
+              "updated_at": "2023-01-12T07:14:43.755065Z"
+            },
+            {
+              "id": 345437147,
+              "name": "Прокладки Maxi урологические 14 штук WellFix Бельгия при недержании мочи",
+              "offer_id": "ИР039733",
+              "barcode": "5411416057994",
+              "buybox_price": "",
+              "category_id": 45365399,
+              "created_at": "2022-08-19T14:38:35.091781Z",
+              "images": [
+                "https://cdn1.ozone.ru/s3/multimedia-5/6421351925.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-8/6421351928.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-4/6421351924.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-9/6421351929.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-7/6421351927.jpg"
+              ],
+              "marketing_price": "545.0000",
+              "min_ozon_price": "",
+              "old_price": "1156.0000",
+              "premium_price": "",
+              "price": "545.0000",
+              "recommended_price": "500.0000",
+              "min_price": "",
+              "sources": [
+                {
+                  "is_enabled": true,
+                  "sku": 679991240,
+                  "source": "fbo"
+                },
+                {
+                  "is_enabled": true,
+                  "sku": 679991241,
+                  "source": "fbs"
+                }
+              ],
+              "stocks": {
+                "coming": 0,
+                "present": 244,
+                "reserved": 1
+              },
+              "errors": [],
+              "vat": "0.100000",
+              "visible": true,
+              "visibility_details": {
+                "has_price": false,
+                "has_stock": true,
+                "active_product": false,
+                "reasons": {}
+              },
+              "price_index": "1.08",
+              "images360": [],
+              "color_image": "",
+              "primary_image": "https://cdn1.ozone.ru/s3/multimedia-6/6421351926.jpg",
+              "status": {
+                "state": "price_sent",
+                "state_failed": "",
+                "moderate_status": "approved",
+                "decline_reasons": [],
+                "validation_state": "success",
+                "state_name": "Продается",
+                "state_description": "",
+                "is_failed": false,
+                "is_created": true,
+                "state_tooltip": "",
+                "item_errors": [],
+                "state_updated_at": "2022-09-26T11:32:17.958941Z"
+              },
+              "state": "",
+              "service_type": "IS_CODE_SERVICE",
+              "fbo_sku": 679991240,
+              "fbs_sku": 679991241,
+              "currency_code": "RUB",
+              "is_kgt": false,
+              "rating": "",
+              "discounted_stocks": {
+                "coming": 0,
+                "present": 0,
+                "reserved": 0
+              },
+              "is_discounted": false,
+              "has_discounted_item": false,
+              "barcodes": [
+                "5411416057994"
+              ],
+              "updated_at": "2023-02-02T09:41:16.319029Z"
+            },
+            {
+              "id": 347206544,
+              "name": "Цимицифуга Consumed с комплексом витаминов 450 мг, при климаксе и менопаузе, БАД для женщин 45+, 30 капсул",
+              "offer_id": "ИР084765",
+              "barcode": "4660041998719",
+              "buybox_price": "",
+              "category_id": 45365538,
+              "created_at": "2022-08-22T07:13:13.401735Z",
+              "images": [
+                "https://cdn1.ozone.ru/s3/multimedia-o/6397184496.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-r/6397184499.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-t/6397184501.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-l/6397184493.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-j/6400710187.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-3/6581477919.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-1/6581477917.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-2/6397866062.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-3/6397866063.jpg"
+              ],
+              "marketing_price": "402.0000",
+              "min_ozon_price": "",
+              "old_price": "539.0000",
+              "premium_price": "",
+              "price": "419.0000",
+              "recommended_price": "",
+              "min_price": "",
+              "sources": [
+                {
+                  "is_enabled": true,
+                  "sku": 683019329,
+                  "source": "fbo"
+                },
+                {
+                  "is_enabled": true,
+                  "sku": 683019330,
+                  "source": "fbs"
+                }
+              ],
+              "stocks": {
+                "coming": 0,
+                "present": 252,
+                "reserved": 0
+              },
+              "errors": [],
+              "vat": "0.200000",
+              "visible": true,
+              "visibility_details": {
+                "has_price": false,
+                "has_stock": true,
+                "active_product": false,
+                "reasons": {}
+              },
+              "price_index": "0.95",
+              "images360": [],
+              "color_image": "",
+              "primary_image": "https://cdn1.ozone.ru/s3/multimedia-q/6432925262.jpg",
+              "status": {
+                "state": "price_sent",
+                "state_failed": "",
+                "moderate_status": "approved",
+                "decline_reasons": [],
+                "validation_state": "success",
+                "state_name": "Продается",
+                "state_description": "",
+                "is_failed": false,
+                "is_created": true,
+                "state_tooltip": "",
+                "item_errors": [],
+                "state_updated_at": "2023-03-10T07:58:33.613910Z"
+              },
+              "state": "",
+              "service_type": "IS_CODE_SERVICE",
+              "fbo_sku": 683019329,
+              "fbs_sku": 683019330,
+              "currency_code": "RUB",
+              "is_kgt": false,
+              "rating": "",
+              "discounted_stocks": {
+                "coming": 0,
+                "present": 0,
+                "reserved": 0
+              },
+              "is_discounted": false,
+              "has_discounted_item": false,
+              "barcodes": [
+                "4660041998719"
+              ],
+              "updated_at": "2023-03-10T07:58:33.613928Z"
+            },
+            {
+              "id": 348475612,
+              "name": "Прокладки Lady Нормал урологические 14 штук WellFix Бельгия послеродовые и при недержании мочи",
+              "offer_id": "ИР039736",
+              "barcode": "5411416057932",
+              "buybox_price": "",
+              "category_id": 45365399,
+              "created_at": "2022-08-23T11:52:11.614137Z",
+              "images": [
+                "https://cdn1.ozone.ru/s3/multimedia-o/6421392696.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-j/6421392619.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-o/6421392624.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-i/6421392618.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-h/6421392689.jpg"
+              ],
+              "marketing_price": "393.0000",
+              "min_ozon_price": "",
+              "old_price": "487.0000",
+              "premium_price": "",
+              "price": "393.0000",
+              "recommended_price": "325.0000",
+              "min_price": "",
+              "sources": [
+                {
+                  "is_enabled": true,
+                  "sku": 684960854,
+                  "source": "fbs"
+                },
+                {
+                  "is_enabled": true,
+                  "sku": 684960855,
+                  "source": "fbo"
+                }
+              ],
+              "stocks": {
+                "coming": 0,
+                "present": 51,
+                "reserved": 0
+              },
+              "errors": [],
+              "vat": "0.100000",
+              "visible": true,
+              "visibility_details": {
+                "has_price": false,
+                "has_stock": true,
+                "active_product": false,
+                "reasons": {}
+              },
+              "price_index": "1.17",
+              "images360": [],
+              "color_image": "",
+              "primary_image": "https://cdn1.ozone.ru/s3/multimedia-k/6421392620.jpg",
+              "status": {
+                "state": "price_sent",
+                "state_failed": "",
+                "moderate_status": "approved",
+                "decline_reasons": [],
+                "validation_state": "success",
+                "state_name": "Продается",
+                "state_description": "",
+                "is_failed": false,
+                "is_created": true,
+                "state_tooltip": "",
+                "item_errors": [],
+                "state_updated_at": "2022-09-26T12:40:44.184077Z"
+              },
+              "state": "",
+              "service_type": "IS_CODE_SERVICE",
+              "fbo_sku": 684960855,
+              "fbs_sku": 684960854,
+              "currency_code": "RUB",
+              "is_kgt": false,
+              "rating": "",
+              "discounted_stocks": {
+                "coming": 0,
+                "present": 0,
+                "reserved": 0
+              },
+              "is_discounted": false,
+              "has_discounted_item": false,
+              "barcodes": [
+                "5411416057932"
+              ],
+              "updated_at": "2022-09-26T17:47:52.997508Z"
+            },
+            {
+              "id": 348522345,
+              "name": "Прокладки урологические Lady Ultra 28 штук Wellfix при недержании мочи",
+              "offer_id": "ИР039738",
+              "barcode": "5411416057895",
+              "buybox_price": "",
+              "category_id": 45365399,
+              "created_at": "2022-08-23T13:17:17.188955Z",
+              "images": [
+                "https://cdn1.ozone.ru/s3/multimedia-n/6421344779.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-p/6421344781.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-o/6421344780.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-m/6421344778.jpg"
+              ],
+              "marketing_price": "358.0000",
+              "min_ozon_price": "",
+              "old_price": "462.0000",
+              "premium_price": "",
+              "price": "358.0000",
+              "recommended_price": "",
+              "min_price": "",
+              "sources": [
+                {
+                  "is_enabled": true,
+                  "sku": 685064030,
+                  "source": "fbs"
+                },
+                {
+                  "is_enabled": true,
+                  "sku": 685064031,
+                  "source": "fbo"
+                }
+              ],
+              "stocks": {
+                "coming": 0,
+                "present": 305,
+                "reserved": 4
+              },
+              "errors": [],
+              "vat": "0.100000",
+              "visible": true,
+              "visibility_details": {
+                "has_price": false,
+                "has_stock": true,
+                "active_product": false,
+                "reasons": {}
+              },
+              "price_index": "0.93",
+              "images360": [],
+              "color_image": "",
+              "primary_image": "https://cdn1.ozone.ru/s3/multimedia-l/6421344777.jpg",
+              "status": {
+                "state": "price_sent",
+                "state_failed": "",
+                "moderate_status": "approved",
+                "decline_reasons": [],
+                "validation_state": "success",
+                "state_name": "Продается",
+                "state_description": "",
+                "is_failed": false,
+                "is_created": true,
+                "state_tooltip": "",
+                "item_errors": [],
+                "state_updated_at": "2022-09-26T11:20:44.017012Z"
+              },
+              "state": "",
+              "service_type": "IS_CODE_SERVICE",
+              "fbo_sku": 685064031,
+              "fbs_sku": 685064030,
+              "currency_code": "RUB",
+              "is_kgt": false,
+              "rating": "",
+              "discounted_stocks": {
+                "coming": 0,
+                "present": 0,
+                "reserved": 0
+              },
+              "is_discounted": false,
+              "has_discounted_item": false,
+              "barcodes": [
+                "5411416057895"
+              ],
+              "updated_at": "2022-09-26T12:33:18.309917Z"
+            },
+            {
+              "id": 348542449,
+              "name": "Прокладки урологические послеродовые Extra 10 штук Wellfix ",
+              "offer_id": "ИР039521",
+              "barcode": "5411416057390",
+              "buybox_price": "",
+              "category_id": 45365399,
+              "created_at": "2022-08-23T13:29:06.869285Z",
+              "images": [
+                "https://cdn1.ozone.ru/s3/multimedia-w/6306882284.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-u/6306882282.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-z/6030933431.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-x/6030933429.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-y/6030933430.jpg"
+              ],
+              "marketing_price": "437.0000",
+              "min_ozon_price": "",
+              "old_price": "615.0000",
+              "premium_price": "",
+              "price": "477.0000",
+              "recommended_price": "350.0000",
+              "min_price": "",
+              "sources": [
+                {
+                  "is_enabled": true,
+                  "sku": 685075415,
+                  "source": "fbo"
+                },
+                {
+                  "is_enabled": true,
+                  "sku": 685075416,
+                  "source": "fbs"
+                }
+              ],
+              "stocks": {
+                "coming": 0,
+                "present": 57,
+                "reserved": 0
+              },
+              "errors": [],
+              "vat": "0.100000",
+              "visible": true,
+              "visibility_details": {
+                "has_price": false,
+                "has_stock": true,
+                "active_product": false,
+                "reasons": {}
+              },
+              "price_index": "1.08",
+              "images360": [],
+              "color_image": "",
+              "primary_image": "https://cdn1.ozone.ru/s3/multimedia-v/6306882283.jpg",
+              "status": {
+                "state": "price_sent",
+                "state_failed": "",
+                "moderate_status": "approved",
+                "decline_reasons": [],
+                "validation_state": "success",
+                "state_name": "Продается",
+                "state_description": "",
+                "is_failed": false,
+                "is_created": true,
+                "state_tooltip": "",
+                "item_errors": [],
+                "state_updated_at": "2022-09-07T12:01:15.505198Z"
+              },
+              "state": "",
+              "service_type": "IS_CODE_SERVICE",
+              "fbo_sku": 685075415,
+              "fbs_sku": 685075416,
+              "currency_code": "RUB",
+              "is_kgt": false,
+              "rating": "",
+              "discounted_stocks": {
+                "coming": 0,
+                "present": 0,
+                "reserved": 0
+              },
+              "is_discounted": false,
+              "has_discounted_item": false,
+              "barcodes": [
+                "5411416057390"
+              ],
+              "updated_at": "2022-09-23T09:23:09.456971Z"
+            },
+            {
+              "id": 398002328,
+              "name": "Гель AVIANOL для регенерации кожи от повреждений, от ран, трещин, шрамов, заживляющий, 500 мл",
+              "offer_id": "610953",
+              "barcode": "4603423014362",
+              "buybox_price": "",
+              "category_id": 45371238,
+              "created_at": "2022-10-31T06:50:39.053485Z",
+              "images": [
+                "https://cdn1.ozone.ru/s3/multimedia-6/6453763374.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-4/6453763372.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-l/6453763425.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-b/6453763379.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-2/6453763406.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-n/6453763427.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-m/6453763426.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-c/6453763380.jpg"
+              ],
+              "marketing_price": "4500.0000",
+              "min_ozon_price": "",
+              "old_price": "5850.0000",
+              "premium_price": "",
+              "price": "4500.0000",
+              "recommended_price": "",
+              "min_price": "",
+              "sources": [
+                {
+                  "is_enabled": true,
+                  "sku": 768332982,
+                  "source": "fbs"
+                },
+                {
+                  "is_enabled": true,
+                  "sku": 768332983,
+                  "source": "fbo"
+                }
+              ],
+              "stocks": {
+                "coming": 0,
+                "present": 7,
+                "reserved": 0
+              },
+              "errors": [],
+              "vat": "0.200000",
+              "visible": true,
+              "visibility_details": {
+                "has_price": false,
+                "has_stock": true,
+                "active_product": false,
+                "reasons": {}
+              },
+              "price_index": "0.00",
+              "images360": [],
+              "color_image": "",
+              "primary_image": "https://cdn1.ozone.ru/s3/multimedia-h/6453763385.jpg",
+              "status": {
+                "state": "price_sent",
+                "state_failed": "",
+                "moderate_status": "approved",
+                "decline_reasons": [],
+                "validation_state": "success",
+                "state_name": "Продается",
+                "state_description": "",
+                "is_failed": false,
+                "is_created": true,
+                "state_tooltip": "",
+                "item_errors": [],
+                "state_updated_at": "2022-12-20T12:41:23.925362Z"
+              },
+              "state": "",
+              "service_type": "IS_CODE_SERVICE",
+              "fbo_sku": 768332983,
+              "fbs_sku": 768332982,
+              "currency_code": "RUB",
+              "is_kgt": false,
+              "rating": "",
+              "discounted_stocks": {
+                "coming": 0,
+                "present": 0,
+                "reserved": 0
+              },
+              "is_discounted": false,
+              "has_discounted_item": false,
+              "barcodes": [
+                "4603423014362"
+              ],
+              "updated_at": "2022-12-20T12:41:23.927615Z"
+            },
+            {
+              "id": 405550701,
+              "name": "Набор детских влажных салфеток Little Hands антибактериальных, 3 упаковки по 80 салфеток, без спирта, c ионами серебра, c экстрактами ромашки и календулы",
+              "offer_id": "ИР084436_3",
+              "barcode": "4610085900261",
+              "buybox_price": "",
+              "category_id": 36929000,
+              "created_at": "2022-11-08T09:39:02.170266Z",
+              "images": [
+                "https://cdn1.ozone.ru/s3/multimedia-f/6529506123.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-j/6529506127.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-g/6510369316.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-f/6510369315.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-g/6529506124.jpg"
+              ],
+              "marketing_price": "551.0000",
+              "min_ozon_price": "",
+              "old_price": "649.0000",
+              "premium_price": "",
+              "price": "551.0000",
+              "recommended_price": "",
+              "min_price": "",
+              "sources": [
+                {
+                  "is_enabled": true,
+                  "sku": 781793264,
+                  "source": "fbo"
+                },
+                {
+                  "is_enabled": true,
+                  "sku": 781793265,
+                  "source": "fbs"
+                }
+              ],
+              "stocks": {
+                "coming": 0,
+                "present": 13,
+                "reserved": 0
+              },
+              "errors": [],
+              "vat": "0.200000",
+              "visible": true,
+              "visibility_details": {
+                "has_price": false,
+                "has_stock": true,
+                "active_product": false,
+                "reasons": {}
+              },
+              "price_index": "0.00",
+              "images360": [],
+              "color_image": "",
+              "primary_image": "https://cdn1.ozone.ru/s3/multimedia-h/6529506125.jpg",
+              "status": {
+                "state": "price_sent",
+                "state_failed": "",
+                "moderate_status": "approved",
+                "decline_reasons": [],
+                "validation_state": "success",
+                "state_name": "Продается",
+                "state_description": "",
+                "is_failed": false,
+                "is_created": true,
+                "state_tooltip": "",
+                "item_errors": [],
+                "state_updated_at": "2023-01-13T12:25:17.433524Z"
+              },
+              "state": "",
+              "service_type": "IS_CODE_SERVICE",
+              "fbo_sku": 781793264,
+              "fbs_sku": 781793265,
+              "currency_code": "RUB",
+              "is_kgt": false,
+              "rating": "",
+              "discounted_stocks": {
+                "coming": 0,
+                "present": 0,
+                "reserved": 0
+              },
+              "is_discounted": false,
+              "has_discounted_item": false,
+              "barcodes": [
+                "4610085900261"
+              ],
+              "updated_at": "2023-02-16T18:27:12.093312Z"
+            },
+            {
+              "id": 405700337,
+              "name": "Набор детских влажных салфеток Little Hands антибактериальных, 5 упаковок по 20 салфеток, без спирта, c ионами серебра, c экстрактами ромашки и календулы",
+              "offer_id": "ИР084437_5",
+              "barcode": "4610085900278",
+              "buybox_price": "",
+              "category_id": 36929000,
+              "created_at": "2022-11-08T11:51:05.866011Z",
+              "images": [
+                "https://cdn1.ozone.ru/s3/multimedia-o/6524321844.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-q/6524321846.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-s/6524321848.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-p/6524321845.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-t/6524321849.jpg"
+              ],
+              "marketing_price": "385.0000",
+              "min_ozon_price": "",
+              "old_price": "505.0000",
+              "premium_price": "",
+              "price": "385.0000",
+              "recommended_price": "",
+              "min_price": "",
+              "sources": [
+                {
+                  "is_enabled": true,
+                  "sku": 781936104,
+                  "source": "fbo"
+                },
+                {
+                  "is_enabled": true,
+                  "sku": 781936105,
+                  "source": "fbs"
+                }
+              ],
+              "stocks": {
+                "coming": 0,
+                "present": 15,
+                "reserved": 0
+              },
+              "errors": [],
+              "vat": "0.200000",
+              "visible": true,
+              "visibility_details": {
+                "has_price": false,
+                "has_stock": true,
+                "active_product": false,
+                "reasons": {}
+              },
+              "price_index": "0.00",
+              "images360": [],
+              "color_image": "",
+              "primary_image": "https://cdn1.ozone.ru/s3/multimedia-r/6524321847.jpg",
+              "status": {
+                "state": "price_sent",
+                "state_failed": "",
+                "moderate_status": "approved",
+                "decline_reasons": [],
+                "validation_state": "success",
+                "state_name": "Продается",
+                "state_description": "",
+                "is_failed": false,
+                "is_created": true,
+                "state_tooltip": "",
+                "item_errors": [],
+                "state_updated_at": "2023-01-13T12:35:25.601157Z"
+              },
+              "state": "",
+              "service_type": "IS_CODE_SERVICE",
+              "fbo_sku": 781936104,
+              "fbs_sku": 781936105,
+              "currency_code": "RUB",
+              "is_kgt": false,
+              "rating": "",
+              "discounted_stocks": {
+                "coming": 0,
+                "present": 0,
+                "reserved": 0
+              },
+              "is_discounted": false,
+              "has_discounted_item": false,
+              "barcodes": [
+                "4610085900278"
+              ],
+              "updated_at": "2023-02-16T18:27:06.345682Z"
+            },
+            {
+              "id": 405817151,
+              "name": "Набор влажных салфеток Consumed микс 5 упаковок по 20 салфеток",
+              "offer_id": "ИР022595Р5",
+              "barcode": "OZN788075035",
+              "buybox_price": "",
+              "category_id": 29299333,
+              "created_at": "2022-11-08T13:23:31.772034Z",
+              "images": [
+                "https://cdn1.ozone.ru/s3/multimedia-z/6529491743.jpg",
+                "https://cdn1.ozone.ru/s3/multimedia-y/6529491742.jpg"
+              ],
+              "marketing_price": "385.0000",
+              "min_ozon_price": "",
+              "old_price": "505.0000",
+              "premium_price": "",
+              "price": "385.0000",
+              "recommended_price": "",
+              "min_price": "",
+              "sources": [
+                {
+                  "is_enabled": true,
+                  "sku": 788075034,
+                  "source": "fbs"
+                },
+                {
+                  "is_enabled": true,
+                  "sku": 788075035,
+                  "source": "fbo"
+                }
+              ],
+              "stocks": {
+                "coming": 0,
+                "present": 14,
+                "reserved": 0
+              },
+              "errors": [],
+              "vat": "0.200000",
+              "visible": true,
+              "visibility_details": {
+                "has_price": false,
+                "has_stock": true,
+                "active_product": false,
+                "reasons": {}
+              },
+              "price_index": "0.00",
+              "images360": [],
+              "color_image": "",
+              "primary_image": "https://cdn1.ozone.ru/s3/multimedia-1/6529491745.jpg",
+              "status": {
+                "state": "price_sent",
+                "state_failed": "",
+                "moderate_status": "approved",
+                "decline_reasons": [],
+                "validation_state": "success",
+                "state_name": "Продается",
+                "state_description": "",
+                "is_failed": false,
+                "is_created": true,
+                "state_tooltip": "",
+                "item_errors": [],
+                "state_updated_at": "2023-01-13T12:18:21.774263Z"
+              },
+              "state": "",
+              "service_type": "IS_CODE_SERVICE",
+              "fbo_sku": 788075035,
+              "fbs_sku": 788075034,
+              "currency_code": "RUB",
+              "is_kgt": false,
+              "rating": "",
+              "discounted_stocks": {
+                "coming": 0,
+                "present": 0,
+                "reserved": 0
+              },
+              "is_discounted": false,
+              "has_discounted_item": false,
+              "barcodes": [
+                "OZN788075035"
+              ],
+              "updated_at": "2023-02-16T18:27:09.411804Z"
+            }
+          ]
+        }
+      }
+    }
+  }
+]
