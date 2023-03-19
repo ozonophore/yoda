@@ -29,11 +29,11 @@ func NewWBService(ownerCode string, apiKey string, config *configuration.Configu
 	}
 }
 
-func (c *WBService) Parsing(repository *repository.RepositoryDAO, jobId *int) error {
+func (c *WBService) Parsing(repository *repository.RepositoryDAO, jobId *int) (*int64, error) {
 	apiKeyProvider, _ := securityprovider.NewSecurityProviderApiKey("header", "Authorization", c.apiKey)
 	clnt, err := api.NewClientWithResponses("http://localhost:1080/wb", api.WithRequestEditorFn(apiKeyProvider.Intercept))
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	df := api.DateFrom{
@@ -43,10 +43,10 @@ func (c *WBService) Parsing(repository *repository.RepositoryDAO, jobId *int) er
 	dateFrom := api.GetSupplierStocksParams{DateFrom: df}
 	resp, err := clnt.GetSupplierStocksWithResponse(context.Background(), &dateFrom)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if resp.StatusCode()/100 != 2 {
-		return errors.New(fmt.Sprintf("Http status: %s", resp.Status()))
+		return nil, errors.New(fmt.Sprintf("Http status: %s", resp.Status()))
 	}
 	items := *resp.JSON200
 	length := len(items)
@@ -59,21 +59,21 @@ func (c *WBService) Parsing(repository *repository.RepositoryDAO, jobId *int) er
 	newItems, err := c.prepareStocks(length, items, transactionId, source)
 	if err != nil {
 		(*repository).EndOperation(transactionId, types.StatusTypeRejected)
-		return err
+		return nil, err
 	}
 	if err = (*repository).SaveStocks(&newItems); err != nil {
 		(*repository).EndOperation(transactionId, types.StatusTypeRejected)
-		return err
+		return nil, err
 	}
 
 	respSales, err := clnt.GetWBSalesWithResponse(context.Background(), &api.GetWBSalesParams{
 		DateFrom: df,
 	})
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if respSales.StatusCode() != 200 {
-		return fmt.Errorf("Sales response status : %d", respSales.StatusCode())
+		return nil, fmt.Errorf("Sales response status : %d", respSales.StatusCode())
 	}
 	salesItems := respSales.JSON200
 
@@ -84,11 +84,11 @@ func (c *WBService) Parsing(repository *repository.RepositoryDAO, jobId *int) er
 		}
 		return nil
 	}); err != nil {
-		return err
+		return nil, err
 	}
 
 	(*repository).EndOperation(transactionId, types.StatusTypeCompleted)
-	return nil
+	return transactionId, nil
 }
 
 func (c *WBService) prepareStocks(length int, items []api.StocksItem, transactionId *int64, source string) ([]model.StockItem, error) {

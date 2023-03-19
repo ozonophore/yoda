@@ -91,8 +91,8 @@ func (p *RepositoryDAO) EndOperation(transaction *int64, status string) {
 func (p *RepositoryDAO) UpdatePrices(models *[]model.StockItem) error {
 	tx := p.db.Begin()
 	for _, model := range *models {
-		err := tx.Exec(`UPDATE "stock" SET "price" = ?, "discount" = ?, "price_after_discount" = ? WHERE "transaction_id" = ? AND "external_code" = ?`,
-			model.Price, model.Discount, model.PriceAfterDiscount, model.TransactionID, model.ExternalCode,
+		err := tx.Exec(`UPDATE "stock" SET "barcode" = ?, "price" = ?, "discount" = ?, "price_after_discount" = ? WHERE "transaction_id" = ? AND "external_code" = ?`,
+			model.Barcode, model.Price, model.Discount, model.PriceAfterDiscount, model.TransactionID, model.ExternalCode,
 		).Error
 		if err != nil {
 			tx.Rollback()
