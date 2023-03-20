@@ -124,6 +124,14 @@ func (p *RepositoryDAO) SaveSales(items *[]model.Sale) error {
 	return nil
 }
 
+func (p *RepositoryDAO) SaveOrders(items *[]model.Order) error {
+	tx := p.db.CreateInBatches(items, len(*items))
+	if tx.Error != nil {
+		return tx.Error
+	}
+	return nil
+}
+
 func (p *RepositoryDAO) UpdateAttributes(models *[]model.StockItem) error {
 	tx := p.db.Begin()
 	for _, model := range *models {
