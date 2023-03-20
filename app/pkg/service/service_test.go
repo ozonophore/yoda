@@ -68,6 +68,8 @@ func wbRun(t *testing.T, config *configuration.Configuration, repository *reposi
 	lastChangeTime, _ := time.Parse(time.TimeOnly, "09:34:40")
 	assert.Equal(t, lastChangeTime, stock.LastChangeTime, "LastChangeTime")
 	assert.Equal(t, "4620003082726", *stock.Barcode, "barcode")
+	database.Table("order").Where(`"transaction_id"=?`, *tranId).Count(&count)
+	assert.Equal(t, int64(1391), count, "count of orders")
 }
 
 func setup(t *testing.T) error {

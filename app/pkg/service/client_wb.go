@@ -36,12 +36,12 @@ func (c *WBService) Parsing(repository *repository.RepositoryDAO, jobId *int) (*
 		return nil, err
 	}
 
-	df := api.DateFrom{
+	dateFrom := api.DateFrom{
 		Time: time.Now(),
 	}
 
-	dateFrom := api.GetSupplierStocksParams{DateFrom: df}
-	resp, err := clnt.GetSupplierStocksWithResponse(context.Background(), &dateFrom)
+	request := api.GetSupplierStocksParams{DateFrom: dateFrom}
+	resp, err := clnt.GetSupplierStocksWithResponse(context.Background(), &request)
 	if err != nil {
 		return nil, err
 	}
@@ -67,7 +67,7 @@ func (c *WBService) Parsing(repository *repository.RepositoryDAO, jobId *int) (*
 	}
 
 	respSales, err := clnt.GetWBSalesWithResponse(context.Background(), &api.GetWBSalesParams{
-		DateFrom: df,
+		DateFrom: dateFrom,
 	})
 	if err != nil {
 		return nil, err
@@ -87,8 +87,39 @@ func (c *WBService) Parsing(repository *repository.RepositoryDAO, jobId *int) (*
 		return nil, err
 	}
 
+	err = c.loadOrders(clnt, &dateFrom, repository, *transactionId, &source)
+	if err != nil {
+		return nil, err
+	}
 	(*repository).EndOperation(transactionId, types.StatusTypeCompleted)
 	return transactionId, nil
+}
+
+/**
+ * Load orders from WB
+ */
+func (c *WBService) loadOrders(client *api.ClientWithResponses, dateFrom *api.DateFrom, repository *repository.RepositoryDAO, transactionId int64, source *string) error {
+	request := api.GetWBOrdersParams{
+		DateFrom: *dateFrom,
+	}
+	response, err := client.GetWBOrdersWithResponse(context.Background(), &request)
+	if err != nil {
+		return err
+	}
+	orders := response.JSON200
+	if err = CallbackBatch[api.OrdersItem](orders, c.config.BatchSize, func(items *[]api.OrdersItem) error {
+		orders, errMap := mapper.MapOrderArray(items, transactionId, *source)
+		if errMap != nil {
+			return errMap
+		}
+		if err := repository.SaveOrders(orders); err != nil {
+			return err
+		}
+		return nil
+	}); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (c *WBService) prepareStocks(length int, items []api.StocksItem, transactionId *int64, source string) ([]model.StockItem, error) {

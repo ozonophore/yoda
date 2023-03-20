@@ -1,1 +1,1 @@
-gentool -dsn "postgres://user:password@localhost:5432/db" -db "postgres" -outPath "../common/pkg/model" -modelPkgName "model" -fieldNullable -onlyModel --tables="job"
+gentool -dsn "postgres://user:password@localhost:5432/db" -db "postgres" -outPath "../common/pkg/model" -modelPkgName "model" -fieldNullable -onlyModel --tables="order"
