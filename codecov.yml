@@ -29,3 +29,5 @@ flags:
   app:
     paths:
       - app/
+ignore:
+  - "**/api.go"
