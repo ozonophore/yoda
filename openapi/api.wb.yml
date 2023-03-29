@@ -89,6 +89,236 @@ components:
         type: integer
         example: 1234
   schemas:
+    PostingProduct:
+      type: object
+      required:
+        - offer_id
+        - quantity
+        - sku
+        - price
+      properties:
+        name:
+          type: string
+          description: Наименование товара
+        offer_id:
+          type: string
+          description: Идентификатор товара
+        currency_code:
+          type: string
+          description: Код валюты
+        price:
+          type: string
+          description: Цена товара
+        quantity:
+          type: integer
+          format: int64
+          description: Количество товара
+        sku:
+          type: integer
+          format: int64
+          description: Артикул товара
+    FBOFilterFilter:
+        type: object
+        required:
+          - since
+          - status
+          - to
+        properties:
+          since:
+            type: string
+            format: date-time
+            description: Начало периода в формате YYYY-MM-DD
+          status:
+            type: string
+            description: Статус отправления.
+                        awaiting_packaging — ожидает упаковки,
+                        awaiting_deliver — ожидает отгрузки,
+                        delivering — доставляется,
+                        delivered — доставлено,
+                        cancelled — отменено.
+          to:
+            type: string
+            format: date-time
+            description: Конец периода в формате YYYY-MM-DD
+    FBOFilterWith:
+      type: object
+      required:
+        - analytics_data
+        - financial_data
+      properties:
+        analytics_data:
+          type: boolean
+          description: Флаг включения данных аналитики
+        financial_data:
+          type: boolean
+          description: Флаг включения финансовых данных
+    FBOFilter:
+      type: object
+      required:
+        - dir
+        - filter
+        - translit
+        - with
+        - limit
+        - offset
+      properties:
+        dir:
+          type: string
+          description: 'Направление сортировки. Возможные значения: `asc` - по возрастанию,`desc` - по убыванию.'
+        filter:
+          $ref: '#/components/schemas/FBOFilterFilter'
+        limit:
+          type: integer
+          format: int64
+          description: Количество записей на странице
+        offset:
+          type: integer
+          format: int64
+          description: Смещение от начала списка
+        translit:
+          type: boolean
+          description: Флаг транслитерации названий городов
+        with:
+          $ref: '#/components/schemas/FBOFilterWith'
+    PostingFinancialDataProduct:
+      type: object
+      required:
+        - product_id
+        - old_price
+        - price
+        - total_discount_percent
+        - total_discount_value
+      properties:
+        product_id:
+          type: integer
+          format: int64
+          description: Идентификатор товара
+        currency_code:
+          type: string
+          description: Код валюты
+        commission_amount:
+          type: number
+          format: double
+          description: Сумма комиссии
+        commission_percent:
+          type: integer
+          format: int64
+          description: Процент комиссии
+        commissions_currency_code:
+          type: string
+          description: Код валюты комиссии
+        old_price:
+          type: number
+          format: double
+          description: Цена до учёта скидок. На карточке товара отображается зачёркнутой.
+        price:
+          type: number
+          format: double
+          description: Цена товара
+        total_discount_percent:
+          type: number
+          format: double
+          description: Общий процент скидки
+        total_discount_value:
+          type: number
+          format: double
+          description: Общая сумма скидки
+    AdditionalDataItem:
+      type: object
+      properties:
+        key:
+          type: string
+          description: Название дополнительного поля
+        value:
+          type: string
+          description: Значение дополнительного поля
+    PostingFinancialData:
+      type: object
+      properties:
+        products:
+          type: array
+          description: Список товаров в заказе.
+          items:
+            $ref: '#/components/schemas/PostingFinancialDataProduct'
+
+    FboPostingFboPostingAnalyticsData:
+      type: object
+      properties:
+        city:
+          type: string
+          description: Город
+        delivery_type:
+          type: string
+          description: Тип доставки
+        is_legal:
+          type: boolean
+          description: Флаг юридического лица
+        is_premium:
+          type: boolean
+          description: Флаг премиума
+        payment_type_group_name:
+          type: string
+          description: Группа типа оплаты
+        region:
+          type: string
+          description: Регион
+        warehouse_id:
+          type: integer
+          format: int64
+          description: Идентификатор склада
+        warehouse_name:
+          type: string
+          description: Название склада
+    FBO:
+      type: object
+      required:
+        - created_at
+        - status
+      properties:
+        additional_data:
+          type: array
+          description: Дополнительные данные
+          items:
+            $ref: '#/components/schemas/AdditionalDataItem'
+        analytics_data:
+            $ref: '#/components/schemas/FboPostingFboPostingAnalyticsData'
+        cancel_reason_id:
+          type: integer
+          description: Идентификатор причины отмены
+        created_at:
+          type: string
+          format: date-time
+          description: Дата создания
+        financial_data:
+          $ref: '#/components/schemas/PostingFinancialData'
+        in_process_at:
+          type: string
+          format: date-time
+          description: Дата начала обработки
+        order_id:
+          type: integer
+          format: int64
+          description: Идентификатор заказа
+        order_number:
+          type: string
+          description: Номер заказа
+        posting_number:
+          type: string
+          description: Номер отправления
+        products:
+          type: array
+          description: Список товаров в заказе.
+          items:
+            $ref: '#/components/schemas/PostingProduct'
+        status:
+          type: string
+          description: Статус отправления.
+          enum:
+            - awaiting_packaging # ожидает упаковки,
+            - awaiting_deliver # ожидает отгрузки,
+            - delivering # доставляется,
+            - delivered # доставлено,
+            - cancelled # отменено.
     OrdersItem:
       type: object
       properties:
@@ -103,6 +333,10 @@ components:
             Московское время UTC+3.
         lastChangeDate:
           type: string
+          x-go-type: types.CustomTime
+          x-go-import:
+            name: types
+            package: github.com/yoda/common/pkg/types
           description: Дата и время обновления информации в сервисе. Это поле соответствует
             параметру `dateFrom` в запросе, если параметр `flag=0` или не указан.
             Если часовой пояс не указан, то берется Московское время UTC+3.
@@ -120,6 +354,7 @@ components:
           description: Бар-код
         totalPrice:
           type: number
+          format: double
           description: Цена до согласованной итоговой скидки/промо/спп. Для получения
             цены со скидкой можно воспользоваться формулой `priceWithDiscount = totalPrice
             * (1 - discountPercent/100)`
@@ -188,6 +423,10 @@ components:
             Московское время UTC+3.
         lastChangeDate:
           type: string
+          x-go-type: types.CustomTime
+          x-go-import:
+            name: types
+            package: github.com/yoda/common/pkg/types
           description: Дата и время обновления информации в сервисе. Это поле соответствует
             параметру `dateFrom` в запросе, если параметр `flag=0` или не указан.
             Если часовой пояс не указан, то берется Московское время UTC+3.
@@ -398,6 +637,7 @@ components:
           type: integer
         created_at:
           type: string
+          format: date-time
         currency_code:
           type: string
         marketing_price:
@@ -502,6 +742,10 @@ components:
       properties:
         lastChangeDate:
           type: string
+          x-go-type: types.CustomTime
+          x-go-import:
+            name: types
+            package: github.com/yoda/common/pkg/types
           description: Дата и время обновления информации в сервисе. Это поле соответствует
             параметру `dateFrom` в запросе. Если часовой пояс не указан, то берется
             Московское время UTC+3.
@@ -921,6 +1165,60 @@ paths:
                       $ref: '#/components/schemas/ProductAttribute'
         404:
           description: Ответ не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OzonError'
+  /v2/posting/fbo/list:
+    servers:
+      - url: https://api-seller.ozon.ru/
+    post:
+      summary: Список FBO
+      operationId: getOzonFBO
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FBOFilter'
+      responses:
+        200:
+          description: Список FBO
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/FBO'
+        400:
+          description: Ошибка в запросе
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OzonError'
+        403:
+          description: Ошибка авторизации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OzonError'
+        404:
+          description: Ответ не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OzonError'
+        409:
+          description: Конфликт
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OzonError'
+        500:
+          description: Ошибка сервера
           content:
             application/json:
               schema:

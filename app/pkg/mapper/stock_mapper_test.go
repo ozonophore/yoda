@@ -3,6 +3,7 @@ package mapper
 import (
 	"fmt"
 	"github.com/yoda/app/pkg/api"
+	"github.com/yoda/common/pkg/types"
 	"github.com/yoda/common/pkg/utils"
 	"testing"
 	"time"
@@ -35,7 +36,7 @@ func TestMapStockItem(t *testing.T) {
 		DaysOnSite:      &daysOnSite,
 		IsRealization:   &isRealization,
 		IsSupply:        &isSupply,
-		LastChangeDate:  &lastChangeDate,
+		LastChangeDate:  types.StringToCustomTime(lastChangeDate),
 		NmId:            &nmId,
 		Quantity:        &quantity,
 		QuantityFull:    &quantityFull,
@@ -66,7 +67,7 @@ func TestMapStockItem(t *testing.T) {
 	if *r.IsRealization != *s.IsRealization {
 		t.Fatalf("IsRealization is not equal")
 	}
-	if r.LastChangeDate.Format(time.DateOnly+"T"+time.TimeOnly) != *s.LastChangeDate {
+	if r.LastChangeDate.Format(time.DateOnly+"T"+time.TimeOnly) != s.LastChangeDate.String() {
 		t.Fatalf("LastChangeDate is not equal")
 	}
 	if *r.ExternalCode != fmt.Sprintf("%d", *s.NmId) {

@@ -3,6 +3,7 @@ package mapper
 import (
 	"github.com/yoda/app/pkg/api"
 	"github.com/yoda/common/pkg/model"
+	"github.com/yoda/common/pkg/types"
 	"github.com/yoda/common/pkg/utils"
 	"strconv"
 	"time"
@@ -11,14 +12,11 @@ import (
 // MapStockItem maps api.StocksItem to model.StockItem
 func MapStockItem(s *api.StocksItem) (*model.StockItem, error) {
 	externalCode := strconv.Itoa(*s.NmId)
-	changeDate, err := time.Parse(time.DateOnly+"T"+time.TimeOnly, *s.LastChangeDate)
-	if err != nil {
-		return nil, err
-	}
+	changeDate := types.CustomTimeToTime(s.LastChangeDate)
 	qp := int32(0)
 	return &model.StockItem{
-		LastChangeDate:   changeDate,
-		LastChangeTime:   changeDate,
+		LastChangeDate:   *changeDate,
+		LastChangeTime:   *changeDate,
 		SupplierArticle:  s.SupplierArticle,
 		Barcode:          s.Barcode,
 		WarehouseName:    *s.WarehouseName,
@@ -35,6 +33,7 @@ func MapStockItem(s *api.StocksItem) (*model.StockItem, error) {
 		DaysOnSite:       utils.IntToInt32(s.DaysOnSite),
 		IsRealization:    s.IsRealization,
 		TechSize:         s.TechSize,
+		CardCreated:      changeDate.AddDate(0, 0, *s.DaysOnSite*-1),
 	}, nil
 }
 

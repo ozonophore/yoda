@@ -5,3 +5,5 @@ drop table if exists "transaction";
 drop table if exists "job_marketplace";
 drop table if exists "job";
 drop table if exists "owner";
+drop table if exists "tlg_queue";
+drop table if exists "tlg_event";

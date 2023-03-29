@@ -3,6 +3,7 @@ package mapper
 import (
 	"fmt"
 	"github.com/yoda/app/pkg/api"
+	"github.com/yoda/common/pkg/types"
 	"github.com/yoda/common/pkg/utils"
 	"testing"
 	"time"
@@ -54,7 +55,7 @@ func TestMapSale(t *testing.T) {
 		IsRealization:     &isRealization,
 		IsStorno:          &isStorno,
 		IsSupply:          &isSupply,
-		LastChangeDate:    &lastChangeDate,
+		LastChangeDate:    types.StringToCustomTime(lastChangeDate),
 		NmId:              &nmId,
 		OblastOkrugName:   &oblastOkrugName,
 		Odid:              &odid,
@@ -71,7 +72,7 @@ func TestMapSale(t *testing.T) {
 		TotalPrice:        &totalPrice,
 		WarehouseName:     &warehouseName,
 	}
-	target := MapSale(s, &transactionId, &source)
+	target := MapSale(s, transactionId, &source)
 	if target.TransactionID != transactionId {
 		t.Errorf("MapSale() = %v, want %v", target.TransactionID, transactionId)
 	}
@@ -119,7 +120,7 @@ func TestMapSale(t *testing.T) {
 		t.Errorf("MapSale() = %v, want %v", target.IsSupply, *s.IsSupply)
 	}
 	lastChangeDateTime := target.LastChangeDate.Format(time.DateOnly) + "T" + target.LastChangeTime.Format(time.TimeOnly)
-	if lastChangeDateTime != *s.LastChangeDate {
+	if lastChangeDateTime != s.LastChangeDate.String() {
 		t.Errorf("MapSale() = %v, want %v", lastChangeDateTime, *s.LastChangeDate)
 	}
 	if *target.ExternalCode != fmt.Sprintf("%d", s.NmId) {

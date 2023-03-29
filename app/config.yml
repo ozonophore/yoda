@@ -1,0 +1,11 @@
+database:
+  dsn: postgres://user:password@localhost:5432/db
+  logging_level: error #info, error, warn
+timeout: 60
+mq:
+  url: amqp://guest:guest@localhost:5672/
+  read_queue: yoda-client
+  write_queue: yoda-server
+ozon:
+  host: http://localhost:1080/ozon
+logging_level: debug

@@ -16,30 +16,33 @@ func Test_Main(t *testing.T) {
 	err := setup(t)
 	assert.NoError(t, err, "setup error")
 
-	config := configuration.InitConfig()
-	config.Dsn = "postgres://root:secret@localhost:5432/pdb"
-	database := repository.InitDatabase(config)
+	config := configuration.InitConfig("config.yml")
+	config.Database.Dsn = "postgres://root:secret@localhost:5432/pdb"
+	config.Ozon.Host = "http://localhost:1080/ozon"
+	config.Wb.Host = "http://localhost:1080/wb"
+	database := repository.InitDatabase(config.Database)
 
-	repository := repository.NewRepositoryDAO(database)
-	assert.NotNil(t, repository, "repository is nil")
+	dao := repository.NewRepositoryDAO(database)
+	assert.NotNil(t, dao, "repository is nil")
+	jobId := 1
+	transactionID := repository.BeginOperation("OWNER", jobId)
 	t.Run("WB", func(t *testing.T) {
-		wbRun(t, config, repository, database)
+		wbRun(t, config, transactionID, database)
 	})
 	t.Run("OZON", func(t *testing.T) {
-		ozonRun(t, config, repository, database)
+		ozonRun(t, config, transactionID, database)
 	})
 }
 
-func ozonRun(t *testing.T, config *configuration.Configuration, repository *repository.RepositoryDAO, database *gorm.DB) {
-	ozonSservice := NewOzonService("OWNER", "111", "API_KEY", "http://localhost:1080/ozon", config)
-	jobId := 1
-	tranId, err := ozonSservice.Parsing(repository, &jobId)
-	assert.NoError(t, err, `Error after parsing: %s transaction %d`, err, *tranId)
+func ozonRun(t *testing.T, config *configuration.Config, transactionID int64, database *gorm.DB) {
+	ozonSservice := NewOzonService("OWNER", "111", "API_KEY", config)
+	err := ozonSservice.Parsing(context.Background(), transactionID)
+	assert.NoError(t, err, `Error after parsing: %s transaction %d`, err, transactionID)
 	var count int64
-	database.Table("stock").Where(`"transaction_id"=?`, *tranId).Count(&count)
-	assert.Equal(t, int64(83), count, "count of stock")
+	database.Table("stock").Where(`"transaction_id"=?`, transactionID).Count(&count)
+	assert.Equal(t, int64(132), count, "count of stock")
 	var stocks []model.StockItem
-	database.Where(`"supplier_article"=? and "transaction_id"=?`, "ИР078795", *tranId).Find(&stocks)
+	database.Where(`"supplier_article"=? and "transaction_id"=?`, "ИР078795", transactionID).Find(&stocks)
 	assert.Equal(t, 1, len(stocks), "count of stock")
 	stock := stocks[0]
 	assert.Equal(t, "ИР078795", *stock.SupplierArticle, "supplier_article")
@@ -48,17 +51,16 @@ func ozonRun(t *testing.T, config *configuration.Configuration, repository *repo
 	assert.Equal(t, "5060244091740", *stock.Barcode, "barcode")
 }
 
-func wbRun(t *testing.T, config *configuration.Configuration, repository *repository.RepositoryDAO, database *gorm.DB) {
+func wbRun(t *testing.T, config *configuration.Config, transactionID int64, database *gorm.DB) {
 	wbService := NewWBService("OWNER", "token", config)
-	jobId := 1
-	tranId, err := wbService.Parsing(repository, &jobId)
-	assert.NoError(t, err, `Error after parsing: %s transaction %d`, err, *tranId)
+	err := wbService.Parsing(context.Background(), transactionID)
+	assert.NoError(t, err, `Error after parsing: %s transaction %d`, err, transactionID)
 	var count int64
-	database.Table("stock").Where(`"transaction_id"=?`, *tranId).Count(&count)
-	assert.Equal(t, int64(133), count, "count of stock")
+	database.Table("stock").Where(`"transaction_id"=?`, transactionID).Count(&count)
+	assert.Equal(t, int64(49), count, "count of stock")
 	var stocks []model.StockItem
-	database.Where(`"supplier_article"=? and "transaction_id"=?`, "ИР060045", *tranId).Find(&stocks)
-	assert.Equal(t, 7, len(stocks), "count of stock")
+	database.Where(`"supplier_article"=? and "transaction_id"=?`, "ИР060045", transactionID).Find(&stocks)
+	assert.Equal(t, 3, len(stocks), "count of stock")
 	stock := stocks[0]
 	assert.Equal(t, "ИР060045", *stock.SupplierArticle, "supplier_article")
 	assert.Equal(t, "WB", stock.Source, "source")
@@ -68,7 +70,7 @@ func wbRun(t *testing.T, config *configuration.Configuration, repository *reposi
 	lastChangeTime, _ := time.Parse(time.TimeOnly, "09:34:40")
 	assert.Equal(t, lastChangeTime, stock.LastChangeTime, "LastChangeTime")
 	assert.Equal(t, "4620003082726", *stock.Barcode, "barcode")
-	database.Table("order").Where(`"transaction_id"=?`, *tranId).Count(&count)
+	database.Table("order").Where(`"transaction_id"=?`, transactionID).Count(&count)
 	assert.Equal(t, int64(1391), count, "count of orders")
 }
 

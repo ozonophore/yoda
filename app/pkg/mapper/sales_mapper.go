@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-func MapSaleArray(sales *[]api.SalesItem, transactionId *int64, source *string) []model.Sale {
+func MapSaleArray(sales *[]api.SalesItem, transactionId int64, source *string) []model.Sale {
 	var result []model.Sale
 	for _, s := range *sales {
 		result = append(result, *MapSale(s, transactionId, source))
@@ -16,17 +16,16 @@ func MapSaleArray(sales *[]api.SalesItem, transactionId *int64, source *string) 
 	return result
 }
 
-func MapSale(s api.SalesItem, transactionId *int64, source *string) *model.Sale {
-	changeDate, _ := time.Parse(time.DateOnly+"T"+time.TimeOnly, *s.LastChangeDate)
+func MapSale(s api.SalesItem, transactionId int64, source *string) *model.Sale {
 	date, _ := time.Parse(time.DateOnly+"T"+time.TimeOnly, *s.Date)
 	isStorno := utils.IntToBoolean(s.IsStorno)
 	externalCode := fmt.Sprintf("%d", s.NmId)
 	return &model.Sale{
-		TransactionID:     *transactionId,
+		TransactionID:     transactionId,
 		Barcode:           s.Barcode,
 		Source:            *source,
-		LastChangeDate:    changeDate,
-		LastChangeTime:    changeDate,
+		LastChangeDate:    s.LastChangeDate.ToTime(),
+		LastChangeTime:    s.LastChangeDate.ToTime(),
 		SaleDate:          date,
 		SaleTime:          date,
 		SupplierArticle:   s.SupplierArticle,
