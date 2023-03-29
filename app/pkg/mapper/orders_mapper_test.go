@@ -3,7 +3,7 @@ package mapper
 import (
 	"github.com/stretchr/testify/assert"
 	"github.com/yoda/app/pkg/api"
-	"github.com/yoda/common/pkg/utils"
+	"github.com/yoda/common/pkg/types"
 	"testing"
 	"time"
 )
@@ -25,7 +25,7 @@ func TestMapOrder(t *testing.T) {
 	assert.Equal(t, "supplierArticle", *order.SupplierArticle)
 	assert.Equal(t, "techSize", *order.TechSize)
 	assert.Equal(t, "barcode", *order.Barcode)
-	assert.Equal(t, 12, *order.DiscountPercent)
+	assert.Equal(t, float64(12), order.DiscountPercent)
 	assert.Equal(t, "warehouseName", *order.WarehouseName)
 	assert.Equal(t, "oblast", *order.Oblast)
 	assert.Equal(t, 43, *order.IncomeID)
@@ -39,7 +39,8 @@ func TestMapOrder(t *testing.T) {
 }
 
 func generateOrder() api.OrdersItem {
-	lastChangeDate := "2020-01-01T10:30:00"
+	tm, _ := time.Parse(time.DateOnly+"T"+time.TimeOnly, "2020-01-01T10:30:00")
+	lastChangeDate := types.CustomTime(tm)
 	date := "2023-03-10T11:20:00"
 	supplierArticle := "supplierArticle"
 	techSize := "techSize"
@@ -75,6 +76,6 @@ func generateOrder() api.OrdersItem {
 		Category:        &category,
 		Brand:           &brand,
 		NmId:            &nmId,
-		TotalPrice:      utils.Float64ToFloat32(&totalPrice),
+		TotalPrice:      &totalPrice,
 	}
 }

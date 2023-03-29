@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"github.com/sirupsen/logrus"
 	"github.com/yoda/app/pkg/configuration"
 	"github.com/yoda/common/pkg/model"
 	"github.com/yoda/common/pkg/types"
@@ -13,6 +14,8 @@ import (
 	"strings"
 	"time"
 )
+
+var repository *RepositoryDAO
 
 type RepositoryDAO struct {
 	db *gorm.DB
@@ -31,12 +34,12 @@ func stringToLogLevel(s *string) logger.LogLevel {
 	}
 }
 
-func InitDatabase(config *configuration.Configuration) *gorm.DB {
+func InitDatabase(config configuration.Database) *gorm.DB {
 	db, err := gorm.Open(postgres.Open(config.Dsn), &gorm.Config{
-		Logger: logger.Default.LogMode(stringToLogLevel(&config.SqlLogger.Level)),
+		Logger: logger.Default.LogMode(stringToLogLevel(&config.LoggingLevel)),
 	})
 	if err != nil {
-		log.Fatalln(err)
+		logrus.Panic(err)
 	}
 	//sqlDB, _ := db.DB()
 	//sqlDB.SetMaxIdleConns(10)
@@ -52,47 +55,66 @@ func InitDatabase(config *configuration.Configuration) *gorm.DB {
 }
 
 func NewRepositoryDAO(db *gorm.DB) *RepositoryDAO {
-	return &RepositoryDAO{
-		db: db,
+	if repository == nil {
+		repository = &RepositoryDAO{
+			db: db,
+		}
+	}
+	return repository
+}
+
+func initIfError() {
+	if repository == nil {
+		logrus.Panic("Repository is not initialized")
 	}
 }
 
-func (p *RepositoryDAO) CreateJob(job *model.Job) error {
-	tx := p.db.WithContext(context.Background()).Create(job)
+func CreateJob(job *model.Job) error {
+	initIfError()
+	tx := repository.db.WithContext(context.Background()).Create(job)
 	return tx.Error
 }
 
-func (p *RepositoryDAO) BeginOperation(owner, source *string, jobId *int) *int64 {
+func GetJobs() (*[]model.Job, error) {
+	initIfError()
+	var jobs []model.Job
+	err := repository.db.Preload("JobParameters").Preload("Owner").Where(`"is_active"=?`, true).Find(&jobs).Error
+	if err != nil {
+		return nil, err
+	}
+	return &jobs, nil
+}
+
+func BeginOperation(owner string, jobId int) int64 {
+	initIfError()
 	timeNow := time.Now()
 	status := types.StatusTypeBegin
 	m := model.Transaction{
-		StartDate: &timeNow,
-		Source:    source,
-		Status:    &status,
+		StartDate: timeNow,
+		Status:    status,
 		OwnerCode: owner,
 		JobId:     jobId,
 	}
-	p.db.Create(&m)
+	repository.db.Create(&m)
 	return m.ID
 }
 
-func (p *RepositoryDAO) Begin() *gorm.DB {
-	return p.db.Begin()
-}
-
-func (p *RepositoryDAO) EndOperation(transaction *int64, status string) {
+func EndOperation(transaction int64, status string) {
+	initIfError()
 	timeNow := time.Now()
-	p.db.Updates(&model.Transaction{}).Where("id = ?", transaction).Updates(model.Transaction{
+	repository.db.Updates(&model.Transaction{}).Where("id = ?", transaction).Updates(model.Transaction{
 		EndDate: &timeNow,
-		Status:  &status,
+		Status:  status,
 	})
 }
 
-func (p *RepositoryDAO) UpdatePrices(models *[]model.StockItem) error {
-	tx := p.db.Begin()
+func UpdatePrices(models *[]model.StockItem) error {
+	initIfError()
+	tx := repository.db.Begin()
 	for _, model := range *models {
-		err := tx.Exec(`UPDATE "stock" SET "barcode" = ?, "price" = ?, "discount" = ?, "price_after_discount" = ? WHERE "transaction_id" = ? AND "external_code" = ?`,
-			model.Barcode, model.Price, model.Discount, model.PriceAfterDiscount, model.TransactionID, model.ExternalCode,
+		err := tx.Exec(`UPDATE "stock" SET "barcode" = ?, "price" = ?, "discount" = ?, 
+                   "price_after_discount" = ?, "card_created" = ?, "days_on_site" = ? WHERE "transaction_id" = ? AND "external_code" = ?`,
+			model.Barcode, model.Price, model.Discount, model.PriceAfterDiscount, model.CardCreated, model.DaysOnSite, model.TransactionID, model.ExternalCode,
 		).Error
 		if err != nil {
 			tx.Rollback()
@@ -102,43 +124,58 @@ func (p *RepositoryDAO) UpdatePrices(models *[]model.StockItem) error {
 	return tx.Commit().Error
 }
 
-func (p *RepositoryDAO) SelectUniqueStockItem(transactionId *int64) *[]string {
+func SelectUniqueStockItem(transactionId int64) *[]string {
+	initIfError()
 	var ex []string
-	p.db.Table("stock").Select(`"supplier_article"`).Distinct().Where(`"transaction_id" = ?`, transactionId).Find(&ex)
+	repository.db.Table("stock").Select(`"supplier_article"`).Distinct().Where(`"transaction_id" = ?`, transactionId).Find(&ex)
 	return &ex
 }
 
-func (p *RepositoryDAO) SaveStocks(items *[]model.StockItem) error {
-	tx := p.db.CreateInBatches(items, len(*items))
+func SaveStocks(items *[]model.StockItem) error {
+	initIfError()
+	tx := repository.db.CreateInBatches(items, len(*items))
 	if tx.Error != nil {
 		return tx.Error
 	}
 	return nil
 }
 
-func (p *RepositoryDAO) SaveSales(items *[]model.Sale) error {
-	tx := p.db.CreateInBatches(items, len(*items))
+func SaveSales(items *[]model.Sale) error {
+	initIfError()
+	tx := repository.db.CreateInBatches(items, len(*items))
 	if tx.Error != nil {
 		return tx.Error
 	}
 	return nil
 }
 
-func (p *RepositoryDAO) SaveOrders(items *[]model.Order) error {
-	tx := p.db.CreateInBatches(items, len(*items))
+func SaveOrders(items *[]model.Order) error {
+	initIfError()
+	tx := repository.db.CreateInBatches(items, len(*items))
 	if tx.Error != nil {
 		return tx.Error
 	}
 	return nil
 }
 
-func (p *RepositoryDAO) UpdateAttributes(models *[]model.StockItem) error {
-	tx := p.db.Begin()
+func UpdateAttributes(models *[]model.StockItem) error {
+	initIfError()
+	tx := repository.db.Begin()
 	for _, model := range *models {
 		tx.Model(&model).
-			Select("\"subject\"", "\"category\"", "\"brand\"", "\"name\"").
-			Where(map[string]interface{}{"\"transaction_id\"": model.TransactionID, "\"supplier_article\"": *model.SupplierArticle}).
+			Select(`"subject"`, `"category"`, `"brand"`, `"name"`).
+			Where(map[string]interface{}{`"transaction_id"`: model.TransactionID, `"supplier_article"`: *model.SupplierArticle}).
 			UpdateColumns(model)
 	}
 	return tx.Commit().Error
+}
+
+func GetTlgEvents() (*[]model.TlgEvent, error) {
+	initIfError()
+	var events []model.TlgEvent
+	err := repository.db.Find(&events).Error
+	if err != nil {
+		return nil, err
+	}
+	return &events, nil
 }

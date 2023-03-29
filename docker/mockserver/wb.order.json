@@ -6,7 +6,7 @@
     "httpResponse": {
       "body": [
         {
-          "date": "2022-10-31T02:24:10",
+          "date": "2023-03-15T02:24:10",
           "lastChangeDate": "2022-11-01T20:05:11",
           "supplierArticle": "ИР039738",
           "techSize": "0",
@@ -28,7 +28,7 @@
           "srid": "b381b7b9614f49999ee6405a4d7658b7"
         },
         {
-          "date": "2022-10-31T12:49:54",
+          "date": "2023-03-15T12:49:54",
           "lastChangeDate": "2022-11-02T03:14:30",
           "supplierArticle": "ИР039736",
           "techSize": "0",
@@ -50,7 +50,7 @@
           "srid": "cc1d9fa1d25b4138829f4da9ee31abca"
         },
         {
-          "date": "2022-10-31T18:02:44",
+          "date": "2023-03-15T18:02:44",
           "lastChangeDate": "2022-11-02T03:14:30",
           "supplierArticle": "ИР039733",
           "techSize": "0",
@@ -72,7 +72,7 @@
           "srid": "3d46545ec4424d3b9c320f17897c3235"
         },
         {
-          "date": "2022-10-31T18:02:44",
+          "date": "2023-03-15T18:02:44",
           "lastChangeDate": "2022-11-02T03:14:30",
           "supplierArticle": "ИР039733",
           "techSize": "0",
@@ -94,7 +94,7 @@
           "srid": "8c6f7e80b2d544729d8c8673ac78254a"
         },
         {
-          "date": "2022-10-31T18:49:50",
+          "date": "2023-03-15T18:49:50",
           "lastChangeDate": "2022-11-02T03:14:30",
           "supplierArticle": "ИР039736",
           "techSize": "0",
@@ -116,7 +116,7 @@
           "srid": "02523982acaf49178feb961e4179ea10"
         },
         {
-          "date": "2022-10-31T18:49:50",
+          "date": "2023-03-15T18:49:50",
           "lastChangeDate": "2022-11-02T03:14:30",
           "supplierArticle": "ИР039736",
           "techSize": "0",
@@ -138,7 +138,7 @@
           "srid": "7356d766534a4924a15c039d0cdbbef4"
         },
         {
-          "date": "2022-10-31T18:49:50",
+          "date": "2023-03-15T18:49:50",
           "lastChangeDate": "2022-11-02T03:14:30",
           "supplierArticle": "ИР039736",
           "techSize": "0",
@@ -160,7 +160,7 @@
           "srid": "86a2cae9667345d5a5f28a15143d5907"
         },
         {
-          "date": "2022-10-31T20:15:35",
+          "date": "2023-03-15T20:15:35",
           "lastChangeDate": "2022-11-02T03:14:30",
           "supplierArticle": "ИР039738",
           "techSize": "0",
@@ -182,7 +182,7 @@
           "srid": "123d34ad53a34fddb69cff7ce4584044"
         },
         {
-          "date": "2022-10-31T20:28:05",
+          "date": "2023-03-15T20:28:05",
           "lastChangeDate": "2022-11-02T03:14:30",
           "supplierArticle": "ИР039738",
           "techSize": "0",
@@ -204,7 +204,7 @@
           "srid": "0e14d433d8d94405b75b334f2625f163"
         },
         {
-          "date": "2022-10-31T20:28:05",
+          "date": "2023-03-15T20:28:05",
           "lastChangeDate": "2022-11-02T03:14:30",
           "supplierArticle": "ИР039738",
           "techSize": "0",
@@ -226,7 +226,7 @@
           "srid": "657dfdade8ff4cedb2c5bdca8e1e93b2"
         },
         {
-          "date": "2022-10-31T20:19:52",
+          "date": "2023-03-15T20:19:52",
           "lastChangeDate": "2022-11-02T03:14:30",
           "supplierArticle": "ИР039738",
           "techSize": "0",
@@ -248,7 +248,7 @@
           "srid": "798521203f5f40669d4f53925c90ec75"
         },
         {
-          "date": "2022-10-31T20:45:43",
+          "date": "2023-03-28T20:45:43",
           "lastChangeDate": "2022-11-02T03:14:30",
           "supplierArticle": "ИР039738",
           "techSize": "0",
@@ -270,7 +270,7 @@
           "srid": "37dcdcf4d7854fdaa603dc5dcf459e08"
         },
         {
-          "date": "2022-10-31T20:44:45",
+          "date": "2023-03-27T20:44:45",
           "lastChangeDate": "2022-11-02T03:14:30",
           "supplierArticle": "ИР039738",
           "techSize": "0",
@@ -292,7 +292,7 @@
           "srid": "0402db5ab4f445539043b5a04ef21678"
         },
         {
-          "date": "2022-10-31T20:44:45",
+          "date": "2023-03-27T20:44:45",
           "lastChangeDate": "2022-11-02T03:14:30",
           "supplierArticle": "ИР039738",
           "techSize": "0",
@@ -314,7 +314,7 @@
           "srid": "38843c97e9924fb3940384060d0fe2eb"
         },
         {
-          "date": "2022-10-31T21:19:20",
+          "date": "2023-03-27T21:19:20",
           "lastChangeDate": "2022-11-02T03:14:30",
           "supplierArticle": "ИР039738",
           "techSize": "0",
@@ -336,7 +336,7 @@
           "srid": "0488771688974fc28e0f7472e296d976"
         },
         {
-          "date": "2022-10-31T23:13:42",
+          "date": "2023-03-27T23:13:42",
           "lastChangeDate": "2022-11-02T03:14:30",
           "supplierArticle": "ИР039738",
           "techSize": "0",
@@ -358,7 +358,7 @@
           "srid": "55651eb68ba04d3c882af273537635a4"
         },
         {
-          "date": "2022-10-31T23:28:00",
+          "date": "2023-03-27T23:28:00",
           "lastChangeDate": "2022-11-02T03:14:30",
           "supplierArticle": "ИР039738",
           "techSize": "0",
@@ -380,7 +380,7 @@
           "srid": "02a537be53fc4c1ea8abe6aab2df08a2"
         },
         {
-          "date": "2022-10-31T23:26:14",
+          "date": "2023-03-27T23:26:14",
           "lastChangeDate": "2022-11-02T03:14:30",
           "supplierArticle": "ИР077514",
           "techSize": "0",
@@ -402,7 +402,7 @@
           "srid": "45e2930d1f9b46ae87074094f827614f"
         },
         {
-          "date": "2022-10-31T23:26:14",
+          "date": "2023-03-15T23:26:14",
           "lastChangeDate": "2022-11-02T03:14:30",
           "supplierArticle": "ИР077514",
           "techSize": "0",

@@ -12,13 +12,24 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"time"
 
 	"github.com/deepmap/oapi-codegen/pkg/runtime"
 	openapi_types "github.com/deepmap/oapi-codegen/pkg/types"
+	"github.com/yoda/common/pkg/types"
 )
 
 const (
 	HeaderApiKeyScopes = "HeaderApiKey.Scopes"
+)
+
+// Defines values for FBOStatus.
+const (
+	AwaitingDeliver   FBOStatus = "awaiting_deliver"
+	AwaitingPackaging FBOStatus = "awaiting_packaging"
+	Cancelled         FBOStatus = "cancelled"
+	Delivered         FBOStatus = "delivered"
+	Delivering        FBOStatus = "delivering"
 )
 
 // Defines values for ProductAttributeFilterFilterVisibility.
@@ -58,6 +69,115 @@ const (
 	GetOzonSupplierStocksJSONBodyWarehouseTypeNOTEXPRESSDARKSTORE GetOzonSupplierStocksJSONBodyWarehouseType = "NOT_EXPRESS_DARK_STORE"
 )
 
+// AdditionalDataItem defines model for AdditionalDataItem.
+type AdditionalDataItem struct {
+	// Key Название дополнительного поля
+	Key *string `json:"key,omitempty"`
+
+	// Value Значение дополнительного поля
+	Value *string `json:"value,omitempty"`
+}
+
+// FBO defines model for FBO.
+type FBO struct {
+	// AdditionalData Дополнительные данные
+	AdditionalData *[]AdditionalDataItem              `json:"additional_data,omitempty"`
+	AnalyticsData  *FboPostingFboPostingAnalyticsData `json:"analytics_data,omitempty"`
+
+	// CancelReasonId Идентификатор причины отмены
+	CancelReasonId *int `json:"cancel_reason_id,omitempty"`
+
+	// CreatedAt Дата создания
+	CreatedAt     time.Time             `json:"created_at"`
+	FinancialData *PostingFinancialData `json:"financial_data,omitempty"`
+
+	// InProcessAt Дата начала обработки
+	InProcessAt *time.Time `json:"in_process_at,omitempty"`
+
+	// OrderId Идентификатор заказа
+	OrderId *int64 `json:"order_id,omitempty"`
+
+	// OrderNumber Номер заказа
+	OrderNumber *string `json:"order_number,omitempty"`
+
+	// PostingNumber Номер отправления
+	PostingNumber *string `json:"posting_number,omitempty"`
+
+	// Products Список товаров в заказе.
+	Products *[]PostingProduct `json:"products,omitempty"`
+
+	// Status Статус отправления.
+	Status FBOStatus `json:"status"`
+}
+
+// FBOStatus Статус отправления.
+type FBOStatus string
+
+// FBOFilter defines model for FBOFilter.
+type FBOFilter struct {
+	// Dir Направление сортировки. Возможные значения: `asc` - по возрастанию,`desc` - по убыванию.
+	Dir    string          `json:"dir"`
+	Filter FBOFilterFilter `json:"filter"`
+
+	// Limit Количество записей на странице
+	Limit int64 `json:"limit"`
+
+	// Offset Смещение от начала списка
+	Offset int64 `json:"offset"`
+
+	// Translit Флаг транслитерации названий городов
+	Translit bool          `json:"translit"`
+	With     FBOFilterWith `json:"with"`
+}
+
+// FBOFilterFilter defines model for FBOFilterFilter.
+type FBOFilterFilter struct {
+	// Since Начало периода в формате YYYY-MM-DD
+	Since time.Time `json:"since"`
+
+	// Status Статус отправления. awaiting_packaging — ожидает упаковки, awaiting_deliver — ожидает отгрузки, delivering — доставляется, delivered — доставлено, cancelled — отменено.
+	Status string `json:"status"`
+
+	// To Конец периода в формате YYYY-MM-DD
+	To time.Time `json:"to"`
+}
+
+// FBOFilterWith defines model for FBOFilterWith.
+type FBOFilterWith struct {
+	// AnalyticsData Флаг включения данных аналитики
+	AnalyticsData bool `json:"analytics_data"`
+
+	// FinancialData Флаг включения финансовых данных
+	FinancialData bool `json:"financial_data"`
+}
+
+// FboPostingFboPostingAnalyticsData defines model for FboPostingFboPostingAnalyticsData.
+type FboPostingFboPostingAnalyticsData struct {
+	// City Город
+	City *string `json:"city,omitempty"`
+
+	// DeliveryType Тип доставки
+	DeliveryType *string `json:"delivery_type,omitempty"`
+
+	// IsLegal Флаг юридического лица
+	IsLegal *bool `json:"is_legal,omitempty"`
+
+	// IsPremium Флаг премиума
+	IsPremium *bool `json:"is_premium,omitempty"`
+
+	// PaymentTypeGroupName Группа типа оплаты
+	PaymentTypeGroupName *string `json:"payment_type_group_name,omitempty"`
+
+	// Region Регион
+	Region *string `json:"region,omitempty"`
+
+	// WarehouseId Идентификатор склада
+	WarehouseId *int64 `json:"warehouse_id,omitempty"`
+
+	// WarehouseName Название склада
+	WarehouseName *string `json:"warehouse_name,omitempty"`
+}
+
 // OrdersItem defines model for OrdersItem.
 type OrdersItem struct {
 	// Barcode Бар-код
@@ -88,7 +208,7 @@ type OrdersItem struct {
 	IsCancel *bool `json:"isCancel,omitempty"`
 
 	// LastChangeDate Дата и время обновления информации в сервисе. Это поле соответствует параметру `dateFrom` в запросе, если параметр `flag=0` или не указан. Если часовой пояс не указан, то берется Московское время UTC+3.
-	LastChangeDate *string `json:"lastChangeDate,omitempty"`
+	LastChangeDate *types.CustomTime `json:"lastChangeDate,omitempty"`
 
 	// NmId Код WB
 	NmId *int `json:"nmId,omitempty"`
@@ -115,7 +235,7 @@ type OrdersItem struct {
 	TechSize *string `json:"techSize,omitempty"`
 
 	// TotalPrice Цена до согласованной итоговой скидки/промо/спп. Для получения цены со скидкой можно воспользоваться формулой `priceWithDiscount = totalPrice * (1 - discountPercent/100)`
-	TotalPrice *float32 `json:"totalPrice,omitempty"`
+	TotalPrice *float64 `json:"totalPrice,omitempty"`
 
 	// WarehouseName Название склада отгрузки
 	WarehouseName *string `json:"warehouseName,omitempty"`
@@ -134,6 +254,63 @@ type OzonError struct {
 
 	// Message Описание ошибки
 	Message *string `json:"message,omitempty"`
+}
+
+// PostingFinancialData defines model for PostingFinancialData.
+type PostingFinancialData struct {
+	// Products Список товаров в заказе.
+	Products *[]PostingFinancialDataProduct `json:"products,omitempty"`
+}
+
+// PostingFinancialDataProduct defines model for PostingFinancialDataProduct.
+type PostingFinancialDataProduct struct {
+	// CommissionAmount Сумма комиссии
+	CommissionAmount *float64 `json:"commission_amount,omitempty"`
+
+	// CommissionPercent Процент комиссии
+	CommissionPercent *int64 `json:"commission_percent,omitempty"`
+
+	// CommissionsCurrencyCode Код валюты комиссии
+	CommissionsCurrencyCode *string `json:"commissions_currency_code,omitempty"`
+
+	// CurrencyCode Код валюты
+	CurrencyCode *string `json:"currency_code,omitempty"`
+
+	// OldPrice Цена до учёта скидок. На карточке товара отображается зачёркнутой.
+	OldPrice float64 `json:"old_price"`
+
+	// Price Цена товара
+	Price float64 `json:"price"`
+
+	// ProductId Идентификатор товара
+	ProductId int64 `json:"product_id"`
+
+	// TotalDiscountPercent Общий процент скидки
+	TotalDiscountPercent float64 `json:"total_discount_percent"`
+
+	// TotalDiscountValue Общая сумма скидки
+	TotalDiscountValue float64 `json:"total_discount_value"`
+}
+
+// PostingProduct defines model for PostingProduct.
+type PostingProduct struct {
+	// CurrencyCode Код валюты
+	CurrencyCode *string `json:"currency_code,omitempty"`
+
+	// Name Наименование товара
+	Name *string `json:"name,omitempty"`
+
+	// OfferId Идентификатор товара
+	OfferId string `json:"offer_id"`
+
+	// Price Цена товара
+	Price string `json:"price"`
+
+	// Quantity Количество товара
+	Quantity int64 `json:"quantity"`
+
+	// Sku Артикул товара
+	Sku int64 `json:"sku"`
 }
 
 // ProductAttribute defines model for ProductAttribute.
@@ -237,20 +414,20 @@ type ProductFilter struct {
 
 // ProductInfo defines model for ProductInfo.
 type ProductInfo struct {
-	Barcode        *string   `json:"barcode,omitempty"`
-	Barcodes       *[]string `json:"barcodes,omitempty"`
-	BuyboxPrice    *string   `json:"buybox_price,omitempty"`
-	CategoryId     *int      `json:"category_id,omitempty"`
-	CreatedAt      *string   `json:"created_at,omitempty"`
-	CurrencyCode   *string   `json:"currency_code,omitempty"`
-	FboSku         *int      `json:"fbo_sku,omitempty"`
-	Id             *int      `json:"id,omitempty"`
-	MarketingPrice *string   `json:"marketing_price,omitempty"`
-	MinPrice       *string   `json:"min_price,omitempty"`
-	Name           *string   `json:"name,omitempty"`
-	OfferId        *string   `json:"offer_id,omitempty"`
-	OldPrice       *string   `json:"old_price,omitempty"`
-	Vat            *string   `json:"vat,omitempty"`
+	Barcode        *string    `json:"barcode,omitempty"`
+	Barcodes       *[]string  `json:"barcodes,omitempty"`
+	BuyboxPrice    *string    `json:"buybox_price,omitempty"`
+	CategoryId     *int       `json:"category_id,omitempty"`
+	CreatedAt      *time.Time `json:"created_at,omitempty"`
+	CurrencyCode   *string    `json:"currency_code,omitempty"`
+	FboSku         *int       `json:"fbo_sku,omitempty"`
+	Id             *int       `json:"id,omitempty"`
+	MarketingPrice *string    `json:"marketing_price,omitempty"`
+	MinPrice       *string    `json:"min_price,omitempty"`
+	Name           *string    `json:"name,omitempty"`
+	OfferId        *string    `json:"offer_id,omitempty"`
+	OldPrice       *string    `json:"old_price,omitempty"`
+	Vat            *string    `json:"vat,omitempty"`
 }
 
 // RowItem defines model for RowItem.
@@ -306,7 +483,7 @@ type SalesItem struct {
 	IsSupply *bool `json:"isSupply,omitempty"`
 
 	// LastChangeDate Дата и время обновления информации в сервисе. Это поле соответствует параметру `dateFrom` в запросе, если параметр `flag=0` или не указан. Если часовой пояс не указан, то берется Московское время UTC+3.
-	LastChangeDate *string `json:"lastChangeDate,omitempty"`
+	LastChangeDate *types.CustomTime `json:"lastChangeDate,omitempty"`
 
 	// NmId Код WB
 	NmId *int `json:"nmId,omitempty"`
@@ -384,7 +561,7 @@ type StocksItem struct {
 	IsSupply *bool `json:"isSupply,omitempty"`
 
 	// LastChangeDate Дата и время обновления информации в сервисе. Это поле соответствует параметру `dateFrom` в запросе. Если часовой пояс не указан, то берется Московское время UTC+3.
-	LastChangeDate *string `json:"lastChangeDate,omitempty"`
+	LastChangeDate *types.CustomTime `json:"lastChangeDate,omitempty"`
 
 	// NmId Код WB
 	NmId *int `json:"nmId,omitempty"`
@@ -447,6 +624,9 @@ type GetOzonSupplierStocksJSONBodyWarehouseType string
 // GetOzonSupplierStocksJSONRequestBody defines body for GetOzonSupplierStocks for application/json ContentType.
 type GetOzonSupplierStocksJSONRequestBody GetOzonSupplierStocksJSONBody
 
+// GetOzonFBOJSONRequestBody defines body for GetOzonFBO for application/json ContentType.
+type GetOzonFBOJSONRequestBody = FBOFilter
+
 // GetOzonProductInfoJSONRequestBody defines body for GetOzonProductInfo for application/json ContentType.
 type GetOzonProductInfoJSONRequestBody = ProductFilter
 
@@ -485,11 +665,11 @@ type ClientOption func(*Client) error
 
 // Creates a new Client, with reasonable defaults
 func NewClient(server string, opts ...ClientOption) (*Client, error) {
-	// create a service with sane default values
+	// create a client with sane default values
 	client := Client{
 		Server: server,
 	}
-	// mutate service and add all optional params
+	// mutate client and add all optional params
 	for _, o := range opts {
 		if err := o(&client); err != nil {
 			return nil, err
@@ -524,7 +704,7 @@ func WithRequestEditorFn(fn RequestEditorFn) ClientOption {
 	}
 }
 
-// The interface specification for the service above.
+// The interface specification for the client above.
 type ClientInterface interface {
 	// GetWBOrders request
 	GetWBOrders(ctx context.Context, params *GetWBOrdersParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -539,6 +719,11 @@ type ClientInterface interface {
 	GetOzonSupplierStocksWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	GetOzonSupplierStocks(ctx context.Context, body GetOzonSupplierStocksJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetOzonFBO request with any body
+	GetOzonFBOWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	GetOzonFBO(ctx context.Context, body GetOzonFBOJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetOzonProductInfo request with any body
 	GetOzonProductInfoWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -601,6 +786,30 @@ func (c *Client) GetOzonSupplierStocksWithBody(ctx context.Context, contentType 
 
 func (c *Client) GetOzonSupplierStocks(ctx context.Context, body GetOzonSupplierStocksJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetOzonSupplierStocksRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetOzonFBOWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetOzonFBORequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetOzonFBO(ctx context.Context, body GetOzonFBOJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetOzonFBORequest(c.Server, body)
 	if err != nil {
 		return nil, err
 	}
@@ -860,6 +1069,46 @@ func NewGetOzonSupplierStocksRequestWithBody(server string, contentType string, 
 	return req, nil
 }
 
+// NewGetOzonFBORequest calls the generic GetOzonFBO builder with application/json body
+func NewGetOzonFBORequest(server string, body GetOzonFBOJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewGetOzonFBORequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewGetOzonFBORequestWithBody generates requests for GetOzonFBO with any type of body
+func NewGetOzonFBORequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v2/posting/fbo/list")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewGetOzonProductInfoRequest calls the generic GetOzonProductInfo builder with application/json body
 func NewGetOzonProductInfoRequest(server string, body GetOzonProductInfoJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
@@ -981,7 +1230,7 @@ func WithBaseURL(baseURL string) ClientOption {
 	}
 }
 
-// ClientWithResponsesInterface is the interface specification for the service with responses above.
+// ClientWithResponsesInterface is the interface specification for the client with responses above.
 type ClientWithResponsesInterface interface {
 	// GetWBOrders request
 	GetWBOrdersWithResponse(ctx context.Context, params *GetWBOrdersParams, reqEditors ...RequestEditorFn) (*GetWBOrdersResponse, error)
@@ -996,6 +1245,11 @@ type ClientWithResponsesInterface interface {
 	GetOzonSupplierStocksWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*GetOzonSupplierStocksResponse, error)
 
 	GetOzonSupplierStocksWithResponse(ctx context.Context, body GetOzonSupplierStocksJSONRequestBody, reqEditors ...RequestEditorFn) (*GetOzonSupplierStocksResponse, error)
+
+	// GetOzonFBO request with any body
+	GetOzonFBOWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*GetOzonFBOResponse, error)
+
+	GetOzonFBOWithResponse(ctx context.Context, body GetOzonFBOJSONRequestBody, reqEditors ...RequestEditorFn) (*GetOzonFBOResponse, error)
 
 	// GetOzonProductInfo request with any body
 	GetOzonProductInfoWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*GetOzonProductInfoResponse, error)
@@ -1100,6 +1354,35 @@ func (r GetOzonSupplierStocksResponse) StatusCode() int {
 	return 0
 }
 
+type GetOzonFBOResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Result *[]FBO `json:"result,omitempty"`
+	}
+	JSON400 *OzonError
+	JSON403 *OzonError
+	JSON404 *OzonError
+	JSON409 *OzonError
+	JSON500 *OzonError
+}
+
+// Status returns HTTPResponse.Status
+func (r GetOzonFBOResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetOzonFBOResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type GetOzonProductInfoResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -1195,6 +1478,23 @@ func (c *ClientWithResponses) GetOzonSupplierStocksWithResponse(ctx context.Cont
 		return nil, err
 	}
 	return ParseGetOzonSupplierStocksResponse(rsp)
+}
+
+// GetOzonFBOWithBodyWithResponse request with arbitrary body returning *GetOzonFBOResponse
+func (c *ClientWithResponses) GetOzonFBOWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*GetOzonFBOResponse, error) {
+	rsp, err := c.GetOzonFBOWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetOzonFBOResponse(rsp)
+}
+
+func (c *ClientWithResponses) GetOzonFBOWithResponse(ctx context.Context, body GetOzonFBOJSONRequestBody, reqEditors ...RequestEditorFn) (*GetOzonFBOResponse, error) {
+	rsp, err := c.GetOzonFBO(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetOzonFBOResponse(rsp)
 }
 
 // GetOzonProductInfoWithBodyWithResponse request with arbitrary body returning *GetOzonProductInfoResponse
@@ -1333,6 +1633,69 @@ func ParseGetOzonSupplierStocksResponse(rsp *http.Response) (*GetOzonSupplierSto
 			return nil, err
 		}
 		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetOzonFBOResponse parses an HTTP response from a GetOzonFBOWithResponse call
+func ParseGetOzonFBOResponse(rsp *http.Response) (*GetOzonFBOResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetOzonFBOResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Result *[]FBO `json:"result,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest OzonError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest OzonError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest OzonError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest OzonError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON409 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest OzonError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
 
 	}
 

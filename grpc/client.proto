@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package grpc;
+
+option go_package = "./grpc";
+
+service Server {
+    rpc Registry(Request) returns (Response) {}
+}
+
+message Request {
+    string name = 1;
+    string addr = 2;
+}
+
+message Response {
+    int32 status = 1;
+}

@@ -5,9 +5,15 @@ services:
     ports:
       - 1080:1080
     environment:
+      JVM_OPTS: "-Xms4g -Xms4g"
       MOCKSERVER_PROPERTY_FILE: /mockserver/mockserver.properties
       MOCKSERVER_INITIALIZATION_JSON_PATH: /mockserver/*.json
     volumes:
       - type: bind
         source: ./mockserver
         target: /mockserver
+    deploy:
+      resources:
+        limits:
+          cpus: "4.0"
+          memory: 4g

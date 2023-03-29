@@ -30,7 +30,6 @@ create table "transaction"
     "job_id"     integer references "job" ("id")         not null,
     "start_date" timestamp                               not null,
     "end_date"   timestamp,
-    "source"     varchar(20),
     "status"     varchar(20)
 );
 
@@ -59,7 +58,8 @@ create table "stock"
     "SCCode"               varchar(50),
     "price"                float,
     "discount"             float,
-    "price_after_discount" float
+    "price_after_discount" float,
+    "card_created"         date                                    not null
 );
 
 comment
@@ -104,6 +104,8 @@ comment
 on column "stock"."discount" is 'Скидка';
 comment
 on column "stock"."price_after_discount" is 'Цена после скидки';
+comment
+on column "stock"."card_created" is 'Дата создания карточки';
 
 create table "sale"
 (
@@ -117,11 +119,12 @@ create table "sale"
     "supplier_article"    varchar(75),
     "tech_size"           varchar(30),
     "barcode"             varchar(30),
-    "total_price"         money,
-    "discount_percent"    integer,
+    "total_price"         float,
+    "discount_percent"    float,
+    "discount_value"      float,
     "is_supply"           boolean,
     "is_realization"      boolean,
-    "promo_code_discount" float4,
+    "promo_code_discount" float,
     "warehouse_name"      varchar(50),
     "country_name"        varchar(200),
     "oblast_okrug_name"   varchar(200),
@@ -131,8 +134,8 @@ create table "sale"
     "odid"                integer,
     "spp"                 float,
     "for_pay"             float,
-    "finished_price"      money,
-    "price_with_disc"     money,
+    "finished_price"      float,
+    "price_with_disc"     float,
     "external_code"       varchar(50),
     "subject"             varchar(50),
     "category"            varchar(50),
@@ -160,7 +163,9 @@ on column "sale"."barcode" is 'Бар-код';
 comment
 on column "sale"."total_price" is 'Цена до согласованной итоговой скидки/промо/спп. Для получения цены со скидкой можно воспользоваться формулой priceWithDiscount = totalPrice * (1 - discountPercent/100)';
 comment
-on column "sale"."discount_percent" is 'Согласованный итоговый дисконт';
+on column "sale"."discount_percent" is 'Согласованный итоговый дисконт(процент)';
+comment
+on column "sale"."discount_value" is 'Согласованный итоговый дисконт(значение)';
 comment
 on column "sale"."is_supply" is 'Договор поставки';
 comment
@@ -208,31 +213,35 @@ on column "sale"."srid" is 'Уникальный идентификатор за
 
 create table "order"
 (
-    "id"               serial primary key,
-    "transaction_id"   integer references "transaction" ("id") not null,
-    "source"           varchar(20)                             not null,
-    "last_change_date" date                                    not null,
-    "last_change_time" time                                    not null,
-    "order_date"       date                                    not null,
-    "order_time"       time                                    not null,
-    "supplier_article" varchar(75),
-    "tech_size"        varchar(30),
-    "barcode"          varchar(30),
-    "total_price"      money,
-    "discount_percent" integer,
-    "warehouse_name"   varchar(50),
-    "oblast"           varchar(200),
-    "income_id"        integer,
-    "external_code"    varchar(50),
-    "odid"             integer,
-    "subject"          varchar(50),
-    "category"         varchar(50),
-    "brand"            varchar(50),
-    "is_cancel"        boolean,
-    "cancel_dt"        timestamp,
-    "g_number"         varchar(50),
-    "sticker"          varchar(200),
-    "srid"             varchar(50)
+    "id"                  serial primary key,
+    "transaction_id"      integer references "transaction" ("id") not null,
+    "source"              varchar(20)                             not null,
+    "last_change_date"    date                                    not null,
+    "last_change_time"    time                                    not null,
+    "order_date"          date                                    not null,
+    "order_time"          time                                    not null,
+    "supplier_article"    varchar(75),
+    "tech_size"           varchar(30),
+    "barcode"             varchar(30),
+    "total_price"         float,
+    "discount_percent"    float,
+    "discount_value"      float,
+    "price_with_discount" float,
+    "warehouse_name"      varchar(50),
+    "oblast"              varchar(200),
+    "income_id"           integer,
+    "external_code"       varchar(50),
+    "odid"                integer,
+    "subject"             varchar(200),
+    "category"            varchar(200),
+    "brand"               varchar(100),
+    "is_cancel"           boolean,
+    "status"              varchar(50),
+    "cancel_dt"           timestamp,
+    "g_number"            varchar(50),
+    "sticker"             varchar(200),
+    "srid"                varchar(50),
+    "quantity"            integer                                 not null
 );
 
 comment
@@ -252,7 +261,11 @@ on column "order"."barcode" is 'Бар-код';
 comment
 on column "order"."total_price" is 'Цена до согласованной итоговой скидки/промо/спп. Для получения цены со скидкой можно воспользоваться формулой priceWithDiscount = totalPrice * (1 - discountPercent/100)';
 comment
-on column "order"."discount_percent" is 'Согласованный итоговый дисконт';
+on column "order"."discount_percent" is 'Согласованный итоговый дисконт(процент)';
+comment
+on column "order"."discount_value" is 'Согласованный итоговый дисконт(значение)';
+comment
+on column "order"."price_with_discount" is 'Цена, priceWithDiscount = totalPrice * (1 - discountPercent/100)';
 comment
 on column "order"."warehouse_name" is 'Название склада отгрузки';
 comment
@@ -272,6 +285,8 @@ on column "order"."brand" is 'Бренд';
 comment
 on column "order"."is_cancel" is 'Отмена заказа. true - заказ отменен до оплаты';
 comment
+on column "order"."status" is 'Статус заказа';
+comment
 on column "order"."cancel_dt" is 'Дата и время отмены заказа';
 comment
 on column "order"."g_number" is 'Номер заказа. Объединяет все позиции одного заказа.';
@@ -279,3 +294,40 @@ comment
 on column "order"."sticker" is 'Цифровое значение стикера';
 comment
 on column "order"."srid" is 'Уникальный идентификатор заказа';
+comment
+on column "order"."quantity" is 'Количество';
+
+create table "tlg_queue"
+(
+    "id"            serial primary key,
+    "chat_id"       bigint      not null,
+    "chat_type"     varchar(20) not null,
+    "message_id"    bigint      not null,
+    "message"       varchar(100),
+    "message_date"  timestamp   not null,
+    "response_date" timestamp,
+    "status"        varchar(15) not null
+);
+comment
+on table "tlg_queue" is 'Таблица для хранения сообщений, отправленных ботом в Telegram';
+comment
+on column "tlg_queue"."chat_id" is 'Идентификатор чата';
+comment
+on column "tlg_queue"."chat_type" is 'Тип чата';
+comment
+on column "tlg_queue"."message_id" is 'Идентификатор сообщения';
+comment
+on column "tlg_queue"."message" is 'Текст сообщения';
+comment
+on column "tlg_queue"."message_date" is 'Дата и время отправки сообщения';
+comment
+on column "tlg_queue"."response_date" is 'Дата и время получения ответа на сообщение';
+comment
+on column "tlg_queue"."status" is 'Статус сообщения(CREATED|PENDING|COMPLETED|ERROR)';
+
+create table "tlg_event"
+(
+    "chat_id"   bigint      not null,
+    "data_type" varchar(20) not null,
+    primary key ("chat_id", "data_type")
+);
