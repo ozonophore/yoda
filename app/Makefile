@@ -4,6 +4,7 @@ build: clean
 	GOOS=linux GOARCH=amd64 go build -o ./bin/${BINARY_NAME}-amd64-linux main.go
 run:
 	go run main.go -c config.app.yml
+
 generate:
 	oapi-codegen --package=api -generate=types,client -o pkg/api/api.go ../openapi/api.wb.yml
 #go mod tidy
