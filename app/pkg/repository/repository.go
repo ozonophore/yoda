@@ -78,21 +78,49 @@ func CreateJob(job *model.Job) error {
 func GetJobs() (*[]model.Job, error) {
 	initIfError()
 	var jobs []model.Job
-	err := repository.db.Preload("JobParameters").Preload("Owner").Where(`"is_active"=?`, true).Find(&jobs).Error
+	err := repository.db.Find(&jobs).Error
 	if err != nil {
 		return nil, err
 	}
 	return &jobs, nil
 }
 
-func BeginOperation(owner string, jobId int) int64 {
+func GetJob(id int) (*model.Job, error) {
+	initIfError()
+	var job model.Job
+	err := repository.db.Preload("JobParameters").Preload("Owner").Where(`"id"=?`, id).First(&job).Error
+	if err != nil {
+		return nil, err
+	}
+	return &job, nil
+}
+
+func GetJobWithOwnerByJobId(id int) (*model.Job, error) {
+	initIfError()
+	var job model.Job
+	err := repository.db.Where(`"id"=?`, id).Find(&job).Error
+	if err != nil {
+		return nil, err
+	}
+	var params []model.OwnerMarketplace
+	err = repository.db.Raw(`select om.* from "owner" o
+			inner join "job_owner" jo on o."code" = jo."owner_code"
+			inner join "owner_marketplace" om on o."code" = om."owner_code"
+			where jo."job_id" = ? order by om."owner_code"`, id).Find(&params).Error
+	if err != nil {
+		return nil, err
+	}
+	job.Params = &params
+	return &job, nil
+}
+
+func BeginOperation(jobId int) int64 {
 	initIfError()
 	timeNow := time.Now()
 	status := types.StatusTypeBegin
 	m := model.Transaction{
 		StartDate: timeNow,
 		Status:    status,
-		OwnerCode: owner,
 		JobId:     jobId,
 	}
 	repository.db.Create(&m)

@@ -1,6 +1,7 @@
 package types
 
 import (
+	"fmt"
 	"strings"
 	"time"
 )
@@ -41,6 +42,11 @@ func (ct CustomTime) MarshalJSON() ([]byte, error) {
 
 // String returns the time in the custom format
 func (ct *CustomTime) String() string {
+	t := time.Time(*ct)
+	return fmt.Sprintf(`%q`, t.Format(ctLayout))
+}
+
+func (ct *CustomTime) ToString() string {
 	t := time.Time(*ct)
 	return t.Format(ctLayout)
 }

@@ -210,6 +210,7 @@ func (c *OzonService) prepareItems(items *[]api.RowItem, dt time.Time, transacti
 			logrus.Errorf("Couldn't map a value at row %d (%s)", index, err)
 			return err
 		}
+		si.OwnerCode = c.ownerCode
 		si.Source = source
 		si.TransactionID = transactionId
 		newItems[index] = *si
@@ -241,11 +242,11 @@ func (c *OzonService) loadOrders(ctx context.Context, client *api.ClientWithResp
 		if err != nil {
 			return 0, err
 		}
-		return parseFBO(response, transactionId, source)
+		return parseFBO(response, transactionId, source, c.ownerCode)
 	})
 }
 
-func parseFBO(FBOResponse *api.GetOzonFBOResponse, transactionId int64, source string) (int64, error) {
+func parseFBO(FBOResponse *api.GetOzonFBOResponse, transactionId int64, source string, ownerCode string) (int64, error) {
 	if FBOResponse.StatusCode() != 200 {
 		return 0, errors.New(fmt.Sprintf("Ozon resp code %d", FBOResponse.StatusCode()))
 	}
@@ -259,7 +260,7 @@ func parseFBO(FBOResponse *api.GetOzonFBOResponse, transactionId int64, source s
 	}
 	var orders []model.Order
 	for _, item := range *FBOItems {
-		o := mapper.MapFBOToOrder(&item, transactionId, source)
+		o := mapper.MapFBOToOrder(&item, transactionId, source, ownerCode)
 		orders = append(orders, *o...)
 	}
 	if err := repository.SaveOrders(&orders); err != nil {

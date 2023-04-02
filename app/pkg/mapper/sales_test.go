@@ -72,7 +72,7 @@ func TestMapSale(t *testing.T) {
 		TotalPrice:        &totalPrice,
 		WarehouseName:     &warehouseName,
 	}
-	target := MapSale(s, transactionId, &source)
+	target := MapSale(s, transactionId, &source, "OWNERCODE")
 	if target.TransactionID != transactionId {
 		t.Errorf("MapSale() = %v, want %v", target.TransactionID, transactionId)
 	}

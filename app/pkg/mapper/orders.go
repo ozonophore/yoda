@@ -10,10 +10,10 @@ import (
 	"time"
 )
 
-func MapOrderArray(orders *[]api.OrdersItem, transactionId int64, source string) (*[]model.Order, error) {
+func MapOrderArray(orders *[]api.OrdersItem, transactionId int64, source string, ownerCode string) (*[]model.Order, error) {
 	var result []model.Order
 	for _, order := range *orders {
-		newOrder, err := MapOrder(&order, transactionId, source)
+		newOrder, err := MapOrder(&order, transactionId, source, ownerCode)
 		if err != nil {
 			return nil, err
 		}
@@ -22,7 +22,7 @@ func MapOrderArray(orders *[]api.OrdersItem, transactionId int64, source string)
 	return &result, nil
 }
 
-func MapOrder(order *api.OrdersItem, transactionId int64, source string) (result *model.Order, err error) {
+func MapOrder(order *api.OrdersItem, transactionId int64, source string, ownerCode string) (result *model.Order, err error) {
 	if logrus.IsLevelEnabled(logrus.DebugLevel) {
 		bytes, err := json.Marshal(order)
 		if err != nil {
@@ -46,6 +46,7 @@ func MapOrder(order *api.OrdersItem, transactionId int64, source string) (result
 	return &model.Order{
 		TransactionID:     transactionId,
 		Source:            source,
+		OwnerCode:         ownerCode,
 		LastChangeDate:    order.LastChangeDate.ToTime(),
 		LastChangeTime:    order.LastChangeDate.ToTime(),
 		OrderDate:         orderDate,

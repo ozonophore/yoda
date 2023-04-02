@@ -6,7 +6,7 @@ import (
 	"github.com/yoda/common/pkg/model"
 )
 
-func MapFBOToOrder(fbo *api.FBO, transactionId int64, source string) *[]model.Order {
+func MapFBOToOrder(fbo *api.FBO, transactionId int64, source string, ownerCode string) *[]model.Order {
 	var orders = make([]model.Order, len(*fbo.Products))
 	var finData = make(map[int64]*api.PostingFinancialDataProduct)
 
@@ -18,6 +18,7 @@ func MapFBOToOrder(fbo *api.FBO, transactionId int64, source string) *[]model.Or
 		orders[i] = model.Order{
 			TransactionID:     transactionId,
 			Source:            source,
+			OwnerCode:         ownerCode,
 			OrderDate:         fbo.CreatedAt,
 			OrderTime:         fbo.CreatedAt,
 			SupplierArticle:   &product.OfferId,

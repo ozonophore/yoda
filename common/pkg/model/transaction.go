@@ -8,7 +8,6 @@ type Table interface {
 
 type Transaction struct {
 	ID        int64     `gorm:"primaryKey"`
-	OwnerCode string    `gorm:"not null"`
 	StartDate time.Time `gorm:"not null"`
 	EndDate   *time.Time
 	Status    string `gorm:"not null"`
