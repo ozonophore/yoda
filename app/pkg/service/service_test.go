@@ -25,7 +25,7 @@ func Test_Main(t *testing.T) {
 	dao := repository.NewRepositoryDAO(database)
 	assert.NotNil(t, dao, "repository is nil")
 	jobId := 1
-	transactionID := repository.BeginOperation("OWNER", jobId)
+	transactionID := repository.BeginOperation(jobId)
 	t.Run("WB", func(t *testing.T) {
 		wbRun(t, config, transactionID, database)
 	})

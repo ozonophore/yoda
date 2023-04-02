@@ -42,7 +42,7 @@ func jobByTag(s *gocron.Scheduler, jobId int) *gocron.Job {
 		return nil
 	}
 	if len(jobs) == 0 {
-		logrus.Panicf("No jobs found by tag: %s", jobId)
+		logrus.Panicf("No jobs found by tag: %d", jobId)
 		return nil
 	}
 	return jobs[0]
