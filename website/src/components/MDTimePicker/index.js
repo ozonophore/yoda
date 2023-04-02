@@ -24,7 +24,6 @@ const MDTimePicker = forwardRef(({ language, ...rest }, ref) => {
             value={values}
             hideClearAll
             onChange={(item) => {
-              console.log(item);
               setValues(item);
             }}
             onDeleteChip={(item) => {

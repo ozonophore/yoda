@@ -28,7 +28,42 @@
         "custom": "ignore"
       }
     ],
-    "react/jsx-curly-spacing": [2, "never"]
+    "react/jsx-curly-spacing": [2, "never"],
+    "import/extensions": [
+      "error",
+      "ignorePackages",
+      {
+        "js": "never",
+        "jsx": "never",
+        "ts": "never",
+        "tsx": "never",
+        "mjs": "never"
+      }
+    ]
   },
-  "settings": { "import/resolver": { "node": { "paths": ["src"] } } }
+  "settings": {
+    "import/extensions": [".js", ".jsx", ".ts", ".tsx"],
+    "import/parsers": {
+      "@typescript-eslint/parser": [".ts", ".tsx"]
+    },
+    "import/resolver": {
+      "node": {
+        "paths": ["src"],
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      }
+    }
+  },
+  "overrides": [
+    {
+      "files": ["**/*.ts", ",**/*.tsx"],
+      "plugins": [
+        "@typescript-eslint"
+      ],
+      "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
+      "parser": "@typescript-eslint/parser",
+      "parserOptions": {
+        "project": ["./tsconfig.json"]
+      }
+    }
+  ]
 }

@@ -48,6 +48,7 @@ import SignUp from "layouts/authentication/sign-up";
 // @mui icons
 import Icon from "@mui/material/Icon";
 import Test from "layouts/test";
+import Room from "./layouts/room";
 
 const routes = [
   {
@@ -117,6 +118,22 @@ const routes = [
     key: "sign-up",
     icon: <Icon fontSize="small">assignment</Icon>,
     route: "/authentication/sign-up",
+    component: <SignUp />,
+  },
+  {
+    type: "collapse",
+    name: "Room",
+    key: "room",
+    icon: <Icon fontSize="small">tv</Icon>,
+    route: "/room",
+    component: <Room />,
+  },
+  {
+    type: "collapse",
+    name: "Jobs",
+    key: "jobs",
+    icon: <Icon fontSize="small">schedule</Icon>,
+    route: "/room",
     component: <SignUp />,
   },
 ];

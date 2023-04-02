@@ -54,6 +54,7 @@ import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "co
 // Images
 import brandWhite from "assets/images/logo-ct.png";
 import brandDark from "assets/images/logo-ct-dark.png";
+import { Backdrop, CircularProgress } from "@material-ui/core";
 
 function App() {
   const { t, i18n } = useTranslation();
@@ -68,6 +69,7 @@ function App() {
     whiteSidenav,
     darkMode,
     language,
+    isLoaded,
   } = controller;
   const [onMouseEnter, setOnMouseEnter] = useState(false);
   const [rtlCache, setRtlCache] = useState(null);
@@ -196,6 +198,9 @@ function App() {
         </>
       )}
       {layout === "vr" && <Configurator />}
+      <Backdrop open={isLoaded} style={{ color: "#fff", zIndex: 9999 }}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <Routes>
         {getRoutes(routes)}
         <Route path="*" element={<Navigate to="/dashboard" />} />

@@ -65,6 +65,9 @@ function reducer(state, action) {
     case "LANGUAGE": {
       return { ...state, language: action.value };
     }
+    case "IS_LOADED": {
+      return { ...state, isLoaded: action.value };
+    }
     default: {
       throw new Error(`Unhandled action type: ${action.type}`);
     }
@@ -85,6 +88,74 @@ function MaterialUIControllerProvider({ children }) {
     layout: "dashboard",
     darkMode: false,
     language: "ru",
+    isLoaded: false,
+    rooms: [
+      {
+        code: "Owner_1",
+        name: "Кабинет 1",
+        dayOfWeek: ["monday", "tuesday", "wednesday", "thursday", "friday"],
+        time: ["10:00", "11:00", "12:00", "13:00", "14:00"],
+        ozon: {
+          clientId: "1",
+          apiKey: "1",
+        },
+        wb: {
+          authorization: "1",
+        },
+      },
+      {
+        code: "Owner_2",
+        name: "Кабинет 2",
+        dayOfWeek: ["wednesday", "thursday", "friday"],
+        time: ["12:00", "13:00", "14:00"],
+        ozon: {
+          clientId: "1",
+          apiKey: "1",
+        },
+        wb: {
+          authorization: "1",
+        },
+      },
+      {
+        code: "Owner_3",
+        name: "Кабинет 3",
+        dayOfWeek: ["monday"],
+        time: ["10:00"],
+        ozon: {
+          clientId: "1",
+          apiKey: "1",
+        },
+        wb: {
+          authorization: "1",
+        },
+      },
+      {
+        code: "Owner_4",
+        name: "Кабинет 4",
+        dayOfWeek: ["thursday", "friday"],
+        time: ["12:00", "14:00"],
+        ozon: {
+          clientId: "1",
+          apiKey: "1",
+        },
+        wb: {
+          authorization: "1",
+        },
+      },
+      {
+        code: "Owner_5",
+        name: "Кабинет 5",
+        dayOfWeek: ["thursday", "friday"],
+        time: ["12:00", "14:00"],
+        ozon: {
+          clientId: "1",
+          apiKey: "1",
+        },
+        wb: {
+          authorization: "1",
+        },
+      },
+    ],
     tasks: [
       {
         company: "Организация 1",
@@ -138,6 +209,15 @@ const setDarkMode = (dispatch, value) => dispatch({ type: "DARKMODE", value });
 
 const setLanguage = (dispatch, value) => dispatch({ type: "LANGUAGE", value });
 
+const setLoaded = (dispatch, value) => dispatch({ type: "IS_LOADED", value });
+
+const createNewRoom = (dispatch) => {
+  setLoaded(dispatch, true);
+  setTimeout(() => {
+    setLoaded(dispatch, false);
+  }, 1000);
+};
+
 export {
   MaterialUIControllerProvider,
   useMaterialUIController,
@@ -152,4 +232,6 @@ export {
   setLayout,
   setDarkMode,
   setLanguage,
+  setLoaded,
+  createNewRoom,
 };
