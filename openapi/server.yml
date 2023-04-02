@@ -4,6 +4,31 @@ info:
   version: '1.8'
 components:
   schemas:
+    Room:
+        type: object
+        properties:
+          code:
+            type: string
+          name:
+            type: string
+          createdAt:
+            type: string
+            format: date-time
+          ozon:
+            type: object
+            properties:
+              clientId:
+                type: string
+              apiKey:
+                type: string
+          wb:
+            type: object
+            properties:
+              authToken:
+                type: string
+        required:
+            - name
+            - code
     Error:
       type: object
       properties:
@@ -31,6 +56,84 @@ components:
           type: string
           format: date-time
 paths:
+  /rooms:
+    post:
+      summary: Create room
+      operationId: createRoom
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Room'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Room'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      summary: Update room
+      operationId: updateRoom
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Room'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Room'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+    get:
+      summary: Get all rooms
+      operationId: getRooms
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Room'
+  /rooms/{code}:
+    get:
+      summary: Get room by id
+      operationId: getRoomById
+      parameters:
+        - name: code
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Room'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /jobs:
     post:
       summary: Create job

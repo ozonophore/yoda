@@ -120,8 +120,8 @@ func TestMapSale(t *testing.T) {
 		t.Errorf("MapSale() = %v, want %v", target.IsSupply, *s.IsSupply)
 	}
 	lastChangeDateTime := target.LastChangeDate.Format(time.DateOnly) + "T" + target.LastChangeTime.Format(time.TimeOnly)
-	if lastChangeDateTime != s.LastChangeDate.String() {
-		t.Errorf("MapSale() = %v, want %v", lastChangeDateTime, *s.LastChangeDate)
+	if lastChangeDateTime != s.LastChangeDate.ToString() {
+		t.Errorf("MapSale() = %v, want %v", lastChangeDateTime, s.LastChangeDate.String())
 	}
 	if *target.ExternalCode != fmt.Sprintf("%d", s.NmId) {
 		t.Errorf("MapSale() = %v, want %v", *target.ExternalCode, *s.NmId)
