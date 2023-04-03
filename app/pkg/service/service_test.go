@@ -18,6 +18,7 @@ func Test_Main(t *testing.T) {
 
 	config := configuration.InitConfig("config.yml")
 	config.Database.Dsn = "postgres://root:secret@localhost:5432/pdb"
+	config.Database.LoggingLevel = "error"
 	config.Ozon.Host = "http://localhost:1080/ozon"
 	config.Wb.Host = "http://localhost:1080/wb"
 	database := repository.InitDatabase(config.Database)
@@ -25,7 +26,7 @@ func Test_Main(t *testing.T) {
 	dao := repository.NewRepositoryDAO(database)
 	assert.NotNil(t, dao, "repository is nil")
 	jobId := 1
-	transactionID := repository.BeginOperation("OWNER", jobId)
+	transactionID := repository.BeginOperation(jobId)
 	t.Run("WB", func(t *testing.T) {
 		wbRun(t, config, transactionID, database)
 	})

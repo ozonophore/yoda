@@ -1,12 +1,63 @@
 {
   "brandName": "Панель администратора",
-  "menu":{
-    "dashboard": "Основная"
+  "menu": {
+    "dashboard": "Основная",
+    "room": "Кабинет",
+    "jobs": "Задания"
   },
   "settings": {
     "title": "Настройки"
   },
-  "tasks":{
+  "tasks": {
     "active": "Активные задачи"
+  },
+  "room": {
+    "input": {
+      "name": {
+        "title": "Название кабинета"
+      },
+      "code": {
+        "title": "Код кабинета"
+      }
+    },
+    "button": {
+      "add": "Добавить кабинет"
+    },
+    "card": {
+      "edit": "Редактировать",
+      "delete": "Удалить"
+    }
+  },
+  "submit": "Сохранить",
+  "cancel": "Отменить",
+  "time": {
+    "title": {
+      "short": "Вр",
+      "long": "Время"
+    }
+  },
+  "dayOfWeek": {
+    "title": {
+      "short": "Д",
+      "long": "День"
+    },
+    "short": {
+      "monday": "Пн",
+      "tuesday": "Вт",
+      "wednesday": "Ср",
+      "thursday": "Чт",
+      "friday": "Пт",
+      "saturday": "Сб",
+      "sunday": "Вс"
+    },
+    "long": {
+      "monday": "Понедельник",
+      "tuesday": "Вторник",
+      "wednesday": "Среда",
+      "thursday": "Четверг",
+      "friday": "Пятница",
+      "saturday": "Суббота",
+      "sunday": "Воскресенье"
+    }
   }
 }

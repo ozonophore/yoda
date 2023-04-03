@@ -55,7 +55,7 @@ func (c *WBService) Parsing(context context.Context, transactionID int64) error 
 		logrus.Warn("There aren't stocks")
 	}
 	source := types.SourceTypeWB
-	newItems, err := c.prepareStocks(length, items, transactionID, source)
+	newItems, err := c.prepareStocks(length, items, transactionID, source, c.ownerCode)
 	if err != nil {
 		return err
 	}
@@ -75,7 +75,7 @@ func (c *WBService) Parsing(context context.Context, transactionID int64) error 
 	salesItems := respSales.JSON200
 
 	if err = CallbackBatch[api.SalesItem](salesItems, c.config.BatchSize, func(items *[]api.SalesItem) error {
-		newItems := mapper.MapSaleArray(items, transactionID, &source)
+		newItems := mapper.MapSaleArray(items, transactionID, &source, c.ownerCode)
 		if err := repository.SaveSales(&newItems); err != nil {
 			return err
 		}
@@ -103,14 +103,14 @@ func (c *WBService) loadOrders(context context.Context, client *api.ClientWithRe
 	days := c.config.Order.LoadedDays
 
 	sinceDate.Time = sinceDate.Time.AddDate(0, 0, -1*days)
-	if err := c.fetchOrders(context, client, &sinceDate, transactionId, source); err != nil {
+	if err := c.fetchOrders(context, client, &sinceDate, transactionId, source, c.ownerCode); err != nil {
 		logrus.Debugf("Error while fetching orders from wb: %s", err.Error())
 		return err
 	}
 	return nil
 }
 
-func (c *WBService) fetchOrders(context context.Context, client *api.ClientWithResponses, dateFrom *api.DateFrom, transactionId int64, source *string) error {
+func (c *WBService) fetchOrders(context context.Context, client *api.ClientWithResponses, dateFrom *api.DateFrom, transactionId int64, source *string, ownerCode string) error {
 	flag := 0
 	request := api.GetWBOrdersParams{
 		DateFrom: *dateFrom,
@@ -128,7 +128,7 @@ func (c *WBService) fetchOrders(context context.Context, client *api.ClientWithR
 	}
 	orders := response.JSON200
 	if err = CallbackBatch[api.OrdersItem](orders, c.config.BatchSize, func(items *[]api.OrdersItem) error {
-		orders, errMap := mapper.MapOrderArray(items, transactionId, *source)
+		orders, errMap := mapper.MapOrderArray(items, transactionId, *source, ownerCode)
 		if errMap != nil {
 			return errMap
 		}
@@ -142,10 +142,11 @@ func (c *WBService) fetchOrders(context context.Context, client *api.ClientWithR
 	return nil
 }
 
-func (c *WBService) prepareStocks(length int, items []api.StocksItem, transactionId int64, source string) ([]model.StockItem, error) {
+func (c *WBService) prepareStocks(length int, items []api.StocksItem, transactionId int64, source string, ownerCode string) ([]model.StockItem, error) {
 	newItems := make([]model.StockItem, length)
 	for index, item := range items {
 		si, err := mapper.MapStockItem(&item)
+		si.OwnerCode = ownerCode
 		priceAfterDiscount := *si.Price - *si.Discount
 		si.PriceAfterDiscount = &priceAfterDiscount
 		if err != nil {

@@ -8,27 +8,44 @@ create table "owner"
 create table "job"
 (
     "id"          serial primary key,
-    "owner_code"  varchar(20) references "owner" ("code") not null,
     "create_date" timestamp default now(),
-    "is_active"   boolean                                 not null,
-    "description" varchar(100)
+    "is_active"   boolean not null,
+    "description" varchar(100),
+    "week_days"   varchar(200),
+    "at_time"     varchar(200)
 );
 
-create table "job_marketplace"
+comment
+on column "job"."is_active" is 'Активен ли';
+comment
+on column "job"."description" is 'Описание';
+comment
+on column "job"."week_days" is 'Дни недели monday | tuesday | wednesday | thursday | friday | saturday | sunday';
+comment
+on column "job"."at_time" is 'Время в формате 8:04;16:00';
+
+create table "job_owner"
 (
-    "job_id"    integer references "job" ("id") not null,
-    "source"    varchar(20)                     not null,
-    "host"      varchar(200)                    not null,
-    "password"  varchar(200),
-    "client_id" varchar(50)
+    "job_id"     integer references "job" ("id")         not null,
+    "owner_code" varchar(20) references "owner" ("code") not null,
+    primary key ("job_id", "owner_code")
+);
+
+create table "owner_marketplace"
+(
+    "owner_code" varchar(20) references "owner" ("code") not null,
+    "source"     varchar(20)                             not null,
+    "host"       varchar(200)                            not null,
+    "password"   varchar(200),
+    "client_id"  varchar(50),
+    primary key ("owner_code", "source")
 );
 
 create table "transaction"
 (
     "id"         serial primary key,
-    "owner_code" varchar(20) references "owner" ("code") not null,
-    "job_id"     integer references "job" ("id")         not null,
-    "start_date" timestamp                               not null,
+    "job_id"     integer references "job" ("id") not null,
+    "start_date" timestamp                       not null,
     "end_date"   timestamp,
     "status"     varchar(20)
 );
@@ -38,6 +55,7 @@ create table "stock"
     "id"                   serial primary key,
     "transaction_id"       integer references "transaction" ("id") not null,
     "source"               varchar(20)                             not null,
+    "owner_code"           varchar(20) references "owner" ("code") not null,
     "last_change_date"     date                                    not null,
     "last_change_time"     time                                    not null,
     "supplier_article"     varchar(75),
@@ -112,6 +130,7 @@ create table "sale"
     "id"                  serial primary key,
     "transaction_id"      integer references "transaction" ("id") not null,
     "source"              varchar(20)                             not null,
+    "owner_code"          varchar(20) references "owner" ("code") not null,
     "last_change_date"    date                                    not null,
     "last_change_time"    time                                    not null,
     "sale_date"           date                                    not null,
@@ -216,6 +235,7 @@ create table "order"
     "id"                  serial primary key,
     "transaction_id"      integer references "transaction" ("id") not null,
     "source"              varchar(20)                             not null,
+    "owner_code"          varchar(20) references "owner" ("code") not null,
     "last_change_date"    date                                    not null,
     "last_change_time"    time                                    not null,
     "order_date"          date                                    not null,

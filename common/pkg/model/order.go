@@ -11,6 +11,7 @@ type Order struct {
 	ID                int64      `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"`
 	TransactionID     int64      `gorm:"column:transaction_id;not null" json:"transaction_id"`
 	Source            string     `gorm:"column:source;not null" json:"source"`
+	OwnerCode         string     `gorm:"not null"`
 	LastChangeDate    time.Time  `gorm:"column:last_change_date;not null" json:"last_change_date"`                 // Дата обновления информации в сервисе
 	LastChangeTime    time.Time  `gorm:"column:last_change_time;not null;serializer:time" json:"last_change_time"` // Время обновления информации в сервисе
 	OrderDate         time.Time  `gorm:"column:order_date;not null" json:"order_date"`                             // Дата заказа

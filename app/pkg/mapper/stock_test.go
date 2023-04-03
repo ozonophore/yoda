@@ -67,7 +67,8 @@ func TestMapStockItem(t *testing.T) {
 	if *r.IsRealization != *s.IsRealization {
 		t.Fatalf("IsRealization is not equal")
 	}
-	if r.LastChangeDate.Format(time.DateOnly+"T"+time.TimeOnly) != s.LastChangeDate.String() {
+	lcd := r.LastChangeDate.Format(time.DateOnly + "T" + time.TimeOnly)
+	if lcd != s.LastChangeDate.ToString() {
 		t.Fatalf("LastChangeDate is not equal")
 	}
 	if *r.ExternalCode != fmt.Sprintf("%d", *s.NmId) {

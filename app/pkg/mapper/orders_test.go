@@ -14,7 +14,7 @@ import (
 func TestMapOrder(t *testing.T) {
 	transactionID := int64(3)
 	source := generateOrder()
-	order, err := MapOrder(&source, transactionID, "source")
+	order, err := MapOrder(&source, transactionID, "source", "ownerCode")
 	assert.Nil(t, err)
 	assert.Equal(t, transactionID, order.TransactionID)
 	assert.Equal(t, "source", order.Source)
@@ -36,6 +36,7 @@ func TestMapOrder(t *testing.T) {
 	assert.Equal(t, "subject", *order.Subject)
 	assert.Equal(t, "category", *order.Category)
 	assert.Equal(t, "brand", *order.Brand)
+	assert.Equal(t, "ownerCode", order.OwnerCode)
 }
 
 func generateOrder() api.OrdersItem {
