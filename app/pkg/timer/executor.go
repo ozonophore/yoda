@@ -59,7 +59,7 @@ func RunEtlJob(config *configuration.Config, ctx context.Context, jobID int, s *
 		return
 	}
 	transactionID := repository.BeginOperation(jobID)
-	s.FindJobsByTag(fmt.Sprintf(`%s`, jobID))
+	s.FindJobsByTag(fmt.Sprintf(`%d`, jobID))
 	gJob := jobByTag(s, jobID)
 	callOnBeforeJonExecution(job, transactionID, gJob, onBefore)
 	defer callOnAfterJonExecution(job, transactionID, gJob, err, onAfter)

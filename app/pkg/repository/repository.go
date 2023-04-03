@@ -41,6 +41,7 @@ func InitDatabase(config configuration.Database) *gorm.DB {
 	if err != nil {
 		logrus.Panic(err)
 	}
+	logrus.Info("Database log level: ", config.LoggingLevel)
 	//sqlDB, _ := db.DB()
 	//sqlDB.SetMaxIdleConns(10)
 	//sqlDB.SetMaxOpenConns(10)
