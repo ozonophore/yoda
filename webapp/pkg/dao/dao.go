@@ -2,6 +2,7 @@ package dao
 
 import (
 	"errors"
+	"github.com/sirupsen/logrus"
 	"github.com/yoda/common/pkg/model"
 	"gorm.io/gorm"
 	"time"
@@ -77,4 +78,94 @@ func DeleteTlgEvent(chatId int64, dataType string) error {
 		return err
 	}
 	return nil
+}
+
+func SaveOwner(o model.Owner, oz model.OwnerMarketplace, wb model.OwnerMarketplace) error {
+	tx := dao.database.Begin()
+	defer func() {
+		err := tx.Error
+		if err == nil {
+			err := tx.Commit().Error
+			if err != nil {
+				logrus.Error(err)
+			}
+		} else {
+			err := tx.Rollback()
+			logrus.Error(err)
+		}
+	}()
+
+	var count int64
+	tx.Model(&o).Where(`"code" = ?`, o.Code).Count(&count)
+	var err error
+	if count == 0 {
+		err = tx.Create(&o).Error
+	} else {
+		err = tx.Model(&o).Omit("create_date").Updates(o).Error
+	}
+	if err != nil {
+		return err
+	}
+	err = tx.Save(&oz).Error
+	if err != nil {
+		return err
+	}
+	err = tx.Save(&wb).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func GetOwnerByCode(code string) (*model.Owner, error) {
+	var model model.Owner
+	if err := dao.database.Where(`"code" = ?`, code).First(&model).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, nil
+		}
+		return nil, err
+	}
+	return &model, nil
+}
+
+func GetOwnerMarketplaceByOwnerCodeAndSource(ownerCode string, source string) (*model.OwnerMarketplace, error) {
+	var model model.OwnerMarketplace
+	if err := dao.database.Where(`"owner_code" = ? and "source" = ?`, ownerCode, source).First(&model).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, nil
+		}
+		return nil, err
+	}
+	return &model, nil
+}
+
+func GetJobById(id int64) (*model.Job, error) {
+	var model model.Job
+	if err := dao.database.Where(`"id" = ?`, id).First(&model).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, nil
+		}
+		return nil, err
+	}
+	return &model, nil
+}
+
+func GetOwners() ([]model.Owner, error) {
+	var models []model.Owner
+	if err := dao.database.Order(`"create_date" desc`).Find(&models).Error; err != nil {
+		return nil, err
+	}
+	return models, nil
+}
+
+func GetMarketplacesByOwners(owners []model.Owner) (*[]model.OwnerMarketplace, error) {
+	var models []model.OwnerMarketplace
+	ids := make([]string, len(owners))
+	for i, owner := range owners {
+		ids[i] = owner.Code
+	}
+	if err := dao.database.Where(`"owner_code" in ?`, ids).Find(&models).Error; err != nil {
+		return nil, err
+	}
+	return &models, nil
 }

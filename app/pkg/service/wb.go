@@ -117,7 +117,7 @@ func (c *WBService) fetchOrders(context context.Context, client *api.ClientWithR
 		Flag:     &flag,
 	}
 	if logrus.IsLevelEnabled(logrus.DebugLevel) {
-		logrus.Debugf("Request to wb by date: %v", *dateFrom)
+		logrus.Debugf("Request to wb by date: %s", *dateFrom)
 	}
 	response, err := client.GetWBOrdersWithResponse(context, &request)
 	if err != nil {

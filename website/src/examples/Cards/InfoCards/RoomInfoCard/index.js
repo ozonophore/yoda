@@ -12,10 +12,10 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import { useTranslation } from "react-i18next";
 
-function RoomInfoCard({ color, title, name, dayOfWeek, time, icon, onEdit }) {
+function RoomInfoCard({ color, title, name, days, time, icon, onEdit }) {
   const [t] = useTranslation();
 
-  const dayOfWeekLabel = dayOfWeek.map((item) => t(`dayOfWeek.short.${item}`)).join("; ");
+  const dayOfWeekLabel = days.map((item) => t(`dayOfWeek.short.${item}`)).join("; ");
   return (
     <Card>
       <MDBox display="flex" justifyContent="space-between" pt={1} px={2}>
@@ -66,7 +66,7 @@ function RoomInfoCard({ color, title, name, dayOfWeek, time, icon, onEdit }) {
 // Setting default values for the props of ComplexStatisticsCard
 RoomInfoCard.defaultProps = {
   color: "info",
-  dayOfWeek: [],
+  days: [],
   time: [],
   percentage: {
     color: "success",
@@ -88,7 +88,7 @@ RoomInfoCard.propTypes = {
     "dark",
   ]),
   title: PropTypes.string.isRequired,
-  dayOfWeek: PropTypes.arrayOf(PropTypes.string),
+  days: PropTypes.arrayOf(PropTypes.string),
   time: PropTypes.arrayOf(PropTypes.string),
   name: PropTypes.oneOfType([PropTypes.string]).isRequired,
   onEdit: PropTypes.func.isRequired,

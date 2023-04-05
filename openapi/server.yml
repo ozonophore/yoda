@@ -4,6 +4,39 @@ info:
   version: '1.8'
 components:
   schemas:
+    Ozon:
+      type: object
+      properties:
+        clientId:
+          type: string
+        apiKey:
+          type: string
+      required:
+        - clientId
+        - apiKey
+    Wb:
+      type: object
+      properties:
+        authToken:
+          type: string
+      required:
+        - authToken
+    NewRoom:
+      type: object
+      properties:
+        code:
+          type: string
+        name:
+          type: string
+        ozon:
+          $ref: '#/components/schemas/Ozon'
+        wb:
+          $ref: '#/components/schemas/Wb'
+      required:
+        - name
+        - code
+        - ozon
+        - wb
     Room:
         type: object
         properties:
@@ -15,20 +48,33 @@ components:
             type: string
             format: date-time
           ozon:
-            type: object
-            properties:
-              clientId:
-                type: string
-              apiKey:
-                type: string
+            $ref: '#/components/schemas/Ozon'
           wb:
-            type: object
-            properties:
-              authToken:
-                type: string
+            $ref: '#/components/schemas/Wb'
+          days:
+            type: array
+            items:
+              type: string
+              enum:
+                - monday
+                - tuesday
+                - wednesday
+                - thursday
+                - friday
+                - saturday
+                - sunday
+          times:
+            type: array
+            items:
+              type: string
+              format: string
         required:
             - name
             - code
+            - ozon
+            - wb
+            - days
+            - times
     Error:
       type: object
       properties:
@@ -64,7 +110,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Room'
+              $ref: '#/components/schemas/NewRoom'
       responses:
         '200':
           description: OK

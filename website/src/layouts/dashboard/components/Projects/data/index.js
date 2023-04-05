@@ -21,8 +21,8 @@ import MDTypography from "components/MDTypography";
 import MDProgress from "components/MDProgress";
 import Icon from "@mui/material/Icon";
 
-export default function data(tasks) {
-  const rows = tasks.map(({ company, jobName }) => ({
+export default function data() {
+  const rows = [].map(({ company, jobName }) => ({
     companies: (
       <MDTypography variant="button" fontWeight="medium" ml={1} lineHeight={1}>
         {company}

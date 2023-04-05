@@ -1,0 +1,11 @@
+server:
+  port: 8080
+logging_level: info
+telegramBot:
+  logging_level: info
+database:
+  dsn: postgres://user:password@host.docker.internal:5432/db
+mq:
+  url: amqp://guest:guest@rabbitmq:5672/
+  read_queue: yoda-server
+  write_queue: yoda-client

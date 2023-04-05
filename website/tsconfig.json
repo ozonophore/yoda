@@ -1,4 +1,5 @@
 {
+  "include": ["src/generated"],
   "compilerOptions": {
     "module": "commonjs",
     "esModuleInterop": true,
@@ -7,9 +8,6 @@
     "sourceMap": true,
     "outDir": "dist",
     "baseUrl": "src",
-    "paths": {
-      "*": ["public/src/*"]
-    }
   },
   "lib": ["es2015"]
 }

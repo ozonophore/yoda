@@ -28,7 +28,7 @@ func callOnAfterJonExecution(job *model.Job, transactionID int64, gJob *gocron.J
 	} else {
 		repository.EndOperation(transactionID, types.StatusTypeRejected)
 	}
-	logrus.Infof("Finish job: %d. Next run: %v", job.ID, gJob.NextRun())
+	logrus.Infof("Finish job: %d. Next run: %s", job.ID, gJob.NextRun())
 	if onAfter != nil {
 		onAfter(job, transactionID, err, gJob)
 	}

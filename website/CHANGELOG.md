@@ -405,7 +405,7 @@ ajv                        6.9.1   →   6.10.0
 
 - **src/layouts/Dashboard/Dashboard.jsx** (renamed to Admin)
 - **src/routes/dashboard.jsx**
-- **src/routes/index.jsx**
+- **src/routes/index.js**
 
 ### Deleted dependencies
 

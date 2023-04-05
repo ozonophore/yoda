@@ -18,10 +18,11 @@
  you can customize the states for the different components here.
  */
 
-import { createContext, useContext, useMemo, useReducer } from "react";
+import { createContext, useContext, useMemo } from "react";
 
 // prop-types is a library for typechecking of props
 import PropTypes from "prop-types";
+import thunkReducer from "./reducer/thunkReducer";
 
 // Material Dashboard 2 React main context
 const MaterialUI = createContext();
@@ -65,8 +66,28 @@ function reducer(state, action) {
     case "LANGUAGE": {
       return { ...state, language: action.value };
     }
-    case "IS_LOADED": {
-      return { ...state, isLoaded: action.value };
+    case "LOADING": {
+      return { ...state, loading: action.value };
+    }
+    case "SHOW_ERROR": {
+      return {
+        ...state,
+        error: {
+          message: action.value,
+        },
+        loading: false,
+      };
+    }
+    case "CLOSE_ERROR": {
+      return {
+        ...state,
+        error: {
+          message: "",
+        },
+      };
+    }
+    case "REFRESH_ROOMS": {
+      return { ...state, rooms: action.value, loading: false };
     }
     default: {
       throw new Error(`Unhandled action type: ${action.type}`);
@@ -88,89 +109,14 @@ function MaterialUIControllerProvider({ children }) {
     layout: "dashboard",
     darkMode: false,
     language: "ru",
-    isLoaded: false,
-    rooms: [
-      {
-        code: "Owner_1",
-        name: "Кабинет 1",
-        dayOfWeek: ["monday", "tuesday", "wednesday", "thursday", "friday"],
-        time: ["10:00", "11:00", "12:00", "13:00", "14:00"],
-        ozon: {
-          clientId: "1",
-          apiKey: "1",
-        },
-        wb: {
-          authorization: "1",
-        },
-      },
-      {
-        code: "Owner_2",
-        name: "Кабинет 2",
-        dayOfWeek: ["wednesday", "thursday", "friday"],
-        time: ["12:00", "13:00", "14:00"],
-        ozon: {
-          clientId: "1",
-          apiKey: "1",
-        },
-        wb: {
-          authorization: "1",
-        },
-      },
-      {
-        code: "Owner_3",
-        name: "Кабинет 3",
-        dayOfWeek: ["monday"],
-        time: ["10:00"],
-        ozon: {
-          clientId: "1",
-          apiKey: "1",
-        },
-        wb: {
-          authorization: "1",
-        },
-      },
-      {
-        code: "Owner_4",
-        name: "Кабинет 4",
-        dayOfWeek: ["thursday", "friday"],
-        time: ["12:00", "14:00"],
-        ozon: {
-          clientId: "1",
-          apiKey: "1",
-        },
-        wb: {
-          authorization: "1",
-        },
-      },
-      {
-        code: "Owner_5",
-        name: "Кабинет 5",
-        dayOfWeek: ["thursday", "friday"],
-        time: ["12:00", "14:00"],
-        ozon: {
-          clientId: "1",
-          apiKey: "1",
-        },
-        wb: {
-          authorization: "1",
-        },
-      },
-    ],
-    tasks: [
-      {
-        company: "Организация 1",
-        jobName: "Наименование задачи",
-        status: "BEGIN",
-      },
-      {
-        company: "Организация 2",
-        jobName: "Наименование задачи",
-        status: "BEGIN",
-      },
-    ],
+    loading: false,
+    rooms: [],
+    error: {
+      message: "",
+    },
   };
 
-  const [controller, dispatch] = useReducer(reducer, initialState);
+  const [controller, dispatch] = thunkReducer(reducer, initialState);
 
   const value = useMemo(() => [controller, dispatch], [controller, dispatch]);
 
@@ -209,14 +155,7 @@ const setDarkMode = (dispatch, value) => dispatch({ type: "DARKMODE", value });
 
 const setLanguage = (dispatch, value) => dispatch({ type: "LANGUAGE", value });
 
-const setLoaded = (dispatch, value) => dispatch({ type: "IS_LOADED", value });
-
-const createNewRoom = (dispatch) => {
-  setLoaded(dispatch, true);
-  setTimeout(() => {
-    setLoaded(dispatch, false);
-  }, 1000);
-};
+const setLoading = (dispatch, value) => dispatch({ type: "LOADING", value });
 
 export {
   MaterialUIControllerProvider,
@@ -232,6 +171,5 @@ export {
   setLayout,
   setDarkMode,
   setLanguage,
-  setLoaded,
-  createNewRoom,
+  setLoading,
 };

@@ -3,11 +3,12 @@ package main
 import (
 	"context"
 	log "github.com/sirupsen/logrus"
-	"github.com/yoda/common/pkg/mq"
 	"github.com/yoda/webapp/pkg/api"
+	"github.com/yoda/webapp/pkg/api/server"
 	"github.com/yoda/webapp/pkg/config"
 	"github.com/yoda/webapp/pkg/dao"
 	"github.com/yoda/webapp/pkg/mqclient"
+	server2 "github.com/yoda/webapp/pkg/server"
 	"os"
 	"os/signal"
 	"time"
@@ -19,21 +20,24 @@ func main() {
 		panic(err)
 	}
 	logger := createLogger(err, config)
-	if err := mq.NewConnection(config.Mq); err != nil {
-		logger.Error(err)
-	}
-	ctxConsumer, cancelConsumer := context.WithCancel(context.Background())
-	if err := mq.NewConsumer(ctxConsumer, config.Mq, mqclient.HandleMessage); err != nil {
-		logger.Panic(err)
-	}
-	defer cancelConsumer()
-	mq.NewConnection(config.Mq)
-	defer mq.Close()
+	//if err := mq.NewConnection(config.Mq); err != nil {
+	//	logger.Panic(err)
+	//}
+	//ctxConsumer, cancelConsumer := context.WithCancel(context.Background())
+	//if err := mq.NewConsumer(ctxConsumer, config.Mq, mqclient.HandleMessage); err != nil {
+	//	logger.Panic(err)
+	//}
+	//defer cancelConsumer()
+	//defer mq.Close()
 	database := dao.InitDatabase(config.Database, logger)
 	repository := dao.NewRepositoryDAO(database)
-	server := api.NewServerApi(&logger)
-	router := api.Handler(server)
-	srv := NewServer(config.Server, router)
+
+	server := server.NewServerApi(&logger)
+
+	router := api.HandlerWithOptions(server, api.GorillaServerOptions{
+		BaseURL: "/api",
+	})
+	srv := server2.NewServer(config.Server, router)
 
 	go func() {
 		if err := srv.ListenAndServe(); err != nil {

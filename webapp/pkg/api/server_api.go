@@ -12,6 +12,17 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// Defines values for RoomDays.
+const (
+	Friday    RoomDays = "friday"
+	Monday    RoomDays = "monday"
+	Saturday  RoomDays = "saturday"
+	Sunday    RoomDays = "sunday"
+	Thursday  RoomDays = "thursday"
+	Tuesday   RoomDays = "tuesday"
+	Wednesday RoomDays = "wednesday"
+)
+
 // Error defines model for Error.
 type Error struct {
 	Message string `json:"message"`
@@ -27,8 +38,47 @@ type Job struct {
 	StartAtTime *time.Time `json:"startAtTime,omitempty"`
 }
 
+// NewRoom defines model for NewRoom.
+type NewRoom struct {
+	Code string `json:"code"`
+	Name string `json:"name"`
+	Ozon Ozon   `json:"ozon"`
+	Wb   Wb     `json:"wb"`
+}
+
+// Ozon defines model for Ozon.
+type Ozon struct {
+	ApiKey   string `json:"apiKey"`
+	ClientId string `json:"clientId"`
+}
+
+// Room defines model for Room.
+type Room struct {
+	Code      string     `json:"code"`
+	CreatedAt *time.Time `json:"createdAt,omitempty"`
+	Days      []RoomDays `json:"days"`
+	Name      string     `json:"name"`
+	Ozon      Ozon       `json:"ozon"`
+	Times     []string   `json:"times"`
+	Wb        Wb         `json:"wb"`
+}
+
+// RoomDays defines model for Room.Days.
+type RoomDays string
+
+// Wb defines model for Wb.
+type Wb struct {
+	AuthToken string `json:"authToken"`
+}
+
 // CreateJobJSONRequestBody defines body for CreateJob for application/json ContentType.
 type CreateJobJSONRequestBody = Job
+
+// CreateRoomJSONRequestBody defines body for CreateRoom for application/json ContentType.
+type CreateRoomJSONRequestBody = NewRoom
+
+// UpdateRoomJSONRequestBody defines body for UpdateRoom for application/json ContentType.
+type UpdateRoomJSONRequestBody = Room
 
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
@@ -47,6 +97,18 @@ type ServerInterface interface {
 	// Stop job by id
 	// (POST /jobs/{id}/stop)
 	StopJobById(w http.ResponseWriter, r *http.Request, id int64)
+	// Get all rooms
+	// (GET /rooms)
+	GetRooms(w http.ResponseWriter, r *http.Request)
+	// Create room
+	// (POST /rooms)
+	CreateRoom(w http.ResponseWriter, r *http.Request)
+	// Update room
+	// (PUT /rooms)
+	UpdateRoom(w http.ResponseWriter, r *http.Request)
+	// Get room by id
+	// (GET /rooms/{code})
+	GetRoomById(w http.ResponseWriter, r *http.Request, code string)
 }
 
 // ServerInterfaceWrapper converts contexts to parameters.
@@ -157,6 +219,77 @@ func (siw *ServerInterfaceWrapper) StopJobById(w http.ResponseWriter, r *http.Re
 
 	var handler = func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.StopJobById(w, r, id)
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler(w, r.WithContext(ctx))
+}
+
+// GetRooms operation middleware
+func (siw *ServerInterfaceWrapper) GetRooms(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var handler = func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetRooms(w, r)
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler(w, r.WithContext(ctx))
+}
+
+// CreateRoom operation middleware
+func (siw *ServerInterfaceWrapper) CreateRoom(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var handler = func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateRoom(w, r)
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler(w, r.WithContext(ctx))
+}
+
+// UpdateRoom operation middleware
+func (siw *ServerInterfaceWrapper) UpdateRoom(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var handler = func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdateRoom(w, r)
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler(w, r.WithContext(ctx))
+}
+
+// GetRoomById operation middleware
+func (siw *ServerInterfaceWrapper) GetRoomById(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var err error
+
+	// ------------- Path parameter "code" -------------
+	var code string
+
+	err = runtime.BindStyledParameter("simple", false, "code", mux.Vars(r)["code"], &code)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "code", Err: err})
+		return
+	}
+
+	var handler = func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetRoomById(w, r, code)
 	}
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -288,6 +421,14 @@ func HandlerWithOptions(si ServerInterface, options GorillaServerOptions) http.H
 	r.HandleFunc(options.BaseURL+"/jobs/{id}/run", wrapper.RunJobById).Methods("POST")
 
 	r.HandleFunc(options.BaseURL+"/jobs/{id}/stop", wrapper.StopJobById).Methods("POST")
+
+	r.HandleFunc(options.BaseURL+"/rooms", wrapper.GetRooms).Methods("GET")
+
+	r.HandleFunc(options.BaseURL+"/rooms", wrapper.CreateRoom).Methods("POST")
+
+	r.HandleFunc(options.BaseURL+"/rooms", wrapper.UpdateRoom).Methods("PUT")
+
+	r.HandleFunc(options.BaseURL+"/rooms/{code}", wrapper.GetRoomById).Methods("GET")
 
 	return r
 }

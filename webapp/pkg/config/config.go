@@ -27,10 +27,11 @@ type TelegramBot struct {
 }
 
 type Server struct {
-	Port         int `koanf:"port"`
-	WriteTimeout int `koanf:"write_timeout"`
-	ReadTimeout  int `koanf:"read_timeout"`
-	IdleTimeout  int `koanf:"idle_timeout"`
+	BaseURL      string `koanf:"base_url"`
+	Port         int    `koanf:"port"`
+	WriteTimeout int    `koanf:"write_timeout"`
+	ReadTimeout  int    `koanf:"read_timeout"`
+	IdleTimeout  int    `koanf:"idle_timeout"`
 }
 
 type Config struct {
@@ -43,6 +44,7 @@ type Config struct {
 
 func LoadConfig(path string) (*Config, error) {
 	if err := k.Load(confmap.Provider(map[string]interface{}{
+		"server.base_url":            "/api",
 		"server.port":                8080,
 		"server.write_timeout":       15,
 		"server.read_timeout":        15,

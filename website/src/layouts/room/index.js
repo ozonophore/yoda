@@ -1,83 +1,93 @@
-import { useTranslation } from "react-i18next";
-import { useState } from "react";
-import Icon from "@mui/material/Icon";
+import { useEffect, useState } from "react";
 import Grid from "@mui/material/Grid";
-import RoomEditCard from "../../examples/Cards/InfoCards/RoomEditCard";
-import RoomNewCard from "../../examples/Cards/InfoCards/RoomNewCard";
+import MDSnackbar from "../../components/MDSnackbar";
+import { RefreshRooms, CloseError, CreateRoom } from "../../context/actions";
 import DashboardLayout from "../../examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "../../examples/Navbars/DashboardNavbar";
 import MDBox from "../../components/MDBox";
-import MDButton from "../../components/MDButton";
-import { createNewRoom, useMaterialUIController } from "../../context";
+import { useMaterialUIController } from "../../context";
 import RoomInfoCard from "../../examples/Cards/InfoCards/RoomInfoCard";
+import Header from "./components/Header";
+import RoomCard from "./components/RoomCard";
 
 function Room() {
   const [isNewRoom, setIsNewRoom] = useState(false);
-  const [editRoom, setEditRoom] = useState(false);
-  const [t] = useTranslation();
+  const [editKey, setEditKey] = useState(false);
   const [controller, dispatch] = useMaterialUIController();
-  const { rooms } = controller;
-  const handleOnSubmit = (e) => {
-    createNewRoom(dispatch);
-    e.preventDefault();
+  const { rooms, error } = controller;
+  const handleCloseError = () => dispatch(CloseError());
+
+  const renderError = (
+    <MDSnackbar
+      color="error"
+      icon="warning"
+      title="Room"
+      content={error?.message}
+      dateTime="11 mins ago"
+      open={Boolean(error?.message)}
+      onClose={handleCloseError}
+      close={handleCloseError}
+      bgWhite
+    />
+  );
+
+  useEffect(() => {
+    dispatch(RefreshRooms());
+  }, []);
+  const handleOnSubmit = (room) => {
+    dispatch(CreateRoom(room));
+    setEditKey(null);
   };
   const handleOnNewRoom = (e) => {
     setIsNewRoom(true);
-    setEditRoom(null);
+    setEditKey(null);
     e.preventDefault();
   };
   const handleOnCancel = (e) => {
+    setEditKey(null);
     setIsNewRoom(false);
-    setEditRoom(null);
     e.preventDefault();
   };
   const handleOnEdit = (room) => {
+    setEditKey(room.code);
     setIsNewRoom(false);
-    setEditRoom(room);
   };
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <MDBox pt={2} px={2} pb={4} display="flex" justifyContent="end" alignItems="center">
-        {Boolean(isNewRoom) === false && Boolean(editRoom) === false && (
-          <MDButton variant="gradient" color="info" onClick={handleOnNewRoom}>
-            <Icon sx={{ fontWeight: "bold" }}>add</Icon>
-            &nbsp;{t("room.button.add")}
-          </MDButton>
-        )}
-      </MDBox>
-      {Boolean(isNewRoom) && <RoomNewCard onCancel={handleOnCancel} onSubmit={handleOnSubmit} />}
-      {Boolean(editRoom) && (
-        <RoomEditCard
-          code={editRoom.code}
-          name={editRoom.name}
-          ozon={editRoom.ozon}
-          wb={editRoom.wb}
-          onCancel={handleOnCancel}
-        />
-      )}
+      <Header isShow={!isNewRoom} onClick={handleOnNewRoom} />
+      {renderError}
+      {Boolean(isNewRoom) && <RoomCard onCancel={handleOnCancel} onSubmit={handleOnSubmit} />}
       <MDBox mt={4.5}>
         <Grid container spacing={2}>
-          {rooms.map((room) => (
-            <Grid key={room.code} item xs={12} md={6} lg={6}>
-              <MDBox mb={3}>
-                <RoomInfoCard
-                  color="success"
-                  icon="tv"
-                  title={room.code}
-                  name={room.name}
-                  dayOfWeek={room.dayOfWeek}
-                  time={room.time}
-                  onEdit={() => handleOnEdit(room)}
-                  percentage={{
-                    color: "success",
-                    amount: "+1%",
-                    label: "than yesterday",
-                  }}
-                />
-              </MDBox>
-            </Grid>
-          ))}
+          {rooms.map((room) =>
+            room.code === editKey ? (
+              <Grid key={room.code} item xs={12} md={12} lg={12}>
+                <MDBox mb={3}>
+                  <RoomCard onSubmit={handleOnSubmit} onCancel={handleOnCancel} room={room} />
+                </MDBox>
+              </Grid>
+            ) : (
+              <Grid key={room.code} item xs={12} md={6} lg={6}>
+                <MDBox mb={3}>
+                  <RoomInfoCard
+                    color="success"
+                    icon="tv"
+                    title={room.code}
+                    name={room.name}
+                    days={room.days}
+                    time={room.times}
+                    onEdit={() => handleOnEdit(room)}
+                    percentage={{
+                      color: "success",
+                      amount: "+1%",
+                      label: "than yesterday",
+                    }}
+                  />
+                </MDBox>
+              </Grid>
+            )
+          )}
         </Grid>
       </MDBox>
     </DashboardLayout>
