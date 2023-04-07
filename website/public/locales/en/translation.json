@@ -1,5 +1,8 @@
 {
   "brandName": "Admin panel",
+  "search": {
+    "label": "Search here"
+  },
   "menu":{
     "dashboard": "Dashboard"
   },

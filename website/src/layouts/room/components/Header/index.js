@@ -7,7 +7,7 @@ import MDButton from "../../../../components/MDButton";
 function RoomHeader({ isShow, onClick }) {
   const [t] = useTranslation();
   return (
-    <MDBox pt={2} px={2} pb={4} display="flex" justifyContent="end" alignItems="center">
+    <MDBox pt={2} px={2} pb={2} display="flex" justifyContent="end" alignItems="center">
       {Boolean(isShow) && (
         <MDButton variant="gradient" color="info" onClick={onClick}>
           <Icon sx={{ fontWeight: "bold" }}>add</Icon>

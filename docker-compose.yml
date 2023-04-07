@@ -18,7 +18,7 @@ services:
       context: ./
       dockerfile: Dockerfile
     volumes:
-      - ./webapp/config.yml.prod:/app/config.yml
+      - ./server/webapp/config.yml.prod:/app/config.yml
     ports:
       - "8080:8080"
     restart: on-failure

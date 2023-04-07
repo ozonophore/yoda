@@ -54,7 +54,7 @@ function Room() {
   };
   return (
     <DashboardLayout>
-      <DashboardNavbar />
+      <DashboardNavbar hasRefresh />
       <Header isShow={!isNewRoom} onClick={handleOnNewRoom} />
       {renderError}
       {Boolean(isNewRoom) && <RoomCard onCancel={handleOnCancel} onSubmit={handleOnSubmit} />}

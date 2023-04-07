@@ -7,7 +7,6 @@ import (
 	"github.com/yoda/webapp/pkg/api/server"
 	"github.com/yoda/webapp/pkg/config"
 	"github.com/yoda/webapp/pkg/dao"
-	"github.com/yoda/webapp/pkg/mqclient"
 	server2 "github.com/yoda/webapp/pkg/server"
 	"os"
 	"os/signal"
@@ -30,7 +29,7 @@ func main() {
 	//defer cancelConsumer()
 	//defer mq.Close()
 	database := dao.InitDatabase(config.Database, logger)
-	repository := dao.NewRepositoryDAO(database)
+	dao.NewRepositoryDAO(database)
 
 	server := server.NewServerApi(&logger)
 
@@ -44,9 +43,9 @@ func main() {
 			logger.Error(err)
 		}
 	}()
-	tgbotContext, tgBotCancel := context.WithCancel(context.Background())
-	defer tgBotCancel()
-	go mqclient.StartTgBot(tgbotContext, config.TelegramBot, repository)
+	//tgbotContext, tgBotCancel := context.WithCancel(context.Background())
+	//defer tgBotCancel()
+	//go mqclient.StartTgBot(tgbotContext, config.TelegramBot, repository)
 	logger.Infof("Server started on port %d", config.Server.Port)
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)

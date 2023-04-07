@@ -12,6 +12,10 @@ import MDButton from "../../../../components/MDButton";
 import MDInput from "../../../../components/MDInput";
 import MDTypography from "../../../../components/MDTypography";
 
+// Images
+import OzonLog from "../../../../assets/images/icons/ozon.svg";
+import WbLog from "../../../../assets/images/icons/wb.png";
+
 const initialRoom = {
   code: "",
   name: "",
@@ -131,7 +135,7 @@ function RoomCard({ room, onCancel, onSubmit }) {
                     display="flex"
                     alignItems="center"
                   >
-                    <Avatar src="/images/ozon.svg">OZ</Avatar>
+                    <Avatar src={OzonLog}>OZ</Avatar>
                     &nbsp;&nbsp;{t("room.settings.connection")}
                   </MDTypography>
                   <MDBox mt={2} mb={2}>
@@ -194,7 +198,7 @@ function RoomCard({ room, onCancel, onSubmit }) {
                     display="flex"
                     alignItems="center"
                   >
-                    <Avatar src="/images/wb.png">WB</Avatar>
+                    <Avatar src={WbLog}>WB</Avatar>
                     &nbsp;&nbsp;{t("room.settings.connection")}
                   </MDTypography>
                   <MDBox mt={2} mb={2} ml={0}>

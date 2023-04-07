@@ -7,12 +7,13 @@ create table "owner"
 
 create table "job"
 (
-    "id"          serial primary key,
+    "id"          integer primary key,
     "create_date" timestamp default now(),
     "is_active"   boolean not null,
     "description" varchar(100),
     "week_days"   varchar(200),
-    "at_time"     varchar(200)
+    "at_time"     varchar(200),
+    "type"        varchar(20) not null
 );
 
 comment
