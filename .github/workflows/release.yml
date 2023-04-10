@@ -35,10 +35,11 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ github.actor }}/yoda-website:latest, ${{ github.actor }}/yoda-website:${{ steps.bump-semver.outputs.new_version }}
+          tags: ${{ github.actor }}/yoda-website:latest,${{ github.actor }}/yoda-website:${{ steps.bump-semver.outputs.new_version }}
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
+          file: ./Dockerfile
           draft: false
           prerelease: false
           tag_name: ${{ steps.bump-semver.outputs.new_version }}
