@@ -17,6 +17,7 @@ jobs:
         id: bump-semver
         with:
           current_version: ${{ steps.get-latest-tag.outputs.tag }}
+          level: patch
       - name: Echo new version
         run: echo ${{ steps.bump-semver.outputs.new_version }}
 
