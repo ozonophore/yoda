@@ -2,6 +2,7 @@ package mq
 
 import (
 	"context"
+	"errors"
 	"github.com/sirupsen/logrus"
 	"github.com/streadway/amqp"
 )
@@ -61,7 +62,7 @@ func NewConsumer(ctx context.Context, config Mq, handleMessage func(msg amqp.Del
 		args,             // arguments
 	)
 	if err != nil {
-		return err
+		return errors.Join(err)
 	}
 
 	msgs, err := ch.Consume(

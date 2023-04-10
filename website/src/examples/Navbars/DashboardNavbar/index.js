@@ -54,7 +54,7 @@ import {
 } from "context";
 import { useTranslation } from "react-i18next";
 
-function DashboardNavbar({ absolute, light, isMini, hasRefresh }) {
+function DashboardNavbar({ absolute, light, isMini, onRefresh }) {
   const [navbarType, setNavbarType] = useState();
   const [controller, dispatch] = useMaterialUIController();
   const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator, darkMode } = controller;
@@ -142,13 +142,13 @@ function DashboardNavbar({ absolute, light, isMini, hasRefresh }) {
               <MDInput label={t("search.label")} />
             </MDBox>
             <MDBox color={light ? "white" : "inherit"}>
-              {hasRefresh && (
+              {Boolean(onRefresh) && (
                 <IconButton
                   size="small"
                   disableRipple
                   color="inherit"
                   sx={navbarIconButton}
-                  onClick={handleMiniSidenav}
+                  onClick={onRefresh}
                 >
                   <Icon sx={iconsStyle} fontSize="medium">
                     refresh
@@ -206,7 +206,7 @@ DashboardNavbar.defaultProps = {
   absolute: false,
   light: false,
   isMini: false,
-  hasRefresh: false,
+  onRefresh: null,
 };
 
 // Typechecking props for the DashboardNavbar
@@ -214,7 +214,7 @@ DashboardNavbar.propTypes = {
   absolute: PropTypes.bool,
   light: PropTypes.bool,
   isMini: PropTypes.bool,
-  hasRefresh: PropTypes.bool,
+  onRefresh: PropTypes.func,
 };
 
 export default DashboardNavbar;

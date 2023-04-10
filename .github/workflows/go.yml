@@ -31,10 +31,10 @@ jobs:
 
       - name: Download Dependencies
         run: |
-          cd app && go mod download
+          cd server/app && go mod download
 
       - name: Test
-        run: cd app && make test
+        run: cd server/app && make test
 
       - name: Upload coverage to codecov.io
         uses: codecov/codecov-action@v3

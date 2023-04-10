@@ -18,9 +18,9 @@ const MDTimePicker = forwardRef(({ language, ...rest }, ref) => {
             autoComplete="off"
             label="Label"
             title="title"
-            style={{
-              width: "300px",
-            }}
+            // style={{
+            //   width: "300px",
+            // }}
             value={values}
             hideClearAll
             onChange={(item) => {

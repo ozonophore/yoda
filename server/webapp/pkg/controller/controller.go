@@ -1,4 +1,4 @@
-package server
+package controller
 
 import (
 	"encoding/json"
@@ -55,14 +55,15 @@ func (sa ServerApi) GetRoomById(w http.ResponseWriter, r *http.Request, code str
 // (GET /jobs)
 func (sa ServerApi) GetJobs(w http.ResponseWriter, r *http.Request) {
 	sa.logger.Debug("GetJobs")
-	id := int64(1)
-	name := "test"
-	newJob := api.Job{
-		Id:   &id,
-		Name: &name,
+	w.Header().Set("Content-Type", "application/json")
+	jobs, err := service.GetJobs()
+	if err != nil {
+		logrus.Error(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
 	}
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(newJob)
+	json.NewEncoder(w).Encode(*jobs)
 }
 
 // Create job

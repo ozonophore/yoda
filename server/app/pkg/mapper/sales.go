@@ -22,6 +22,7 @@ func MapSale(s api.SalesItem, transactionId int64, source *string, ownerCode str
 	externalCode := fmt.Sprintf("%d", s.NmId)
 	return &model.Sale{
 		TransactionID:     transactionId,
+		TransactionDate:   time.Now(),
 		Barcode:           s.Barcode,
 		Source:            *source,
 		OwnerCode:         ownerCode,

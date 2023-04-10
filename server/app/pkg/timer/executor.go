@@ -8,6 +8,7 @@ import (
 	"github.com/yoda/app/pkg/configuration"
 	jobf "github.com/yoda/app/pkg/job"
 	"github.com/yoda/app/pkg/repository"
+	service "github.com/yoda/app/pkg/service/logload"
 	"github.com/yoda/common/pkg/model"
 	"github.com/yoda/common/pkg/types"
 	"time"
@@ -48,7 +49,7 @@ func jobByTag(s *gocron.Scheduler, jobId int) *gocron.Job {
 	return jobs[0]
 }
 
-func RunEtlJob(config *configuration.Config, ctx context.Context, jobID int, s *gocron.Scheduler, onBefore onBeforeJobExecution, onAfter onAfterJobExecution) {
+func RunRegularLoad(config *configuration.Config, ctx context.Context, jobID int, s *gocron.Scheduler, onBefore onBeforeJobExecution, onAfter onAfterJobExecution) {
 	job, err := repository.GetJobWithOwnerByJobId(jobID)
 	if err != nil {
 		logrus.Errorf("Error after get jobs: %s with id: %d", err, jobID)
@@ -59,23 +60,35 @@ func RunEtlJob(config *configuration.Config, ctx context.Context, jobID int, s *
 		return
 	}
 	transactionID := repository.BeginOperation(jobID)
-	s.FindJobsByTag(fmt.Sprintf(`%d`, jobID))
 	gJob := jobByTag(s, jobID)
 	callOnBeforeJonExecution(job, transactionID, gJob, onBefore)
-	defer callOnAfterJonExecution(job, transactionID, gJob, err, onAfter)
 	logrus.Info("Start parsing for job: ", jobID)
 	for _, param := range *job.Params {
-		var loader jobf.DataLoader
-		loader, err = jobf.JobFactory(param.Source, param.OwnerCode, *param.Password, param.ClientID, config)
+		err = prepareParam(ctx, config, &param, transactionID)
 		if err != nil {
-			logrus.Errorf("Error after lookup a loader: %s", err)
-			continue
-		}
-		newContext, _ := context.WithTimeout(ctx, time.Duration(config.Timeout)*time.Second)
-		err = loader.Parsing(newContext, transactionID)
-		if err != nil {
-			logrus.Errorf("Error after parsing: %s", err)
-			continue
+			logrus.Errorf("Error after prepare param: %s", err)
+			return
 		}
 	}
+	callOnAfterJonExecution(job, transactionID, gJob, err, onAfter)
+}
+
+func prepareParam(ctx context.Context, config *configuration.Config, param *model.OwnerMarketplace, transactionID int64) error {
+	service.CreateLogLoad(transactionID, param.OwnerCode, param.Source)
+	var err error
+	defer func(err error) {
+		if err == nil {
+			service.CompleteLogLoad(transactionID, param.OwnerCode, param.Source)
+		} else {
+			service.ErrorLogLoad(transactionID, param.OwnerCode, param.Source, err)
+		}
+	}(err)
+	var loader jobf.DataLoader
+	loader, err = jobf.JobFactory(param.Source, param.OwnerCode, *param.Password, param.ClientID, config)
+	if err != nil {
+		logrus.Panicf("Error after lookup a loader: %s", err)
+	}
+	newContext, _ := context.WithTimeout(ctx, time.Duration(config.Timeout)*time.Second)
+	err = loader.Parsing(newContext, transactionID)
+	return err
 }

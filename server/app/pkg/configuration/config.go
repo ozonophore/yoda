@@ -7,7 +7,6 @@ import (
 	"github.com/knadh/koanf/providers/confmap"
 	"github.com/knadh/koanf/providers/file"
 	"github.com/knadh/koanf/v2"
-	"github.com/yoda/common/pkg/mq"
 	"os"
 	"strconv"
 )
@@ -37,12 +36,19 @@ type Database struct {
 	LoggingLevel string `koanf:"logging_level"`
 }
 
+type Mq struct {
+	Url       string `koanf:"url"`
+	Consumer  string `koanf:"consumer"`
+	Publisher string `koanf:"publisher"`
+	MaxLength int32  `koanf:"max_length"`
+}
+
 type Config struct {
 	Version      string   `koanf:"version"`
 	Database     Database `koanf:"database"`
 	BatchSize    int      `koanf:"batch_size"`
 	Timeout      int      `koanf:"timeout"`
-	Mq           mq.Mq    `koanf:"mq"`
+	Mq           Mq       `koanf:"mq"`
 	Order        Order    `koanf:"order"`
 	Wb           Wb       `koanf:"wb"`
 	Ozon         Ozon     `koanf:"ozon"`
@@ -63,8 +69,8 @@ func InitConfig(path string) *Config {
 		"timeout":                30,
 		"logging_level":          "info",
 		"database.logging_level": "INFO",
-		"mq.read_queue":          "yoda-client",
-		"mq.write_queue":         "yoda-server",
+		"mq.consumer":            "yoda-consumer",
+		"mq.publisher":           "yoda-publisher",
 		"mq.max_length":          10,
 		"order.loaded_days":      30,
 		"wb.host":                "https://statistics-api.wildberries.ru",
@@ -94,11 +100,11 @@ func getEnvs(c *Config) error {
 	if v, exists := os.LookupEnv("YODA_MQ_URL"); exists {
 		c.Mq.Url = v
 	}
-	if v, exists := os.LookupEnv("YODA_MQ_READ_QUEUE"); exists {
-		c.Mq.ReadQueue = v
+	if v, exists := os.LookupEnv("YODA_MQ_CONSUMER"); exists {
+		c.Mq.Consumer = v
 	}
-	if v, exists := os.LookupEnv("YODA_MQ_WRITE_QUEUE"); exists {
-		c.Mq.WriteQueue = v
+	if v, exists := os.LookupEnv("YODA_MQ_PUBLISHER"); exists {
+		c.Mq.Publisher = v
 	}
 	if v, exists := os.LookupEnv("YODA_BATCH_SIZE"); exists {
 		if c.BatchSize, err = strconv.Atoi(v); err != nil {

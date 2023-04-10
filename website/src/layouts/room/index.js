@@ -52,9 +52,13 @@ function Room() {
     setEditKey(room.code);
     setIsNewRoom(false);
   };
+  const handleOnRefresh = (e) => {
+    dispatch(RefreshRooms());
+    e.preventDefault();
+  };
   return (
     <DashboardLayout>
-      <DashboardNavbar hasRefresh />
+      <DashboardNavbar onRefresh={handleOnRefresh} />
       <Header isShow={!isNewRoom} onClick={handleOnNewRoom} />
       {renderError}
       {Boolean(isNewRoom) && <RoomCard onCancel={handleOnCancel} onSubmit={handleOnSubmit} />}

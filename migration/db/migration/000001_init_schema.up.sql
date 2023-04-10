@@ -9,10 +9,14 @@ create table "job"
 (
     "id"          integer primary key,
     "create_date" timestamp default now(),
-    "is_active"   boolean not null,
+    "is_active"   boolean     not null,
     "description" varchar(100),
     "week_days"   varchar(200),
     "at_time"     varchar(200),
+    "interval"    integer,
+    "max_runs"    integer,
+    "next_run"    timestamp,
+    "last_run"    timestamp,
     "type"        varchar(20) not null
 );
 
@@ -24,6 +28,10 @@ comment
 on column "job"."week_days" is 'Дни недели monday | tuesday | wednesday | thursday | friday | saturday | sunday';
 comment
 on column "job"."at_time" is 'Время в формате 8:04;16:00';
+comment
+on column "job"."interval" is 'Интервал в секундах';
+comment
+on column "job"."max_runs" is 'Максимальное количество запусков';
 
 create table "job_owner"
 (
@@ -54,6 +62,7 @@ create table "transaction"
 create table "stock"
 (
     "id"                   serial primary key,
+    "transaction_date"     date                                    not null,
     "transaction_id"       integer references "transaction" ("id") not null,
     "source"               varchar(20)                             not null,
     "owner_code"           varchar(20) references "owner" ("code") not null,
@@ -129,6 +138,7 @@ on column "stock"."card_created" is 'Дата создания карточки'
 create table "sale"
 (
     "id"                  serial primary key,
+    "transaction_date"    date                                    not null,
     "transaction_id"      integer references "transaction" ("id") not null,
     "source"              varchar(20)                             not null,
     "owner_code"          varchar(20) references "owner" ("code") not null,
@@ -234,6 +244,7 @@ on column "sale"."srid" is 'Уникальный идентификатор за
 create table "order"
 (
     "id"                  serial primary key,
+    "transaction_date"    date                                    not null,
     "transaction_id"      integer references "transaction" ("id") not null,
     "source"              varchar(20)                             not null,
     "owner_code"          varchar(20) references "owner" ("code") not null,
@@ -352,3 +363,34 @@ create table "tlg_event"
     "data_type" varchar(20) not null,
     primary key ("chat_id", "data_type")
 );
+
+create table "log_load"
+(
+    "transaction_id" integer references "transaction" ("id"),
+    "owner_code"     varchar(20) references "owner" ("code"),
+    "source"         varchar(20) not null,
+    "description"    varchar(200),
+    "status"         varchar(20) not null,
+    primary key ("transaction_id", "owner_code", "source")
+);
+
+comment
+on table "log_load" is 'Таблица для хранения логов загрузки данных';
+comment
+on column "log_load"."transaction_id" is 'Идентификатор транзакции';
+comment
+on column "log_load"."owner_code" is 'Код владельца';
+comment
+on column "log_load"."source" is 'Источник данных';
+comment
+on column "log_load"."description" is 'Описание';
+comment
+on column "log_load"."status" is 'Статус BEGIN|COMPLETED|ERROR';
+
+create table "scheduler"
+(
+    "code"       varchar(20) primary key,
+    "description" varchar(200),
+    "status"     varchar(20) not null,
+    "update_at"  timestamp   not null
+)

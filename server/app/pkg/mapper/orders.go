@@ -45,6 +45,7 @@ func MapOrder(order *api.OrdersItem, transactionId int64, source string, ownerCo
 	discountPercent := float64(*order.DiscountPercent)
 	return &model.Order{
 		TransactionID:     transactionId,
+		TransactionDate:   time.Now(),
 		Source:            source,
 		OwnerCode:         ownerCode,
 		LastChangeDate:    order.LastChangeDate.ToTime(),

@@ -14,6 +14,11 @@ type Job struct {
 	Description *string             `gorm:"column:description" json:"description"`
 	WeekDays    *string             `gorm:"column:week_days" json:"week_days"` // Дни недели monday | tuesday | wednesday | thursday | friday | saturday | sunday
 	AtTime      *string             `gorm:"column:at_time" json:"at_time"`     // Время в формате 8:04;16:00
+	Interval    *int                `gorm:"column:interval" json:"interval"`   // Интервал в cекундах
+	MaxRuns     *int                `gorm:"column:max_runs" json:"max_runs"`   // Максимальное количество запусков
+	Type        string              `gorm:"column:type;not null" json:"type"`  // Тип задачи: regular | interval
+	NextRun     *time.Time          `gorm:"column:next_run" json:"next_run"`
+	LastRun     *time.Time          `gorm:"column:last_run" json:"last_run"`
 	Params      *[]OwnerMarketplace `gorm:"many2many:job_owner;foreignKey:ID;joinForeignKey:JobID;References:OwnerCode;joinReferences:OwnerCode" json:"owner_marketplace"`
 }
 

@@ -26,4 +26,16 @@ const CreateRoom = (room) => (dispatch) => {
     });
 };
 
-export { RefreshRooms, CloseError, CreateRoom };
+const RefreshJobs = () => (dispatch) => {
+  console.log("#RefreshJobs");
+  dispatch({ type: "LOADING", value: true });
+  DefaultService.getJobs()
+    .then((data) => {
+      dispatch({ type: "REFRESH_JOBS", value: data });
+    })
+    .catch((error) => {
+      dispatch({ type: "SHOW_ERROR", value: error.statusText });
+    });
+};
+
+export { RefreshRooms, CloseError, CreateRoom, RefreshJobs };

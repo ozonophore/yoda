@@ -6,6 +6,7 @@ import DashboardLayout from "../../examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "../../examples/Navbars/DashboardNavbar";
 import MDBox from "../../components/MDBox";
 import MDTimePicker from "../../components/MDTimePicker";
+import TimePickers from "./TimePickers";
 import YDataTable from "./YDataTable";
 import MDPagination from "../../components/MDPagination";
 
@@ -102,8 +103,11 @@ function Test() {
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <MDBox py={3}>
+      <MDBox>
         <MDTimePicker />
+      </MDBox>
+      <MDBox>
+        <TimePickers />
       </MDBox>
       <MDBox py={3}>
         <Card>

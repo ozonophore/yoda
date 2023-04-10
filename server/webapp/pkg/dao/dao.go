@@ -139,6 +139,14 @@ func GetOwnerMarketplaceByOwnerCodeAndSource(ownerCode string, source string) (*
 	return &model, nil
 }
 
+func GetJobs() ([]model.Job, error) {
+	var models []model.Job
+	if err := dao.database.Find(&models).Error; err != nil {
+		return nil, err
+	}
+	return models, nil
+}
+
 func GetJobById(id int64) (*model.Job, error) {
 	var model model.Job
 	if err := dao.database.Where(`"id" = ?`, id).First(&model).Error; err != nil {

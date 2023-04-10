@@ -13,6 +13,7 @@ const TableNameStock = "stock"
 // Stock mapped from table <stock>
 type StockItem struct {
 	ID                 int64     `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"`
+	TransactionDate    time.Time `gorm:"column:transaction_date;not null" json:"transaction_date"`
 	TransactionID      int64     `gorm:"column:transaction_id;not null" json:"transaction_id"`
 	Source             string    `gorm:"column:source;not null" json:"source"`
 	OwnerCode          string    `gorm:"not null"`

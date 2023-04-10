@@ -15,6 +15,7 @@ func MapStockItem(s *api.StocksItem) (*model.StockItem, error) {
 	changeDate := types.CustomTimeToTime(s.LastChangeDate)
 	qp := int32(0)
 	return &model.StockItem{
+		TransactionDate:  time.Now(),
 		LastChangeDate:   *changeDate,
 		LastChangeTime:   *changeDate,
 		SupplierArticle:  s.SupplierArticle,
@@ -43,6 +44,7 @@ func MapRowItem(s *api.RowItem, d *time.Time) (*model.StockItem, error) {
 	qf := int32(*s.FreeToSellAmount) + int32(*s.ReservedAmount)
 	qp := int32(*s.PromisedAmount)
 	return &model.StockItem{
+		TransactionDate:  time.Now(),
 		LastChangeDate:   *d,
 		LastChangeTime:   *d,
 		SupplierArticle:  s.ItemCode,

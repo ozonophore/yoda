@@ -208,3 +208,21 @@ func GetTlgEvents() (*[]model.TlgEvent, error) {
 	}
 	return &events, nil
 }
+
+func CreateOrUpdateLogLoad(model *model.LogLoad) error {
+	initIfError()
+	return repository.db.Save(model).Error
+}
+
+func GetLogLLoadByTrnsAndStatus(trns int64, status string) (*[]model.LogLoad, error) {
+	initIfError()
+	var logs []model.LogLoad
+	err := repository.db.Where(`"transaction_id"=? and "status"=?`, trns, status).Find(&logs).Error
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return &logs, nil
+		}
+		return nil, err
+	}
+	return &logs, nil
+}

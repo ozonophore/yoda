@@ -12,15 +12,15 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// Defines values for RoomDays.
+// Defines values for WeekDay.
 const (
-	Friday    RoomDays = "friday"
-	Monday    RoomDays = "monday"
-	Saturday  RoomDays = "saturday"
-	Sunday    RoomDays = "sunday"
-	Thursday  RoomDays = "thursday"
-	Tuesday   RoomDays = "tuesday"
-	Wednesday RoomDays = "wednesday"
+	Friday    WeekDay = "friday"
+	Monday    WeekDay = "monday"
+	Saturday  WeekDay = "saturday"
+	Sunday    WeekDay = "sunday"
+	Thursday  WeekDay = "thursday"
+	Tuesday   WeekDay = "tuesday"
+	Wednesday WeekDay = "wednesday"
 )
 
 // Error defines model for Error.
@@ -30,12 +30,24 @@ type Error struct {
 
 // Job defines model for Job.
 type Job struct {
-	Description *string    `json:"description,omitempty"`
-	Id          *int64     `json:"id,omitempty"`
-	LastRun     *time.Time `json:"lastRun,omitempty"`
-	Name        *string    `json:"name,omitempty"`
-	NextRun     *time.Time `json:"nextRun,omitempty"`
-	StartAtTime *time.Time `json:"startAtTime,omitempty"`
+	AddLoader      JobAddLoader `json:"addLoader"`
+	CalcAggregates JobLoader    `json:"calcAggregates"`
+	Id             int64        `json:"id"`
+	Loader         JobLoader    `json:"loader"`
+}
+
+// JobAddLoader defines model for JobAddLoader.
+type JobAddLoader struct {
+	Interval *int `json:"interval,omitempty"`
+	MaxRuns  *int `json:"maxRuns,omitempty"`
+}
+
+// JobLoader defines model for JobLoader.
+type JobLoader struct {
+	AtTimes  []string   `json:"atTimes"`
+	LastRun  *time.Time `json:"lastRun,omitempty"`
+	NextRun  *time.Time `json:"nextRun,omitempty"`
+	WeekDays []WeekDay  `json:"weekDays"`
 }
 
 // NewRoom defines model for NewRoom.
@@ -56,23 +68,20 @@ type Ozon struct {
 type Room struct {
 	Code      string     `json:"code"`
 	CreatedAt *time.Time `json:"createdAt,omitempty"`
-	Days      []RoomDays `json:"days"`
+	Days      []WeekDay  `json:"days"`
 	Name      string     `json:"name"`
 	Ozon      Ozon       `json:"ozon"`
 	Times     []string   `json:"times"`
 	Wb        Wb         `json:"wb"`
 }
 
-// RoomDays defines model for Room.Days.
-type RoomDays string
-
 // Wb defines model for Wb.
 type Wb struct {
 	AuthToken string `json:"authToken"`
 }
 
-// CreateJobJSONRequestBody defines body for CreateJob for application/json ContentType.
-type CreateJobJSONRequestBody = Job
+// WeekDay defines model for WeekDay.
+type WeekDay string
 
 // CreateRoomJSONRequestBody defines body for CreateRoom for application/json ContentType.
 type CreateRoomJSONRequestBody = NewRoom
@@ -85,9 +94,6 @@ type ServerInterface interface {
 	// Get all jobs
 	// (GET /jobs)
 	GetJobs(w http.ResponseWriter, r *http.Request)
-	// Create job
-	// (POST /jobs)
-	CreateJob(w http.ResponseWriter, r *http.Request)
 	// Get job by id
 	// (GET /jobs/{id})
 	GetJobById(w http.ResponseWriter, r *http.Request, id int64)
@@ -126,21 +132,6 @@ func (siw *ServerInterfaceWrapper) GetJobs(w http.ResponseWriter, r *http.Reques
 
 	var handler = func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.GetJobs(w, r)
-	}
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler(w, r.WithContext(ctx))
-}
-
-// CreateJob operation middleware
-func (siw *ServerInterfaceWrapper) CreateJob(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
-
-	var handler = func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.CreateJob(w, r)
 	}
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -413,8 +404,6 @@ func HandlerWithOptions(si ServerInterface, options GorillaServerOptions) http.H
 	}
 
 	r.HandleFunc(options.BaseURL+"/jobs", wrapper.GetJobs).Methods("GET")
-
-	r.HandleFunc(options.BaseURL+"/jobs", wrapper.CreateJob).Methods("POST")
 
 	r.HandleFunc(options.BaseURL+"/jobs/{id}", wrapper.GetJobById).Methods("GET")
 

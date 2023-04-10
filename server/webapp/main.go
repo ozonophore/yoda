@@ -4,8 +4,8 @@ import (
 	"context"
 	log "github.com/sirupsen/logrus"
 	"github.com/yoda/webapp/pkg/api"
-	"github.com/yoda/webapp/pkg/api/server"
 	"github.com/yoda/webapp/pkg/config"
+	"github.com/yoda/webapp/pkg/controller"
 	"github.com/yoda/webapp/pkg/dao"
 	server2 "github.com/yoda/webapp/pkg/server"
 	"os"
@@ -31,7 +31,7 @@ func main() {
 	database := dao.InitDatabase(config.Database, logger)
 	dao.NewRepositoryDAO(database)
 
-	server := server.NewServerApi(&logger)
+	server := controller.NewServerApi(&logger)
 
 	router := api.HandlerWithOptions(server, api.GorillaServerOptions{
 		BaseURL: "/api",

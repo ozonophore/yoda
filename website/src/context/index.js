@@ -22,6 +22,7 @@ import { createContext, useContext, useMemo } from "react";
 
 // prop-types is a library for typechecking of props
 import PropTypes from "prop-types";
+import InitialState from "./InitialState";
 import thunkReducer from "./reducer/thunkReducer";
 
 // Material Dashboard 2 React main context
@@ -89,6 +90,9 @@ function reducer(state, action) {
     case "REFRESH_ROOMS": {
       return { ...state, rooms: action.value, loading: false };
     }
+    case "REFRESH_JOBS": {
+      return { ...state, jobs: action.value, loading: false };
+    }
     default: {
       throw new Error(`Unhandled action type: ${action.type}`);
     }
@@ -97,26 +101,7 @@ function reducer(state, action) {
 
 // Material Dashboard 2 React context provider
 function MaterialUIControllerProvider({ children }) {
-  const initialState = {
-    miniSidenav: false,
-    transparentSidenav: false,
-    whiteSidenav: false,
-    sidenavColor: "info",
-    transparentNavbar: true,
-    fixedNavbar: true,
-    openConfigurator: false,
-    direction: "ltr",
-    layout: "dashboard",
-    darkMode: false,
-    language: "ru",
-    loading: false,
-    rooms: [],
-    error: {
-      message: "",
-    },
-  };
-
-  const [controller, dispatch] = thunkReducer(reducer, initialState);
+  const [controller, dispatch] = thunkReducer(reducer, InitialState);
 
   const value = useMemo(() => [controller, dispatch], [controller, dispatch]);
 

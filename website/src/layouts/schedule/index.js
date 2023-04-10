@@ -8,11 +8,11 @@ function Schedulers() {
     <DashboardLayout>
       <DashboardNavbar />
       <Grid container spacing={3}>
-        <Grid item xs={12} md={6}>
-          <RegularCard />
+        <Grid key="job_1" item xs={12} md={6}>
+          <RegularCard title="регулярная загрузка по расписанию" />
         </Grid>
-        <Grid item xs={12} md={6}>
-          <RegularCard />
+        <Grid key="job_2" item xs={12} md={6}>
+          <div />
         </Grid>
       </Grid>
     </DashboardLayout>

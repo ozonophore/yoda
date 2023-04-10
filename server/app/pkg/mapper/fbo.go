@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/yoda/app/pkg/api"
 	"github.com/yoda/common/pkg/model"
+	"time"
 )
 
 func MapFBOToOrder(fbo *api.FBO, transactionId int64, source string, ownerCode string) *[]model.Order {
@@ -17,6 +18,7 @@ func MapFBOToOrder(fbo *api.FBO, transactionId int64, source string, ownerCode s
 	for i, product := range *fbo.Products {
 		orders[i] = model.Order{
 			TransactionID:     transactionId,
+			TransactionDate:   time.Now(),
 			Source:            source,
 			OwnerCode:         ownerCode,
 			OrderDate:         fbo.CreatedAt,

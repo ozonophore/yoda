@@ -76,7 +76,7 @@ func wbRun(t *testing.T, config *configuration.Config, transactionID int64, data
 }
 
 func setup(t *testing.T) error {
-	dockerCompose, err := compose.NewDockerCompose("../../../docker/docker-compose.yml")
+	dockerCompose, err := compose.NewDockerCompose("../../../../docker/docker-compose.yml")
 	if err != nil {
 		t.Fatalf("compose.NewDockerCompose() error: %v", err)
 	}

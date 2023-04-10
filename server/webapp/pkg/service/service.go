@@ -1,6 +1,7 @@
 package service
 
 import (
+	"errors"
 	"github.com/yoda/common/pkg/types"
 	"github.com/yoda/webapp/pkg/api"
 	"github.com/yoda/webapp/pkg/dao"
@@ -31,9 +32,9 @@ func CreateRoom(newRoom api.NewRoom) (*api.Room, error) {
 	days := strings.Split(*job.WeekDays, ",")
 	time := strings.Split(*job.AtTime, ",")
 
-	newDays := make([]api.RoomDays, len(days))
+	newDays := make([]api.WeekDay, len(days))
 	for i, day := range days {
-		newDays[i] = api.RoomDays(day)
+		newDays[i] = api.WeekDay(day)
 	}
 	room.Days = newDays
 	room.Times = time
@@ -57,9 +58,9 @@ func GetRooms() (*[]api.Room, error) {
 	}
 	days := strings.Split(*job.WeekDays, ",")
 	newTimes := strings.Split(*job.AtTime, ",")
-	newDays := make([]api.RoomDays, len(days))
+	newDays := make([]api.WeekDay, len(days))
 	for i := 0; len(days) > i; i++ {
-		newDays[i] = api.RoomDays(days[i])
+		newDays[i] = api.WeekDay(days[i])
 	}
 	roomCodes := make(map[string]*api.Room)
 	for i := 0; len(*rooms) > i; i++ {
@@ -83,4 +84,12 @@ func GetRooms() (*[]api.Room, error) {
 		}
 	}
 	return rooms, nil
+}
+
+func GetJobs() (*api.Job, error) {
+	jobs, err := dao.GetJobs()
+	if err != nil {
+		return nil, errors.Join(err)
+	}
+	return mapper.MapJobsToApi(jobs), nil
 }

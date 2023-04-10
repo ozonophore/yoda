@@ -7,7 +7,7 @@ import (
 )
 
 func PrepareWeekDay(s string, scheduler *gocron.Scheduler) *gocron.Scheduler {
-	items := strings.Split(s, ";")
+	items := strings.Split(s, ",")
 	for _, day := range items {
 		switch strings.ToLower(strings.TrimSpace(day)) {
 		case "monday":
