@@ -1,11 +1,22 @@
-insert into "owner"("code","name") values('OWNER','TEST OWNER');
-insert into "job"("is_active","description") values (true, 'Test job');
-insert into "job_owner"("owner_code", "job_id") values ('OWNER', 1);
-
-insert into "owner_marketplace"("owner_code",   "source", "host", "client_id", "password")
-values ('OWNER', 'WB', 'http://localhost:1080/wb', null, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NJRCI6IjFiMzVmODljLTMyNGYtNGM3OS05NzhhLTkwMmYwODk3Mjc4YiJ9.WeYv1vqA46_9D5up2LRUeSBZCXxSBNcmH8lUhG9Jii0');
-
-insert into "owner_marketplace"("owner_code",   "source", "host", "client_id", "password")
-values ('OWNER', 'OZON', 'http://localhost:1080/ozon', '538358', '8539be7e-a37f-4b4f-b5e1-3879e5f1738c');
-
-commit;
+create or replace procedure partitionByDay(IN start_date date, IN end_date date, IN table_name varchar)
+    language plpgsql
+as
+$$
+declare
+v_table varchar(8);
+v_from varchar(10);
+v_to varchar(10);
+begin
+for v_table, v_from, v_to in SELECT to_char(day::date,'YYYYMMDD'),to_char(day::date,'YYYY-MM-DD'),to_char(day::date+1,'YYYY-MM-DD')
+                             FROM generate_series(start_date, end_date, '1 day') day
+            loop
+            EXECUTE format(
+                'CREATE TABLE IF NOT EXISTS "%s_%s" PARTITION OF %s FOR VALUES FROM(''%s'') TO (''%s'')',
+                table_name,
+                v_table,
+                table_name,
+                v_from,
+                v_to
+             );
+end loop;
+end;$$;

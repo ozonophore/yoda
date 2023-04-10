@@ -8,3 +8,4 @@ drop table if exists "job";
 drop table if exists "owner";
 drop table if exists "tlg_queue";
 drop table if exists "tlg_event";
+drop table if exists "scheduler";

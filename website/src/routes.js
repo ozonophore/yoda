@@ -39,16 +39,15 @@ Coded by www.creative-tim.com
 import Dashboard from "layouts/dashboard";
 import Tables from "layouts/tables";
 import Billing from "layouts/billing";
-import RTL from "layouts/rtl";
 import Notifications from "layouts/notifications";
 import Profile from "layouts/profile";
-import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
 import Test from "layouts/test";
 import Room from "./layouts/room";
+import Schedulers from "./layouts/schedule";
 
 const routes = [
   {
@@ -82,14 +81,6 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "RTL",
-    key: "rtl",
-    icon: <Icon fontSize="small">format_textdirection_r_to_l</Icon>,
-    route: "/rtl",
-    component: <RTL />,
-  },
-  {
-    type: "collapse",
     name: "Notifications",
     key: "notifications",
     icon: <Icon fontSize="small">notifications</Icon>,
@@ -103,14 +94,6 @@ const routes = [
     icon: <Icon fontSize="small">person</Icon>,
     route: "/profile",
     component: <Profile />,
-  },
-  {
-    type: "collapse",
-    name: "Sign In",
-    key: "sign-in",
-    icon: <Icon fontSize="small">login</Icon>,
-    route: "/authentication/sign-in",
-    component: <SignIn />,
   },
   {
     type: "collapse",
@@ -131,10 +114,10 @@ const routes = [
   {
     type: "collapse",
     name: "Jobs",
-    key: "jobs",
+    key: "schedule",
     icon: <Icon fontSize="small">schedule</Icon>,
-    route: "/room",
-    component: <SignUp />,
+    route: "/schedule",
+    component: <Schedulers />,
   },
 ];
 

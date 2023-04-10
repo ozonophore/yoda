@@ -4,6 +4,49 @@ info:
   version: '1.8'
 components:
   schemas:
+    Ozon:
+      type: object
+      properties:
+        clientId:
+          type: string
+        apiKey:
+          type: string
+      required:
+        - clientId
+        - apiKey
+    Wb:
+      type: object
+      properties:
+        authToken:
+          type: string
+      required:
+        - authToken
+    NewRoom:
+      type: object
+      properties:
+        code:
+          type: string
+        name:
+          type: string
+        ozon:
+          $ref: '#/components/schemas/Ozon'
+        wb:
+          $ref: '#/components/schemas/Wb'
+      required:
+        - name
+        - code
+        - ozon
+        - wb
+    WeekDay:
+      type: string
+      enum:
+        - monday
+        - tuesday
+        - wednesday
+        - thursday
+        - friday
+        - saturday
+        - sunday
     Room:
         type: object
         properties:
@@ -15,20 +58,25 @@ components:
             type: string
             format: date-time
           ozon:
-            type: object
-            properties:
-              clientId:
-                type: string
-              apiKey:
-                type: string
+            $ref: '#/components/schemas/Ozon'
           wb:
-            type: object
-            properties:
-              authToken:
-                type: string
+            $ref: '#/components/schemas/Wb'
+          days:
+            type: array
+            items:
+              $ref: '#/components/schemas/WeekDay'
+          times:
+            type: array
+            items:
+              type: string
+              format: string
         required:
             - name
             - code
+            - ozon
+            - wb
+            - days
+            - times
     Error:
       type: object
       properties:
@@ -36,25 +84,50 @@ components:
           type: string
       required:
         - message
+    JobLoader:
+      type: object
+      properties:
+        weekDays:
+          type: array
+          items:
+            $ref: '#/components/schemas/WeekDay'
+        atTimes:
+          type: array
+          items:
+            type: string
+        nextRun:
+          type: string
+          format: date-time
+        lastRun:
+          type: string
+          format: date-time
+      required:
+        - weekDays
+        - atTimes
+    JobAddLoader:
+      type: object
+      properties:
+        interval:
+          type: integer
+        maxRuns:
+          type: integer
     Job:
       type: object
       properties:
         id:
           type: integer
           format: int64
-        name:
-          type: string
-        description:
-          type: string
-        startAtTime:
-          type: string
-          format: date-time
-        lastRun:
-          type: string
-          format: date-time
-        nextRun:
-          type: string
-          format: date-time
+        loader:
+          $ref: '#/components/schemas/JobLoader'
+        addLoader:
+          $ref: '#/components/schemas/JobAddLoader'
+        calcAggregates:
+          $ref: '#/components/schemas/JobLoader'
+      required:
+        - id
+        - loader
+        - addLoader
+        - calcAggregates
 paths:
   /rooms:
     post:
@@ -64,7 +137,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Room'
+              $ref: '#/components/schemas/NewRoom'
       responses:
         '200':
           description: OK
@@ -135,27 +208,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
   /jobs:
-    post:
-      summary: Create job
-      operationId: createJob
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Job'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Job'
-        '400':
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
     get:
       summary: Get all jobs
       operationId: getJobs
