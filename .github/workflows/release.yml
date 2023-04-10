@@ -30,7 +30,8 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
-          context: Dockerfile.web
+          context: .
+          file: Dockerfile.web
           push: true
           tags: ${{ github.actor }}/yoda-website:latest,${{ github.actor }}/yoda-website:${{ steps.bump-semver.outputs.new_version }}
       - name: Release
