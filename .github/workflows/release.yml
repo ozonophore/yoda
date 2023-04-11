@@ -42,13 +42,11 @@ jobs:
           push: true
           tags: ghcr.io/${{ github.actor }}/yoda-website:latest,ghcr.io/${{ github.actor }}/yoda-website:${{ steps.get-version.outputs.substring }}
 
-      - name: Set working directory web
-        run: cd server
       - name: Build and push web
         uses: docker/build-push-action@v4
         with:
-          context: ..
-          file: Dockerfile.web
+          context: .
+          file: ./server/Dockerfile.web
           push: true
           tags: ghcr.io/${{ github.actor }}/yoda-web:latest,ghcr.io/${{ github.actor }}/yoda-web:${{ steps.get-version.outputs.substring }}
 
