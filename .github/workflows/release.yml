@@ -34,11 +34,11 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Set working directory website
-        run: cd website/
+        run:
+          working-directory: website/
       - name:
         run: pwd
       - name: Build and push website
-        working-directory: website/
         uses: docker/build-push-action@v4
         with:
           context: ..
