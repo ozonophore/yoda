@@ -16,7 +16,7 @@ services:
   frontend:
     build:
       context: ./
-      dockerfile: Dockerfile.web
+      dockerfile: website/Dockerfile
     volumes:
       - ./server/webapp/config.yml.prod:/app/config.yml
     ports:

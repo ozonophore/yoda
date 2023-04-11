@@ -1,5 +1,5 @@
 BINARY_NAME=webapp
-build: clean
+build: clean generate
 	go build -o ./build/${BINARY_NAME}-darwim main.go
 	GOOS=linux GOARCH=amd64 go build -o ./build/${BINARY_NAME}-amd64-linux main.go
 run:

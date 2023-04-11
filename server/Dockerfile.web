@@ -3,11 +3,13 @@ FROM golang:1.20 AS build
 
 WORKDIR /app
 
-COPY ./go.work ./
-COPY ./go.work.sum ./
-COPY ./common ./common
-COPY ./webapp ./webapp
-COPY ./app ./app
+COPY server/go.work ./
+COPY server/go.work.sum ./
+COPY server/common ./common
+COPY server/webapp ./webapp
+COPY server/app ./app
+COPY openapi /openapi
+RUN go install github.com/deepmap/oapi-codegen/cmd/oapi-codegen@latest
 RUN go mod download
 
 WORKDIR /app/webapp
