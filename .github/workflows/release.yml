@@ -39,7 +39,7 @@ jobs:
           context: .
           file: Dockerfile.web
           push: true
-          tags: ${{ github.actor }}/yoda-website:${{ steps.get-version.outputs.substring }}
+          tags: ghcr.io/${{ github.actor }}/yoda-website:latest,ghcr.io/${{ github.actor }}/yoda-website:${{ steps.get-version.outputs.substring }}
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
