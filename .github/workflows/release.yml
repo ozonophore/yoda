@@ -37,7 +37,7 @@ jobs:
       - name: Build and push website
         uses: docker/build-push-action@v4
         with:
-          context: ..
+          context: .
           file: ./website/Dockerfile
           push: true
           tags: ghcr.io/${{ github.actor }}/yoda-website:latest,ghcr.io/${{ github.actor }}/yoda-website:${{ steps.get-version.outputs.substring }}
