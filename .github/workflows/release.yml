@@ -38,6 +38,7 @@ jobs:
       - name:
         run: pwd
       - name: Build and push website
+        working-directory: website/
         uses: docker/build-push-action@v4
         with:
           context: ..
