@@ -33,11 +33,6 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Set working directory website
-        run:
-          working-directory: website/
-      - name:
-        run: pwd
 
       - name: Build and push website
         uses: docker/build-push-action@v4
