@@ -36,7 +36,7 @@ jobs:
       - name: Set working directory website
         run: cd website
       - name:
-          run: pwd
+        run: pwd
       - name: Build and push website
         uses: docker/build-push-action@v4
         with:
