@@ -118,7 +118,7 @@ func getEnvs(c *Config) error {
 			return err
 		}
 	}
-	if val, exists := os.LookupEnv(prefix + "DB_LOGGING_LEVEL"); exists {
+	if val, exists := os.LookupEnv(prefix + "DB_DSN"); exists {
 		c.Database.Dsn = val
 		if err != nil {
 			return err

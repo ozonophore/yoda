@@ -50,6 +50,15 @@ jobs:
           push: true
           tags: ghcr.io/${{ github.actor }}/yoda-web:latest,ghcr.io/${{ github.actor }}/yoda-web:${{ steps.get-version.outputs.substring }}
 
+      - name: Build and push app
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./server/Dockerfile.app
+          push: true
+          tags: ghcr.io/${{ github.actor }}/yoda-app:latest,ghcr.io/${{ github.actor }}/yoda-app:${{ steps.get-version.outputs.substring }}
+
+
       - name: Release
         uses: softprops/action-gh-release@v1
         with:

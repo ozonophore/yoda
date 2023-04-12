@@ -15,6 +15,7 @@
 # vendor/
 
 bin
+build
 .idea
 coverage.html
 **/.docker-conf/**
