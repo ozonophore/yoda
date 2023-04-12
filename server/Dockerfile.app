@@ -21,4 +21,4 @@ WORKDIR /app
 
 COPY --from=build /app/app/build/app-amd64-linux /
 
-ENTRYPOINT ["/webapp-amd64-linux"]
+ENTRYPOINT ["/app-amd64-linux"]
