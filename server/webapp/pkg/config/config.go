@@ -42,6 +42,11 @@ type Config struct {
 	Mq           mq.Mq       `koanf:"mq"`
 }
 
+func fileExists(pathe string) bool {
+	_, err := os.Stat(pathe)
+	return !os.IsNotExist(err)
+}
+
 func LoadConfig(path string) (*Config, error) {
 	if err := k.Load(confmap.Provider(map[string]interface{}{
 		"server.base_url":            "/api",
@@ -59,8 +64,11 @@ func LoadConfig(path string) (*Config, error) {
 	}, "."), nil); err != nil {
 		return nil, err
 	}
-	if err := k.Load(file.Provider(path), yaml.Parser()); err != nil {
-		return nil, err
+
+	if fileExists(path) {
+		if err := k.Load(file.Provider(path), yaml.Parser()); err != nil {
+			return nil, err
+		}
 	}
 	var c Config
 	if err := k.UnmarshalWithConf("", &c, koanf.UnmarshalConf{Tag: "koanf"}); err != nil {

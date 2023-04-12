@@ -62,6 +62,11 @@ var conf = koanf.Conf{
 
 var k = koanf.NewWithConf(conf)
 
+func fileExists(pathe string) bool {
+	_, err := os.Stat(pathe)
+	return !os.IsNotExist(err)
+}
+
 func InitConfig(path string) *Config {
 	k.Load(confmap.Provider(map[string]interface{}{
 		"version":                "0.0.1",
@@ -77,7 +82,9 @@ func InitConfig(path string) *Config {
 		"wb.remaining_days":      30,
 		"ozon.host":              "https://api-seller.ozon.ru",
 	}, "."), nil)
-	k.Load(file.Provider(path), yaml.Parser())
+	if fileExists(path) {
+		k.Load(file.Provider(path), yaml.Parser())
+	}
 	var c Config
 	k.UnmarshalWithConf("", &c, koanf.UnmarshalConf{Tag: "koanf"})
 	if err := getEnvs(&c); err != nil {
