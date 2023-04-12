@@ -15,7 +15,7 @@ RUN npm run build
 
 FROM nginx:alpine
 
-LABEL org.label-schema.vcs-url="https://github.com/ozonophore/yoda/tree/master/website"
+LABEL org.opencontainers.image.documentation="https://github.com/ozonophore/yoda/blob/master/website/README.md"
 
 COPY --from=build /app/build /usr/share/nginx/html
 COPY website/nginx/default.prod.conf /etc/nginx/conf.d/default.conf
