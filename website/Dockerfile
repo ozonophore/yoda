@@ -13,7 +13,7 @@ RUN npm install
 RUN npm run generate
 RUN npm run build
 
-FROM nginx:alpine
+FROM arm64v8/nginx
 
 LABEL org.opencontainers.image.documentation="https://github.com/ozonophore/yoda/blob/master/website/README.md"
 
