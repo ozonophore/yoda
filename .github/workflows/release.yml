@@ -147,7 +147,11 @@ jobs:
           tags: ghcr.io/${{ github.actor }}/yoda-app:latest,ghcr.io/${{ github.actor }}/yoda-app:${{ steps.get-version.outputs.substring }}
   release:
     runs-on: ubuntu-latest
-    needs: migration, website, web, app
+    needs:
+      - migration
+      - website
+      - web
+      - app
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
