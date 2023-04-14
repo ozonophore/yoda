@@ -42,7 +42,7 @@ jobs:
 
   release:
     runs-on: ubuntu-latest
-    depends_on: migration
+    needs: migration
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
