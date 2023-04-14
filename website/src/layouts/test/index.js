@@ -130,7 +130,6 @@ function Test() {
         <div>------------</div>
       </MDBox>
       <Divider />
-      <MDBox py={3}></MDBox>
     </DashboardLayout>
   );
 }
