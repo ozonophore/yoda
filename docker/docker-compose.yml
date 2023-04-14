@@ -9,22 +9,31 @@ services:
       POSTGRES_PASSWORD: secret
       POSTGRES_DB: pdb
     healthcheck:
-      test: pg_isready -U root -d pdb
+      test: [ "CMD", "pg_isready" ]
       interval: 10s
       timeout: 3s
       retries: 5
+    networks:
+      - default
   migration:
     image: migrate/migrate
-    tty: true
-    stdin_open: false
+    build:
+        context: ../migration
+        dockerfile: Dockerfile
+    environment:
+      DB_HOST: database
+      DB_USER: root
+      DB_PASSWORD: secret
+      DB_NAME: pdb
     links:
       - database
     volumes:
-      - ../migration/changelog:/migrations
-    command: [ "-path", "/migrations", "-database",  "postgres://root:secret@database:5432/pdb?sslmode=disable", "up" ]
+      - ../migration/changelog:/migrations/changelog
     depends_on:
       database:
         condition: service_healthy
+    networks:
+      - default
   mockServer:
     image: mockserver/mockserver:5.14.0
     ports:
@@ -36,3 +45,7 @@ services:
       - type: bind
         source: ./mockserver
         target: /mockserver
+
+networks:
+  default:
+    driver: bridge

@@ -86,6 +86,7 @@ func setup(t *testing.T) error {
 	})
 	ctx, cancel := context.WithCancel(context.Background())
 	t.Cleanup(cancel)
-	dockerCompose.Up(ctx, compose.Wait(true))
+	err = dockerCompose.Up(ctx, compose.Wait(true))
+	time.Sleep(10 * time.Second)
 	return err
 }
