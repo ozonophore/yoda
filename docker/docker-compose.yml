@@ -20,7 +20,7 @@ services:
     links:
       - database
     volumes:
-      - ../migration/db/migration:/migrations
+      - ../migration/changelog:/migrations
     command: [ "-path", "/migrations", "-database",  "postgres://root:secret@database:5432/pdb?sslmode=disable", "up" ]
     depends_on:
       database:
