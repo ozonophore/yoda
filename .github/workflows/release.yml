@@ -4,8 +4,45 @@ on:
   workflow_dispatch:
 
 jobs:
+  migration:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - uses: actions-ecosystem/action-get-latest-tag@v1
+        id: get-latest-tag
+        with:
+          semver_only: true
+      - uses: actions-ecosystem/action-bump-semver@v1
+        id: bump-semver
+        with:
+          current_version: ${{ steps.get-latest-tag.outputs.tag }}
+          level: patch
+      - uses: bhowell2/github-substring-action@v1.0.0
+        name: Get the version number
+        id: get-version
+        with:
+          value: ${{ steps.bump-semver.outputs.new_version }}
+          index_of_str: v
+      - name: Echo new version
+        run: echo ${{ steps.get-version.outputs.substring }}
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push migration
+        uses: docker/build-push-action@v4
+        with:
+          context: ./migration
+          push: true
+          tags: ghcr.io/${{ github.actor }}/yoda-migration:latest,ghcr.io/${{ github.actor }}/yoda-migration:${{ steps.get-version.outputs.substring }}
+
   release:
     runs-on: ubuntu-latest
+    depends_on: migration
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -57,7 +94,6 @@ jobs:
           file: ./server/Dockerfile.app
           push: true
           tags: ghcr.io/${{ github.actor }}/yoda-app:latest,ghcr.io/${{ github.actor }}/yoda-app:${{ steps.get-version.outputs.substring }}
-
 
       - name: Release
         uses: softprops/action-gh-release@v1

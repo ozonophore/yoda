@@ -1,3 +1,4 @@
+import Divider from "@mui/material/Divider";
 import DataTable from "react-data-table-component";
 import Card from "@mui/material/Card";
 import Icon from "@mui/material/Icon";
@@ -127,6 +128,10 @@ function Test() {
           </MDBox>
         </Card>
         <div>------------</div>
+      </MDBox>
+      <Divider />
+      <MDBox py={3}>
+        <
       </MDBox>
     </DashboardLayout>
   );

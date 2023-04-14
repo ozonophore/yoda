@@ -10,7 +10,13 @@ dropdb:
 	docker exec -it postgres15 dropdb simple_bank
 
 migrateup:
-	migrate -path db/migration -database "postgresql://user:password@localhost:5432/db?sslmode=disable" -verbose up
+	migrate -path changelog -database "postgresql://user:password@localhost:5432/db?sslmode=disable" -verbose up
+
+migrateup_remote:
+	migrate -path changelog -database "postgresql://user:password@176.113.83.101:5432/db?sslmode=disable" -verbose up
 
 migratedown:
-	migrate -path db/migration -database "postgresql://user:password@localhost:5432/db?sslmode=disable" -verbose down
+	migrate -path changelog -database "postgresql://user:password@localhost:5432/db?sslmode=disable" -verbose down
+
+migratedown_remote:
+	migrate -path changelog -database "postgresql://user:password@176.113.83.101:5432/db?sslmode=disable" -verbose down

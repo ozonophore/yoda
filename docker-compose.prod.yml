@@ -3,13 +3,17 @@ services:
 
   webserver:
     image: ghcr.io/ozonophore/yoda-website:latest
+    restart: always
     environment:
       - BACKEND_HOST=frontend
       - BACKEND_PORT=8080
     depends_on:
-      - backend
-      - frontend
-      - rabbitmq
+      backend:
+        condition: service_started
+      frontend:
+        condition: service_started
+      rabbitmq:
+        condition: service_healthy
     ports:
       - "80:80"
 
@@ -23,7 +27,8 @@ services:
       - "8080:8080"
     restart: on-failure
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
     links:
       - rabbitmq
     networks:
@@ -42,30 +47,49 @@ services:
     networks:
       - rabbitmq_go_net
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:15672"]
+      test: rabbitmq-diagnostics -q ping
       interval: 30s
       timeout: 10s
       retries: 5
 
   backend:
-    image: ghcr.io/ozonophore/yoda-app
+    image: ghcr.io/ozonophore/yoda-app:latest
     environment:
-      - YODA_DB_DSN=postgres://user:password@database:5432/db?sslmode=disable
-      - YODA_SERVER_MQ_URL=amqp://guest:guest@rabbitmq:5672/
+      - YODA_DATABASE_DSN=postgres://user:password@database:5432/db?sslmode=disable
+      - YODA_MQ_URL=amqp://guest:guest@rabbitmq:5672/
+    restart: on-failure
     depends_on:
-      - database
+      database:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    links:
       - rabbitmq
+    networks:
+      - default
+      - rabbitmq_go_net
 
   database:
     image: postgres
+    restart: always
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
       POSTGRES_DB: db
+      PGUSER: user
+      PGDATABASE: db
+      PGPASSWORD: password
+    healthcheck:
+      test: [ "CMD", "pg_isready" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     volumes:
       - data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+    networks:
+      - default
 
 networks:
   default:
@@ -73,4 +97,5 @@ networks:
   rabbitmq_go_net:
     driver: bridge
 volumes:
-  data: {}
+  data:
+    external: true

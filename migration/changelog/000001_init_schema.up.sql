@@ -389,8 +389,34 @@ on column "log_load"."status" is 'Статус BEGIN|COMPLETED|ERROR';
 
 create table "scheduler"
 (
-    "code"       varchar(20) primary key,
+    "code"        varchar(20) primary key,
     "description" varchar(200),
-    "status"     varchar(20) not null,
-    "update_at"  timestamp   not null
-)
+    "status"      varchar(20) not null,
+    "update_at"   timestamp   not null
+);
+
+create table "dict_items"
+(
+    "supplier_article" varchar(75),
+    "barcode"          varchar(30),
+    "name"             varchar(200),
+    "subject"          varchar(200),
+    "category"         varchar(200),
+    "brand"            varchar(200),
+    primary key ("supplier_article", "barcode")
+);
+
+comment
+on table "dict_items" is 'Справочник товаров';
+comment
+on column "dict_items"."supplier_article" is 'Артикул поставщика';
+comment
+on column "dict_items"."barcode" is 'Штрихкод';
+comment
+on column "dict_items"."name" is 'Наименование';
+comment
+on column "dict_items"."subject" is 'Предмет';
+comment
+on column "dict_items"."category" is 'Категория';
+comment
+on column "dict_items"."brand" is 'Бренд';
