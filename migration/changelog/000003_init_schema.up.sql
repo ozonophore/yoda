@@ -1,5 +1,5 @@
 insert into "owner"("code","name") values('OWNER','TEST OWNER');
-insert into "job"("id","is_active","description","week_days","at_time","type") values (1, true, 'Test job','monday,tuesday,wednesday,thursday,friday','06:00','REGULAR');
+insert into "job"("id","is_active","description","week_days","at_time","type") values (1, true, 'Test job','monday,tuesday,wednesday,thursday,friday','06:00,12:00,16:00,20:00','REGULAR');
 insert into "job_owner"("owner_code", "job_id") values ('OWNER', 1);
 
 insert into "owner_marketplace"("owner_code",   "source", "host", "client_id", "password")

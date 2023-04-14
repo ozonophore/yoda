@@ -90,6 +90,21 @@ services:
       - "5432:5432"
     networks:
       - default
+  migration:
+    image: testmigrate/testmigrate
+    tty: true
+    build:
+      context: ../migration
+      dockerfile: Dockerfile
+    environment:
+      DB_HOST: database
+      DB_USER: user
+      DB_PASSWORD: password
+      DB_NAME: db
+    depends_on:
+      - database
+    networks:
+      - default
 
 networks:
   default:

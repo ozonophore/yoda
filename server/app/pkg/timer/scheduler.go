@@ -47,11 +47,11 @@ func (s *Scheduler) InitJob() {
 			continue
 		}
 		s := s.Scheduler.Every(20)
-		//if job.WeekDays == nil || job.WeekDays == nil {
-		//	logrus.Panicf("Job %s has no week days", job.ID)
-		//}
-		//_, err := PrepareWeekDay(*job.WeekDays, s).At(job.AtTime).Do(RunRegularLoad, config, *ctx, job.ID, handleBeforeJobExecution, handleAfterJobExecution)
-		_, err := s.Second().Tag(fmt.Sprintf("%d", job.ID)).Do(RunRegularLoad, config, ctx, job.ID, scheduler, handleBeforeJobExecution, handleAfterJobExecution)
+		if job.WeekDays == nil || job.WeekDays == nil {
+			logrus.Panicf("Job %s has no week days", job.ID)
+		}
+		_, err := PrepareWeekDay(*job.WeekDays, s).At(job.AtTime).Do(RunRegularLoad, config, ctx, job.ID, scheduler, handleBeforeJobExecution, handleAfterJobExecution)
+		//_, err := s.Second().Tag(fmt.Sprintf("%d", job.ID)).Do(RunRegularLoad, config, ctx, job.ID, scheduler, handleBeforeJobExecution, handleAfterJobExecution)
 		if err != nil {
 			logrus.Panicf("Error after create job: %s", err)
 		}
