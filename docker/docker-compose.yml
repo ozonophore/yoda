@@ -9,14 +9,15 @@ services:
       POSTGRES_PASSWORD: secret
       POSTGRES_DB: pdb
     healthcheck:
-      test: [ "CMD", "pg_isready" ]
+      test: [ "CMD", "pg_isready", "-U", "root", "-d", "pdb" ]
       interval: 10s
       timeout: 3s
       retries: 5
     networks:
       - default
   migration:
-    image: migrate/migrate
+    image: testmigrate/testmigrate
+    tty: true
     build:
         context: ../migration
         dockerfile: Dockerfile
@@ -45,7 +46,6 @@ services:
       - type: bind
         source: ./mockserver
         target: /mockserver
-
 networks:
   default:
     driver: bridge
