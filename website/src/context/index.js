@@ -88,7 +88,12 @@ function reducer(state, action) {
       };
     }
     case "REFRESH_ROOMS": {
-      return { ...state, rooms: action.value, loading: false };
+      return {
+        ...state,
+        rooms: action.value,
+        loading: false,
+        room: { ...state.room, addToggle: false, gridToggle: false },
+      };
     }
     case "REFRESH_JOBS": {
       return { ...state, jobs: action.value, loading: false };

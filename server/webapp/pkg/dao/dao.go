@@ -106,6 +106,14 @@ func SaveOwner(o model.Owner, oz model.OwnerMarketplace, wb model.OwnerMarketpla
 	if err != nil {
 		return err
 	}
+	jobOwner := model.JobOwner{
+		JobID:     1,
+		OwnerCode: o.Code,
+	}
+	err = tx.Save(&jobOwner).Error
+	if err != nil {
+		return err
+	}
 	err = tx.Save(&oz).Error
 	if err != nil {
 		return err
