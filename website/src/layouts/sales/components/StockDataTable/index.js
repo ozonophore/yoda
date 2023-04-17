@@ -177,97 +177,101 @@ function StockDataTable({
   }
 
   return (
-    <TableContainer sx={{ boxShadow: "none" }}>
-      {entriesPerPage || canSearch ? (
-        <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
-          {entriesPerPage && (
-            <MDBox display="flex" alignItems="center">
-              <Autocomplete
-                disableClearable
-                value={pageSize.toString()}
-                options={entries}
-                onChange={(event, newValue) => {
-                  setEntriesPerPage(parseInt(newValue, 10));
-                }}
-                size="small"
-                sx={{ width: "5rem" }}
-                renderInput={(params) => <MDInput {...params} />}
-              />
-              <MDTypography variant="caption" color="secondary">
-                &nbsp;&nbsp;entries per page
-              </MDTypography>
-            </MDBox>
-          )}
-          <MDBox display="flex" alignItems="right">
-            {canSearch && (
-              <MDBox width="12rem" ml="auto">
-                <MDInput
-                  placeholder="Search..."
-                  value={search || ""}
+    <MDBox>
+      <MDBox>
+        {entriesPerPage || canSearch ? (
+          <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
+            {entriesPerPage && (
+              <MDBox display="flex" alignItems="center">
+                <Autocomplete
+                  disableClearable
+                  value={pageSize.toString()}
+                  options={entries}
+                  onChange={(event, newValue) => {
+                    setEntriesPerPage(parseInt(newValue, 10));
+                  }}
                   size="small"
+                  sx={{ width: "5rem" }}
+                  renderInput={(params) => <MDInput {...params} />}
+                />
+                <MDTypography variant="caption" color="secondary">
+                  &nbsp;&nbsp;entries per page
+                </MDTypography>
+              </MDBox>
+            )}
+            <MDBox display="flex" alignItems="right">
+              {canSearch && (
+                <MDBox width="12rem" ml="auto">
+                  <MDInput
+                    placeholder="Search..."
+                    value={search || ""}
+                    size="small"
+                    fullWidth
+                    onChange={({ currentTarget }) => {
+                      onSearchChange(currentTarget.value);
+                    }}
+                  />
+                </MDBox>
+              )}
+              <MDBox pl={2} width="12rem" ml="auto">
+                <MDInput
+                  type="date"
+                  size="small"
+                  value={format(transactionDate, "yyyy-MM-dd")}
                   fullWidth
                   onChange={({ currentTarget }) => {
-                    onSearchChange(currentTarget.value);
+                    if (!isValid(parseISO(currentTarget.value))) {
+                      return;
+                    }
+                    const dt = parseISO(currentTarget.value);
+                    setTransactionDate(dt);
+                    setPageIndex(0);
                   }}
                 />
               </MDBox>
-            )}
-            <MDBox pl={2} width="12rem" ml="auto">
-              <MDInput
-                type="date"
-                size="small"
-                value={format(transactionDate, "yyyy-MM-dd")}
-                fullWidth
-                onChange={({ currentTarget }) => {
-                  if (!isValid(parseISO(currentTarget.value))) {
-                    return;
-                  }
-                  const dt = parseISO(currentTarget.value);
-                  setTransactionDate(dt);
-                  setPageIndex(0);
-                }}
-              />
             </MDBox>
           </MDBox>
-        </MDBox>
-      ) : null}
-      <Table {...getTableProps()}>
-        <MDBox component="thead">
-          {headerGroups.map((headerGroup) => (
-            <TableRow {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column) => (
-                <DataTableHeadCell
-                  {...column.getHeaderProps(isSorted && column.getSortByToggleProps())}
-                  width={column.width ? column.width : "auto"}
-                  align={column.align ? column.align : "left"}
-                  sorted={setSortedValue(column)}
-                >
-                  {column.render("Header")}
-                </DataTableHeadCell>
-              ))}
-            </TableRow>
-          ))}
-        </MDBox>
-        <TableBody {...getTableBodyProps()}>
-          {page.map((row, key) => {
-            prepareRow(row);
-            return (
-              <TableRow {...row.getRowProps()}>
-                {row.cells.map((cell) => (
-                  <DataTableBodyCell
-                    noBorder={noEndBorder && rows.length - 1 === key}
-                    align={cell.column.align ? cell.column.align : "left"}
-                    {...cell.getCellProps()}
+        ) : null}
+      </MDBox>
+      <TableContainer sx={{ boxShadow: "none" }}>
+        <Table {...getTableProps()}>
+          <MDBox component="thead">
+            {headerGroups.map((headerGroup) => (
+              <TableRow {...headerGroup.getHeaderGroupProps()}>
+                {headerGroup.headers.map((column) => (
+                  <DataTableHeadCell
+                    {...column.getHeaderProps(isSorted && column.getSortByToggleProps())}
+                    width={column.width ? column.width : "auto"}
+                    align={column.align ? column.align : "left"}
+                    sorted={setSortedValue(column)}
+                    style={{ minWidth: column.minWidth }}
                   >
-                    {cell.render("Cell")}
-                  </DataTableBodyCell>
+                    {column.render("Header")}
+                  </DataTableHeadCell>
                 ))}
               </TableRow>
-            );
-          })}
-        </TableBody>
-      </Table>
-
+            ))}
+          </MDBox>
+          <TableBody {...getTableBodyProps()}>
+            {page.map((row, key) => {
+              prepareRow(row);
+              return (
+                <TableRow {...row.getRowProps()}>
+                  {row.cells.map((cell) => (
+                    <DataTableBodyCell
+                      noBorder={noEndBorder && rows.length - 1 === key}
+                      align={cell.column.align ? cell.column.align : "left"}
+                      {...cell.getCellProps()}
+                    >
+                      {cell.render("Cell")}
+                    </DataTableBodyCell>
+                  ))}
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </TableContainer>
       <MDBox
         display="flex"
         flexDirection={{ xs: "column", sm: "row" }}
@@ -311,7 +315,7 @@ function StockDataTable({
           </MDPagination>
         )}
       </MDBox>
-    </TableContainer>
+    </MDBox>
   );
 }
 

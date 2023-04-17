@@ -1,0 +1,47 @@
+version: "3"
+services:
+
+  webserver:
+    image: ghcr.io/ozonophore/yoda-website
+    restart: always
+    environment:
+      - BACKEND_HOST=frontend
+      - BACKEND_PORT=8080
+    volumes:
+      - ./nginx/log:/var/log/nginx/log
+    depends_on:
+      backend:
+        condition: service_started
+      frontend:
+        condition: service_started
+    ports:
+      - "80:80"
+
+  frontend:
+    image: ghcr.io/ozonophore/yoda-web
+    environment:
+      - YODA_SERVER_PORT=8080
+      - YODA_MQ_URL=amqp://guest:guest@176.113.83.101:5672/
+      - YODA_DB_DSN=postgres://user:password@176.113.83.101:5432/db?sslmode=disable
+    ports:
+      - "8080:8080"
+    restart: on-failure
+    networks:
+      - default
+
+  backend:
+    image: ghcr.io/ozonophore/yoda-app
+    environment:
+      - YODA_DATABASE_DSN=postgres://user:password@176.113.83.101:5432/db?sslmode=disable
+      - YODA_MQ_URL=amqp://guest:guest@176.113.83.101:5672/
+    restart: on-failure
+    volumes:
+      - ./app/log:/app/log
+    networks:
+      - default
+
+networks:
+  default:
+    driver: bridge
+volumes:
+  data: {}

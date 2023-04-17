@@ -7,7 +7,6 @@ services:
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
       - ./website/build:/usr/share/nginx/html
     depends_on:
-#      - backend
       - frontend
       - rabbitmq
     ports:

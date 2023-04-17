@@ -14,6 +14,7 @@ func MapFBOToOrder(fbo *api.FBO, transactionId int64, source string, ownerCode s
 	for _, f := range *fbo.FinancialData.Products {
 		finData[f.ProductId] = &f
 	}
+	gNumber := fmt.Sprintf(`%d`, *fbo.OrderId)
 
 	for i, product := range *fbo.Products {
 		orders[i] = model.Order{
@@ -37,10 +38,10 @@ func MapFBOToOrder(fbo *api.FBO, transactionId int64, source string, ownerCode s
 			Subject:           product.Name,
 			Category:          nil,
 			Brand:             nil,
-			IsCancel:          fbo.Status == "canceled",
+			IsCancel:          fbo.Status == "cancelled",
 			Status:            string(fbo.Status),
 			CancelDt:          nil,
-			GNumber:           nil,
+			GNumber:           &gNumber,
 			Sticker:           nil,
 			Srid:              nil,
 			Quantity:          product.Quantity,

@@ -73,8 +73,17 @@ jobs:
         with:
           context: .
           file: ./website/Dockerfile
+          target: prod
           push: true
           tags: ghcr.io/${{ github.actor }}/yoda-website:latest,ghcr.io/${{ github.actor }}/yoda-website:${{ steps.get-version.outputs.substring }}
+      - name: Build and push website
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./website/Dockerfile
+          target: prod_arm
+          push: true
+          tags: ghcr.io/${{ github.actor }}/yoda-website:arm-${{ steps.get-version.outputs.substring }}
   web:
     runs-on: ubuntu-latest
     steps:

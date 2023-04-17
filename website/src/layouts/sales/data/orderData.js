@@ -23,7 +23,7 @@ export default function data() {
     onRenderData: (item) => ({
       ...item,
       name: (
-        <MDBox maxWidth={150} mb={2} lineHeight={1}>
+        <MDBox mb={2} lineHeight={1}>
           <MDTypography variant="button" color="text">
             {item.name}
           </MDTypography>
