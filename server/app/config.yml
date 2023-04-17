@@ -4,8 +4,8 @@ database:
 timeout: 60
 mq:
   url: amqp://guest:guest@localhost:5672/
-  read_queue: yoda-client
-  write_queue: yoda-server
+  consumer: yoda-server-consumer
+  publisher: yoda-publisher
 #ozon:
 #  host: http://localhost:1080/ozon
 logging_level: debug

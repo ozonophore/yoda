@@ -27,7 +27,6 @@ const CreateRoom = (room) => (dispatch) => {
 };
 
 const RefreshJobs = () => (dispatch) => {
-  console.log("#RefreshJobs");
   dispatch({ type: "LOADING", value: true });
   DefaultService.getJobs()
     .then((data) => {
@@ -38,4 +37,11 @@ const RefreshJobs = () => (dispatch) => {
     });
 };
 
-export { RefreshRooms, CloseError, CreateRoom, RefreshJobs };
+const RoomAddToggle = (value) => (dispatch) => {
+  dispatch({ type: "ROOM_ADD_TOGGLE", value });
+};
+
+const RoomGridToggle = (value) => (dispatch) => {
+  dispatch({ type: "ROOM_GRID_TOGGLE", value });
+};
+export { RefreshRooms, CloseError, CreateRoom, RefreshJobs, RoomAddToggle, RoomGridToggle };

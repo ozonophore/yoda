@@ -6,8 +6,15 @@ import (
 	"strings"
 )
 
+func ParseStringToArray(s *string) []string {
+	if s == nil {
+		return []string{}
+	}
+	return strings.Split(strings.ReplaceAll(*s, ";", ","), ",")
+}
+
 func PrepareWeekDay(s string, scheduler *gocron.Scheduler) *gocron.Scheduler {
-	items := strings.Split(s, ",")
+	items := ParseStringToArray(&s)
 	for _, day := range items {
 		switch strings.ToLower(strings.TrimSpace(day)) {
 		case "monday":

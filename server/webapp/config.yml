@@ -7,5 +7,5 @@ database:
   dsn: postgres://user:password@localhost:5432/db
 mq:
   url: amqp://guest:guest@localhost:5672/
-  read_queue: yoda-server
-  write_queue: yoda-client
+  consumer: yoda-web-consumer
+  publisher: yoda-server-consumer

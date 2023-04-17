@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"github.com/rifflock/lfshook"
 	"github.com/sirupsen/logrus"
 	"github.com/yoda/app/pkg/configuration"
 	"github.com/yoda/app/pkg/event"
@@ -30,7 +31,7 @@ func main() {
 	scheduler := timer.NewScheduler(config)
 	scheduler.InitJob()
 	scheduler.Start()
-	defer scheduler.Stop()
+	defer scheduler.StopAll()
 
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
@@ -50,5 +51,10 @@ func initLogging(config *configuration.Config) {
 	if err != nil {
 		logrus.Panic(err)
 	}
+	pathMap := "./log/log.log"
+	logrus.AddHook(lfshook.NewHook(
+		pathMap,
+		&logrus.JSONFormatter{},
+	))
 	logrus.SetLevel(lvl)
 }

@@ -7,18 +7,18 @@ import IconButton from "@mui/material/IconButton";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+
+// Images
+import OzonLog from "../../../../assets/images/icons/ozon.svg";
+import WbLog from "../../../../assets/images/icons/wb.png";
 import MDBox from "../../../../components/MDBox";
 import MDButton from "../../../../components/MDButton";
 import MDInput from "../../../../components/MDInput";
 import MDTypography from "../../../../components/MDTypography";
 
-// Images
-import OzonLog from "../../../../assets/images/icons/ozon.svg";
-import WbLog from "../../../../assets/images/icons/wb.png";
-
 const initialRoom = {
-  code: "",
-  name: "",
+  code: null,
+  name: null,
   ozon: {
     clientId: "",
     apiKey: "",
@@ -39,7 +39,7 @@ function RoomCard({ room, onCancel, onSubmit }) {
     setShowWbPassword(false);
   }, []);
   const [t] = useTranslation();
-  const roomNameTitle = `${t("menu.room")}${room.code ? ` - ${room.code}` : ""}`;
+  const roomNameTitle = `${t("menu.room")}${newRoom.code ? ` - ${newRoom.code}` : ""}`;
 
   const validateModel = (r) => {
     const { code, name } = r;
@@ -85,7 +85,7 @@ function RoomCard({ room, onCancel, onSubmit }) {
         borderRadius="lg"
         coloredShadow="info"
         mx={2}
-        mt={-2}
+        mt={-0.5}
         p={0}
         mb={2}
         textAlign="center"
@@ -97,25 +97,30 @@ function RoomCard({ room, onCancel, onSubmit }) {
       <MDBox pt={1} pb={1} px={3}>
         <MDBox component="form" role="form">
           <MDBox mb={2}>
-            <MDInput
-              type="text"
-              autoComplete="off"
-              label={t("room.input.code.title")}
-              inputProps={{ maxLength: 20 }}
-              error={code?.length <= 0}
-              fullWidth
-              onChange={(e) => {
-                handleOnEditRoom({ ...newRoom, code: e.target.value });
-              }}
-              value={code}
-            />
+            {Boolean(room) && (
+              <MDTypography variant="button" color="text" fontWeight="regular">
+                {t("room.input.code.title")}:&nbsp;{code}
+              </MDTypography>
+            )}
+            {!room && (
+              <MDInput
+                type="text"
+                autoComplete="off"
+                label={t("room.input.code.title")}
+                inputProps={{ maxLength: 20 }}
+                fullWidth
+                onChange={(e) => {
+                  handleOnEditRoom({ ...newRoom, code: e.target.value });
+                }}
+                value={code}
+              />
+            )}
           </MDBox>
           <MDBox mb={2}>
             <MDInput
               type="text"
               autoComplete="off"
               label={t("room.input.name.title")}
-              error={room.name?.length <= 0}
               inputProps={{ maxLength: 100 }}
               fullWidth
               onChange={(e) => {
@@ -144,7 +149,6 @@ function RoomCard({ room, onCancel, onSubmit }) {
                       type="text"
                       autoComplete="off"
                       label="Client-Id"
-                      error={clientId?.length <= 0}
                       value={clientId}
                       onChange={(e) =>
                         handleOnEditRoom({
@@ -162,7 +166,6 @@ function RoomCard({ room, onCancel, onSubmit }) {
                       autoComplete="off"
                       label="Api-Key"
                       fullWidth
-                      error={apiKey?.length <= 0}
                       value={apiKey}
                       onChange={(e) =>
                         handleOnEditRoom({
@@ -208,7 +211,6 @@ function RoomCard({ room, onCancel, onSubmit }) {
                       autoComplete="off"
                       label="Authorization"
                       fullWidth
-                      error={authToken?.length <= 0}
                       value={authToken}
                       onChange={(e) =>
                         handleOnEditRoom({
@@ -254,7 +256,7 @@ function RoomCard({ room, onCancel, onSubmit }) {
 }
 
 RoomCard.defaultProps = {
-  room: initialRoom,
+  room: null,
 };
 
 RoomCard.propTypes = {

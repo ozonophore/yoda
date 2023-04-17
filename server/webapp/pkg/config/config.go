@@ -5,7 +5,6 @@ import (
 	"github.com/knadh/koanf/providers/confmap"
 	"github.com/knadh/koanf/providers/file"
 	"github.com/knadh/koanf/v2"
-	"github.com/yoda/common/pkg/mq"
 	"os"
 	"strconv"
 )
@@ -34,12 +33,19 @@ type Server struct {
 	IdleTimeout  int    `koanf:"idle_timeout"`
 }
 
+type Mq struct {
+	Url       string `koanf:"url"`
+	Consumer  string `koanf:"consumer"`
+	Publisher string `koanf:"publisher"`
+	MaxLength int32  `koanf:"max_length"`
+}
+
 type Config struct {
 	Server       Server      `koanf:"server"`
 	LoggingLevel string      `koanf:"logging_level"`
 	TelegramBot  TelegramBot `koanf:"telegramBot"`
 	Database     Database    `koanf:"database"`
-	Mq           mq.Mq       `koanf:"mq"`
+	Mq           Mq          `koanf:"mq"`
 }
 
 func fileExists(pathe string) bool {
@@ -58,8 +64,8 @@ func LoadConfig(path string) (*Config, error) {
 		"telegramBot.update_timeout": 60,
 		"telegramBot.logging_level":  "INFO",
 		"database.logging_level":     "INFO",
-		"mq.read_queue":              "yoda-server",
-		"mq.write_queue":             "yoda-client",
+		"mq.consumer":                "yoda-consumer",
+		"mq.publisher":               "yoda-publisher",
 		"mq.max_length":              10,
 	}, "."), nil); err != nil {
 		return nil, err
@@ -138,14 +144,14 @@ func getEnvs(c *Config) error {
 			return err
 		}
 	}
-	if val, exists := os.LookupEnv(prefix + "MQ_READ_QUEUE"); exists {
-		c.Mq.ReadQueue = val
+	if val, exists := os.LookupEnv(prefix + "MQ_CONSUMER"); exists {
+		c.Mq.Consumer = val
 		if err != nil {
 			return err
 		}
 	}
-	if val, exists := os.LookupEnv(prefix + "MQ_WRITE_QUEUE"); exists {
-		c.Mq.WriteQueue = val
+	if val, exists := os.LookupEnv(prefix + "MQ_PUBLISHER"); exists {
+		c.Mq.Publisher = val
 		if err != nil {
 			return err
 		}

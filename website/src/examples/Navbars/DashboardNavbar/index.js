@@ -1,36 +1,36 @@
 /**
-=========================================================
-* Material Dashboard 2 React - v2.1.0
-=========================================================
+ =========================================================
+ * Material Dashboard 2 React - v2.1.0
+ =========================================================
 
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
+ * Product Page: https://www.creative-tim.com/product/material-dashboard-react
+ * Copyright 2022 Creative Tim (https://www.creative-tim.com)
 
-Coded by www.creative-tim.com
+ Coded by www.creative-tim.com
 
  =========================================================
 
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
-import { useState, useEffect } from "react";
-
-// react-router components
-import { useLocation, Link } from "react-router-dom";
-
-// prop-types is a library for typechecking of props.
-import PropTypes from "prop-types";
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+ */
 
 // @material-ui core components
 import AppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
+import Icon from "@mui/material/Icon";
 import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
-import Icon from "@mui/material/Icon";
+import Toolbar from "@mui/material/Toolbar";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDInput from "components/MDInput";
+
+// Material Dashboard 2 React context
+import {
+  setMiniSidenav,
+  setOpenConfigurator,
+  setTransparentNavbar,
+  useMaterialUIController,
+} from "context";
 
 // Material Dashboard 2 React example components
 import Breadcrumbs from "examples/Breadcrumbs";
@@ -40,21 +40,20 @@ import NotificationItem from "examples/Items/NotificationItem";
 import {
   navbar,
   navbarContainer,
-  navbarRow,
   navbarIconButton,
   navbarMobileMenu,
+  navbarRow,
 } from "examples/Navbars/DashboardNavbar/styles";
 
-// Material Dashboard 2 React context
-import {
-  useMaterialUIController,
-  setTransparentNavbar,
-  setMiniSidenav,
-  setOpenConfigurator,
-} from "context";
+// prop-types is a library for typechecking of props.
+import PropTypes from "prop-types";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-function DashboardNavbar({ absolute, light, isMini, onRefresh }) {
+// react-router components
+import { Link, useLocation } from "react-router-dom";
+
+function DashboardNavbar({ absolute, light, isMini, onRefresh, canSearch }) {
   const [navbarType, setNavbarType] = useState();
   const [controller, dispatch] = useMaterialUIController();
   const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator, darkMode } = controller;
@@ -75,10 +74,10 @@ function DashboardNavbar({ absolute, light, isMini, onRefresh }) {
       setTransparentNavbar(dispatch, (fixedNavbar && window.scrollY === 0) || !fixedNavbar);
     }
 
-    /** 
-     The event listener that's calling the handleTransparentNavbar function when 
+    /**
+     The event listener that's calling the handleTransparentNavbar function when
      scrolling the window.
-    */
+     */
     window.addEventListener("scroll", handleTransparentNavbar);
 
     // Call the handleTransparentNavbar function to set the state with the initial value.
@@ -138,9 +137,11 @@ function DashboardNavbar({ absolute, light, isMini, onRefresh }) {
         </MDBox>
         {isMini ? null : (
           <MDBox sx={(theme) => navbarRow(theme, { isMini })}>
-            <MDBox pr={1}>
-              <MDInput label={t("search.label")} />
-            </MDBox>
+            {canSearch && (
+              <MDBox pr={1}>
+                <MDInput label={t("search.label")} />
+              </MDBox>
+            )}
             <MDBox color={light ? "white" : "inherit"}>
               {Boolean(onRefresh) && (
                 <IconButton
@@ -203,6 +204,7 @@ function DashboardNavbar({ absolute, light, isMini, onRefresh }) {
 
 // Setting default values for the props of DashboardNavbar
 DashboardNavbar.defaultProps = {
+  canSearch: false,
   absolute: false,
   light: false,
   isMini: false,
@@ -211,6 +213,7 @@ DashboardNavbar.defaultProps = {
 
 // Typechecking props for the DashboardNavbar
 DashboardNavbar.propTypes = {
+  canSearch: PropTypes.bool,
   absolute: PropTypes.bool,
   light: PropTypes.bool,
   isMini: PropTypes.bool,

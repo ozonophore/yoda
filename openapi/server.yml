@@ -128,6 +128,173 @@ components:
         - loader
         - addLoader
         - calcAggregates
+    StockItems:
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int
+          description: Total number of items
+        limit:
+          type: integer
+          format: int
+          description: Limit of items per page
+        offset:
+          type: integer
+          format: int
+          description: Offset of the last item in the list
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/StockItem'
+      required:
+        - total
+        - index
+        - offset
+        - limit
+        - items
+    StockItem:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Unique identifier
+        name:
+          type: string
+          description: Name of the item
+        marketplace:
+          type: string
+          description: Marketplace name
+        organization:
+          type: string
+          description: Organization name
+        quantity:
+          type: integer
+          format: int
+          description: Quantity of the item
+        barcode:
+          type: string
+          description: Barcode of the item
+        article:
+          type: string
+          description: Article of the item
+        warehouse:
+          type: string
+          description: Warehouse name
+        quantityFull:
+          type: integer
+          format: int
+          description: Quantity of the item
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - name
+        - marketplace
+        - organization
+        - quantity
+        - createdAt
+        - updatedAt
+        - barcode
+        - article
+        - warehouse
+        - quantityFull
+    OrderItems:
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int
+          description: Total number of items
+        limit:
+          type: integer
+          format: int
+          description: Limit of items per page
+        offset:
+          type: integer
+          format: int
+          description: Offset of the last item in the list
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderItem'
+      required:
+        - total
+        - index
+        - offset
+        - limit
+        - items
+    OrderItem:
+        type: object
+        properties:
+          id:
+            type: integer
+            format: int
+            description: Unique identifier
+          name:
+            type: string
+            description: Name of the item
+          transactionDate:
+            type: string
+            format: date-time
+            description: Transaction date
+          organization:
+            type: string
+            description: Organization name
+          marketplace:
+            type: string
+            description: Marketplace name
+          article:
+            type: string
+            description: Article of the item
+          barcode:
+            type: string
+            description: Barcode of the item
+          quantity:
+            type: integer
+            format: int
+            description: Quantity of the item
+          quantityFull:
+            type: integer
+            format: int
+            description: Quantity of the item
+          warehouse:
+            type: string
+            description: Warehouse name
+          price:
+            type: number
+            format: double
+            description: Price of the item
+          priceWithDiscount:
+            type: number
+            format: double
+            description: Price with discount of the item
+          status:
+            type: string
+            description: Status of the item
+          createdAt:
+            type: string
+            format: date-time
+        required:
+            - id
+            - name
+            - transactionDate
+            - organization
+            - marketplace
+            - article
+            - barcode
+            - quantity
+            - quantityFull
+            - warehouse
+            - price
+            - priceWithDiscount
+            - status
+            - createdAt
 paths:
   /rooms:
     post:
@@ -292,3 +459,74 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+# Data for tables
+  /stocks:
+    get:
+      summary: Get all stocks
+      operationId: getStocks
+      parameters:
+        - name: limit
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int
+        - name: offset
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int
+        - name: date
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+        - name: search
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StockItems'
+  /orders:
+    get:
+      summary: Get all orders
+      operationId: getOrders
+      parameters:
+        - name: limit
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int
+        - name: offset
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int
+        - name: date
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+        - name: search
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderItems'

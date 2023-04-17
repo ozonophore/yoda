@@ -7,6 +7,7 @@ import (
 	"github.com/yoda/webapp/pkg/config"
 	"github.com/yoda/webapp/pkg/controller"
 	"github.com/yoda/webapp/pkg/dao"
+	"github.com/yoda/webapp/pkg/event"
 	server2 "github.com/yoda/webapp/pkg/server"
 	"os"
 	"os/signal"
@@ -14,22 +15,18 @@ import (
 )
 
 func main() {
+	ctx := context.Background()
 	config, err := config.LoadConfig("config.yml")
 	if err != nil {
 		panic(err)
 	}
 	logger := createLogger(err, config)
-	//if err := mq.NewConnection(config.Mq); err != nil {
-	//	logger.Panic(err)
-	//}
-	//ctxConsumer, cancelConsumer := context.WithCancel(context.Background())
-	//if err := mq.NewConsumer(ctxConsumer, config.Mq, mqclient.HandleMessage); err != nil {
-	//	logger.Panic(err)
-	//}
-	//defer cancelConsumer()
-	//defer mq.Close()
+
 	database := dao.InitDatabase(config.Database, logger)
 	dao.NewRepositoryDAO(database)
+
+	event.InitEvent(ctx, config.Mq)
+	defer event.CloseEvent()
 
 	server := controller.NewServerApi(&logger)
 

@@ -58,6 +58,63 @@ type NewRoom struct {
 	Wb   Wb     `json:"wb"`
 }
 
+// OrderItem defines model for OrderItem.
+type OrderItem struct {
+	// Article Article of the item
+	Article string `json:"article"`
+
+	// Barcode Barcode of the item
+	Barcode   string    `json:"barcode"`
+	CreatedAt time.Time `json:"createdAt"`
+
+	// Id Unique identifier
+	Id int `json:"id"`
+
+	// Marketplace Marketplace name
+	Marketplace string `json:"marketplace"`
+
+	// Name Name of the item
+	Name string `json:"name"`
+
+	// Organization Organization name
+	Organization string `json:"organization"`
+
+	// Price Price of the item
+	Price float64 `json:"price"`
+
+	// PriceWithDiscount Price with discount of the item
+	PriceWithDiscount float64 `json:"priceWithDiscount"`
+
+	// Quantity Quantity of the item
+	Quantity int `json:"quantity"`
+
+	// QuantityFull Quantity of the item
+	QuantityFull int `json:"quantityFull"`
+
+	// Status Status of the item
+	Status string `json:"status"`
+
+	// TransactionDate Transaction date
+	TransactionDate time.Time `json:"transactionDate"`
+
+	// Warehouse Warehouse name
+	Warehouse string `json:"warehouse"`
+}
+
+// OrderItems defines model for OrderItems.
+type OrderItems struct {
+	Items []OrderItem `json:"items"`
+
+	// Limit Limit of items per page
+	Limit int `json:"limit"`
+
+	// Offset Offset of the last item in the list
+	Offset int `json:"offset"`
+
+	// Total Total number of items
+	Total int `json:"total"`
+}
+
 // Ozon defines model for Ozon.
 type Ozon struct {
 	ApiKey   string `json:"apiKey"`
@@ -75,6 +132,52 @@ type Room struct {
 	Wb        Wb         `json:"wb"`
 }
 
+// StockItem defines model for StockItem.
+type StockItem struct {
+	// Article Article of the item
+	Article string `json:"article"`
+
+	// Barcode Barcode of the item
+	Barcode   string    `json:"barcode"`
+	CreatedAt time.Time `json:"createdAt"`
+
+	// Id Unique identifier
+	Id int64 `json:"id"`
+
+	// Marketplace Marketplace name
+	Marketplace string `json:"marketplace"`
+
+	// Name Name of the item
+	Name string `json:"name"`
+
+	// Organization Organization name
+	Organization string `json:"organization"`
+
+	// Quantity Quantity of the item
+	Quantity int `json:"quantity"`
+
+	// QuantityFull Quantity of the item
+	QuantityFull int       `json:"quantityFull"`
+	UpdatedAt    time.Time `json:"updatedAt"`
+
+	// Warehouse Warehouse name
+	Warehouse string `json:"warehouse"`
+}
+
+// StockItems defines model for StockItems.
+type StockItems struct {
+	Items []StockItem `json:"items"`
+
+	// Limit Limit of items per page
+	Limit int `json:"limit"`
+
+	// Offset Offset of the last item in the list
+	Offset int `json:"offset"`
+
+	// Total Total number of items
+	Total int `json:"total"`
+}
+
 // Wb defines model for Wb.
 type Wb struct {
 	AuthToken string `json:"authToken"`
@@ -82,6 +185,22 @@ type Wb struct {
 
 // WeekDay defines model for WeekDay.
 type WeekDay string
+
+// GetOrdersParams defines parameters for GetOrders.
+type GetOrdersParams struct {
+	Limit  int       `form:"limit" json:"limit"`
+	Offset int       `form:"offset" json:"offset"`
+	Date   time.Time `form:"date" json:"date"`
+	Search *string   `form:"search,omitempty" json:"search,omitempty"`
+}
+
+// GetStocksParams defines parameters for GetStocks.
+type GetStocksParams struct {
+	Limit  int       `form:"limit" json:"limit"`
+	Offset int       `form:"offset" json:"offset"`
+	Date   time.Time `form:"date" json:"date"`
+	Search *string   `form:"search,omitempty" json:"search,omitempty"`
+}
 
 // CreateRoomJSONRequestBody defines body for CreateRoom for application/json ContentType.
 type CreateRoomJSONRequestBody = NewRoom
@@ -103,6 +222,9 @@ type ServerInterface interface {
 	// Stop job by id
 	// (POST /jobs/{id}/stop)
 	StopJobById(w http.ResponseWriter, r *http.Request, id int64)
+	// Get all orders
+	// (GET /orders)
+	GetOrders(w http.ResponseWriter, r *http.Request, params GetOrdersParams)
 	// Get all rooms
 	// (GET /rooms)
 	GetRooms(w http.ResponseWriter, r *http.Request)
@@ -115,6 +237,9 @@ type ServerInterface interface {
 	// Get room by id
 	// (GET /rooms/{code})
 	GetRoomById(w http.ResponseWriter, r *http.Request, code string)
+	// Get all stocks
+	// (GET /stocks)
+	GetStocks(w http.ResponseWriter, r *http.Request, params GetStocksParams)
 }
 
 // ServerInterfaceWrapper converts contexts to parameters.
@@ -219,6 +344,79 @@ func (siw *ServerInterfaceWrapper) StopJobById(w http.ResponseWriter, r *http.Re
 	handler(w, r.WithContext(ctx))
 }
 
+// GetOrders operation middleware
+func (siw *ServerInterfaceWrapper) GetOrders(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var err error
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetOrdersParams
+
+	// ------------- Required query parameter "limit" -------------
+
+	if paramValue := r.URL.Query().Get("limit"); paramValue != "" {
+
+	} else {
+		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "limit", r.URL.Query(), &params.Limit)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+		return
+	}
+
+	// ------------- Required query parameter "offset" -------------
+
+	if paramValue := r.URL.Query().Get("offset"); paramValue != "" {
+
+	} else {
+		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "offset"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "offset", r.URL.Query(), &params.Offset)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "offset", Err: err})
+		return
+	}
+
+	// ------------- Required query parameter "date" -------------
+
+	if paramValue := r.URL.Query().Get("date"); paramValue != "" {
+
+	} else {
+		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "date"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "date", r.URL.Query(), &params.Date)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "date", Err: err})
+		return
+	}
+
+	// ------------- Optional query parameter "search" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "search", r.URL.Query(), &params.Search)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "search", Err: err})
+		return
+	}
+
+	var handler = func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetOrders(w, r, params)
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler(w, r.WithContext(ctx))
+}
+
 // GetRooms operation middleware
 func (siw *ServerInterfaceWrapper) GetRooms(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
@@ -281,6 +479,79 @@ func (siw *ServerInterfaceWrapper) GetRoomById(w http.ResponseWriter, r *http.Re
 
 	var handler = func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.GetRoomById(w, r, code)
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler(w, r.WithContext(ctx))
+}
+
+// GetStocks operation middleware
+func (siw *ServerInterfaceWrapper) GetStocks(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var err error
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetStocksParams
+
+	// ------------- Required query parameter "limit" -------------
+
+	if paramValue := r.URL.Query().Get("limit"); paramValue != "" {
+
+	} else {
+		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "limit", r.URL.Query(), &params.Limit)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+		return
+	}
+
+	// ------------- Required query parameter "offset" -------------
+
+	if paramValue := r.URL.Query().Get("offset"); paramValue != "" {
+
+	} else {
+		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "offset"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "offset", r.URL.Query(), &params.Offset)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "offset", Err: err})
+		return
+	}
+
+	// ------------- Required query parameter "date" -------------
+
+	if paramValue := r.URL.Query().Get("date"); paramValue != "" {
+
+	} else {
+		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "date"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "date", r.URL.Query(), &params.Date)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "date", Err: err})
+		return
+	}
+
+	// ------------- Optional query parameter "search" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "search", r.URL.Query(), &params.Search)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "search", Err: err})
+		return
+	}
+
+	var handler = func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetStocks(w, r, params)
 	}
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -411,6 +682,8 @@ func HandlerWithOptions(si ServerInterface, options GorillaServerOptions) http.H
 
 	r.HandleFunc(options.BaseURL+"/jobs/{id}/stop", wrapper.StopJobById).Methods("POST")
 
+	r.HandleFunc(options.BaseURL+"/orders", wrapper.GetOrders).Methods("GET")
+
 	r.HandleFunc(options.BaseURL+"/rooms", wrapper.GetRooms).Methods("GET")
 
 	r.HandleFunc(options.BaseURL+"/rooms", wrapper.CreateRoom).Methods("POST")
@@ -418,6 +691,8 @@ func HandlerWithOptions(si ServerInterface, options GorillaServerOptions) http.H
 	r.HandleFunc(options.BaseURL+"/rooms", wrapper.UpdateRoom).Methods("PUT")
 
 	r.HandleFunc(options.BaseURL+"/rooms/{code}", wrapper.GetRoomById).Methods("GET")
+
+	r.HandleFunc(options.BaseURL+"/stocks", wrapper.GetStocks).Methods("GET")
 
 	return r
 }

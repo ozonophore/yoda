@@ -27,6 +27,7 @@
     "@mui/material": "5.4.1",
     "@mui/styled-engine": "5.4.1",
     "@mui/styles": "^5.11.11",
+    "@mui/x-data-grid": "^6.2.0",
     "@mui/x-date-pickers": "^5.0.20",
     "@testing-library/jest-dom": "5.16.2",
     "@testing-library/react": "12.1.2",

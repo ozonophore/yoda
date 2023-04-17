@@ -93,6 +93,12 @@ function reducer(state, action) {
     case "REFRESH_JOBS": {
       return { ...state, jobs: action.value, loading: false };
     }
+    case "ROOM_ADD_TOGGLE": {
+      return { ...state, room: { ...state.room, addToggle: action.value, gridToggle: false } };
+    }
+    case "ROOM_GRID_TOGGLE": {
+      return { ...state, room: { ...state.room, addToggle: false, gridToggle: action.value } };
+    }
     default: {
       throw new Error(`Unhandled action type: ${action.type}`);
     }

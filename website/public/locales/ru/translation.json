@@ -6,7 +6,8 @@
   "menu": {
     "dashboard": "Основная",
     "room": "Кабинет",
-    "schedule": "Задания"
+    "schedule": "Задания",
+    "sales": "Продажи и остатки"
   },
   "settings": {
     "title": "Настройки"
@@ -65,5 +66,9 @@
       "saturday": "Суббота",
       "sunday": "Воскресенье"
     }
+  },
+  "dataTable": {
+    "rowsPerPage": "записей на странице:",
+    "totalEntries": "Показать с {{entriesStart}} по {{entriesEnd}} из {{totalEntries}} записей"
   }
 }

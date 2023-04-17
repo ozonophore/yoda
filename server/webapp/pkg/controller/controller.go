@@ -12,6 +12,28 @@ type ServerApi struct {
 	logger *logrus.Logger
 }
 
+func (sa ServerApi) GetOrders(w http.ResponseWriter, r *http.Request, params api.GetOrdersParams) {
+	w.Header().Add("Content-Type", "application/json")
+	result, err := service.GetOrders(params.Limit, params.Offset, params.Date, params.Search)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(&result)
+}
+
+func (sa ServerApi) GetStocks(w http.ResponseWriter, r *http.Request, params api.GetStocksParams) {
+	w.Header().Add("Content-Type", "application/json")
+	result, err := service.GetStocks(params.Limit, params.Offset, params.Date, params.Search)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(&result)
+}
+
 func (sa ServerApi) GetRooms(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", "application/json")
 	result, err := service.GetRooms()

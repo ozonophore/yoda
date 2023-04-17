@@ -1,20 +1,17 @@
-import Grid from "@mui/material/Grid";
+import MDBox from "../../components/MDBox";
+import Footer from "../../examples/Footer";
 import DashboardLayout from "../../examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "../../examples/Navbars/DashboardNavbar";
-import RegularCard from "./components/RegularCard";
+import JobGrid from "./components/JobGrid";
 
 function Schedulers() {
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <Grid container spacing={3}>
-        <Grid key="job_1" item xs={12} md={6}>
-          <RegularCard title="регулярная загрузка по расписанию" />
-        </Grid>
-        <Grid key="job_2" item xs={12} md={6}>
-          <div />
-        </Grid>
-      </Grid>
+      <MDBox pb={3}>
+        <JobGrid />
+      </MDBox>
+      <Footer />
     </DashboardLayout>
   );
 }

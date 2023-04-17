@@ -76,7 +76,7 @@ func Consume(ctx context.Context, queueName string, callback ConsumeCallback) Me
 	}
 }
 
-func Publish(queueName string, body []byte) {
+func Publish(queueName, msgType, msgId string, body []byte) {
 	err := channel.Publish(
 		"",        // exchange
 		queueName, // key
@@ -85,6 +85,8 @@ func Publish(queueName string, body []byte) {
 		amqp.Publishing{
 			ContentType: "application/json",
 			Body:        body,
+			Type:        msgType,
+			MessageId:   msgId,
 		},
 	)
 	if err != nil {

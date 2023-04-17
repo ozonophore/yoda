@@ -39,11 +39,9 @@ func jobByTag(s *gocron.Scheduler, jobId int) *gocron.Job {
 	tag := fmt.Sprintf("%d", jobId)
 	jobs, err := s.FindJobsByTag(tag)
 	if err != nil {
-		logrus.Panicf("Error after find jobs by tag: %s", err)
 		return nil
 	}
 	if len(jobs) == 0 {
-		logrus.Panicf("No jobs found by tag: %d", jobId)
 		return nil
 	}
 	return jobs[0]
@@ -61,6 +59,10 @@ func RunRegularLoad(config *configuration.Config, ctx context.Context, jobID int
 	}
 	transactionID := repository.BeginOperation(jobID)
 	gJob := jobByTag(s, jobID)
+	if gJob == nil {
+		logrus.Panicf("Job %d not found", jobID)
+		return
+	}
 	callOnBeforeJonExecution(job, transactionID, gJob, onBefore)
 	logrus.Info("Start parsing for job: ", jobID)
 	for _, param := range *job.Params {
