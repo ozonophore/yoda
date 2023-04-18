@@ -33,9 +33,9 @@ type Sale struct {
 	CountryName       *string   `gorm:"column:country_name" json:"country_name"`                  // Страна
 	OblastOkrugName   *string   `gorm:"column:oblast_okrug_name" json:"oblast_okrug_name"`        // Область
 	RegionName        *string   `gorm:"column:region_name" json:"region_name"`                    // Регион
-	IncomeID          *int32    `gorm:"column:income_id" json:"income_id"`                        // Номер поставки (от продавца на склад)
+	IncomeID          *int64    `gorm:"column:income_id" json:"income_id"`                        // Номер поставки (от продавца на склад)
 	SaleID            *string   `gorm:"column:sale_id" json:"sale_id"`                            // Уникальный идентификатор продажи/возврата.
-	Odid              *int32    `gorm:"column:odid" json:"odid"`                                  // Уникальный идентификатор позиции заказа
+	Odid              *int64    `gorm:"column:odid" json:"odid"`                                  // Уникальный идентификатор позиции заказа
 	Spp               *float64  `gorm:"column:spp" json:"spp"`                                    // Согласованная скидка постоянного покупателя
 	ForPay            *float64  `gorm:"column:for_pay" json:"for_pay"`                            // К перечислению поставщику
 	FinishedPrice     *float64  `gorm:"column:finished_price" json:"finished_price"`              // Фактическая цена заказа с учетом всех скидок

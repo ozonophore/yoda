@@ -62,7 +62,7 @@ func MapOrder(order *api.OrdersItem, transactionId int64, source string, ownerCo
 		Oblast:            order.Oblast,
 		IncomeID:          order.IncomeID,
 		ExternalCode:      fmt.Sprintf(`%d`, *order.NmId),
-		Odid:              utils.IntToInt32(order.Odid),
+		Odid:              order.Odid,
 		Subject:           order.Subject,
 		Category:          order.Category,
 		Brand:             order.Brand,

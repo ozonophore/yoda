@@ -25,8 +25,6 @@ func main() {
 	ctxCancel, cancel := context.WithCancel(ctx)
 	event.InitEvent(ctxCancel, config.Mq)
 	defer event.CloseEvent()
-	//mq.NewConnection(config.Mq)
-	//mq.NewConsumer(ctx, config.Mq, mqserver.HandlerReceive)
 
 	scheduler := timer.NewScheduler(config)
 	scheduler.InitJob()

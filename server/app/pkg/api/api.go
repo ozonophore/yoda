@@ -202,7 +202,7 @@ type OrdersItem struct {
 	GNumber *string `json:"gNumber,omitempty"`
 
 	// IncomeID Номер поставки (от продавца на склад)
-	IncomeID *int `json:"incomeID,omitempty"`
+	IncomeID *int64 `json:"incomeID,omitempty"`
 
 	// IsCancel Отмена заказа. true - заказ отменен до оплаты.
 	IsCancel *bool `json:"isCancel,omitempty"`
@@ -217,7 +217,7 @@ type OrdersItem struct {
 	Oblast *string `json:"oblast,omitempty"`
 
 	// Odid Уникальный идентификатор позиции заказа. Может использоваться для поиска соответствия между заказами и продажами.
-	Odid *int `json:"odid,omitempty"`
+	Odid *int64 `json:"odid,omitempty"`
 
 	// Srid Уникальный идентификатор заказа, функционально аналогичный `odid`/`rid`.  Данный параметр введен в июле'22 и в течение переходного периода может быть заполнен не во всех ответах. Примечание для работающих по системе Маркетплейс: `srid` равен `rid` в ответе на метод `GET /api/v2/orders`.
 	Srid *string `json:"srid,omitempty"`
@@ -471,7 +471,7 @@ type SalesItem struct {
 	GNumber *string `json:"gNumber,omitempty"`
 
 	// IncomeID Номер поставки (от продавца на склад)
-	IncomeID *int `json:"incomeID,omitempty"`
+	IncomeID *int64 `json:"incomeID,omitempty"`
 
 	// IsRealization Договор реализации
 	IsRealization *bool `json:"isRealization,omitempty"`
@@ -492,7 +492,7 @@ type SalesItem struct {
 	OblastOkrugName *string `json:"oblastOkrugName,omitempty"`
 
 	// Odid Уникальный идентификатор позиции заказа. Может использоваться для поиска соответствия между заказами и продажами.
-	Odid *int `json:"odid,omitempty"`
+	Odid *int64 `json:"odid,omitempty"`
 
 	// PriceWithDisc Цена, от которой считается вознаграждение поставщика `forpay` (с учетом всех согласованных скидок)
 	PriceWithDisc *float32 `json:"priceWithDisc,omitempty"`

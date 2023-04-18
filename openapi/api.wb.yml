@@ -372,9 +372,11 @@ components:
           description: Область
         incomeID:
           type: integer
+          format: int64
           description: Номер поставки (от продавца на склад)
         odid:
           type: integer
+          format: int64
           description: Уникальный идентификатор позиции заказа. Может использоваться
             для поиска соответствия между заказами и продажами.
         nmId:
@@ -477,6 +479,7 @@ components:
           description: Регион
         incomeID:
           type: integer
+          format: int64
           description: Номер поставки (от продавца на склад)
         saleID:
           type: string
@@ -489,6 +492,7 @@ components:
                 и кол-вом с плюсом, в противоположность возврату) </ul>'
         odid:
           type: integer
+          format: int64
           description: Уникальный идентификатор позиции заказа. Может использоваться
             для поиска соответствия между заказами и продажами.
         spp:

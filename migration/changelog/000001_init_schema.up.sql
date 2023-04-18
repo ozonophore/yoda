@@ -2,7 +2,8 @@ create table "owner"
 (
     "code"        varchar(20) primary key,
     "name"        varchar(100) not null,
-    "create_date" timestamp default now()
+    "create_date" timestamp default now(),
+    "is_deleted"  boolean      not null
 );
 
 create table "job"
@@ -159,9 +160,9 @@ create table "sale"
     "country_name"        varchar(200),
     "oblast_okrug_name"   varchar(200),
     "region_name"         varchar(200),
-    "income_id"           integer,
+    "income_id"           bigint,
     "sale_id"             varchar(15),
-    "odid"                integer,
+    "odid"                bigint,
     "spp"                 float,
     "for_pay"             float,
     "finished_price"      float,
@@ -261,9 +262,9 @@ create table "order"
     "price_with_discount" float,
     "warehouse_name"      varchar(50),
     "oblast"              varchar(200),
-    "income_id"           integer,
+    "income_id"           bigint,
     "external_code"       varchar(50),
-    "odid"                integer,
+    "odid"                bigint,
     "subject"             varchar(200),
     "category"            varchar(200),
     "brand"               varchar(100),

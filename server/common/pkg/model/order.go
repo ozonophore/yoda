@@ -26,9 +26,9 @@ type Order struct {
 	PriceWithDiscount float64    `gorm:"column:price_with_discount" json:"price_with_discount"`                    // Цена со скидкой
 	WarehouseName     *string    `gorm:"column:warehouse_name" json:"warehouse_name"`                              // Название склада отгрузки
 	Oblast            *string    `gorm:"column:oblast" json:"oblast"`                                              // Область
-	IncomeID          *int       `gorm:"column:income_id" json:"income_id"`                                        // Номер поставки (от продавца на склад)
+	IncomeID          *int64     `gorm:"column:income_id" json:"income_id"`                                        // Номер поставки (от продавца на склад)
 	ExternalCode      string     `gorm:"column:external_code" json:"external_code"`                                // Код WB
-	Odid              *int32     `gorm:"column:odid" json:"odid"`                                                  // Уникальный идентификатор позиции заказа
+	Odid              *int64     `gorm:"column:odid" json:"odid"`                                                  // Уникальный идентификатор позиции заказа
 	Subject           *string    `gorm:"column:subject" json:"subject"`                                            // Предмет
 	Category          *string    `gorm:"column:category" json:"category"`                                          // Категория
 	Brand             *string    `gorm:"column:brand" json:"brand"`                                                // Бренд
