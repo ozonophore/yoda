@@ -34,6 +34,7 @@ const InitialState = {
   error: {
     message: "",
   },
+  date: new Date(),
 };
 
 export default InitialState;

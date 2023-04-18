@@ -530,3 +530,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/OrderItems'
+  /ping:
+    get:
+      summary: Ping
+      operationId: ping
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  date:
+                    type: string
+                    format: date-time

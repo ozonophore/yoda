@@ -50,6 +50,7 @@ function RoomGrid() {
                     amount: "+1%",
                     label: "than yesterday",
                   }}
+                  onEdit={() => habdleOnEdit(room)}
                 />
               </MDBox>
             </Grid>

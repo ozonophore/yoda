@@ -6,10 +6,18 @@ import (
 	"github.com/yoda/webapp/pkg/api"
 	"github.com/yoda/webapp/pkg/service"
 	"net/http"
+	"time"
 )
 
 type ServerApi struct {
 	logger *logrus.Logger
+}
+
+func (sa ServerApi) Ping(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	date := `{"date": "` + time.Now().Format(time.DateTime) + `"}`
+	w.Write([]byte(date))
 }
 
 func (sa ServerApi) GetOrders(w http.ResponseWriter, r *http.Request, params api.GetOrdersParams) {

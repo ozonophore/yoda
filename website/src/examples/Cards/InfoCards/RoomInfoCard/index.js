@@ -46,6 +46,13 @@ function RoomInfoCard({ color, title, name, days, time, icon, onEdit }) {
                 </Icon>
               </Tooltip>
             </MDBox>
+            <MDBox component="span" ml="auto" pl={1} lineHeight={0} color="red" onClick={onEdit}>
+              <Tooltip title={t("room.card.delete")} placement="top">
+                <Icon sx={{ cursor: "pointer" }} fontSize="small">
+                  delete
+                </Icon>
+              </Tooltip>
+            </MDBox>
           </MDTypography>
           <MDTypography variant="h4">{name}</MDTypography>
         </MDBox>

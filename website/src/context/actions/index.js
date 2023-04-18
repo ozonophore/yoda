@@ -1,4 +1,6 @@
+import { parse } from "date-fns";
 import { DefaultService } from "../../generated";
+import { setDate } from "../index";
 
 const RefreshRooms = () => (dispatch) => {
   dispatch({ type: "LOADING", value: true });
@@ -44,4 +46,11 @@ const RoomAddToggle = (value) => (dispatch) => {
 const RoomGridToggle = (value) => (dispatch) => {
   dispatch({ type: "ROOM_GRID_TOGGLE", value });
 };
-export { RefreshRooms, CloseError, CreateRoom, RefreshJobs, RoomAddToggle, RoomGridToggle };
+
+const Ping = () => (dispatch) => {
+  DefaultService.ping().then((data) => {
+    setDate(dispatch, parse(data.date, "yyyy-MM-dd HH:mm:ss", new Date()));
+  });
+};
+
+export { RefreshRooms, CloseError, CreateRoom, RefreshJobs, RoomAddToggle, RoomGridToggle, Ping };

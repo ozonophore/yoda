@@ -225,6 +225,9 @@ type ServerInterface interface {
 	// Get all orders
 	// (GET /orders)
 	GetOrders(w http.ResponseWriter, r *http.Request, params GetOrdersParams)
+	// Ping
+	// (GET /ping)
+	Ping(w http.ResponseWriter, r *http.Request)
 	// Get all rooms
 	// (GET /rooms)
 	GetRooms(w http.ResponseWriter, r *http.Request)
@@ -408,6 +411,21 @@ func (siw *ServerInterfaceWrapper) GetOrders(w http.ResponseWriter, r *http.Requ
 
 	var handler = func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.GetOrders(w, r, params)
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler(w, r.WithContext(ctx))
+}
+
+// Ping operation middleware
+func (siw *ServerInterfaceWrapper) Ping(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var handler = func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.Ping(w, r)
 	}
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -683,6 +701,8 @@ func HandlerWithOptions(si ServerInterface, options GorillaServerOptions) http.H
 	r.HandleFunc(options.BaseURL+"/jobs/{id}/stop", wrapper.StopJobById).Methods("POST")
 
 	r.HandleFunc(options.BaseURL+"/orders", wrapper.GetOrders).Methods("GET")
+
+	r.HandleFunc(options.BaseURL+"/ping", wrapper.Ping).Methods("GET")
 
 	r.HandleFunc(options.BaseURL+"/rooms", wrapper.GetRooms).Methods("GET")
 

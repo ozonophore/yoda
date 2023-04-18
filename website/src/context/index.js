@@ -104,6 +104,9 @@ function reducer(state, action) {
     case "ROOM_GRID_TOGGLE": {
       return { ...state, room: { ...state.room, addToggle: false, gridToggle: action.value } };
     }
+    case "PING": {
+      return { ...state, date: action.value };
+    }
     default: {
       throw new Error(`Unhandled action type: ${action.type}`);
     }
@@ -153,6 +156,8 @@ const setLanguage = (dispatch, value) => dispatch({ type: "LANGUAGE", value });
 
 const setLoading = (dispatch, value) => dispatch({ type: "LOADING", value });
 
+const setDate = (dispatch, value) => dispatch({ type: "PING", value });
+
 export {
   MaterialUIControllerProvider,
   useMaterialUIController,
@@ -168,4 +173,5 @@ export {
   setDarkMode,
   setLanguage,
   setLoading,
+  setDate,
 };
