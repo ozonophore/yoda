@@ -89,7 +89,6 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
   useEffect(() => {
     dispatch(Ping());
   }, []);
-
   // Render all the routes from the routes.js (All the visible items on the Sidenav)
   const renderRoutes = routes.map(({ type, icon, title, noCollapse, key, href, route }) => {
     let returnValue;
@@ -187,7 +186,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
       />
       <List>{renderRoutes}</List>
       <MDBox p={2} mt="auto">
-        <Timer textColor={textColor} startTime={date} />
+        <Timer textColor={textColor} initDate={date} />
       </MDBox>
     </SidenavRoot>
   );

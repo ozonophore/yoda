@@ -49,7 +49,8 @@ const RoomGridToggle = (value) => (dispatch) => {
 
 const Ping = () => (dispatch) => {
   DefaultService.ping().then((data) => {
-    setDate(dispatch, parse(data.date, "yyyy-MM-dd HH:mm:ss", new Date()));
+    const currentDate = parse(data.date, "yyyy-MM-dd HH:mm:ss", new Date());
+    setDate(dispatch, currentDate);
   });
 };
 

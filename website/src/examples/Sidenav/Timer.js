@@ -1,15 +1,23 @@
-import { format } from "date-fns";
+import { addSeconds, format } from "date-fns";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import MDTypography from "../../components/MDTypography";
+import { useMaterialUIController } from "../../context";
 
-export default function Timer({ textColor, startTime }) {
-  const [time, setTime] = useState(startTime);
+export default function Timer({ textColor }) {
+  const [controller] = useMaterialUIController();
+  const { date } = controller;
+  const [time, setTime] = useState(date);
 
   useEffect(() => {
-    setInterval(() => {
-      setTime(new Date());
+    setTime(date);
+  }, [date]);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const currentTime = addSeconds(time, 1);
+      setTime(currentTime);
     }, 1000);
+    return () => clearInterval(interval);
   }, [time]);
 
   return (
@@ -34,7 +42,6 @@ Timer.defaultProps = {
 };
 
 Timer.propTypes = {
-  startTime: PropTypes.instanceOf(Date).isRequired,
   textColor: PropTypes.oneOf([
     "inherit",
     "primary",
