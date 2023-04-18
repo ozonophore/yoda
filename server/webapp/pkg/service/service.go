@@ -47,6 +47,9 @@ func GetRooms() (*[]api.Room, error) {
 	if err != nil {
 		return nil, err
 	}
+	if len(owners) == 0 {
+		return &[]api.Room{}, nil
+	}
 	rooms := mapper.MapOwnersToRooms(owners)
 	mps, err := dao.GetMarketplacesByOwners(owners)
 	if err != nil {

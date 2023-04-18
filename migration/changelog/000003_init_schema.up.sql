@@ -1,5 +1,5 @@
 -- insert into "owner"("code","name") values('OWNER','TEST OWNER');
--- insert into "job"("id","is_active","description","week_days","at_time","type") values (1, true, 'Test job','monday,tuesday,wednesday,thursday,friday,saturdays,sundays','06:00,12:00,16:00,20:00','REGULAR');
+insert into "job"("id","is_active","description","week_days","at_time","type") values (1, true, 'Test job','monday,tuesday,wednesday,thursday,friday,saturday,sunday','06:00,12:00,16:00,20:00','REGULAR');
 -- insert into "job_owner"("owner_code", "job_id") values ('OWNER', 1);
 --
 -- insert into "owner_marketplace"("owner_code",   "source", "host", "client_id", "password")
@@ -8,4 +8,4 @@
 -- insert into "owner_marketplace"("owner_code",   "source", "host", "client_id", "password")
 -- values ('OWNER', 'OZON', 'http://localhost:1080/ozon', '538358', '8539be7e-a37f-4b4f-b5e1-3879e5f1738c');
 --
--- commit;
+commit;

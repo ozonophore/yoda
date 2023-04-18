@@ -168,7 +168,7 @@ func GetJobById(id int64) (*model.Job, error) {
 
 func GetOwners() ([]model.Owner, error) {
 	var models []model.Owner
-	if err := dao.database.Where(`"is_deleted" `).Order(`"create_date" desc`).Find(&models).Error; err != nil {
+	if err := dao.database.Where(`"is_deleted" =? `, false).Order(`"create_date" desc`).Find(&models).Error; err != nil {
 		return nil, err
 	}
 	return models, nil
