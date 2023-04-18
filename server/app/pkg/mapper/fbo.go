@@ -43,7 +43,7 @@ func MapFBOToOrder(fbo *api.FBO, transactionId int64, source string, ownerCode s
 			CancelDt:          nil,
 			GNumber:           &gNumber,
 			Sticker:           nil,
-			Srid:              nil,
+			Srid:              fbo.PostingNumber,
 			Quantity:          product.Quantity,
 		}
 	}
