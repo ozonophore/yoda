@@ -28,8 +28,8 @@ func TestMapOrder(t *testing.T) {
 	assert.Equal(t, float64(12), order.DiscountPercent)
 	assert.Equal(t, "warehouseName", *order.WarehouseName)
 	assert.Equal(t, "oblast", *order.Oblast)
-	assert.Equal(t, 43, *order.IncomeID)
-	assert.Equal(t, int32(76), *order.Odid)
+	assert.Equal(t, int64(43), *order.IncomeID)
+	assert.Equal(t, int64(76), *order.Odid)
 	assert.Equal(t, "gNumber", *order.GNumber)
 	assert.Equal(t, "sticker", *order.Sticker)
 	assert.Equal(t, "srid", *order.Srid)
@@ -49,8 +49,8 @@ func generateOrder() api.OrdersItem {
 	discountPercent := 12
 	warehouseName := "warehouseName"
 	oblast := "oblast"
-	IncomeID := 43
-	odid := 76
+	IncomeID := int64(43)
+	odid := int64(76)
 	gNumber := "gNumber"
 	sticker := "sticker"
 	srid := "srid"

@@ -21,14 +21,14 @@ func TestMapSale(t *testing.T) {
 	finishedPrice := float32(10)
 	forPay := float32(10)
 	gNumber := "gNumber"
-	incomeID := 56
+	incomeID := int64(56)
 	isRealization := true
 	isStorno := 1
 	isSupply := true
 	lastChangeDate := "2020-11-01T12:30:02"
 	nmId := 12
 	oblastOkrugName := "oblastOkrugName"
-	odid := 32
+	odid := int64(32)
 	priceWithDiscount := float32(2.5)
 	promoCodeDiscount := float32(1.2)
 	regionName := "regionName"
@@ -107,7 +107,7 @@ func TestMapSale(t *testing.T) {
 	if *target.GNumber != *s.GNumber {
 		t.Errorf("MapSale() = %v, want %v", target.GNumber, *s.GNumber)
 	}
-	if *target.IncomeID != *utils.IntToInt32(s.IncomeID) {
+	if *target.IncomeID != *s.IncomeID {
 		t.Errorf("MapSale() = %v, want %v", target.IncomeID, *s.IncomeID)
 	}
 	if *target.IsRealization != *s.IsRealization {
@@ -129,7 +129,7 @@ func TestMapSale(t *testing.T) {
 	if *target.OblastOkrugName != *s.OblastOkrugName {
 		t.Errorf("MapSale() = %v, want %v", target.OblastOkrugName, *s.OblastOkrugName)
 	}
-	if *target.Odid != *utils.IntToInt32(s.Odid) {
+	if *target.Odid != *s.Odid {
 		t.Errorf("MapSale() = %v, want %v", target.Odid, *s.Odid)
 	}
 	if *target.PriceWithDisc != *utils.Float32ToFloat64(s.PriceWithDisc) {
