@@ -11,9 +11,7 @@ dropdb:
 
 migrateup:
 	migrate -path changelog -database "postgresql://user:password@localhost:5432/db?sslmode=disable" -verbose up
-migrateup_copy_test:
-	cp ./test_data/000100_test_data.up.sql ./changelog/000100_test_data.up.sql
-	cp ./test_data/000100_test_data.down.sql ./changelog/000200_test_data.down.sql
+
 migrateup_rm_test:
 	rm ./changelog/000100_test_data.up.sql ./changelog/000200_test_data.down.sql
 

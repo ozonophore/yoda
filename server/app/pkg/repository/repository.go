@@ -226,3 +226,8 @@ func GetLogLLoadByTrnsAndStatus(trns int64, status string) (*[]model.LogLoad, er
 	}
 	return &logs, nil
 }
+
+func CallOrderDelivered(transactionID int64) error {
+	initIfError()
+	return repository.db.Exec(`call order_delivered(?)`, transactionID).Error
+}

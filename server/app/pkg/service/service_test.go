@@ -8,6 +8,7 @@ import (
 	"github.com/yoda/app/pkg/repository"
 	"github.com/yoda/common/pkg/model"
 	"gorm.io/gorm"
+	"os"
 	"testing"
 	"time"
 )
@@ -22,6 +23,7 @@ func Test_Main(t *testing.T) {
 	config.Ozon.Host = "http://localhost:1080/ozon"
 	config.Wb.Host = "http://localhost:1080/wb"
 	database := repository.InitDatabase(config.Database)
+	initTestData(database)
 
 	dao := repository.NewRepositoryDAO(database)
 	assert.NotNil(t, dao, "repository is nil")
@@ -33,6 +35,16 @@ func Test_Main(t *testing.T) {
 	t.Run("OZON", func(t *testing.T) {
 		ozonRun(t, config, transactionID, database)
 	})
+}
+
+func initTestData(db *gorm.DB) {
+	query, err := os.ReadFile("./test_data.sql")
+	if err != nil {
+		panic(err)
+	}
+	if err := db.Exec(string(query)).Error; err != nil {
+		panic(err)
+	}
 }
 
 func ozonRun(t *testing.T, config *configuration.Config, transactionID int64, database *gorm.DB) {

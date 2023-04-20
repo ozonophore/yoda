@@ -1,4 +1,3 @@
-BEGIN
 
 insert into "owner"("code","name", "is_deleted") values('OWNER','TEST OWNER', false);
 insert into "job_owner"("owner_code", "job_id") values ('OWNER', 1);

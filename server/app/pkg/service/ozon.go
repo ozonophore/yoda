@@ -31,11 +31,12 @@ func NewOzonService(ownerCode, clientId, apiKey string, config *configuration.Co
 
 func NewOzonServiceWIthClient(ownerCode, clientId, apiKey string, client *api.ClientWithResponses, config *configuration.Config) *OzonService {
 	return &OzonService{
-		clientId:  clientId,
-		apiKey:    apiKey,
-		config:    config,
-		ownerCode: ownerCode,
-		client:    client,
+		clientId:         clientId,
+		apiKey:           apiKey,
+		config:           config,
+		ownerCode:        ownerCode,
+		client:           client,
+		productInfoCache: make(map[int64]*api.ProductInfo),
 	}
 }
 

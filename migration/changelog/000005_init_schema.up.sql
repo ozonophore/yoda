@@ -123,7 +123,8 @@ create table "order_delivered"
     "external_code"       varchar(50)                             not null,
     "total_price"         numeric(10, 2),
     "price_with_discount" numeric(10, 2),
-    "quantity"            numeric(10)                             not null
+    "quantity"            numeric(10)                             not null,
+    "updated_at"          timestamp with time zone                not null default now()
 ) PARTITION BY RANGE("order_date");
 
 CREATE TABLE order_delivered_def PARTITION OF order_delivered DEFAULT;
