@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func MapFBOToOrder(fbo *api.FBO, transactionId int64, source string, ownerCode string, cache *map[int64]*api.ProductInfo) *[]model.Order {
+func MapFBOToOrder(fbo *api.FBO, transactionId int64, source string, ownerCode string, cache *map[int64]*string) *[]model.Order {
 	var orders = make([]model.Order, len(*fbo.Products))
 	var finData = make(map[int64]*api.PostingFinancialDataProduct)
 
@@ -20,7 +20,7 @@ func MapFBOToOrder(fbo *api.FBO, transactionId int64, source string, ownerCode s
 		item := cacheValue[product.Sku]
 		var barcode *string
 		if item != nil {
-			barcode = item.Barcode
+			barcode = item
 		}
 		orders[i] = model.Order{
 			TransactionID:     transactionId,

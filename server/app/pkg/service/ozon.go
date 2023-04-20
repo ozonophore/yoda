@@ -20,7 +20,7 @@ type OzonService struct {
 	clientId         string
 	apiKey           string
 	ownerCode        string
-	productInfoCache map[int64]*api.ProductInfo
+	productInfoCache map[int64]*string
 	config           *configuration.Config
 	client           *api.ClientWithResponses
 }
@@ -36,7 +36,7 @@ func NewOzonServiceWIthClient(ownerCode, clientId, apiKey string, client *api.Cl
 		config:           config,
 		ownerCode:        ownerCode,
 		client:           client,
-		productInfoCache: make(map[int64]*api.ProductInfo),
+		productInfoCache: make(map[int64]*string),
 	}
 }
 
@@ -178,7 +178,7 @@ func (c *OzonService) preparePrices(resp *api.GetOzonProductInfoResponse, transa
 	length := len(*resp.JSON200.Result.Items)
 	newItems := make([]model.StockItem, length)
 	for index, info := range *resp.JSON200.Result.Items {
-		c.productInfoCache[*info.FboSku] = &info
+		c.productInfoCache[*info.FboSku] = info.Barcode
 		price, err := strconv.ParseFloat(*info.OldPrice, 64)
 		if err != nil {
 			return err
