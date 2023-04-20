@@ -17,11 +17,12 @@ import (
 )
 
 type OzonService struct {
-	clientId  string
-	apiKey    string
-	ownerCode string
-	config    *configuration.Config
-	client    *api.ClientWithResponses
+	clientId         string
+	apiKey           string
+	ownerCode        string
+	productInfoCache map[int64]*api.ProductInfo
+	config           *configuration.Config
+	client           *api.ClientWithResponses
 }
 
 func NewOzonService(ownerCode, clientId, apiKey string, config *configuration.Config) *OzonService {
@@ -176,6 +177,7 @@ func (c *OzonService) preparePrices(resp *api.GetOzonProductInfoResponse, transa
 	length := len(*resp.JSON200.Result.Items)
 	newItems := make([]model.StockItem, length)
 	for index, info := range *resp.JSON200.Result.Items {
+		c.productInfoCache[*info.FboSku] = &info
 		price, err := strconv.ParseFloat(*info.OldPrice, 64)
 		if err != nil {
 			return err
@@ -242,11 +244,11 @@ func (c *OzonService) loadOrders(ctx context.Context, client *api.ClientWithResp
 		if err != nil {
 			return 0, err
 		}
-		return parseFBO(response, transactionId, source, c.ownerCode)
+		return c.parseFBO(response, transactionId, source, c.ownerCode)
 	})
 }
 
-func parseFBO(FBOResponse *api.GetOzonFBOResponse, transactionId int64, source string, ownerCode string) (int64, error) {
+func (c *OzonService) parseFBO(FBOResponse *api.GetOzonFBOResponse, transactionId int64, source string, ownerCode string) (int64, error) {
 	if FBOResponse.StatusCode() != 200 {
 		return 0, errors.New(fmt.Sprintf("Ozon resp code %d", FBOResponse.StatusCode()))
 	}
@@ -260,7 +262,7 @@ func parseFBO(FBOResponse *api.GetOzonFBOResponse, transactionId int64, source s
 	}
 	var orders []model.Order
 	for _, item := range *FBOItems {
-		o := mapper.MapFBOToOrder(&item, transactionId, source, ownerCode)
+		o := mapper.MapFBOToOrder(&item, transactionId, source, ownerCode, &c.productInfoCache)
 		orders = append(orders, *o...)
 	}
 	if err := repository.SaveOrders(&orders); err != nil {

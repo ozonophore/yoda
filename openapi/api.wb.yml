@@ -654,6 +654,7 @@ components:
           type: string
         fbo_sku:
           type: integer
+          format: int64
     ProductAttributeFilterFilter:
       type: object
       properties:

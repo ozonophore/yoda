@@ -420,7 +420,7 @@ type ProductInfo struct {
 	CategoryId     *int       `json:"category_id,omitempty"`
 	CreatedAt      *time.Time `json:"created_at,omitempty"`
 	CurrencyCode   *string    `json:"currency_code,omitempty"`
-	FboSku         *int       `json:"fbo_sku,omitempty"`
+	FboSku         *int64     `json:"fbo_sku,omitempty"`
 	Id             *int       `json:"id,omitempty"`
 	MarketingPrice *string    `json:"marketing_price,omitempty"`
 	MinPrice       *string    `json:"min_price,omitempty"`

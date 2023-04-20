@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func MapFBOToOrder(fbo *api.FBO, transactionId int64, source string, ownerCode string) *[]model.Order {
+func MapFBOToOrder(fbo *api.FBO, transactionId int64, source string, ownerCode string, cache *map[int64]*api.ProductInfo) *[]model.Order {
 	var orders = make([]model.Order, len(*fbo.Products))
 	var finData = make(map[int64]*api.PostingFinancialDataProduct)
 
@@ -15,8 +15,13 @@ func MapFBOToOrder(fbo *api.FBO, transactionId int64, source string, ownerCode s
 		finData[f.ProductId] = &f
 	}
 	gNumber := fmt.Sprintf(`%d`, *fbo.OrderId)
-
+	cacheValue := *cache
 	for i, product := range *fbo.Products {
+		item := cacheValue[product.Sku]
+		var barcode *string
+		if item != nil {
+			barcode = item.Barcode
+		}
 		orders[i] = model.Order{
 			TransactionID:     transactionId,
 			TransactionDate:   time.Now(),
@@ -25,7 +30,7 @@ func MapFBOToOrder(fbo *api.FBO, transactionId int64, source string, ownerCode s
 			OrderDate:         fbo.CreatedAt,
 			OrderTime:         fbo.CreatedAt,
 			SupplierArticle:   &product.OfferId,
-			Barcode:           nil,
+			Barcode:           barcode,
 			TotalPrice:        finData[product.Sku].OldPrice,
 			DiscountPercent:   finData[product.Sku].TotalDiscountPercent,
 			DiscountValue:     finData[product.Sku].TotalDiscountValue,
