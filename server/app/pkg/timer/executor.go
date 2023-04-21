@@ -72,7 +72,7 @@ func RunRegularLoad(config *configuration.Config, ctx context.Context, jobID int
 			return
 		}
 	}
-	err = repository.CallOrderDelivered(transactionID)
+	err = repository.CallDailyData(transactionID)
 	callOnAfterJonExecution(job, transactionID, gJob, err, onAfter)
 }
 

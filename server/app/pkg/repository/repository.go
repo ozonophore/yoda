@@ -227,13 +227,18 @@ func GetLogLLoadByTrnsAndStatus(trns int64, status string) (*[]model.LogLoad, er
 	return &logs, nil
 }
 
-func CallOrderDelivered(transactionID int64) error {
+func CallDailyData(transactionID int64) error {
 	initIfError()
 	return repository.db.Transaction(func(tx *gorm.DB) error {
-		logrus.Debug("call calc_order_delivered")
+		logrus.Debug("call CallDailyData")
 		err := tx.Exec(`call calc_order_delivered(?)`, transactionID).Error
 		if logrus.IsLevelEnabled(logrus.DebugLevel) && err != nil {
 			logrus.Debug("call calc_order_delivered")
+		}
+		logrus.Error(err)
+		err = tx.Exec(`call calc_stock_daily(?)`, transactionID).Error
+		if logrus.IsLevelEnabled(logrus.DebugLevel) && err != nil {
+			logrus.Debug("call calc_stock_daily")
 		}
 		logrus.Error(err)
 		return err
