@@ -27,3 +27,16 @@ func GetSalesDeleveredLastUpdate() (*time.Time, error) {
 	}
 	return &lastUpdate, nil
 }
+
+func GetTransactionInfo() (*model.TransactionInfo, error) {
+	var jobGeneralInfo model.TransactionInfo
+	err := dao.database.Raw(`with trs as (
+    select max(id) id, count(1) cnt, sum( case when status = 'COMPLETED' then 1 else 0 end ) completed from "transaction"
+	)
+	select t.start_date last_start, t.end_date last_end, trs.cnt total, trs.completed from "transaction" t
+         inner join trs on trs.id = t.id`).Scan(&jobGeneralInfo).Error
+	if err != nil {
+		return nil, err
+	}
+	return &jobGeneralInfo, nil
+}

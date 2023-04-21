@@ -193,6 +193,21 @@ type StockItems struct {
 	Total int `json:"total"`
 }
 
+// TransactionsInfo defines model for TransactionsInfo.
+type TransactionsInfo struct {
+	// LastEnd Last end date
+	LastEnd *time.Time `json:"lastEnd,omitempty"`
+
+	// LastStart Last start date
+	LastStart *time.Time `json:"lastStart,omitempty"`
+
+	// Success Total number of items
+	Success int `json:"success"`
+
+	// Total Total number of items
+	Total int `json:"total"`
+}
+
 // Wb defines model for Wb.
 type Wb struct {
 	AuthToken string `json:"authToken"`
@@ -261,6 +276,9 @@ type ServerInterface interface {
 	// Get all stocks
 	// (GET /stocks)
 	GetStocks(w http.ResponseWriter, r *http.Request, params GetStocksParams)
+	// Get transactions info
+	// (GET /transactions/info)
+	GetTransactionsInfo(w http.ResponseWriter, r *http.Request)
 }
 
 // ServerInterfaceWrapper converts contexts to parameters.
@@ -612,6 +630,21 @@ func (siw *ServerInterfaceWrapper) GetStocks(w http.ResponseWriter, r *http.Requ
 	handler(w, r.WithContext(ctx))
 }
 
+// GetTransactionsInfo operation middleware
+func (siw *ServerInterfaceWrapper) GetTransactionsInfo(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var handler = func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetTransactionsInfo(w, r)
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler(w, r.WithContext(ctx))
+}
+
 type UnescapedCookieParamError struct {
 	ParamName string
 	Err       error
@@ -748,6 +781,8 @@ func HandlerWithOptions(si ServerInterface, options GorillaServerOptions) http.H
 	r.HandleFunc(options.BaseURL+"/sales/week", wrapper.GetSalesForWeek).Methods("GET")
 
 	r.HandleFunc(options.BaseURL+"/stocks", wrapper.GetStocks).Methods("GET")
+
+	r.HandleFunc(options.BaseURL+"/transactions/info", wrapper.GetTransactionsInfo).Methods("GET")
 
 	return r
 }

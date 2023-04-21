@@ -37,6 +37,8 @@ SELECT p_id,
 FROM "order" o
          left outer join "order_delivered_arch" oda on
             oda."order_date" = o."order_date"
+        and oda."order_date" <= current_date
+        and oda."order_date" > current_date - 25
         and oda."owner_code" = o."owner_code"
         and oda."source" = o."source"
         and oda."warehouse" = o."warehouse_name"
@@ -138,7 +140,7 @@ SELECT p_id,
 FROM "order" o
          INNER JOIN "sale" s ON s."odid" = o."odid" and s."transaction_id" = o."transaction_id"
          left outer join "order_delivered_arch" oda on
-            oda."order_date" = o."order_date"
+            oda."order_date" = o."order_date" and oda."order_date" <= current_date and oda."order_date" >= current_date - 25
         and oda."owner_code" = o."owner_code"
         and oda."source" = o."source"
         and oda."warehouse" = o."warehouse_name"

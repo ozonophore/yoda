@@ -319,6 +319,28 @@ components:
       required:
         - orderDate
         - price
+    TransactionsInfo:
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int
+          description: Total number of items
+        success:
+          type: integer
+          format: int
+          description: Total number of items
+        lastStart:
+          type: string
+          format: date-time
+          description: Last start date
+        lastEnd:
+          type: string
+          format: date-time
+          description: Last end date
+      required:
+        - total
+        - success
 paths:
   /rooms:
     post:
@@ -580,3 +602,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SalesForWeek'
+  /transactions/info:
+    get:
+      summary: Get transactions info
+      operationId: getTransactionsInfo
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionsInfo'

@@ -26,3 +26,16 @@ func GetSalesForWeek() (*api.SalesForWeek, error) {
 		UpdateAt: lastDate,
 	}, nil
 }
+
+func GetTransactionsInfo() (*api.TransactionsInfo, error) {
+	info, err := dao.GetTransactionInfo()
+	if err != nil {
+		return nil, err
+	}
+	return &api.TransactionsInfo{
+		LastStart: info.LastStart,
+		LastEnd:   info.LastEnd,
+		Total:     info.Total,
+		Success:   info.Completed,
+	}, nil
+}
