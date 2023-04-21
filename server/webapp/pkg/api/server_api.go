@@ -147,6 +147,18 @@ type SalesForWeekItem struct {
 	Price     float64   `json:"price"`
 }
 
+// StockInfoItem defines model for StockInfoItem.
+type StockInfoItem struct {
+	// StockDate Stock date
+	StockDate time.Time `json:"stockDate"`
+
+	// Total Total number of items
+	Total int `json:"total"`
+
+	// ZeroQty Total number of items with zero quantity
+	ZeroQty int `json:"zeroQty"`
+}
+
 // StockItem defines model for StockItem.
 type StockItem struct {
 	// Article Article of the item
@@ -276,6 +288,9 @@ type ServerInterface interface {
 	// Get all stocks
 	// (GET /stocks)
 	GetStocks(w http.ResponseWriter, r *http.Request, params GetStocksParams)
+	// Get stocks info
+	// (GET /stocks/info)
+	GetStocksInfo(w http.ResponseWriter, r *http.Request)
 	// Get transactions info
 	// (GET /transactions/info)
 	GetTransactionsInfo(w http.ResponseWriter, r *http.Request)
@@ -630,6 +645,21 @@ func (siw *ServerInterfaceWrapper) GetStocks(w http.ResponseWriter, r *http.Requ
 	handler(w, r.WithContext(ctx))
 }
 
+// GetStocksInfo operation middleware
+func (siw *ServerInterfaceWrapper) GetStocksInfo(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var handler = func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetStocksInfo(w, r)
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler(w, r.WithContext(ctx))
+}
+
 // GetTransactionsInfo operation middleware
 func (siw *ServerInterfaceWrapper) GetTransactionsInfo(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
@@ -781,6 +811,8 @@ func HandlerWithOptions(si ServerInterface, options GorillaServerOptions) http.H
 	r.HandleFunc(options.BaseURL+"/sales/week", wrapper.GetSalesForWeek).Methods("GET")
 
 	r.HandleFunc(options.BaseURL+"/stocks", wrapper.GetStocks).Methods("GET")
+
+	r.HandleFunc(options.BaseURL+"/stocks/info", wrapper.GetStocksInfo).Methods("GET")
 
 	r.HandleFunc(options.BaseURL+"/transactions/info", wrapper.GetTransactionsInfo).Methods("GET")
 

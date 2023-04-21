@@ -39,3 +39,19 @@ func GetTransactionsInfo() (*api.TransactionsInfo, error) {
 		Success:   info.Completed,
 	}, nil
 }
+
+func GetStocksInfo() (*[]api.StockInfoItem, error) {
+	infos, err := dao.GetStockInfo()
+	if err != nil {
+		return nil, err
+	}
+	var items []api.StockInfoItem
+	for _, info := range *infos {
+		items = append(items, api.StockInfoItem{
+			ZeroQty:   info.ZeroQty,
+			StockDate: info.StockDate,
+			Total:     info.Total,
+		})
+	}
+	return &items, nil
+}

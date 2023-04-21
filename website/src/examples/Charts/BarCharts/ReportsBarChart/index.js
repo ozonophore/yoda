@@ -34,8 +34,7 @@ import MDTypography from "components/MDTypography";
 import configs from "examples/Charts/BarCharts/ReportsBarChart/configs";
 
 function ReportsBarChart({ color, title, description, date, chart }) {
-  const { data, options } = configs(chart.labels || [], chart.datasets || {});
-
+  const { data, options } = configs(chart.labels || [], chart.datasets || [{}]);
   return (
     <Card sx={{ height: "100%" }}>
       <MDBox padding="1rem">

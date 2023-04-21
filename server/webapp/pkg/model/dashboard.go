@@ -13,3 +13,9 @@ type TransactionInfo struct {
 	LastStart *time.Time `gorm:"column:last_start" json:"last_start"`
 	LastEnd   *time.Time `gorm:"column:last_end" json:"last_end"`
 }
+
+type StockInfo struct {
+	StockDate time.Time `gorm:"column:stock_date" json:"stock_date"`
+	Total     int       `gorm:"column:total" json:"total"`
+	ZeroQty   int       `gorm:"column:zero_qty" json:"zero_qty"`
+}

@@ -40,3 +40,15 @@ func GetTransactionInfo() (*model.TransactionInfo, error) {
 	}
 	return &jobGeneralInfo, nil
 }
+
+func GetStockInfo() (*[]model.StockInfo, error) {
+	var stockInfo []model.StockInfo
+	err := dao.database.Raw(`select stock_date, count(1) total, sum(case when quantity = 0 then 1 else 0 end) zero_qty from stock_daily
+	where stock_date > current_date - 10
+	group by stock_date
+	order by stock_date`).Scan(&stockInfo).Error
+	if err != nil {
+		return nil, err
+	}
+	return &stockInfo, nil
+}

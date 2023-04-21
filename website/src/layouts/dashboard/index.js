@@ -42,11 +42,38 @@ function Dashboard() {
   const [t] = useTranslation();
   const [salesData, setSalesData] = useState({
     labels: [],
-    datasets: { label: "Sales", data: [] },
+    datasets: [{ label: "Sales", data: [] }],
   });
+  const [stockInfoData, setStockInfoData] = useState({});
   const [transactionInfo, setTransactionInfo] = useState(initTransactionInfo);
   const [salesUpdateAt, setSalesUpdateAt] = useState(null);
   useEffect(() => {
+    DefaultService.getStocksInfo()
+      .then((res) => {
+        console.log("#res", res);
+        const days = res.map((item) => format(new Date(item.stockDate), "dd-MM-yyyy"));
+        const totals = res.map((item) => item.total);
+        const zeros = res.map((item) => item.zeroQty);
+        console.log("#", zeros);
+        setStockInfoData({
+          labels: days,
+          datasets: [
+            {
+              label: "Количество",
+              data: totals,
+            },
+            {
+              label: "Количество с нулевым остатком",
+              data: zeros,
+              backgroundColor: "rgba(255, 99, 132, 0.5)",
+            },
+          ],
+        });
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+
     DefaultService.getTransactionsInfo()
       .then((res) => {
         setTransactionInfo(res);
@@ -61,12 +88,13 @@ function Dashboard() {
         const days = res.items.map((item) => format(new Date(item.orderDate), "dd-MM"));
         const prices = res.items.map((item) => item.price);
         setSalesData({
-          ...salesData,
           labels: days,
-          datasets: {
-            label: "Sales",
-            data: prices,
-          },
+          datasets: [
+            {
+              label: "Сумма",
+              data: prices,
+            },
+          ],
         });
         setSalesUpdateAt(lastUpdate);
       })
@@ -122,6 +150,17 @@ function Dashboard() {
                     salesUpdateAt ? format(salesUpdateAt, "dd-MM-yyyy HH:mm") : " Не определена"
                   }`}
                   chart={salesData}
+                />
+              </MDBox>
+            </Grid>
+            <Grid item xs={12} md={6} lg={4}>
+              <MDBox mb={3}>
+                <ReportsBarChart
+                  color="success"
+                  title="Среднедневные остатки за 10 дней"
+                  description=""
+                  date={format(new Date(), "dd-MM-yyyy")}
+                  chart={stockInfoData}
                 />
               </MDBox>
             </Grid>

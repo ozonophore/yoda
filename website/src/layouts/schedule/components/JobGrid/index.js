@@ -5,7 +5,6 @@ import JobCard from "../JobCard";
 function JobGrid() {
   const [controller] = useMaterialUIController();
   const { jobs } = controller;
-  console.log("#JobGrid: jobs", jobs);
 
   return (
     <Grid container spacing={2}>

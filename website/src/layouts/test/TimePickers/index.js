@@ -11,7 +11,6 @@ function TimePickers() {
       <TimePicker
         helperText="Helper text"
         onChange={(item) => {
-          console.log(`#${item}`);
           setValues(item);
         }}
         onAccept={(v) => {

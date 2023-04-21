@@ -13,6 +13,17 @@ type ServerApi struct {
 	logger *logrus.Logger
 }
 
+func (sa ServerApi) GetStocksInfo(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Content-Type", "application/json")
+	info, err := service.GetStocksInfo()
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(info)
+}
+
 func (sa ServerApi) GetTransactionsInfo(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", "application/json")
 	info, err := service.GetTransactionsInfo()

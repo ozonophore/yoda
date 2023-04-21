@@ -1,0 +1,1 @@
+drop procedure "calc_stock_daily";

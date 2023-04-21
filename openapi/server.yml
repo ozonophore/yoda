@@ -341,6 +341,25 @@ components:
       required:
         - total
         - success
+    StockInfoItem:
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int
+          description: Total number of items
+        stockDate:
+          type: string
+          format: date-time
+          description: Stock date
+        zeroQty:
+          type: integer
+          format: int
+          description: Total number of items with zero quantity
+      required:
+        - total
+        - stockDate
+        - zeroQty
 paths:
   /rooms:
     post:
@@ -613,3 +632,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TransactionsInfo'
+  /stocks/info:
+    get:
+      summary: Get stocks info
+      operationId: getStocksInfo
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StockInfoItem'
