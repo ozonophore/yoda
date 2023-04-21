@@ -73,7 +73,7 @@ func InitConfig(path string) *Config {
 		"batch_size":             200,
 		"timeout":                30,
 		"logging_level":          "info",
-		"database.logging_level": "INFO",
+		"database.logging_level": "",
 		"mq.consumer":            "yoda-consumer",
 		"mq.publisher":           "yoda-publisher",
 		"mq.max_length":          10,

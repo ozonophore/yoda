@@ -9,6 +9,9 @@
     "schedule": "Задания",
     "sales": "Продажи и остатки"
   },
+  "dashboard": {
+    "weeklySales": "Продажи за 7 дней"
+  },
   "settings": {
     "title": "Настройки"
   },

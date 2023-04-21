@@ -19,6 +19,6 @@ FROM centos:7
 
 WORKDIR /app
 
-COPY --from=build /app/app/build/app-amd64-linux /
+COPY --from=build /app/app/build/app-amd64-linux /app/app-amd64-linux
 
-ENTRYPOINT ["/app-amd64-linux"]
+ENTRYPOINT ["/app/app-amd64-linux"]

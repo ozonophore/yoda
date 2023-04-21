@@ -62,7 +62,7 @@ function configs(labels, datasets) {
               weight: 300,
               family: "Roboto",
               style: "normal",
-              lineHeight: 2,
+              lineHeight: 1,
             },
             color: "#fff",
           },

@@ -64,7 +64,7 @@ const routes = [
     component: <Dashboard />,
   },
   {
-    type: "collapse",
+    type: "route",
     name: "Tables",
     key: "tables",
     icon: <Icon fontSize="small">table_view</Icon>,

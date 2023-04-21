@@ -132,6 +132,16 @@ type Room struct {
 	Wb        Wb         `json:"wb"`
 }
 
+// SalesForWeek defines model for SalesForWeek.
+type SalesForWeek = []SalesForWeekItem
+
+// SalesForWeekItem defines model for SalesForWeekItem.
+type SalesForWeekItem struct {
+	// OrderDate Week number
+	OrderDate time.Time `json:"orderDate"`
+	Price     float64   `json:"price"`
+}
+
 // StockItem defines model for StockItem.
 type StockItem struct {
 	// Article Article of the item
@@ -240,6 +250,9 @@ type ServerInterface interface {
 	// Get room by id
 	// (GET /rooms/{code})
 	GetRoomById(w http.ResponseWriter, r *http.Request, code string)
+	// Get sales for week
+	// (GET /sales/week)
+	GetSalesForWeek(w http.ResponseWriter, r *http.Request)
 	// Get all stocks
 	// (GET /stocks)
 	GetStocks(w http.ResponseWriter, r *http.Request, params GetStocksParams)
@@ -506,6 +519,21 @@ func (siw *ServerInterfaceWrapper) GetRoomById(w http.ResponseWriter, r *http.Re
 	handler(w, r.WithContext(ctx))
 }
 
+// GetSalesForWeek operation middleware
+func (siw *ServerInterfaceWrapper) GetSalesForWeek(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var handler = func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetSalesForWeek(w, r)
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler(w, r.WithContext(ctx))
+}
+
 // GetStocks operation middleware
 func (siw *ServerInterfaceWrapper) GetStocks(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
@@ -711,6 +739,8 @@ func HandlerWithOptions(si ServerInterface, options GorillaServerOptions) http.H
 	r.HandleFunc(options.BaseURL+"/rooms", wrapper.UpdateRoom).Methods("PUT")
 
 	r.HandleFunc(options.BaseURL+"/rooms/{code}", wrapper.GetRoomById).Methods("GET")
+
+	r.HandleFunc(options.BaseURL+"/sales/week", wrapper.GetSalesForWeek).Methods("GET")
 
 	r.HandleFunc(options.BaseURL+"/stocks", wrapper.GetStocks).Methods("GET")
 

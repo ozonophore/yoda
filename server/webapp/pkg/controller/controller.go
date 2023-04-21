@@ -13,6 +13,17 @@ type ServerApi struct {
 	logger *logrus.Logger
 }
 
+func (sa ServerApi) GetSalesForWeek(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Content-Type", "application/json")
+	sales, err := service.GetSalesForWeek()
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(sales)
+}
+
 func (sa ServerApi) Ping(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)

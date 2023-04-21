@@ -18,125 +18,52 @@ import Grid from "@mui/material/Grid";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
+import { format } from "date-fns";
+import ComplexStatisticsCard from "examples/Cards/StatisticsCards/ComplexStatisticsCard";
+import ReportsBarChart from "examples/Charts/BarCharts/ReportsBarChart";
+import ReportsLineChart from "examples/Charts/LineCharts/ReportsLineChart";
+import Footer from "examples/Footer";
 
 // Material Dashboard 2 React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
-import Footer from "examples/Footer";
-import ReportsBarChart from "examples/Charts/BarCharts/ReportsBarChart";
-import ReportsLineChart from "examples/Charts/LineCharts/ReportsLineChart";
-import ComplexStatisticsCard from "examples/Cards/StatisticsCards/ComplexStatisticsCard";
-
-// Data
-import reportsBarChartData from "layouts/dashboard/data/reportsBarChartData";
-import reportsLineChartData from "layouts/dashboard/data/reportsLineChartData";
 
 // Dashboard components
-import Projects from "layouts/dashboard/components/Projects";
-import OrdersOverview from "layouts/dashboard/components/OrdersOverview";
-import TextField from "@mui/material/TextField";
-import { LocalizationProvider, StaticTimePicker, TimePicker } from "@mui/x-date-pickers";
-import { useState } from "react";
-import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
-import { InputAdornment, Popover } from "@mui/material";
-import Button from "@mui/material/Button";
-import PopupState, { bindTrigger, bindPopover } from "material-ui-popup-state";
-import IconButton from "@mui/material/IconButton";
-import Icon from "@mui/material/Icon";
-import { useMaterialUIController } from "../../context";
+// Data
+import reportsLineChartData from "layouts/dashboard/data/reportsLineChartData";
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { DefaultService } from "../../generated";
 
 function Dashboard() {
+  const [t] = useTranslation();
   const { sales, tasks } = reportsLineChartData;
-  const [value, setValue] = useState();
-  const [controller] = useMaterialUIController();
-  const { language } = controller;
+  const [salesData, setSalesData] = useState({
+    labels: [],
+    datasets: { label: "Sales", data: [] },
+  });
+  useEffect(() => {
+    DefaultService.getSalesForWeek()
+      .then((res) => {
+        const days = res.map((item) => format(new Date(item.orderDate), "dd-MM"));
+        const prices = res.map((item) => item.price);
+        setSalesData({
+          ...salesData,
+          labels: days,
+          datasets: {
+            label: "Sales",
+            data: prices,
+          },
+        });
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, []);
 
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <div>
-        <TextField
-          id="time"
-          label="Alarm clock"
-          defaultValue="07:30"
-          InputLabelProps={{
-            shrink: true,
-          }}
-          inputProps={{
-            step: 300, // 5 min
-          }}
-          sx={{ width: 150 }}
-        />
-        <LocalizationProvider dateAdapter={AdapterMoment}>
-          <TimePicker
-            label="Basic example"
-            ampmInClock={false}
-            value={value}
-            onChange={(newValue) => {
-              setValue(`${value}; ${newValue}`);
-            }}
-            renderInput={({ inputRef, inputProps }) => (
-              <TextField ref={inputRef} {...inputProps} value={value} />
-            )}
-          />
-        </LocalizationProvider>
-
-        <PopupState variant="popover">
-          {(popupState) => (
-            <div>
-              <TextField
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton edge="end" color="primary" {...bindTrigger(popupState)}>
-                        <Icon>more_time</Icon>
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-              />
-              <Button variant="contained" {...bindTrigger(popupState)}>
-                Open Popover
-              </Button>
-              <Popover
-                {...bindPopover(popupState)}
-                anchorOrigin={{
-                  vertical: "bottom",
-                  horizontal: "center",
-                }}
-                elevation={20}
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "center",
-                }}
-                PaperProps={{
-                  style: {
-                    backgroundColor: "white",
-                  },
-                }}
-              >
-                <LocalizationProvider dateAdapter={AdapterMoment} adapterLocale={language}>
-                  <StaticTimePicker
-                    {...bindPopover(popupState)}
-                    ampmInClock={false}
-                    ampm={false}
-                    displayStaticWrapperAs="desktop"
-                    value={value}
-                    action="acceptAndClose"
-                    onChange={(newValue) => {
-                      console.log(newValue.format("HH:mm"));
-                    }}
-                    onAccept={() => {
-                      console.log("!!!");
-                    }}
-                    renderInput={(params) => <TextField {...params} />}
-                  />
-                </LocalizationProvider>
-              </Popover>
-            </div>
-          )}
-        </PopupState>
-      </div>
       <MDBox py={3}>
         <Grid container spacing={3}>
           <Grid item xs={12} md={6} lg={3}>
@@ -144,12 +71,12 @@ function Dashboard() {
               <ComplexStatisticsCard
                 color="dark"
                 icon="weekend"
-                title="Bookings"
-                count={281}
+                title="Организаций"
+                count={1}
                 percentage={{
                   color: "success",
-                  amount: "+55%",
-                  label: "than lask week",
+                  amount: "",
+                  label: "",
                 }}
               />
             </MDBox>
@@ -158,12 +85,12 @@ function Dashboard() {
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 icon="leaderboard"
-                title="Today's Users"
-                count="2,300"
+                title="Колво загрузок сегодня"
+                count="2"
                 percentage={{
-                  color: "success",
-                  amount: "+3%",
-                  label: "than last month",
+                  color: "",
+                  amount: "",
+                  label: "",
                 }}
               />
             </MDBox>
@@ -205,10 +132,10 @@ function Dashboard() {
               <MDBox mb={3}>
                 <ReportsBarChart
                   color="info"
-                  title="website views"
+                  title={t("dashboard.weeklySales")}
                   description="Last Campaign Performance"
                   date="campaign sent 2 days ago"
-                  chart={reportsBarChartData}
+                  chart={salesData}
                 />
               </MDBox>
             </Grid>
@@ -237,16 +164,6 @@ function Dashboard() {
                   chart={tasks}
                 />
               </MDBox>
-            </Grid>
-          </Grid>
-        </MDBox>
-        <MDBox>
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={8}>
-              <Projects />
-            </Grid>
-            <Grid item xs={12} md={6} lg={4}>
-              <OrdersOverview />
             </Grid>
           </Grid>
         </MDBox>

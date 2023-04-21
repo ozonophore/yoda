@@ -295,6 +295,23 @@ components:
             - priceWithDiscount
             - status
             - createdAt
+    SalesForWeek:
+      type: array
+      items:
+         $ref: '#/components/schemas/SalesForWeekItem'
+    SalesForWeekItem:
+      type: object
+      properties:
+        orderDate:
+          type: string
+          format: date-time
+          description: Week number
+        price:
+          type: number
+          format: double
+      required:
+        - orderDate
+        - price
 paths:
   /rooms:
     post:
@@ -545,3 +562,14 @@ paths:
                   date:
                     type: string
                     format: date-time
+  /sales/week:
+    get:
+      summary: Get sales for week
+      operationId: getSalesForWeek
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SalesForWeek'
