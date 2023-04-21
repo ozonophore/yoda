@@ -18,7 +18,7 @@ import Grid from "@mui/material/Grid";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 import ComplexStatisticsCard from "examples/Cards/StatisticsCards/ComplexStatisticsCard";
 import ReportsBarChart from "examples/Charts/BarCharts/ReportsBarChart";
 import ReportsLineChart from "examples/Charts/LineCharts/ReportsLineChart";
@@ -42,11 +42,13 @@ function Dashboard() {
     labels: [],
     datasets: { label: "Sales", data: [] },
   });
+  const [salesUpdateAt, setSalesUpdateAt] = useState(null);
   useEffect(() => {
     DefaultService.getSalesForWeek()
       .then((res) => {
-        const days = res.map((item) => format(new Date(item.orderDate), "dd-MM"));
-        const prices = res.map((item) => item.price);
+        const lastUpdate = parseISO(res.updateAt);
+        const days = res.items.map((item) => format(new Date(item.orderDate), "dd-MM"));
+        const prices = res.items.map((item) => item.price);
         setSalesData({
           ...salesData,
           labels: days,
@@ -55,6 +57,7 @@ function Dashboard() {
             data: prices,
           },
         });
+        setSalesUpdateAt(lastUpdate);
       })
       .catch((err) => {
         console.error(err);
@@ -133,8 +136,10 @@ function Dashboard() {
                 <ReportsBarChart
                   color="info"
                   title={t("dashboard.weeklySales")}
-                  description="Last Campaign Performance"
-                  date="campaign sent 2 days ago"
+                  description=""
+                  date={`Дата расчета: ${
+                    salesUpdateAt ? format(salesUpdateAt, "dd-MM-yyyy HH:mm") : " Не определена"
+                  }`}
                   chart={salesData}
                 />
               </MDBox>

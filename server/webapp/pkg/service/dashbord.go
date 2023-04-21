@@ -10,12 +10,19 @@ func GetSalesForWeek() (*api.SalesForWeek, error) {
 	if err != nil {
 		return nil, err
 	}
-	var result api.SalesForWeek
+	var resultItems []api.SalesForWeekItem
 	for _, item := range *items {
-		result = append(result, api.SalesForWeekItem{
+		resultItems = append(resultItems, api.SalesForWeekItem{
 			OrderDate: item.OrderDate,
 			Price:     item.Price,
 		})
 	}
-	return &result, nil
+	lastDate, err := dao.GetSalesDeleveredLastUpdate()
+	if err != nil {
+		return nil, err
+	}
+	return &api.SalesForWeek{
+		Items:    &resultItems,
+		UpdateAt: lastDate,
+	}, nil
 }

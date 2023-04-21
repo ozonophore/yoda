@@ -133,7 +133,12 @@ type Room struct {
 }
 
 // SalesForWeek defines model for SalesForWeek.
-type SalesForWeek = []SalesForWeekItem
+type SalesForWeek struct {
+	Items *[]SalesForWeekItem `json:"items,omitempty"`
+
+	// UpdateAt Update date
+	UpdateAt *time.Time `json:"updateAt,omitempty"`
+}
 
 // SalesForWeekItem defines model for SalesForWeekItem.
 type SalesForWeekItem struct {

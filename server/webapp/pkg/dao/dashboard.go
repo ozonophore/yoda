@@ -1,6 +1,9 @@
 package dao
 
-import "github.com/yoda/webapp/pkg/model"
+import (
+	"github.com/yoda/webapp/pkg/model"
+	"time"
+)
 
 func GetWeekSales() (*[]model.WeekSales, error) {
 	var weekSales []model.WeekSales
@@ -14,4 +17,13 @@ order by 1`).Scan(&weekSales).Error
 		return nil, err
 	}
 	return &weekSales, nil
+}
+
+func GetSalesDeleveredLastUpdate() (*time.Time, error) {
+	var lastUpdate time.Time
+	err := dao.database.Raw(`select max(created_at) from order_delivered_log`).Scan(&lastUpdate).Error
+	if err != nil {
+		return nil, err
+	}
+	return &lastUpdate, nil
 }

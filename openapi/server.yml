@@ -296,9 +296,16 @@ components:
             - status
             - createdAt
     SalesForWeek:
-      type: array
-      items:
-         $ref: '#/components/schemas/SalesForWeekItem'
+      type: object
+      properties:
+        updateAt:
+          type: string
+          format: date-time
+          description: Update date
+        items:
+          type: array
+          items:
+             $ref: '#/components/schemas/SalesForWeekItem'
     SalesForWeekItem:
       type: object
       properties:
