@@ -8,6 +8,7 @@ services:
       - BACKEND_HOST=frontend
       - BACKEND_PORT=8080
       - YODA_LOGGING_LEVEL=debug
+      - TZ=Europe/Moscow
     volumes:
       - ./nginx/log:/var/log/nginx/log
       - ./log:/app/log
@@ -25,6 +26,7 @@ services:
       - YODA_SERVER_PORT=8080
       - YODA_MQ_URL=amqp://guest:guest@176.113.83.101:5672/
       - YODA_DB_DSN=postgres://user:password@176.113.83.101:5432/db?sslmode=disable
+      - TZ=Europe/Moscow
     ports:
       - "8080:8080"
     restart: on-failure
@@ -36,6 +38,7 @@ services:
     environment:
       - YODA_DATABASE_DSN=postgres://user:password@176.113.83.101:5432/db?sslmode=disable
       - YODA_MQ_URL=amqp://guest:guest@176.113.83.101:5672/
+      - TZ=Europe/Moscow
     restart: on-failure
     volumes:
       - ./app/log:/app/log
