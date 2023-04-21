@@ -31,7 +31,8 @@ merge into "stock_daily" ss
     on (ss."source" = data."source"
         and ss."owner_code" = data."owner_code"
         and ss."warehouse" = data."warehouse_name"
-        and ss."external_code" = data."external_code")
+        and ss."external_code" = data."external_code"
+        and ss."stock_date" = data."transaction_date")
     when matched then
         update
             set "attention"           = "attention" + 1,

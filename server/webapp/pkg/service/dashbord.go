@@ -46,6 +46,9 @@ func GetStocksInfo() (*[]api.StockInfoItem, error) {
 		return nil, err
 	}
 	var items []api.StockInfoItem
+	if infos == nil {
+		return &items, nil
+	}
 	for _, info := range *infos {
 		items = append(items, api.StockInfoItem{
 			ZeroQty:   info.ZeroQty,
