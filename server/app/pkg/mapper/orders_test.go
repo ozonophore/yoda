@@ -1,6 +1,7 @@
 package mapper
 
 import (
+	"fmt"
 	"github.com/stretchr/testify/assert"
 	"github.com/yoda/app/pkg/api"
 	"github.com/yoda/common/pkg/types"
@@ -14,8 +15,11 @@ import (
 func TestMapOrder(t *testing.T) {
 	transactionID := int64(3)
 	source := generateOrder()
-	order, err := MapOrder(&source, transactionID, "source", "ownerCode")
+	order, err := MapOrder(&source, transactionID, "source", "ownerCode", func(odid *int64) bool {
+		return true
+	})
 	assert.Nil(t, err)
+	assert.Equal(t, "delivered", order.Status)
 	assert.Equal(t, transactionID, order.TransactionID)
 	assert.Equal(t, "source", order.Source)
 	assert.Equal(t, "2020-01-01", order.LastChangeDate.Format(time.DateOnly))
@@ -32,7 +36,7 @@ func TestMapOrder(t *testing.T) {
 	assert.Equal(t, int64(76), *order.Odid)
 	assert.Equal(t, "gNumber", *order.GNumber)
 	assert.Equal(t, "sticker", *order.Sticker)
-	assert.Equal(t, "srid", *order.Srid)
+	assert.Equal(t, fmt.Sprintf(`%d`, *order.Odid), *order.Srid)
 	assert.Equal(t, "subject", *order.Subject)
 	assert.Equal(t, "category", *order.Category)
 	assert.Equal(t, "brand", *order.Brand)
