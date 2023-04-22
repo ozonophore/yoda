@@ -10,10 +10,10 @@ import (
 	"time"
 )
 
-func MapOrderArray(orders *[]api.OrdersItem, transactionId int64, source string, ownerCode string) (*[]model.Order, error) {
+func MapOrderArray(orders *[]api.OrdersItem, transactionId int64, source string, ownerCode string, wasSold func(odid *int64) bool) (*[]model.Order, error) {
 	var result []model.Order
 	for _, order := range *orders {
-		newOrder, err := MapOrder(&order, transactionId, source, ownerCode)
+		newOrder, err := MapOrder(&order, transactionId, source, ownerCode, wasSold)
 		if err != nil {
 			return nil, err
 		}
@@ -22,7 +22,7 @@ func MapOrderArray(orders *[]api.OrdersItem, transactionId int64, source string,
 	return &result, nil
 }
 
-func MapOrder(order *api.OrdersItem, transactionId int64, source string, ownerCode string) (result *model.Order, err error) {
+func MapOrder(order *api.OrdersItem, transactionId int64, source string, ownerCode string, wasSold func(odid *int64) bool) (result *model.Order, err error) {
 	if logrus.IsLevelEnabled(logrus.DebugLevel) {
 		bytes, err := json.Marshal(order)
 		if err != nil {
@@ -42,7 +42,12 @@ func MapOrder(order *api.OrdersItem, transactionId int64, source string, ownerCo
 		}
 		cancelDt = &cancelDtP
 	}
+	status := "awaiting_deliver"
+	if wasSold(order.Odid) {
+		status = "delivered"
+	}
 	discountPercent := float64(*order.DiscountPercent)
+	newSrid := fmt.Sprintf(`%d`, *order.Odid)
 	return &model.Order{
 		TransactionID:     transactionId,
 		TransactionDate:   time.Now(),
@@ -68,9 +73,10 @@ func MapOrder(order *api.OrdersItem, transactionId int64, source string, ownerCo
 		Brand:             order.Brand,
 		IsCancel:          utils.BooleanToBoolean(order.IsCancel),
 		CancelDt:          cancelDt,
+		Status:            status,
 		GNumber:           order.GNumber,
 		Sticker:           order.Sticker,
-		Srid:              order.Srid,
+		Srid:              &newSrid,
 		Quantity:          int64(1),
 	}, nil
 }

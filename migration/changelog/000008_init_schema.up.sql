@@ -12,6 +12,7 @@ create table stock_daily
     "brand" varchar(50),
     "warehouse" varchar(50) not null,
     "create_at" date not null,
+    "update_at" date,
     "quantity" numeric(10,2) not null,
     "quantity_full" numeric(10,2) not null,
     "attention" int not null,

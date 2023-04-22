@@ -6,7 +6,7 @@ declare
 v_status "transaction"."status"%type;
 begin
 select "status" into v_status from "transaction" where "id" = p_id;
-if v_status != 'COMPLETED' then
+if v_status not in ('COMPLETED', 'BEGIN') then
         raise exception 'Transaction status is not completed';
 end if;
 
@@ -40,11 +40,12 @@ merge into "stock_daily" ss
                 "quantity_full"       = (ss."quantity_full" * ss."attention" + data."quantity") / (ss."attention" + 1),
                 "price"               = case when (ss."quantity" + data."quantity") = 0 then 0 else (ss."price" * ss."quantity" + data."price") / (ss."quantity" + data."quantity") end,
                 "price_with_discount" = case when (ss."quantity" + data."quantity") = 0 then 0 else (ss."price_with_discount" * ss."quantity" + data."price_with_discount") /
-                                                                                                    (ss."quantity" + data."quantity") end
+                                                                                                    (ss."quantity" + data."quantity") end,
+                "update_at"           = current_date
     when not matched then
         insert ("stock_date", "source", "owner_code", "warehouse", "external_code", "barcode", "quantity",
-                "quantity_full", "price", "price_with_discount", "create_at", "attention")
+                "quantity_full", "price", "price_with_discount", "create_at", "update_at", "attention")
             values (data."transaction_date", data."source", data."owner_code", data."warehouse_name", data."external_code",
-                    data."barcode", data."quantity", data."quantity_full", data."price", data."price_with_discount", data."card_created", 1);
+                    data."barcode", data."quantity", data."quantity_full", data."price", data."price_with_discount", data."card_created", current_date, 1);
 end
 $$;

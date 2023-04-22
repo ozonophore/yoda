@@ -12,6 +12,7 @@ import (
 	"github.com/yoda/app/pkg/repository"
 	"github.com/yoda/common/pkg/model"
 	"github.com/yoda/common/pkg/types"
+	"k8s.io/utils/strings/slices"
 	"time"
 )
 
@@ -19,6 +20,7 @@ type WBService struct {
 	ownerCode string
 	apiKey    string
 	config    configuration.Config
+	salesOdid []string
 }
 
 func NewWBService(ownerCode, apiKey string, config *configuration.Config) *WBService {
@@ -57,12 +59,27 @@ func (c *WBService) Parsing(context context.Context, transactionID int64) error 
 	source := types.SourceTypeWB
 	newItems, err := c.prepareStocks(length, items, transactionID, source, c.ownerCode)
 	if err != nil {
-		return err
+		return errors.Join(err)
 	}
 	if err = repository.SaveStocks(&newItems); err != nil {
 		return err
 	}
 
+	err = c.loadSales(context, transactionID, err, clnt, dateFrom, source)
+	if err != nil {
+		return errors.Join(err)
+	}
+	logrus.Info("Load orders from wb")
+	err = c.loadOrders(context, clnt, transactionID, &source)
+	if err != nil {
+		return errors.Join(err)
+	}
+	logrus.Info("Finish load orders from wb")
+	logrus.Info("Finish parsing wb")
+	return nil
+}
+
+func (c *WBService) loadSales(context context.Context, transactionID int64, err error, clnt *api.ClientWithResponses, dateFrom api.DateFrom, source string) error {
 	respSales, err := clnt.GetWBSalesWithResponse(context, &api.GetWBSalesParams{
 		DateFrom: dateFrom,
 	})
@@ -75,7 +92,9 @@ func (c *WBService) Parsing(context context.Context, transactionID int64) error 
 	salesItems := respSales.JSON200
 
 	if err = CallbackBatch[api.SalesItem](salesItems, c.config.BatchSize, func(items *[]api.SalesItem) error {
-		newItems := mapper.MapSaleArray(items, transactionID, &source, c.ownerCode)
+		newItems := mapper.MapSaleArray(items, transactionID, &source, c.ownerCode, func(item *int64) {
+			c.salesOdid = append(c.salesOdid, fmt.Sprintf("%d", *item))
+		})
 		if err := repository.SaveSales(&newItems); err != nil {
 			return err
 		}
@@ -83,13 +102,6 @@ func (c *WBService) Parsing(context context.Context, transactionID int64) error 
 	}); err != nil {
 		return err
 	}
-	logrus.Info("Load orders from wb")
-	err = c.loadOrders(context, clnt, transactionID, &source)
-	if err != nil {
-		return err
-	}
-	logrus.Info("Finish load orders from wb")
-	logrus.Info("Finish parsing wb")
 	return nil
 }
 
@@ -128,7 +140,9 @@ func (c *WBService) fetchOrders(context context.Context, client *api.ClientWithR
 	}
 	orders := response.JSON200
 	if err = CallbackBatch[api.OrdersItem](orders, c.config.BatchSize, func(items *[]api.OrdersItem) error {
-		orders, errMap := mapper.MapOrderArray(items, transactionId, *source, ownerCode)
+		orders, errMap := mapper.MapOrderArray(items, transactionId, *source, ownerCode, func(item *int64) bool {
+			return slices.Contains(c.salesOdid, fmt.Sprintf("%d", *item))
+		})
 		if errMap != nil {
 			return errMap
 		}
