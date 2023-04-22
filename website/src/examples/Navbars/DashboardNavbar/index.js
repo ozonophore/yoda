@@ -51,7 +51,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 // react-router components
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 function DashboardNavbar({ absolute, light, isMini, onRefresh, canSearch }) {
   const [navbarType, setNavbarType] = useState();
@@ -156,11 +156,6 @@ function DashboardNavbar({ absolute, light, isMini, onRefresh, canSearch }) {
                   </Icon>
                 </IconButton>
               )}
-              <Link to="/authentication/sign-in/basic">
-                <IconButton sx={navbarIconButton} size="small" disableRipple>
-                  <Icon sx={iconsStyle}>account_circle</Icon>
-                </IconButton>
-              </Link>
               <IconButton
                 size="small"
                 disableRipple

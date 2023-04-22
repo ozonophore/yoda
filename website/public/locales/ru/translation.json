@@ -7,13 +7,32 @@
     "dashboard": "Основная",
     "room": "Кабинет",
     "schedule": "Задания",
-    "sales": "Продажи и остатки"
+    "sales": "Продажи и остатки",
+    "dictionaries": "Справочники"
   },
   "dashboard": {
     "weeklySales": "Продажи за 7 дней"
   },
   "settings": {
-    "title": "Настройки"
+    "title": "Настройки",
+    "language": {
+      "title": "Язык",
+      "choose": "Выберите язык",
+      "russian": "Русский",
+      "english": "Английский"
+    },
+    "navColor": {
+      "title": "Цвет навигации"
+    },
+    "sidenav": {
+      "type": "Тип боковой панели",
+      "choose": "Выберите тип",
+      "dark": "Темный",
+      "transparent": "Прозрачный",
+      "white": "Белый",
+      "fixed": "Фиксировать меню",
+      "light": "Светлый"
+    }
   },
   "tasks": {
     "active": "Активные задачи"

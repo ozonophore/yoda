@@ -22,3 +22,4 @@ build
 coverage.html
 **/.docker-conf/**
 .*
+.data

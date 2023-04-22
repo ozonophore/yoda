@@ -1,6 +1,7 @@
 import { addSeconds, format } from "date-fns";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import MDTypography from "../../components/MDTypography";
 import { useMaterialUIController } from "../../context";
 
@@ -8,6 +9,7 @@ export default function Timer({ textColor }) {
   const [controller] = useMaterialUIController();
   const { date } = controller;
   const [time, setTime] = useState(date);
+  const [t] = useTranslation();
 
   useEffect(() => {
     setTime(date);
@@ -32,7 +34,7 @@ export default function Timer({ textColor }) {
       mb={1}
       ml={1}
     >
-      Врема: {format(time, "HH:mm:ss")}
+      {t("time.title.long")}: {format(time, "HH:mm:ss")}
     </MDTypography>
   );
 }

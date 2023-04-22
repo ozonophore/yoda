@@ -36,6 +36,7 @@ import DataTableHeadCell from "examples/Tables/DataTable/DataTableHeadCell";
 // prop-types is a library for typechecking of props
 import PropTypes from "prop-types";
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 // react-table components
 import { useAsyncDebounce, useGlobalFilter, usePagination, useSortBy, useTable } from "react-table";
@@ -43,6 +44,7 @@ import { useAsyncDebounce, useGlobalFilter, usePagination, useSortBy, useTable }
 function StockDataTable({
   entriesPerPage,
   canSearch,
+  canDateFilter,
   showTotalEntries,
   pagination,
   isSorted,
@@ -51,6 +53,7 @@ function StockDataTable({
   onFetchData,
   onRenderCell,
 }) {
+  const [t] = useTranslation();
   const [search, setSearch] = useState(undefined);
   const [transactionDate, setTransactionDate] = useState(new Date());
   const [totalCount, setTotalCount] = useState(0);
@@ -195,7 +198,7 @@ function StockDataTable({
                   renderInput={(params) => <MDInput {...params} />}
                 />
                 <MDTypography variant="caption" color="secondary">
-                  &nbsp;&nbsp;entries per page
+                  &nbsp;&nbsp;{t("dataTable.rowsPerPage")}
                 </MDTypography>
               </MDBox>
             )}
@@ -203,7 +206,7 @@ function StockDataTable({
               {canSearch && (
                 <MDBox width="12rem" ml="auto">
                   <MDInput
-                    placeholder="Search..."
+                    placeholder={t("search.label")}
                     value={search || ""}
                     size="small"
                     fullWidth
@@ -213,22 +216,24 @@ function StockDataTable({
                   />
                 </MDBox>
               )}
-              <MDBox pl={2} width="12rem" ml="auto">
-                <MDInput
-                  type="date"
-                  size="small"
-                  value={format(transactionDate, "yyyy-MM-dd")}
-                  fullWidth
-                  onChange={({ currentTarget }) => {
-                    if (!isValid(parseISO(currentTarget.value))) {
-                      return;
-                    }
-                    const dt = parseISO(currentTarget.value);
-                    setTransactionDate(dt);
-                    setPageIndex(0);
-                  }}
-                />
-              </MDBox>
+              {canDateFilter && (
+                <MDBox pl={2} width="12rem" ml="auto">
+                  <MDInput
+                    type="date"
+                    size="small"
+                    value={format(transactionDate, "yyyy-MM-dd")}
+                    fullWidth
+                    onChange={({ currentTarget }) => {
+                      if (!isValid(parseISO(currentTarget.value))) {
+                        return;
+                      }
+                      const dt = parseISO(currentTarget.value);
+                      setTransactionDate(dt);
+                      setPageIndex(0);
+                    }}
+                  />
+                </MDBox>
+              )}
             </MDBox>
           </MDBox>
         ) : null}
@@ -282,7 +287,11 @@ function StockDataTable({
         {showTotalEntries && (
           <MDBox mb={{ xs: 3, sm: 0 }}>
             <MDTypography variant="button" color="secondary" fontWeight="regular">
-              Showing {entriesStart} to {entriesEnd} of {totalCount} entries
+              {t("dataTable.totalEntries", {
+                entriesStart,
+                entriesEnd,
+                totalEntries: totalCount,
+              })}
             </MDTypography>
           </MDBox>
         )}
@@ -323,6 +332,7 @@ function StockDataTable({
 StockDataTable.defaultProps = {
   entriesPerPage: { defaultValue: 10, entries: [5, 10, 15, 20, 25] },
   canSearch: false,
+  canDateFilter: true,
   showTotalEntries: true,
   pagination: { variant: "gradient", color: "info" },
   isSorted: true,
@@ -339,6 +349,7 @@ StockDataTable.propTypes = {
     PropTypes.bool,
   ]),
   canSearch: PropTypes.bool,
+  canDateFilter: PropTypes.bool,
   showTotalEntries: PropTypes.bool,
   pagination: PropTypes.shape({
     variant: PropTypes.oneOf(["contained", "gradient"]),

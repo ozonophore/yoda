@@ -47,14 +47,12 @@ function Dashboard() {
   const [stockInfoData, setStockInfoData] = useState({});
   const [transactionInfo, setTransactionInfo] = useState(initTransactionInfo);
   const [salesUpdateAt, setSalesUpdateAt] = useState(null);
-  useEffect(() => {
+  const refreshData = () => {
     DefaultService.getStocksInfo()
       .then((res) => {
-        console.log("#res", res);
         const days = res.map((item) => format(new Date(item.stockDate), "dd-MM-yyyy"));
         const totals = res.map((item) => item.total);
         const zeros = res.map((item) => item.zeroQty);
-        console.log("#", zeros);
         setStockInfoData({
           labels: days,
           datasets: [
@@ -101,11 +99,18 @@ function Dashboard() {
       .catch((err) => {
         console.error(err);
       });
+  };
+
+  useEffect(() => {
+    refreshData();
   }, []);
 
+  const handleOnRefresh = () => {
+    refreshData();
+  };
   return (
     <DashboardLayout>
-      <DashboardNavbar />
+      <DashboardNavbar onRefresh={handleOnRefresh} />
       <MDBox py={3}>
         <Grid container spacing={3}>
           <Grid item xs={12} md={6} lg={3}>

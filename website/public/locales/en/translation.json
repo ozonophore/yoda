@@ -1,15 +1,96 @@
 {
   "brandName": "Admin panel",
   "search": {
-    "label": "Search here"
+    "label": "Search..."
   },
-  "menu":{
-    "dashboard": "Dashboard"
+  "menu": {
+    "dashboard": "General",
+    "room": "Кабинет",
+    "schedule": "Tasks",
+    "sales": "Sales and remains",
+    "dictionaries": "Directories"
+  },
+  "dashboard": {
+    "weeklySales": "Salse for the 7 days"
   },
   "settings": {
-    "title": "Configuration"
+    "title": "Settings",
+    "language": {
+      "title": "Language",
+      "choose": "Choose between a language.",
+      "russian": "Russian",
+      "english": "English"
+    },
+    "navColor": {
+      "title": "Sidenav Colors"
+    },
+    "sidenav": {
+      "type": "Sidenav Type",
+      "choose": "Choose between different sidenav types",
+      "dark": "Dark",
+      "transparent": "Transparent",
+      "white": "White",
+      "fixed": "NavBar Fixed",
+      "light": "Light"
+    }
   },
-  "tasks":{
-    "active": "Active tasks"
+  "tasks": {
+    "active": "Активные задачи"
+  },
+  "room": {
+    "input": {
+      "name": {
+        "title": "Название кабинета"
+      },
+      "code": {
+        "title": "Код кабинета"
+      }
+    },
+    "button": {
+      "add": "Добавить кабинет"
+    },
+    "card": {
+      "edit": "Редактировать",
+      "delete": "Удалить"
+    },
+    "settings": {
+      "connection": "Параметры подключения"
+    }
+  },
+  "submit": "Save",
+  "cancel": "Cancel",
+  "time": {
+    "title": {
+      "short": "Dt",
+      "long": "Date"
+    }
+  },
+  "dayOfWeek": {
+    "title": {
+      "short": "D",
+      "long": "Day"
+    },
+    "short": {
+      "monday": "Mon",
+      "tuesday": "Tue",
+      "wednesday": "Wed",
+      "thursday": "Thu",
+      "friday": "Fri",
+      "saturday": "Sat",
+      "sunday": "Sun"
+    },
+    "long": {
+      "monday": "Monday",
+      "tuesday": "Tuesday",
+      "wednesday": "Wednesday",
+      "thursday": "Thursday",
+      "friday": "Friday",
+      "saturday": "Saturday",
+      "sunday": "Sunday"
+    }
+  },
+  "dataTable": {
+    "rowsPerPage": "records on the page:",
+    "totalEntries": "Show {{entriesStart}} to {{entriesEnd}} from {{totalEntries}} records"
   }
 }

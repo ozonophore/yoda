@@ -45,6 +45,7 @@ import Notifications from "layouts/notifications";
 import Profile from "layouts/profile";
 import Tables from "layouts/tables";
 import Test from "layouts/test";
+import Dictionaries from "./layouts/dictionaries";
 import Room from "./layouts/room";
 import Sales from "./layouts/sales";
 import Schedulers from "./layouts/schedule";
@@ -126,6 +127,14 @@ const routes = [
     icon: <Icon fontSize="small">table_view</Icon>,
     route: "/sales",
     component: <Sales />,
+  },
+  {
+    type: "collapse",
+    name: "Dictionaries",
+    key: "dictionaries",
+    icon: <Icon fontSize="small">table_view</Icon>,
+    route: "/dictionaries",
+    component: <Dictionaries />,
   },
 ];
 

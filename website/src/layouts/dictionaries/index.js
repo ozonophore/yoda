@@ -7,42 +7,12 @@ import Footer from "../../examples/Footer";
 import DashboardLayout from "../../examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "../../examples/Navbars/DashboardNavbar";
 import { DefaultService } from "../../generated";
-import StockDataTable from "./components/StockDataTable";
-import orderData from "./data/orderData";
-import stockData from "./data/stockData";
+import StockDataTable from "../sales/components/StockDataTable";
+import orgData from "./data/orgData";
+import mpData from "./data/mpData";
 
-function Sales() {
-  const onFetchStockData = (
-    pageIndex,
-    pageSize,
-    transactionDate,
-    search,
-    setItems,
-    setTotalCount,
-    setPageCount,
-    setCanNextPage,
-    setCanPreviousPage
-  ) => {
-    DefaultService.getStocks(
-      pageSize,
-      pageIndex * pageSize,
-      format(transactionDate, "yyyy-LL-dd"),
-      search || null
-    )
-      .then((res) => {
-        setItems(res.items);
-        setTotalCount(res.total);
-        const count = Math.ceil(res.total / pageSize);
-        setPageCount(count);
-        setCanNextPage(pageIndex < count - 1);
-        setCanPreviousPage(pageIndex > 0);
-      })
-      .catch(() => {
-        setItems([]);
-      });
-  };
-
-  const onFetchOrderData = (
+export default function Dictionaries() {
+  const onFetchOrgData = (
     pageIndex,
     pageSize,
     transactionDate,
@@ -90,18 +60,19 @@ function Sales() {
                 coloredShadow="info"
               >
                 <MDTypography variant="h6" color="white">
-                  Остатки
+                  Организации
                 </MDTypography>
               </MDBox>
               <MDBox>
                 <StockDataTable
+                  canDateFilter={false}
                   canSearch
                   isSorted={false}
                   showTotalEntries
                   noEndBorder
-                  columns={stockData().columns}
-                  onFetchData={onFetchStockData}
-                  onRenderCell={stockData().onRenderData}
+                  columns={orgData().columns}
+                  onFetchData={onFetchOrgData}
+                  onRenderCell={orgData().onRenderData}
                 />
               </MDBox>
             </Card>
@@ -111,7 +82,7 @@ function Sales() {
               <MDBox
                 mx={2}
                 mt={-3}
-                py={3}
+                py={2}
                 px={2}
                 variant="gradient"
                 bgColor="info"
@@ -119,18 +90,19 @@ function Sales() {
                 coloredShadow="info"
               >
                 <MDTypography variant="h6" color="white">
-                  Продажи
+                  Маркетплейсы
                 </MDTypography>
               </MDBox>
               <MDBox>
                 <StockDataTable
+                  canDateFilter={false}
                   canSearch
                   isSorted={false}
                   showTotalEntries
                   noEndBorder
-                  columns={orderData().columns}
-                  onFetchData={onFetchOrderData}
-                  onRenderCell={orderData().onRenderData}
+                  columns={mpData().columns}
+                  onFetchData={onFetchOrgData}
+                  onRenderCell={mpData().onRenderData}
                 />
               </MDBox>
             </Card>
@@ -140,7 +112,7 @@ function Sales() {
               <MDBox
                 mx={2}
                 mt={-3}
-                py={3}
+                py={2}
                 px={2}
                 variant="gradient"
                 bgColor="info"
@@ -148,18 +120,19 @@ function Sales() {
                 coloredShadow="info"
               >
                 <MDTypography variant="h6" color="white">
-                  Остатки средне-срочные
+                  Товары
                 </MDTypography>
               </MDBox>
               <MDBox>
                 <StockDataTable
+                  canDateFilter={false}
                   canSearch
                   isSorted={false}
                   showTotalEntries
                   noEndBorder
-                  columns={orderData().columns}
-                  onFetchData={onFetchOrderData}
-                  onRenderCell={orderData().onRenderData}
+                  columns={mpData().columns}
+                  onFetchData={onFetchOrgData}
+                  onRenderCell={mpData().onRenderData}
                 />
               </MDBox>
             </Card>
@@ -170,5 +143,3 @@ function Sales() {
     </DashboardLayout>
   );
 }
-
-export default Sales;

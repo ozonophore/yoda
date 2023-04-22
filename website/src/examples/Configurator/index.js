@@ -139,9 +139,6 @@ function Configurator() {
       >
         <MDBox>
           <MDTypography variant="h5">{t("settings.title")}</MDTypography>
-          <MDTypography variant="body2" color="text">
-            See our dashboard options.
-          </MDTypography>
         </MDBox>
 
         <Icon
@@ -163,7 +160,7 @@ function Configurator() {
 
       <MDBox pt={0.5} pb={3} px={3}>
         <MDBox>
-          <MDTypography variant="h6">Sidenav Colors</MDTypography>
+          <MDTypography variant="h6">{t("settings.navColor.title")}</MDTypography>
 
           <MDBox mb={0.5}>
             {sidenavColors.map((color) => (
@@ -209,9 +206,9 @@ function Configurator() {
         </MDBox>
 
         <MDBox>
-          <MDTypography variant="h6">Language</MDTypography>
+          <MDTypography variant="h6">{t("settings.language.title")}</MDTypography>
           <MDTypography variant="button" color="text">
-            Choose between a language.
+            {t("settings.language.choose")}.
           </MDTypography>
 
           <MDBox
@@ -229,7 +226,7 @@ function Configurator() {
               fullWidth
               sx={language === "ru" ? sidenavTypeActiveButtonStyles : sidenavTypeButtonsStyles}
             >
-              Russian
+              {t("settings.language.russian")}
             </MDButton>
             <MDBox sx={{ mx: 1, width: "8rem", minWidth: "8rem" }}>
               <MDButton
@@ -240,16 +237,16 @@ function Configurator() {
                 fullWidth
                 sx={language === "en" ? sidenavTypeActiveButtonStyles : sidenavTypeButtonsStyles}
               >
-                English
+                {t("settings.language.english")}
               </MDButton>
             </MDBox>
           </MDBox>
         </MDBox>
 
         <MDBox mt={3} lineHeight={1}>
-          <MDTypography variant="h6">Sidenav Type</MDTypography>
+          <MDTypography variant="h6">{t("settings.sidenav.type")}</MDTypography>
           <MDTypography variant="button" color="text">
-            Choose between different sidenav types.
+            {t("settings.sidenav.choose")}.
           </MDTypography>
 
           <MDBox
@@ -271,7 +268,7 @@ function Configurator() {
                   : sidenavTypeButtonsStyles
               }
             >
-              Dark
+              {t("settings.sidenav.dark")}
             </MDButton>
             <MDBox sx={{ mx: 1, width: "8rem", minWidth: "8rem" }}>
               <MDButton
@@ -286,7 +283,7 @@ function Configurator() {
                     : sidenavTypeButtonsStyles
                 }
               >
-                Transparent
+                {t("settings.sidenav.transparent")}
               </MDButton>
             </MDBox>
             <MDButton
@@ -301,7 +298,7 @@ function Configurator() {
                   : sidenavTypeButtonsStyles
               }
             >
-              White
+              {t("settings.sidenav.white")}
             </MDButton>
           </MDBox>
         </MDBox>
@@ -312,22 +309,19 @@ function Configurator() {
           mt={3}
           lineHeight={1}
         >
-          <MDTypography variant="h6">Navbar Fixed</MDTypography>
+          <MDTypography variant="h6">{t("settings.sidenav.fixed")}</MDTypography>
 
           <Switch checked={fixedNavbar} onChange={handleFixedNavbar} />
         </MDBox>
         <Divider />
         <MDBox display="flex" justifyContent="space-between" alignItems="center" lineHeight={1}>
-          <MDTypography variant="h6">Light / Dark</MDTypography>
+          <MDTypography variant="h6">
+            {t("settings.sidenav.light")} / {t("settings.sidenav.dark")}
+          </MDTypography>
 
           <Switch checked={darkMode} onChange={handleDarkMode} />
         </MDBox>
         <Divider />
-        <MDBox mt={2} textAlign="center">
-          <MDBox mb={0.5}>
-            <MDTypography variant="h6">Thank you for sharing!</MDTypography>
-          </MDBox>
-        </MDBox>
       </MDBox>
     </ConfiguratorRoot>
   );
