@@ -116,6 +116,6 @@ MERGE INTO "order_delivered" AS od
                     data."barcode", data."external_code", data."quantity", data."total_price", data."price_with_discount");
 
 insert into "order_delivered_log" ("transaction_id", "created_at")
-values (p_id, current_date);
+values (p_id, now());
 end;
 $$;

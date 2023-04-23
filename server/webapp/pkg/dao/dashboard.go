@@ -7,7 +7,7 @@ import (
 
 func GetWeekSales() (*[]model.WeekSales, error) {
 	var weekSales []model.WeekSales
-	err := dao.database.Raw(`select order_date, price from (select order_date, sum(price_with_discount) * sum(quantity) price
+	err := dao.database.Raw(`select order_date, price from (select order_date, sum(price_with_discount * quantity) price
                from order_delivered od
                where order_date > CURRENT_DATE - 10
                  and order_date <= CURRENT_DATE - 3
