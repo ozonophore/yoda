@@ -19,10 +19,12 @@ const parseStatus = (status) => {
       return "success";
     case "CANCELED":
       return "error";
+    case "REJECTED":
+      return "error";
     case "BEGIN":
       return "info";
     default:
-      return "";
+      return "warning";
   }
 };
 
