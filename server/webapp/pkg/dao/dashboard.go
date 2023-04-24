@@ -19,15 +19,17 @@ order by 1`).Scan(&weekSales).Error
 	return &weekSales, nil
 }
 
+type maxValue struct {
+	Max *time.Time
+}
+
 func GetSalesDeleveredLastUpdate() (*time.Time, error) {
-	var lastUpdate *time.Time
-	row := dao.database.Raw(`select max(created_at) from order_delivered_log`).Row()
-	err := row.Err()
+	var value maxValue
+	err := dao.database.Raw(`select max(created_at) from order_delivered_log`).Scan(&value).Error
 	if err != nil {
 		return nil, err
 	}
-	row.Scan(lastUpdate)
-	return lastUpdate, nil
+	return value.Max, nil
 }
 
 func GetTransactionInfo() (*model.TransactionInfo, error) {

@@ -18,7 +18,7 @@ import data from "./data";
 function Tasks() {
   const [t] = useTranslation();
   const [menu, setMenu] = useState(null);
-  const { columns } = data;
+  const { columns, renderRows } = data;
   const [taskInfo, setTaskInfo] = useState({ items: [], completed: 0, cenceled: 0 });
 
   const openMenu = ({ currentTarget }) => setMenu(currentTarget);
@@ -100,7 +100,7 @@ function Tasks() {
       </MDBox>
       <MDBox>
         <DataTable
-          table={{ columns, rows: taskInfo.items }}
+          table={{ columns, rows: renderRows(taskInfo.items) }}
           showTotalEntries={false}
           isSorted={false}
           noEndBorder
