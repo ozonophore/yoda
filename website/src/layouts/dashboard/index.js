@@ -19,7 +19,6 @@ import Grid from "@mui/material/Grid";
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import { format, parseISO } from "date-fns";
-import ComplexStatisticsCard from "examples/Cards/StatisticsCards/ComplexStatisticsCard";
 import ReportsBarChart from "examples/Charts/BarCharts/ReportsBarChart";
 import Footer from "examples/Footer";
 
@@ -34,11 +33,6 @@ import { useTranslation } from "react-i18next";
 import { DefaultService } from "../../generated";
 import Tasks from "./components/Tasks";
 
-const initTransactionInfo = {
-  total: 0,
-  success: 0,
-};
-
 function Dashboard() {
   const [t] = useTranslation();
   const [salesData, setSalesData] = useState({
@@ -46,7 +40,6 @@ function Dashboard() {
     datasets: [{ label: "Sales", data: [] }],
   });
   const [stockInfoData, setStockInfoData] = useState({});
-  const [transactionInfo, setTransactionInfo] = useState(initTransactionInfo);
   const [salesUpdateAt, setSalesUpdateAt] = useState(null);
   const refreshData = () => {
     DefaultService.getStocksInfo()
@@ -68,14 +61,6 @@ function Dashboard() {
             },
           ],
         });
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-
-    DefaultService.getTransactionsInfo()
-      .then((res) => {
-        setTransactionInfo(res);
       })
       .catch((err) => {
         console.error(err);
@@ -113,40 +98,9 @@ function Dashboard() {
     <DashboardLayout>
       <DashboardNavbar onRefresh={handleOnRefresh} />
       <MDBox py={3}>
-        <Grid container spacing={3}>
-          <Grid item xs={12} md={6} lg={3}>
-            <MDBox mb={1.5}>
-              <ComplexStatisticsCard
-                color="dark"
-                icon="weekend"
-                title="Организаций"
-                count={1}
-                percentage={{
-                  color: "success",
-                  amount: "",
-                  label: "",
-                }}
-              />
-            </MDBox>
-          </Grid>
-          <Grid item xs={12} md={6} lg={3}>
-            <MDBox mb={1.5}>
-              <ComplexStatisticsCard
-                icon="schedule"
-                title="Загрузок"
-                count={transactionInfo.total}
-                percentage={{
-                  color: "success",
-                  amount: transactionInfo.success,
-                  label: "Успешных",
-                }}
-              />
-            </MDBox>
-          </Grid>
-        </Grid>
-        <MDBox mt={4.5}>
+        <MDBox mt={1}>
           <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={4}>
+            <Grid item xs={12} md={6} lg={6}>
               <MDBox mb={3}>
                 <ReportsBarChart
                   color="info"
@@ -159,7 +113,7 @@ function Dashboard() {
                 />
               </MDBox>
             </Grid>
-            <Grid item xs={12} md={6} lg={4}>
+            <Grid item xs={12} md={6} lg={6}>
               <MDBox mb={3}>
                 <ReportsBarChart
                   color="success"
@@ -174,7 +128,7 @@ function Dashboard() {
         </MDBox>
         <MDBox>
           <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={8}>
+            <Grid item xs={12} md={12} lg={12}>
               <Tasks />
             </Grid>
           </Grid>
