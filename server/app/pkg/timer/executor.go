@@ -2,6 +2,7 @@ package timer
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"github.com/go-co-op/gocron"
 	"github.com/sirupsen/logrus"
@@ -24,10 +25,13 @@ func callOnBeforeJonExecution(job *model.Job, transactionID int64, gJob *gocron.
 }
 
 func callOnAfterJonExecution(job *model.Job, transactionID int64, gJob *gocron.Job, err error, onAfter onAfterJobExecution) {
+	if transactionID == 0 {
+		println("transactionID is 0")
+	}
 	if err == nil {
 		repository.EndOperation(transactionID, types.StatusTypeCompleted)
 	} else {
-		repository.EndOperation(transactionID, types.StatusTypeRejected)
+		repository.EndOperationWithMessage(transactionID, types.StatusTypeRejected, err.Error())
 	}
 	logrus.Infof("Finish job: %d. Next run: %s", job.ID, gJob.NextRun())
 	if onAfter != nil {
@@ -48,7 +52,12 @@ func jobByTag(s *gocron.Scheduler, jobId int) *gocron.Job {
 }
 
 func RunRegularLoad(config *configuration.Config, ctx context.Context, jobID int, s *gocron.Scheduler, onBefore onBeforeJobExecution, onAfter onAfterJobExecution) {
-	job, err := repository.GetJobWithOwnerByJobId(jobID)
+	var job *model.Job
+	var err error
+	var transactionID int64
+	var gJob *gocron.Job
+	defer callOnAfterJonExecution(job, transactionID, gJob, err, onAfter)
+	job, err = repository.GetJobWithOwnerByJobId(jobID)
 	if err != nil {
 		logrus.Errorf("Error after get jobs: %s with id: %d", err, jobID)
 		return
@@ -57,10 +66,10 @@ func RunRegularLoad(config *configuration.Config, ctx context.Context, jobID int
 		logrus.Infof("Job %d is not active", jobID)
 		return
 	}
-	transactionID := repository.BeginOperation(jobID)
-	gJob := jobByTag(s, jobID)
+	transactionID = repository.BeginOperation(jobID)
+	gJob = jobByTag(s, jobID)
 	if gJob == nil {
-		logrus.Panicf("Job %d not found", jobID)
+		err = errors.New(fmt.Sprintf("Job %d not found", jobID))
 		return
 	}
 	callOnBeforeJonExecution(job, transactionID, gJob, onBefore)

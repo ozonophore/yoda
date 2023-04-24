@@ -1,9 +1,10 @@
-create or replace procedure calc_order_delivered(IN p_id "transaction".id%type)
+create procedure calc_order_delivered(IN p_id integer)
     language plpgsql
 as
 $$
 declare
 v_id "transaction".id%type;
+v_count integer;
 begin
 select coalesce(max(transaction_id), 0) into v_id from "order_delivered_log";
 if p_id <= v_id then
@@ -73,8 +74,8 @@ MERGE INTO "order_delivered" AS od
                   o."barcode",
                   o."external_code",
                   sum(o."quantity")                                as "quantity",
-                  sum(o."total_price") / sum(o."quantity")         as "total_price",
-                  sum(o."price_with_discount") / sum(o."quantity") as "price_with_discount"
+                  sum(o."total_price")         as "sum_total_price",
+                  sum(o."price_with_discount") as "sum_price_with_discount"
            FROM "order" o
            WHERE o."transaction_id" = p_id
              AND o."status" = 'delivered'
@@ -100,22 +101,21 @@ MERGE INTO "order_delivered" AS od
         od."external_code" = data."external_code")
     WHEN MATCHED THEN
         UPDATE
-            SET "quantity"            = data."quantity" + od."quantity",
-                "total_price"         =
-                                (od."total_price" * od."quantity" + data."total_price" * data."quantity") / data."quantity" +
-                                od."quantity",
-                "price_with_discount" =
-                                (od."price_with_discount" * od."quantity" + data."price_with_discount" * data."quantity") /
-                                data."quantity" + od."quantity"
+            SET "quantity" = data."quantity" + od."quantity",
+                "total_price" = (od."total_price" * od."quantity" + data."sum_total_price") / (data."quantity" + od."quantity"),
+                "price_with_discount" = (od."price_with_discount" * od."quantity" + data."sum_price_with_discount") / (data."quantity" + od."quantity")
     WHEN NOT MATCHED THEN
         INSERT ("order_date", "owner_code", "source", "supplier_article", "warehouse", "barcode", "external_code",
                 "quantity",
                 "total_price",
                 "price_with_discount")
             VALUES (data."order_date", data."owner_code", data."source", data."supplier_article", data."warehouse_name",
-                    data."barcode", data."external_code", data."quantity", data."total_price", data."price_with_discount");
+                    data."barcode", data."external_code", data."quantity", data."sum_total_price" / data."quantity",
+                    data."sum_price_with_discount" / data."quantity");
 
-insert into "order_delivered_log" ("transaction_id", "created_at")
-values (p_id, now());
+GET DIAGNOSTICS v_count = ROW_COUNT;
+
+insert into "order_delivered_log" ("transaction_id", "created_at", "added_rows")
+values (p_id, now(), v_count);
 end;
 $$;

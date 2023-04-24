@@ -32,6 +32,7 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { DefaultService } from "../../generated";
+import Tasks from "./components/Tasks";
 
 const initTransactionInfo = {
   total: 0,
@@ -168,6 +169,13 @@ function Dashboard() {
                   chart={stockInfoData}
                 />
               </MDBox>
+            </Grid>
+          </Grid>
+        </MDBox>
+        <MDBox>
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={6} lg={8}>
+              <Tasks />
             </Grid>
           </Grid>
         </MDBox>

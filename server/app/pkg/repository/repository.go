@@ -137,6 +137,15 @@ func EndOperation(transaction int64, status string) {
 	})
 }
 
+func EndOperationWithMessage(transaction int64, status, message string) {
+	initIfError()
+	timeNow := time.Now()
+	repository.db.Updates(&model.Transaction{}).Where("id = ?", transaction).Updates(model.Transaction{
+		EndDate: &timeNow,
+		Status:  status,
+	})
+}
+
 func UpdatePrices(models *[]model.StockItem) error {
 	initIfError()
 	tx := repository.db.Begin()

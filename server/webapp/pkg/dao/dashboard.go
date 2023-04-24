@@ -20,12 +20,14 @@ order by 1`).Scan(&weekSales).Error
 }
 
 func GetSalesDeleveredLastUpdate() (*time.Time, error) {
-	var lastUpdate time.Time
-	err := dao.database.Raw(`select max(created_at) from order_delivered_log`).Scan(&lastUpdate).Error
+	var lastUpdate *time.Time
+	row := dao.database.Raw(`select max(created_at) from order_delivered_log`).Row()
+	err := row.Err()
 	if err != nil {
 		return nil, err
 	}
-	return &lastUpdate, nil
+	row.Scan(lastUpdate)
+	return lastUpdate, nil
 }
 
 func GetTransactionInfo() (*model.TransactionInfo, error) {
@@ -51,4 +53,21 @@ func GetStockInfo() (*[]model.StockInfo, error) {
 		return nil, err
 	}
 	return &stockInfo, nil
+}
+
+func GetTasksInfo() (*[]model.TaskInfo, error) {
+	var taskInfo []model.TaskInfo
+	err := dao.database.Raw(`with st as (
+		select coalesce(sum(case when status = 'COMPLETED' then 1 else 0 end), 0) completed,
+			   coalesce(sum(case when status = 'COMPLETED' then 0 else 1 end), 0) canceled
+		from "transaction"
+	)
+	select t.id, t.start_date, t.end_date, t.status, t.message, st.completed, st.canceled from st
+	left join "transaction" t on true
+	order by t.id desc
+	limit 5`).Scan(&taskInfo).Error
+	if err != nil {
+		return nil, err
+	}
+	return &taskInfo, nil
 }

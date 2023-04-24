@@ -124,6 +124,7 @@ create table "order_delivered"
     "total_price"         numeric(10, 2),
     "price_with_discount" numeric(10, 2),
     "quantity"            numeric(10)                             not null,
+    "create_at"           timestamp with time zone                not null default now(),
     "updated_at"          timestamp with time zone                not null default now()
 ) PARTITION BY RANGE("order_date");
 
@@ -229,7 +230,8 @@ on column "order_delivered"."external_code" is 'Внешний код';
 create table "order_delivered_log"
 (
     "transaction_id" bigint references "transaction" ("id") not null primary key,
-    "created_at"     timestamp                              not null
+    "created_at"     timestamp                              not null,
+    "added_rows"     integer                                not null
 );
 
 comment

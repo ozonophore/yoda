@@ -205,6 +205,34 @@ type StockItems struct {
 	Total int `json:"total"`
 }
 
+// TaskInfo defines model for TaskInfo.
+type TaskInfo struct {
+	// Canceled Total number of canceled tasks
+	Canceled int `json:"canceled"`
+
+	// Completed Total number of completed tasks
+	Completed int             `json:"completed"`
+	Items     *[]TaskInfoItem `json:"items,omitempty"`
+}
+
+// TaskInfoItem defines model for TaskInfoItem.
+type TaskInfoItem struct {
+	// EndDate End date
+	EndDate *time.Time `json:"endDate,omitempty"`
+
+	// Id Unique identifier
+	Id int64 `json:"id"`
+
+	// Message Message of the task
+	Message *string `json:"message,omitempty"`
+
+	// StartDate Start date
+	StartDate time.Time `json:"startDate"`
+
+	// Status Status of the task
+	Status string `json:"status"`
+}
+
 // TransactionsInfo defines model for TransactionsInfo.
 type TransactionsInfo struct {
 	// LastEnd Last end date
@@ -291,6 +319,9 @@ type ServerInterface interface {
 	// Get stocks info
 	// (GET /stocks/info)
 	GetStocksInfo(w http.ResponseWriter, r *http.Request)
+	// Get all tasks
+	// (GET /tasks)
+	GetTasks(w http.ResponseWriter, r *http.Request)
 	// Get transactions info
 	// (GET /transactions/info)
 	GetTransactionsInfo(w http.ResponseWriter, r *http.Request)
@@ -660,6 +691,21 @@ func (siw *ServerInterfaceWrapper) GetStocksInfo(w http.ResponseWriter, r *http.
 	handler(w, r.WithContext(ctx))
 }
 
+// GetTasks operation middleware
+func (siw *ServerInterfaceWrapper) GetTasks(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var handler = func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetTasks(w, r)
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler(w, r.WithContext(ctx))
+}
+
 // GetTransactionsInfo operation middleware
 func (siw *ServerInterfaceWrapper) GetTransactionsInfo(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
@@ -813,6 +859,8 @@ func HandlerWithOptions(si ServerInterface, options GorillaServerOptions) http.H
 	r.HandleFunc(options.BaseURL+"/stocks", wrapper.GetStocks).Methods("GET")
 
 	r.HandleFunc(options.BaseURL+"/stocks/info", wrapper.GetStocksInfo).Methods("GET")
+
+	r.HandleFunc(options.BaseURL+"/tasks", wrapper.GetTasks).Methods("GET")
 
 	r.HandleFunc(options.BaseURL+"/transactions/info", wrapper.GetTransactionsInfo).Methods("GET")
 

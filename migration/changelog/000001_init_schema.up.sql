@@ -57,7 +57,8 @@ create table "transaction"
     "job_id"     integer references "job" ("id") not null,
     "start_date" timestamp                       not null,
     "end_date"   timestamp,
-    "status"     varchar(20)
+    "status"     varchar(20),
+    "message"    varchar(256)
 );
 
 create table "stock"

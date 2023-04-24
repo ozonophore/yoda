@@ -25,7 +25,7 @@ services:
     environment:
       - YODA_SERVER_PORT=8080
       - YODA_MQ_URL=amqp://guest:guest@176.113.83.101:5672/
-      - YODA_DB_DSN=postgres://user:password@176.113.83.101:5432/db?sslmode=disable
+      - YODA_DB_DSN=postgres://user:password@176.113.83.101:5432/db2?sslmode=disable
       - TZ=Europe/Moscow
     ports:
       - "8080:8080"
@@ -36,7 +36,7 @@ services:
   backend:
     image: ghcr.io/ozonophore/yoda-app
     environment:
-      - YODA_DATABASE_DSN=postgres://user:password@176.113.83.101:5432/db?sslmode=disable
+      - YODA_DATABASE_DSN=postgres://user:password@176.113.83.101:5432/db2?sslmode=disable
       - YODA_MQ_URL=amqp://guest:guest@176.113.83.101:5672/
       - TZ=Europe/Moscow
     restart: on-failure

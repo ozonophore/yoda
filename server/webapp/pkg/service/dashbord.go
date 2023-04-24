@@ -58,3 +58,32 @@ func GetStocksInfo() (*[]api.StockInfoItem, error) {
 	}
 	return &items, nil
 }
+
+func GetTasksInfo() (*api.TaskInfo, error) {
+	infos, err := dao.GetTasksInfo()
+	if err != nil {
+		return nil, err
+	}
+	var items = make([]api.TaskInfoItem, 0)
+	if (*infos)[0].Completed == 0 && (*infos)[0].Canceled == 0 {
+		return &api.TaskInfo{
+			Items:     &items,
+			Completed: 0,
+			Canceled:  0,
+		}, nil
+	}
+	for _, info := range *infos {
+		items = append(items, api.TaskInfoItem{
+			Id:        info.ID,
+			StartDate: info.StartDate,
+			EndDate:   info.EndDate,
+			Status:    info.Status,
+			Message:   info.Message,
+		})
+	}
+	return &api.TaskInfo{
+		Items:     &items,
+		Completed: (*infos)[0].Completed,
+		Canceled:  (*infos)[0].Canceled,
+	}, nil
+}
