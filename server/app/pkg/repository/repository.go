@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"errors"
 	"github.com/sirupsen/logrus"
 	"github.com/yoda/app/pkg/configuration"
 	"github.com/yoda/common/pkg/model"
@@ -244,12 +245,13 @@ func CallDailyData(transactionID int64) error {
 		if logrus.IsLevelEnabled(logrus.DebugLevel) && err != nil {
 			logrus.Debug("call calc_order_delivered")
 		}
-		logrus.Error(err)
+		if err != nil {
+			return errors.Join(err)
+		}
 		err = tx.Exec(`call calc_stock_daily(?)`, transactionID).Error
 		if logrus.IsLevelEnabled(logrus.DebugLevel) && err != nil {
 			logrus.Debug("call calc_stock_daily")
 		}
-		logrus.Error(err)
-		return err
+		return errors.Join(err)
 	})
 }

@@ -52,12 +52,7 @@ func jobByTag(s *gocron.Scheduler, jobId int) *gocron.Job {
 }
 
 func RunRegularLoad(config *configuration.Config, ctx context.Context, jobID int, s *gocron.Scheduler, onBefore onBeforeJobExecution, onAfter onAfterJobExecution) {
-	var job *model.Job
-	var err error
-	var transactionID int64
-	var gJob *gocron.Job
-	defer callOnAfterJonExecution(job, transactionID, gJob, err, onAfter)
-	job, err = repository.GetJobWithOwnerByJobId(jobID)
+	job, err := repository.GetJobWithOwnerByJobId(jobID)
 	if err != nil {
 		logrus.Errorf("Error after get jobs: %s with id: %d", err, jobID)
 		return
@@ -66,12 +61,14 @@ func RunRegularLoad(config *configuration.Config, ctx context.Context, jobID int
 		logrus.Infof("Job %d is not active", jobID)
 		return
 	}
-	transactionID = repository.BeginOperation(jobID)
-	gJob = jobByTag(s, jobID)
+	transactionID := repository.BeginOperation(jobID)
+	gJob := jobByTag(s, jobID)
 	if gJob == nil {
 		err = errors.New(fmt.Sprintf("Job %d not found", jobID))
 		return
 	}
+	defer callOnAfterJonExecution(job, transactionID, gJob, err, onAfter)
+
 	callOnBeforeJonExecution(job, transactionID, gJob, onBefore)
 	logrus.Info("Start parsing for job: ", jobID)
 	for _, param := range *job.Params {
@@ -82,7 +79,6 @@ func RunRegularLoad(config *configuration.Config, ctx context.Context, jobID int
 		}
 	}
 	err = repository.CallDailyData(transactionID)
-	callOnAfterJonExecution(job, transactionID, gJob, err, onAfter)
 }
 
 func prepareParam(ctx context.Context, config *configuration.Config, param *model.OwnerMarketplace, transactionID int64) error {
