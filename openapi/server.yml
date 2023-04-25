@@ -387,11 +387,9 @@ components:
           description: Unique identifier
         startDate:
           type: string
-          format: date-time
           description: Start date
         endDate:
           type: string
-          format: date-time
           description: End date
         status:
           type: string
@@ -403,6 +401,12 @@ components:
         - id
         - startDate
         - status
+    TaskRun:
+      type: object
+      properties:
+        result:
+          type: boolean
+          description: Result of the task
 paths:
   /rooms:
     post:
@@ -699,3 +703,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TaskInfo'
+  /tasks/run:
+    post:
+      summary: Run tasks
+      operationId: runTask
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskRun'
+

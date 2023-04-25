@@ -7,6 +7,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/yoda/app/pkg/configuration"
 	"github.com/yoda/app/pkg/event"
+	"github.com/yoda/app/pkg/listener"
 	"github.com/yoda/common/pkg/dao"
 	"github.com/yoda/common/pkg/model"
 	"time"
@@ -35,6 +36,22 @@ func NewScheduler(config *configuration.Config) *Scheduler {
 		systemScheduler: system,
 		config:          config,
 	}
+}
+
+type TaskListener struct {
+	scheduler *Scheduler
+}
+
+func (t *TaskListener) RunTask(jobId int) {
+	t.scheduler.RunImmediately(jobId)
+}
+
+func (s *Scheduler) GetListener() *listener.Listener {
+	var l listener.Listener
+	l = &TaskListener{
+		scheduler: s,
+	}
+	return &l
 }
 
 func (s *Scheduler) GetAllJobs() []*gocron.Job {

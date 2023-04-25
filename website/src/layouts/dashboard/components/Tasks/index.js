@@ -24,18 +24,36 @@ function Tasks() {
   const openMenu = ({ currentTarget }) => setMenu(currentTarget);
   const closeMenu = () => setMenu(null);
 
-  const refreshDate = () => {
+  const refreshData = () => {
     DefaultService.getTasks()
       .then((res) => {
+        console.log("#getTasks", res);
         setTaskInfo(res);
       })
       .catch((err) => {
         console.error(err);
       });
   };
+
+  const runTackImmediately = () => {
+    DefaultService.runTask()
+      .then((res) => {
+        if (res.result) {
+          refreshData();
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
+
+  const handleOnClick = () => {
+    runTackImmediately("@runTaskImmediately");
+    closeMenu();
+  };
+
   useEffect(() => {
-    console.log("#useEffect");
-    refreshDate();
+    refreshData();
   }, []);
 
   const renderMenu = (
@@ -53,7 +71,7 @@ function Tasks() {
       open={Boolean(menu)}
       onClose={closeMenu}
     >
-      <MenuItem onClick={closeMenu}>Run immediately</MenuItem>
+      <MenuItem onClick={handleOnClick}>Run immediately</MenuItem>
     </Menu>
   );
 
@@ -92,6 +110,13 @@ function Tasks() {
           </MDBox>
         </MDBox>
         <MDBox color="text" px={2}>
+          <Icon
+            sx={{ cursor: "pointer", fontWeight: "bold" }}
+            fontSize="small"
+            onClick={refreshData}
+          >
+            refresh
+          </Icon>
           <Icon sx={{ cursor: "pointer", fontWeight: "bold" }} fontSize="small" onClick={openMenu}>
             more_vert
           </Icon>

@@ -29,6 +29,7 @@ func main() {
 	scheduler := timer.NewScheduler(config)
 	scheduler.InitJob()
 	scheduler.Start()
+	event.SetListener(scheduler.GetListener())
 	defer scheduler.StopAll()
 
 	c := make(chan os.Signal, 1)

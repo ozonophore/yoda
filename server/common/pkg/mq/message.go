@@ -4,7 +4,9 @@ type Message struct {
 	ID int64 `json:"id"` // ID of the message
 }
 
-const HEADER_ETL_INFO = "ETL-INFO"
+const (
+	HEADER_ETL_INFO = "ETL-INFO"
+)
 
 type MessageETLInfoRequest struct {
 	ID int64 `json:"id"` // ID of the message

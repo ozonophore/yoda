@@ -5,7 +5,6 @@ import { Chip } from "@mui/material";
 // @mui material components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
-import { format, parseISO } from "date-fns";
 
 const columns = [
   { Header: "Дата начала", accessor: "startDate", width: "25%", align: "left" },
@@ -32,12 +31,12 @@ const renderRows = (items) =>
   items.map(({ startDate, endDate, status }) => ({
     startDate: (
       <MDBox display="flex" py={1}>
-        {format(parseISO(startDate), "dd-MM-yyyy HH:mm:ss")}
+        {startDate}
       </MDBox>
     ),
     endDate: (
       <MDBox display="flex" py={1}>
-        {format(parseISO(endDate), "dd-MM-yyyy HH:mm:ss")}
+        {endDate}
       </MDBox>
     ),
     status: (

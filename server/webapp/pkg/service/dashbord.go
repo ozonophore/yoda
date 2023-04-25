@@ -1,8 +1,12 @@
 package service
 
 import (
+	"github.com/google/uuid"
 	"github.com/yoda/webapp/pkg/api"
 	"github.com/yoda/webapp/pkg/dao"
+	"github.com/yoda/webapp/pkg/event"
+	"github.com/yoda/webapp/pkg/mqclient"
+	"time"
 )
 
 func GetSalesForWeek() (*api.SalesForWeek, error) {
@@ -73,10 +77,15 @@ func GetTasksInfo() (*api.TaskInfo, error) {
 		}, nil
 	}
 	for _, info := range *infos {
+		var endDateStr *string
+		if info.EndDate != nil {
+			v := info.EndDate.Format(time.DateTime)
+			endDateStr = &v
+		}
 		items = append(items, api.TaskInfoItem{
 			Id:        info.ID,
-			StartDate: info.StartDate,
-			EndDate:   info.EndDate,
+			StartDate: info.StartDate.Format(time.DateTime),
+			EndDate:   endDateStr,
 			Status:    info.Status,
 			Message:   info.Message,
 		})
@@ -86,4 +95,11 @@ func GetTasksInfo() (*api.TaskInfo, error) {
 		Completed: (*infos)[0].Completed,
 		Canceled:  (*infos)[0].Canceled,
 	}, nil
+}
+
+func RunTask(taskId int) (*api.TaskRun, error) {
+	guid := uuid.New()
+	event.RegistrationHandlerRunJob(guid.String())
+	mqclient.SendRunTask(guid.String())
+	return nil, nil
 }
