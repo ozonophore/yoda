@@ -1,16 +1,22 @@
 create table "1c_org"
 (
-    "id"        integer primary key,
     "name"      varchar(200),
-    "create_at" timestamp not null
+    "inn" varchar(15),
+    "kpp" varchar(15),
+    "uid" varchar(36) primary key,
+    "create_at" timestamp default now()
 );
 
 comment
 on table "1c_org" is 'Таблица для хранения организаций из 1С';
 comment
-on column "1c_org"."id" is 'Идентификатор организации';
-comment
 on column "1c_org"."name" is 'Наименование организации';
+comment
+on column "1c_org"."inn" is 'ИНН организации';
+comment
+on column "1c_org"."kpp" is 'КПП организации';
+comment
+on column "1c_org"."uid" is 'Уникальный идентификатор организации';
 comment
 on column "1c_org"."create_at" is 'Дата и время создания записи';
 
@@ -83,7 +89,7 @@ create table "1c_stock"
     "code1c"    varchar(50) not null,
     "character" varchar(200),
     "quantity"  integer     not null,
-    "update_at" timestamp   not null
+    "update_at" timestamp   now()
 );
 
 

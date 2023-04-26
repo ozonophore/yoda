@@ -67,9 +67,8 @@ func RunRegularLoad(config *configuration.Config, ctx context.Context, jobID int
 		err = errors.New(fmt.Sprintf("Job %d not found", jobID))
 		return
 	}
-	defer callOnAfterJonExecution(job, transactionID, gJob, err, onAfter)
-
 	callOnBeforeJonExecution(job, transactionID, gJob, onBefore)
+	defer callOnAfterJonExecution(job, transactionID, gJob, err, onAfter)
 	logrus.Info("Start parsing for job: ", jobID)
 	for _, param := range *job.Params {
 		err = prepareParam(ctx, config, &param, transactionID)
