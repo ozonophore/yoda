@@ -1,4 +1,4 @@
-create or replace procedure "calc_stock_daily"(IN p_id "transaction"."id"%type)
+create procedure calc_stock_daily(IN p_id integer)
     language plpgsql
 as
 $$
@@ -17,7 +17,6 @@ merge into "stock_daily" ss
                   "warehouse_name",
                   "external_code",
                   "barcode",
-                  "card_created",
                   sum("quantity") quantity,
                   sum("quantity_full") quantity_full,
                   case when sum("quantity") = 0 then 0 else sum("price") / sum("quantity") end as "price",
@@ -27,7 +26,7 @@ merge into "stock_daily" ss
            from "stock"
            where "transaction_id" = p_id and "price" is not null
            group by "source", "owner_code", "warehouse_name", "external_code", "barcode",
-                    "transaction_date", "card_created") as data
+                    "transaction_date") as data
     on (ss."source" = data."source"
         and ss."owner_code" = data."owner_code"
         and ss."warehouse" = data."warehouse_name"
@@ -46,6 +45,6 @@ merge into "stock_daily" ss
         insert ("stock_date", "source", "owner_code", "warehouse", "external_code", "barcode", "quantity",
                 "quantity_full", "price", "price_with_discount", "create_at", "update_at", "attention")
             values (data."transaction_date", data."source", data."owner_code", data."warehouse_name", data."external_code",
-                    data."barcode", data."quantity", data."quantity_full", data."price", data."price_with_discount", data."card_created", current_date, 1);
+                    data."barcode", data."quantity", data."quantity_full", data."price", data."price_with_discount", current_date, current_date, 1);
 end
 $$;

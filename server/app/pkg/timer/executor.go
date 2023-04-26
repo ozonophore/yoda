@@ -67,20 +67,25 @@ func RunRegularLoad(config *configuration.Config, ctx context.Context, jobID int
 		return
 	}
 	callOnBeforeJonExecution(job, transactionID, gJob, onBefore)
-	defer callOnAfterJonExecution(job, transactionID, gJob, err, onAfter)
+	err = execute(config, ctx, jobID, job, err, transactionID)
+	callOnAfterJonExecution(job, transactionID, gJob, err, onAfter)
+}
+
+func execute(config *configuration.Config, ctx context.Context, jobID int, job *model.Job, err error, transactionID int64) error {
 	logrus.Info("Start parsing for job: ", jobID)
 	for _, param := range *job.Params {
 		err = prepareParam(ctx, config, &param, transactionID)
 		if err != nil {
 			logrus.Errorf("Error after prepare param: %s", err)
-			return
+			return err
 		}
 	}
 	err = repository.CallDailyData(transactionID)
 	if err != nil {
 		logrus.Errorf("Error after call daily data: %s", err)
-		return
+		return err
 	}
+	return nil
 }
 
 func prepareParam(ctx context.Context, config *configuration.Config, param *model.OwnerMarketplace, transactionID int64) error {
