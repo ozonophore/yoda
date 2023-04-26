@@ -246,6 +246,7 @@ func CallDailyData(transactionID int64) error {
 			logrus.Debug("call calc_order_delivered finished")
 		}
 		if err != nil {
+			logrus.Errorf("call calc_order_delivered error: %s", err)
 			return errors.Join(err)
 		}
 		logrus.Debugf("call calc_stock_daily(%d)", transactionID)
@@ -254,6 +255,7 @@ func CallDailyData(transactionID int64) error {
 			logrus.Debug("call calc_stock_daily finished")
 		}
 		if err != nil {
+			logrus.Errorf("call calc_stock_daily error: %s", err)
 			return errors.Join(err)
 		}
 		return nil

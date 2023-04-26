@@ -78,6 +78,10 @@ func RunRegularLoad(config *configuration.Config, ctx context.Context, jobID int
 		}
 	}
 	err = repository.CallDailyData(transactionID)
+	if err != nil {
+		logrus.Errorf("Error after call daily data: %s", err)
+		return
+	}
 }
 
 func prepareParam(ctx context.Context, config *configuration.Config, param *model.OwnerMarketplace, transactionID int64) error {
