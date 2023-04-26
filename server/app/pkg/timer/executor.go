@@ -25,12 +25,11 @@ func callOnBeforeJonExecution(job *model.Job, transactionID int64, gJob *gocron.
 }
 
 func callOnAfterJonExecution(job *model.Job, transactionID int64, gJob *gocron.Job, err error, onAfter onAfterJobExecution) {
-	if transactionID == 0 {
-		println("transactionID is 0")
-	}
 	if err == nil {
+		logrus.Debugf("Job %d finished successfully", job.ID)
 		repository.EndOperation(transactionID, types.StatusTypeCompleted)
 	} else {
+		logrus.Errorf("Job %d finished with error: %s", job.ID, err)
 		repository.EndOperationWithMessage(transactionID, types.StatusTypeRejected, err.Error())
 	}
 	logrus.Infof("Finish job: %d. Next run: %s", job.ID, gJob.NextRun())
