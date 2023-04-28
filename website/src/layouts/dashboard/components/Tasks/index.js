@@ -12,10 +12,13 @@ import MDTypography from "components/MDTypography";
 import DataTable from "examples/Tables/DataTable";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useMaterialUIController } from "../../../../context";
 import { DefaultService } from "../../../../generated";
 import data from "./data";
 
 function Tasks() {
+  const [controller] = useMaterialUIController();
+  const { nextRun } = controller;
   const [t] = useTranslation();
   const [menu, setMenu] = useState(null);
   const { columns, renderRows } = data;
@@ -27,7 +30,6 @@ function Tasks() {
   const refreshData = () => {
     DefaultService.getTasks()
       .then((res) => {
-        console.log("#getTasks", res);
         setTaskInfo(res);
       })
       .catch((err) => {
@@ -35,6 +37,9 @@ function Tasks() {
       });
   };
 
+  useEffect(() => {
+    refreshData();
+  }, [nextRun]);
   const runTackImmediately = () => {
     DefaultService.runTask()
       .then((res) => {
@@ -48,13 +53,13 @@ function Tasks() {
   };
 
   const handleOnClick = () => {
-    runTackImmediately("@runTaskImmediately");
+    runTackImmediately();
     closeMenu();
   };
 
   useEffect(() => {
     refreshData();
-  }, []);
+  }, [nextRun]);
 
   const renderMenu = (
     <Menu

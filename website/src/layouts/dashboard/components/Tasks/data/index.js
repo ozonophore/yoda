@@ -4,7 +4,8 @@
 import { Chip } from "@mui/material";
 // @mui material components
 import MDBox from "components/MDBox";
-import MDTypography from "components/MDTypography";
+import { lowerCase, upperCase } from "lodash";
+import React from "react";
 
 const columns = [
   { Header: "Дата начала", accessor: "startDate", width: "25%", align: "left" },
@@ -13,11 +14,11 @@ const columns = [
 ];
 
 const parseStatus = (status) => {
-  switch (status) {
+  switch (upperCase(status)) {
     case "COMPLETED":
       return "success";
     case "CANCELED":
-      return "error";
+      return "warning";
     case "REJECTED":
       return "error";
     case "BEGIN":
@@ -40,9 +41,9 @@ const renderRows = (items) =>
       </MDBox>
     ),
     status: (
-      <MDTypography color="white">
-        <Chip label={parseStatus(status)} color={parseStatus(status)} size="small" />
-      </MDTypography>
+      <MDBox display="flex" py={1}>
+        <Chip label={lowerCase(status)} color={parseStatus(status)} size="small" />
+      </MDBox>
     ),
   }));
 

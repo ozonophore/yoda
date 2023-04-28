@@ -35,6 +35,7 @@ const InitialState = {
     message: "",
   },
   date: new Date(),
+  nextRun: null,
 };
 
 export default InitialState;

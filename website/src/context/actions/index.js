@@ -54,4 +54,17 @@ const Ping = () => (dispatch) => {
   });
 };
 
-export { RefreshRooms, CloseError, CreateRoom, RefreshJobs, RoomAddToggle, RoomGridToggle, Ping };
+const NextRun = (value) => (dispatch) => {
+  dispatch({ type: "NEXT_RUN", value });
+};
+
+export {
+  RefreshRooms,
+  CloseError,
+  CreateRoom,
+  RefreshJobs,
+  RoomAddToggle,
+  RoomGridToggle,
+  Ping,
+  NextRun,
+};

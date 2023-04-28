@@ -107,6 +107,9 @@ function reducer(state, action) {
     case "PING": {
       return { ...state, date: action.value };
     }
+    case "NEXT_RUN": {
+      return { ...state, nextRun: action.value };
+    }
     default: {
       throw new Error(`Unhandled action type: ${action.type}`);
     }

@@ -1,34 +1,28 @@
 /**
-=========================================================
-* Material Dashboard 2 React - v2.1.0
-=========================================================
+ =========================================================
+ * Material Dashboard 2 React - v2.1.0
+ =========================================================
 
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
+ * Product Page: https://www.creative-tim.com/product/material-dashboard-react
+ * Copyright 2022 Creative Tim (https://www.creative-tim.com)
 
-Coded by www.creative-tim.com
+ Coded by www.creative-tim.com
 
  =========================================================
 
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+ */
 
-import { useState, useEffect } from "react";
-
-// react-router components
-import { Routes, Route, Navigate, useLocation } from "react-router-dom";
-
-// @mui material components
-import { ThemeProvider } from "@mui/material/styles";
+import { Backdrop, CircularProgress } from "@material-ui/core";
 import CssBaseline from "@mui/material/CssBaseline";
 import Icon from "@mui/material/Icon";
 
-// Material Dashboard 2 React components
-import MDBox from "components/MDBox";
+// @mui material components
+import { ThemeProvider } from "@mui/material/styles";
+import brandDark from "assets/images/logo-ct-dark.png";
 
-// Material Dashboard 2 React example components
-import Sidenav from "examples/Sidenav";
-import Configurator from "examples/Configurator";
+// Images
+import brandWhite from "assets/images/logo-ct.png";
 
 // Material Dashboard 2 React themes
 import theme from "assets/theme";
@@ -36,25 +30,35 @@ import theme from "assets/theme";
 // Material Dashboard 2 React Dark Mode themes
 import themeDark from "assets/theme-dark";
 
-// Material Dashboard 2 React routes
-import routes from "routes";
+// Material Dashboard 2 React components
+import MDBox from "components/MDBox";
+
+// Material Dashboard 2 React contexts
+import { setMiniSidenav, setOpenConfigurator, useMaterialUIController } from "context";
+import Configurator from "examples/Configurator";
+
+// Material Dashboard 2 React example components
+import Sidenav from "examples/Sidenav";
+import { useEffect, useMemo, useState } from "react";
 
 import { useTranslation } from "react-i18next";
 
-// Material Dashboard 2 React contexts
-import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "context";
+// react-router components
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 
-// Images
-import brandWhite from "assets/images/logo-ct.png";
-import brandDark from "assets/images/logo-ct-dark.png";
-import { Backdrop, CircularProgress } from "@material-ui/core";
+// Material Dashboard 2 React routes
+import routes from "routes";
 import { OpenAPI } from "./generated";
+import createWSService from "./services";
 
 OpenAPI.BASE = "/api";
 
 function App() {
   const { t, i18n } = useTranslation();
   const [controller, dispatch] = useMaterialUIController();
+  useMemo(() => {
+    createWSService(dispatch);
+  }, [dispatch]);
   const {
     miniSidenav,
     direction,

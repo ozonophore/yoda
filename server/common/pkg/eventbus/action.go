@@ -23,5 +23,7 @@ type MessageRunTaskRequest struct {
 }
 
 type MessageRunTaskResponse struct {
-	ID string `json:"id"` // ID of the message
+	ID    string    `json:"id"`     // ID of the message
+	JobId int       `json:"job_id"` // ID of the job
+	Date  time.Time `json:"date"`   // Date of the message
 }

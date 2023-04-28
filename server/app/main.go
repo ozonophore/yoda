@@ -4,10 +4,10 @@ import (
 	"context"
 	"github.com/rifflock/lfshook"
 	"github.com/sirupsen/logrus"
-	"github.com/yoda/app/pkg/configuration"
-	"github.com/yoda/app/pkg/event"
-	"github.com/yoda/app/pkg/repository"
-	"github.com/yoda/app/pkg/timer"
+	"github.com/yoda/app/internal/configuration"
+	"github.com/yoda/app/internal/event"
+	"github.com/yoda/app/internal/repository"
+	"github.com/yoda/app/internal/timer"
 	"github.com/yoda/common/pkg/dao"
 	"os"
 	"os/signal"
@@ -27,9 +27,11 @@ func main() {
 	defer event.CloseEvent()
 
 	scheduler := timer.NewScheduler(config)
+	schedulerObserver := event.CreateObserver()
+	scheduler.AddObserver(&schedulerObserver)
+	event.AddObserver(scheduler.GetObserver())
 	scheduler.InitJob()
 	scheduler.Start()
-	event.SetListener(scheduler.GetListener())
 	defer scheduler.StopAll()
 
 	c := make(chan os.Signal, 1)

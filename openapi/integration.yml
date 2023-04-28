@@ -1,0 +1,145 @@
+openapi: 3.0.1
+info:
+  title: Integration
+  version: 1.0.0
+components:
+  schemas:
+    Stocks:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+          description: Count of stocks
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Stock'
+      required:
+        - count
+        - items
+    Stock:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Stock ID from 1c
+        quantity:
+          type: integer
+          format: int32
+          description: Stock quantity
+        updateAt:
+          type: string
+          format: date-time
+          description: Stock update date
+      required:
+        - id
+        - quantity
+    Items:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+          description: Count of items
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Item'
+      required:
+        - count
+        - items
+    Item:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Item ID from 1c
+        name:
+          type: string
+          description: Item name
+        article:
+          type: string
+          description: Item article
+        updateAt:
+          type: string
+          format: date-time
+          description: Item update date
+      required:
+        - id
+        - name
+        - updateAt
+    Organizations:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+          description: Count of organizations
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Organization'
+      required:
+        - count
+        - items
+    Organization:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Organization ID from 1c
+        name:
+          type: string
+          description: Organization name
+        inn:
+          type: string
+          description: Organization inn
+        kpp:
+          type: string
+          description: Organization kpp
+        updateAt:
+          type: string
+          format: date-time
+          description: Organization update date
+      required:
+        - id
+        - name
+        - updateAt
+paths:
+  /stocks:
+    get:
+      summary: Get stocks
+      description: Get stocks
+      operationId: getStocks
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Stocks'
+  /items:
+    get:
+      summary: Get items
+      description: Get items
+      operationId: getItems
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Items'
+  /organizations:
+    get:
+      summary: Get organizations
+      description: Get organizations
+      operationId: getOrganizations
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organizations'

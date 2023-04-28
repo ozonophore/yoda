@@ -407,6 +407,8 @@ components:
         result:
           type: boolean
           description: Result of the task
+      required:
+        - result
 paths:
   /rooms:
     post:
