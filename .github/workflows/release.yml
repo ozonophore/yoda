@@ -63,7 +63,7 @@ jobs:
       - name: Echo new version
         run: echo ${{ steps.get-version.outputs.substring }}
       - name: Copy openapi
-        run: cp ./openapi ./website/openapi
+        run: cp -r ./openapi ./website/openapi
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v2
         with:
