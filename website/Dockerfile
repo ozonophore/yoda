@@ -1,13 +1,15 @@
 FROM node as build
 
-COPY ./openapi ./openapi
-
 WORKDIR /app
+
+COPY ./openapi ./openapi
 
 COPY website/public website/public
 COPY website/src website/src
 COPY website/package.json website/
 COPY website/tsconfig.json website/
+
+WORKDIR /app/website
 
 RUN npm install
 RUN npm run generate
