@@ -2,7 +2,7 @@ package mapper
 
 import (
 	"fmt"
-	"github.com/yoda/app/pkg/api"
+	"github.com/yoda/app/internal/api"
 	"github.com/yoda/common/pkg/types"
 	"github.com/yoda/common/pkg/utils"
 	"testing"

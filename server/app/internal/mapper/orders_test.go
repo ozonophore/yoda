@@ -3,7 +3,7 @@ package mapper
 import (
 	"fmt"
 	"github.com/stretchr/testify/assert"
-	"github.com/yoda/app/pkg/api"
+	"github.com/yoda/app/internal/api"
 	"github.com/yoda/common/pkg/types"
 	"testing"
 	"time"
