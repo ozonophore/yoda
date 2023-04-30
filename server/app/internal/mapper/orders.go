@@ -1,9 +1,7 @@
 package mapper
 
 import (
-	"encoding/json"
 	"fmt"
-	"github.com/sirupsen/logrus"
 	"github.com/yoda/app/internal/api"
 	"github.com/yoda/common/pkg/model"
 	"github.com/yoda/common/pkg/utils"
@@ -23,13 +21,6 @@ func MapOrderArray(orders *[]api.OrdersItem, transactionId int64, source string,
 }
 
 func MapOrder(order *api.OrdersItem, transactionId int64, source string, ownerCode string, wasSold func(odid *int64) bool) (result *model.Order, err error) {
-	if logrus.IsLevelEnabled(logrus.DebugLevel) {
-		bytes, err := json.Marshal(order)
-		if err != nil {
-			logrus.Error(err)
-		}
-		logrus.Debugf("Order: %s", string(bytes))
-	}
 	orderDate, err := time.Parse(time.DateOnly+"T"+time.TimeOnly, *order.Date)
 	if err != nil {
 		return nil, err
