@@ -5,6 +5,7 @@ const createWSService = (dispatch) => {
   const ws = new WebSocket("ws://localhost:88/ws");
 
   ws.onmessage = (evt) => {
+    console.log("#Received: ", evt.data);
     const message = JSON.parse(evt.data);
     dispatch(NextRun(parseISO(message.nextRun)));
   };
