@@ -55,7 +55,8 @@
     },
     "settings": {
       "connection": "Параметры подключения"
-    }
+    },
+    "orgUndefined": "Organisation is undefined",
   },
   "submit": "Save",
   "cancel": "Cancel",

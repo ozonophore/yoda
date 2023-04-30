@@ -28,6 +28,8 @@ components:
           type: string
         name:
           type: string
+        organisationId:
+          type: string
         ozon:
           $ref: '#/components/schemas/Ozon'
         wb:
@@ -53,6 +55,10 @@ components:
           code:
             type: string
           name:
+            type: string
+          organisationId:
+            type: string
+          organisation:
             type: string
           createdAt:
             type: string
@@ -166,9 +172,9 @@ components:
         marketplace:
           type: string
           description: Marketplace name
-        organization:
+        organisation:
           type: string
-          description: Organization name
+          description: Organisation name
         quantity:
           type: integer
           format: int
@@ -196,7 +202,7 @@ components:
         - id
         - name
         - marketplace
-        - organization
+        - organisation
         - quantity
         - createdAt
         - updatedAt
@@ -243,9 +249,9 @@ components:
             type: string
             format: date-time
             description: Transaction date
-          organization:
+          organisation:
             type: string
-            description: Organization name
+            description: Organisation name
           marketplace:
             type: string
             description: Marketplace name
@@ -284,7 +290,7 @@ components:
             - id
             - name
             - transactionDate
-            - organization
+            - organisation
             - marketplace
             - article
             - barcode
@@ -409,6 +415,22 @@ components:
           description: Result of the task
       required:
         - result
+    Organisations:
+      type: array
+      items:
+        $ref: '#/components/schemas/Organisation'
+    Organisation:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Organisation ID from 1c
+        name:
+          type: string
+          description: Organisation name
+      required:
+        - id
+        - name
 paths:
   /rooms:
     post:
@@ -716,4 +738,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TaskRun'
+  /organisations:
+    get:
+      summary: Get organisations
+      description: Get organisations
+      operationId: getOrganisations
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organisations'
 

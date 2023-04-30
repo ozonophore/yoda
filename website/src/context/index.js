@@ -110,6 +110,9 @@ function reducer(state, action) {
     case "NEXT_RUN": {
       return { ...state, nextRun: action.value };
     }
+    case "REFRESH_ORGANISATIONS": {
+      return { ...state, organisations: action.value, loading: false };
+    }
     default: {
       throw new Error(`Unhandled action type: ${action.type}`);
     }

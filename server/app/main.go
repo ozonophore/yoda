@@ -27,9 +27,8 @@ func main() {
 	defer event.CloseEvent()
 
 	scheduler := timer.NewScheduler(config)
-	schedulerObserver := event.CreateObserver()
-	scheduler.AddObserver(&schedulerObserver)
-	event.AddObserver(scheduler.GetObserver())
+	scheduler.AddObserver(event.CreateObserver())
+	event.AddObserver(scheduler)
 	scheduler.InitJob()
 	scheduler.Start()
 	defer scheduler.StopAll()

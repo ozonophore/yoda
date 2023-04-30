@@ -1,18 +1,17 @@
 // prop-types is a library for typechecking of props
-import Tooltip from "@mui/material/Tooltip";
-import PropTypes from "prop-types";
-
 // @mui material components
 import Card from "@mui/material/Card";
 import Divider from "@mui/material/Divider";
 import Icon from "@mui/material/Icon";
+import Tooltip from "@mui/material/Tooltip";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
+import PropTypes from "prop-types";
 import { useTranslation } from "react-i18next";
 
-function RoomInfoCard({ color, title, name, days, time, icon, onEdit }) {
+function RoomInfoCard({ color, title, name, organization, days, time, icon, onEdit }) {
   const [t] = useTranslation();
 
   const dayOfWeekLabel = days.map((item) => t(`dayOfWeek.short.${item}`)).join("; ");
@@ -57,6 +56,14 @@ function RoomInfoCard({ color, title, name, days, time, icon, onEdit }) {
           <MDTypography variant="h4">{name}</MDTypography>
         </MDBox>
       </MDBox>
+      <MDBox px={2}>
+        {organization && <MDTypography variant="button">{organization}</MDTypography>}
+        {!organization && (
+          <MDTypography variant="button" color="warning">
+            {t("room.orgUndefined")}
+          </MDTypography>
+        )}
+      </MDBox>
       <Divider />
       <MDBox pb={2} px={2}>
         <MDTypography component="p" variant="button" color="text" display="flex">
@@ -75,6 +82,7 @@ RoomInfoCard.defaultProps = {
   color: "info",
   days: [],
   time: [],
+  organization: null,
   percentage: {
     color: "success",
     text: "",
@@ -98,6 +106,7 @@ RoomInfoCard.propTypes = {
   days: PropTypes.arrayOf(PropTypes.string),
   time: PropTypes.arrayOf(PropTypes.string),
   name: PropTypes.oneOfType([PropTypes.string]).isRequired,
+  organization: PropTypes.oneOfType([PropTypes.string]),
   onEdit: PropTypes.func.isRequired,
   percentage: PropTypes.shape({
     color: PropTypes.oneOf([

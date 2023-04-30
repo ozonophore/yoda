@@ -13,7 +13,7 @@ import (
 )
 
 var queues []string
-var observers []*observer.EventObserver
+var observers []observer.EventObserver
 
 func InitEvent(ctx context.Context, config configuration.Mq) {
 	eventbus.NewBus(config.Url)
@@ -60,7 +60,7 @@ func CreateObserver() observer.SchedulerObserver {
 
 func notifyRunTask(jobID int) {
 	for _, observer := range observers {
-		(*observer).RunImmediately(jobID)
+		observer.RunImmediately(jobID)
 	}
 }
 
@@ -72,7 +72,7 @@ func AddQueue(name string) {
 	queues = append(queues, name)
 }
 
-func AddObserver(observer *observer.EventObserver) {
+func AddObserver(observer observer.EventObserver) {
 	observers = append(observers, observer)
 }
 

@@ -13,6 +13,17 @@ const RefreshRooms = () => (dispatch) => {
     });
 };
 
+const RefreshOrganisations = () => (dispatch) => {
+  dispatch({ type: "LOADING", value: true });
+  DefaultService.getOrganisations()
+    .then((data) => {
+      dispatch({ type: "REFRESH_ORGANISATIONS", value: data });
+    })
+    .catch((error) => {
+      dispatch({ type: "SHOW_ERROR", value: error.statusText });
+    });
+};
+
 const CloseError = () => (dispatch) => {
   dispatch({ type: "CLOSE_ERROR", value: false });
 };
@@ -67,4 +78,5 @@ export {
   RoomGridToggle,
   Ping,
   NextRun,
+  RefreshOrganisations,
 };

@@ -52,10 +52,11 @@ type JobLoader struct {
 
 // NewRoom defines model for NewRoom.
 type NewRoom struct {
-	Code string `json:"code"`
-	Name string `json:"name"`
-	Ozon Ozon   `json:"ozon"`
-	Wb   Wb     `json:"wb"`
+	Code           string  `json:"code"`
+	Name           string  `json:"name"`
+	OrganisationId *string `json:"organisationId,omitempty"`
+	Ozon           Ozon    `json:"ozon"`
+	Wb             Wb      `json:"wb"`
 }
 
 // OrderItem defines model for OrderItem.
@@ -76,8 +77,8 @@ type OrderItem struct {
 	// Name Name of the item
 	Name string `json:"name"`
 
-	// Organization Organization name
-	Organization string `json:"organization"`
+	// Organisation Organisation name
+	Organisation string `json:"organisation"`
 
 	// Price Price of the item
 	Price float64 `json:"price"`
@@ -115,6 +116,18 @@ type OrderItems struct {
 	Total int `json:"total"`
 }
 
+// Organisation defines model for Organisation.
+type Organisation struct {
+	// Id Organisation ID from 1c
+	Id string `json:"id"`
+
+	// Name Organisation name
+	Name string `json:"name"`
+}
+
+// Organisations defines model for Organisations.
+type Organisations = []Organisation
+
 // Ozon defines model for Ozon.
 type Ozon struct {
 	ApiKey   string `json:"apiKey"`
@@ -123,13 +136,15 @@ type Ozon struct {
 
 // Room defines model for Room.
 type Room struct {
-	Code      string     `json:"code"`
-	CreatedAt *time.Time `json:"createdAt,omitempty"`
-	Days      []WeekDay  `json:"days"`
-	Name      string     `json:"name"`
-	Ozon      Ozon       `json:"ozon"`
-	Times     []string   `json:"times"`
-	Wb        Wb         `json:"wb"`
+	Code           string     `json:"code"`
+	CreatedAt      *time.Time `json:"createdAt,omitempty"`
+	Days           []WeekDay  `json:"days"`
+	Name           string     `json:"name"`
+	Organisation   *string    `json:"organisation,omitempty"`
+	OrganisationId *string    `json:"organisationId,omitempty"`
+	Ozon           Ozon       `json:"ozon"`
+	Times          []string   `json:"times"`
+	Wb             Wb         `json:"wb"`
 }
 
 // SalesForWeek defines model for SalesForWeek.
@@ -177,8 +192,8 @@ type StockItem struct {
 	// Name Name of the item
 	Name string `json:"name"`
 
-	// Organization Organization name
-	Organization string `json:"organization"`
+	// Organisation Organisation name
+	Organisation string `json:"organisation"`
 
 	// Quantity Quantity of the item
 	Quantity int `json:"quantity"`
@@ -301,6 +316,9 @@ type ServerInterface interface {
 	// Get all orders
 	// (GET /orders)
 	GetOrders(w http.ResponseWriter, r *http.Request, params GetOrdersParams)
+	// Get organisations
+	// (GET /organisations)
+	GetOrganisations(w http.ResponseWriter, r *http.Request)
 	// Ping
 	// (GET /ping)
 	Ping(w http.ResponseWriter, r *http.Request)
@@ -502,6 +520,21 @@ func (siw *ServerInterfaceWrapper) GetOrders(w http.ResponseWriter, r *http.Requ
 
 	var handler = func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.GetOrders(w, r, params)
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler(w, r.WithContext(ctx))
+}
+
+// GetOrganisations operation middleware
+func (siw *ServerInterfaceWrapper) GetOrganisations(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var handler = func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetOrganisations(w, r)
 	}
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -867,6 +900,8 @@ func HandlerWithOptions(si ServerInterface, options GorillaServerOptions) http.H
 	r.HandleFunc(options.BaseURL+"/jobs/{id}/stop", wrapper.StopJobById).Methods("POST")
 
 	r.HandleFunc(options.BaseURL+"/orders", wrapper.GetOrders).Methods("GET")
+
+	r.HandleFunc(options.BaseURL+"/organisations", wrapper.GetOrganisations).Methods("GET")
 
 	r.HandleFunc(options.BaseURL+"/ping", wrapper.Ping).Methods("GET")
 

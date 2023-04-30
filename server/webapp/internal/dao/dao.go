@@ -99,9 +99,9 @@ func SaveOwner(o model.Owner, oz model.OwnerMarketplace, wb model.OwnerMarketpla
 	tx.Model(&o).Where(`"code" = ?`, o.Code).Count(&count)
 	var err error
 	if count == 0 {
-		err = tx.Create(&o).Error
+		err = tx.Omit("organisation_name").Create(&o).Error
 	} else {
-		err = tx.Model(&o).Omit("create_date").Updates(o).Error
+		err = tx.Model(&o).Select("*").Omit("create_date, organisation_name").Updates(o).Error
 	}
 	if err != nil {
 		return err
@@ -110,9 +110,15 @@ func SaveOwner(o model.Owner, oz model.OwnerMarketplace, wb model.OwnerMarketpla
 		JobID:     1,
 		OwnerCode: o.Code,
 	}
-	err = tx.Save(&jobOwner).Error
+	err = tx.Model(&jobOwner).Where(`"job_id" = ? and "owner_code" = ?`, jobOwner.JobID, jobOwner.OwnerCode).Count(&count).Error
 	if err != nil {
-		return err
+		return errors.Join(err)
+	}
+	if count == 0 {
+		err = tx.Save(&jobOwner).Error
+		if err != nil {
+			return err
+		}
 	}
 	err = tx.Save(&oz).Error
 	if err != nil {
@@ -168,7 +174,10 @@ func GetJobById(id int64) (*model.Job, error) {
 
 func GetOwners() ([]model.Owner, error) {
 	var models []model.Owner
-	if err := dao.database.Where(`"is_deleted" =? `, false).Order(`"create_date" desc`).Find(&models).Error; err != nil {
+	if err := dao.database.
+		Raw(`select o."code", o."name", o."create_date", o."is_deleted", o."organisation_id", org."name" as organisation_name from "owner" o
+					left outer join "organisation" org on org."id" = o."organisation_id"
+					where o."is_deleted" = ? order by o."create_date" desc`, false).Find(&models).Error; err != nil {
 		return nil, err
 	}
 	return models, nil

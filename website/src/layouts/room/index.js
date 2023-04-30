@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import MDBox from "../../components/MDBox";
 import MDSnackbar from "../../components/MDSnackbar";
 import { useMaterialUIController } from "../../context";
-import { CloseError, CreateRoom, RefreshRooms } from "../../context/actions";
+import { CloseError, CreateRoom, RefreshOrganisations, RefreshRooms } from "../../context/actions";
 import Footer from "../../examples/Footer";
 import DashboardLayout from "../../examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "../../examples/Navbars/DashboardNavbar";
@@ -30,6 +30,7 @@ function Room() {
 
   useEffect(() => {
     dispatch(RefreshRooms());
+    dispatch(RefreshOrganisations());
   }, []);
   const handleOnSubmit = (room) => {
     dispatch(CreateRoom(room));

@@ -16,14 +16,14 @@ type Scheduler struct {
 	scheduler       *gocron.Scheduler
 	systemScheduler *gocron.Scheduler
 	config          *configuration.Config
-	observers       []*observer.SchedulerObserver
+	observers       []observer.SchedulerObserver
 }
 
 type JobFunc = func(config *configuration.Config, ctx context.Context, jobID int)
 
 func (s *Scheduler) notifyJobExecution(jobID int) {
 	for _, observer := range s.observers {
-		(*observer).BeforeJobExecution(jobID)
+		observer.BeforeJobExecution(jobID)
 	}
 }
 
@@ -49,17 +49,12 @@ func NewScheduler(config *configuration.Config) *Scheduler {
 	}
 }
 
-func (s *Scheduler) AddObserver(observer *observer.SchedulerObserver) {
+func (s *Scheduler) AddObserver(observer observer.SchedulerObserver) {
 	s.observers = append(s.observers, observer)
 }
 
 func (s *Scheduler) GetAllJobs() []*gocron.Job {
 	return append(s.scheduler.Jobs(), s.systemScheduler.Jobs()...)
-}
-
-func (s *Scheduler) GetObserver() *observer.EventObserver {
-	var o observer.EventObserver = *s
-	return &o
 }
 
 func (s Scheduler) RunImmediately(jobID int) {

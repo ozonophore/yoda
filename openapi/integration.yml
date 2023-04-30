@@ -28,10 +28,6 @@ components:
           type: integer
           format: int32
           description: Stock quantity
-        updateAt:
-          type: string
-          format: date-time
-          description: Stock update date
       required:
         - id
         - quantity

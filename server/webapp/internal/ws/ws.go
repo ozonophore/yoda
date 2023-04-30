@@ -23,7 +23,7 @@ func (s *Server) handler(w http.ResponseWriter, r *http.Request) {
 	connection, _ := upgrader.Upgrade(w, r, nil)
 	s.connections[connection] = true
 	defer func() {
-		logrus.Info("Closing websocket connection")
+		logrus.Debug("Closing websocket connection")
 		connection.Close()
 		delete(s.connections, connection)
 	}()

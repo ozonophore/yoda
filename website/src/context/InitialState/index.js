@@ -36,6 +36,7 @@ const InitialState = {
   },
   date: new Date(),
   nextRun: null,
+  organisations: [],
 };
 
 export default InitialState;

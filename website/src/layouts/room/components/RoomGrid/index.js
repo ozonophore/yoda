@@ -43,6 +43,7 @@ function RoomGrid() {
                   icon="tv"
                   title={room.code}
                   name={room.name}
+                  organization={room.organisation}
                   days={room.days}
                   time={room.times}
                   percentage={{

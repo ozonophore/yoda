@@ -4,21 +4,26 @@ import Avatar from "@mui/material/Avatar";
 import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
+import TextField from "@mui/material/TextField";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import useDeepCompareEffect from "use-deep-compare-effect";
 
 // Images
 import OzonLog from "../../../../assets/images/icons/ozon.svg";
 import WbLog from "../../../../assets/images/icons/wb.png";
+import MDAutocomplete from "../../../../components/MDAutocomplete";
 import MDBox from "../../../../components/MDBox";
 import MDButton from "../../../../components/MDButton";
 import MDInput from "../../../../components/MDInput";
 import MDTypography from "../../../../components/MDTypography";
+import { useMaterialUIController } from "../../../../context";
 
 const initialRoom = {
-  code: null,
-  name: null,
+  code: undefined,
+  name: undefined,
+  organisationId: undefined,
   ozon: {
     clientId: "",
     apiKey: "",
@@ -28,7 +33,17 @@ const initialRoom = {
   },
 };
 
+const mapOrganisations = (orgs) =>
+  orgs.map((org) => ({
+    label: org.name,
+    id: org.id,
+  }));
+
 function RoomCard({ room, onCancel, onSubmit }) {
+  const [controller] = useMaterialUIController();
+  const { organisations } = controller;
+  const [options, setOptions] = useState(mapOrganisations(organisations));
+  const [option, setOption] = useState(null);
   const [newRoom, setNewRoom] = useState(room || initialRoom);
   const [showWbPassword, setShowWbPassword] = useState(false);
   const [showOzonPassword, setShowOzonPassword] = useState(false);
@@ -41,6 +56,11 @@ function RoomCard({ room, onCancel, onSubmit }) {
   const [t] = useTranslation();
   const roomNameTitle = `${t("menu.room")}${newRoom.code ? ` - ${newRoom.code}` : ""}`;
 
+  useDeepCompareEffect(() => {
+    const values = mapOrganisations(organisations);
+    setOptions(values);
+    setOption(values.find((o) => o.id === newRoom.organisationId));
+  }, organisations);
   const validateModel = (r) => {
     const { code, name } = r;
     const { clientId, apiKey } = r.ozon;
@@ -127,6 +147,17 @@ function RoomCard({ room, onCancel, onSubmit }) {
                 handleOnEditRoom({ ...newRoom, name: e.target.value });
               }}
               value={name}
+            />
+          </MDBox>
+          <MDBox mb={2}>
+            <MDAutocomplete
+              options={options}
+              value={option}
+              onChange={(e, value) => {
+                setOption(value);
+                handleOnEditRoom({ ...newRoom, organisationId: value ? value.id : null });
+              }}
+              renderInput={(params) => <TextField {...params} label="Организация" />}
             />
           </MDBox>
           <MDBox pt={1} px={0}>

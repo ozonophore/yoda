@@ -9,9 +9,10 @@ import (
 
 func MapRoomToOwner(s api.NewRoom) model.Owner {
 	return model.Owner{
-		Code:       s.Code,
-		Name:       s.Name,
-		CreateDate: time.Now(),
+		Code:           s.Code,
+		Name:           s.Name,
+		OrganisationId: s.OrganisationId,
+		CreateDate:     time.Now(),
 	}
 }
 
@@ -42,8 +43,10 @@ func MapOwnersToRooms(owners []model.Owner) *[]api.Room {
 
 func MapOwnerToRoom(owner model.Owner) api.Room {
 	return api.Room{
-		Code:      owner.Code,
-		Name:      owner.Name,
-		CreatedAt: &owner.CreateDate,
+		Code:           owner.Code,
+		Name:           owner.Name,
+		OrganisationId: owner.OrganisationId,
+		CreatedAt:      &owner.CreateDate,
+		Organisation:   owner.OrganisationName,
 	}
 }

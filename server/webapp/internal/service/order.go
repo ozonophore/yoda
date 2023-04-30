@@ -42,7 +42,7 @@ func mapOrdersItems(source *[]model.OrderPageItem) *[]api.OrderItem {
 			Quantity:          item.Quantity,
 			Warehouse:         item.WarehouseName,
 			Marketplace:       item.Source,
-			Organization:      item.OwnerCode,
+			Organisation:      item.OwnerCode,
 			Name:              item.Name,
 			CreatedAt:         item.CreatedDate,
 			Price:             item.TotalPrice,
