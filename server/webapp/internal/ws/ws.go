@@ -40,6 +40,7 @@ func (s *Server) handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) WriteMessage(conn *websocket.Conn, message []byte) {
+	logrus.Debug("Sending message to client")
 	conn.WriteMessage(websocket.TextMessage, message)
 }
 
