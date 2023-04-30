@@ -18,6 +18,7 @@ log
 .data
 bin
 build
+**/build/**
 .idea
 coverage.html
 **/.docker-conf/**

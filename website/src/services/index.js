@@ -2,7 +2,8 @@ import { parseISO } from "date-fns";
 import { NextRun } from "../context/actions";
 
 const createWSService = (dispatch) => {
-  const ws = new WebSocket("ws://localhost:88/ws");
+  const host = window.location.host.match("(\\w+)*(:[0-9]+)?")[1];
+  const ws = new WebSocket(`ws://${host}:88/ws`);
 
   ws.onmessage = (evt) => {
     console.log("#Received: ", evt.data);
