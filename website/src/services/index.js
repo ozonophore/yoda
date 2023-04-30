@@ -2,7 +2,8 @@ import { parseISO } from "date-fns";
 import { NextRun } from "../context/actions";
 
 const createWSService = (dispatch) => {
-  const host = window.location.host.match("(\\w+)*(:[0-9]+)?")[1];
+  console.log("#location: ", window.location);
+  const host = window.location.hostname.match("(\\w+)*(:[0-9]+)?")[1];
   const ws = new WebSocket(`ws://${host}:88/ws`);
 
   ws.onmessage = (evt) => {
