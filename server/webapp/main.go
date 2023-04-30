@@ -26,7 +26,7 @@ func main() {
 
 	ws := ws.StartServer()
 	event.InitEvent(ctx, config.Mq)
-	event.AddObserver(ws.GetObserver())
+	event.AddObserver(ws)
 	defer event.CloseEvent()
 
 	s := server.StartServer(config.Server, &logger)

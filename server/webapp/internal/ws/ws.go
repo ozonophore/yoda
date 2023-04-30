@@ -4,7 +4,6 @@ import (
 	"context"
 	"github.com/gorilla/websocket"
 	"github.com/sirupsen/logrus"
-	"github.com/yoda/webapp/internal/observer"
 	"net/http"
 )
 
@@ -70,11 +69,6 @@ func StartServer() *Server {
 	}()
 	logrus.Info("Websocket server started on port 8081")
 	return &server
-}
-
-func (s *Server) GetObserver() *observer.WSObserver {
-	var observer observer.WSObserver = *s
-	return &observer
 }
 
 func (s *Server) Close(ctx context.Context) {
