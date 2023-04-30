@@ -74,7 +74,7 @@ func InitConfig(path string) *Config {
 		"timeout":                30,
 		"logging_level":          "info",
 		"database.logging_level": "",
-		"mq.consumer":            "yoda-consumer",
+		"mq.consumer":            "yoda-server-consumer",
 		"mq.publisher":           "yoda-publisher",
 		"mq.max_length":          10,
 		"order.loaded_days":      30,

@@ -64,8 +64,8 @@ func LoadConfig(path string) (*Config, error) {
 		"telegramBot.update_timeout": 60,
 		"telegramBot.logging_level":  "INFO",
 		"database.logging_level":     "INFO",
-		"mq.consumer":                "yoda-consumer",
-		"mq.publisher":               "yoda-publisher",
+		"mq.consumer":                "yoda-web-consumer",
+		"mq.publisher":               "yoda-server-consumer",
 		"mq.max_length":              10,
 	}, "."), nil); err != nil {
 		return nil, err

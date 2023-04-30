@@ -66,6 +66,9 @@ func (c *OzonService) Parsing(context context.Context, transactionID int64) erro
 		if err != nil {
 			return err
 		}
+		if resp.StatusCode() != 200 {
+			return errors.New(fmt.Sprintf("Ozon resp %d: %s", resp.StatusCode(), resp.Status()))
+		}
 		items := resp.JSON200.Result.Rows
 		if err = c.prepareItems(items, dt, transactionID, source); err != nil {
 			return err
