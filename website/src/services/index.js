@@ -3,7 +3,8 @@ import { NextRun } from "../context/actions";
 
 const createWSService = (dispatch) => {
   console.log("#location: ", window.location);
-  const host = window.location.hostname.match("(\\w+)*(:[0-9]+)?")[1];
+  const host = window.location.hostname.match("([\\w\\.]+)*(:[0-9]+)?")[1];
+  console.log("#host: ", host);
   const ws = new WebSocket(`ws://${host}:88/ws`);
 
   ws.onmessage = (evt) => {
