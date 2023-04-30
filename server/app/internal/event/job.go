@@ -3,6 +3,7 @@ package event
 import (
 	"encoding/json"
 	"github.com/google/uuid"
+	"github.com/sirupsen/logrus"
 	"github.com/yoda/common/pkg/eventbus"
 	"time"
 )
@@ -18,5 +19,6 @@ func RunJob(id int) {
 		Date:  time.Now(),
 	}
 	body, _ := json.Marshal(&response)
+	logrus.Debug("Send message to run job: ", id)
 	PublishToAll(&body, eventbus.EVENT_RUN_JOB, uuid.New().String())
 }

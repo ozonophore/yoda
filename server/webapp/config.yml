@@ -1,8 +1,6 @@
 server:
   port: 8080
 logging_level: DEBUG
-telegramBot:
-  logging_level: DEBUG
 database:
   dsn: postgres://user:password@localhost:5432/db
 mq:

@@ -63,7 +63,7 @@ func LoadConfig(path string) (*Config, error) {
 		"logging_level":              "INFO",
 		"telegramBot.update_timeout": 60,
 		"telegramBot.logging_level":  "INFO",
-		"database.logging_level":     "INFO",
+		"database.logging_level":     "Silent",
 		"mq.consumer":                "yoda-web-consumer",
 		"mq.publisher":               "yoda-server-consumer",
 		"mq.max_length":              10,

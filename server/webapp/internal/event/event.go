@@ -33,7 +33,7 @@ func InitEvent(ctx context.Context, config config.Mq) {
 		case eventbus.EVENT_RUN_JOB:
 			var response eventbus.MessageRunTaskResponse
 			json.Unmarshal(msg.Body, &response)
-			logrus.Info("Run job success for id: ", response.ID)
+			logrus.Info("Receive mesasge: ", (string)(msg.Body))
 			msg, _ := json.Marshal(&dto.RefreshAction{
 				Type:    "refresh",
 				NextRun: time.Now(),

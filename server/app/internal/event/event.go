@@ -29,7 +29,7 @@ func InitEvent(ctx context.Context, config configuration.Mq) {
 		case eventbus.EVENT_RUN_JOB:
 			var req eventbus.MessageRunTaskRequest
 			json.Unmarshal(msg.Body, &req)
-			logrus.Info("Message received for id: ", req.ID)
+			logrus.Debugf("Message received for id: ", req.ID)
 			if time.Now().Sub(req.Date).Seconds() > 30 {
 				logrus.Error("Run job timeout")
 				return
