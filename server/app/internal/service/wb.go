@@ -70,7 +70,7 @@ func (c *WBService) Parsing(context context.Context, transactionID int64) error 
 		return errors.Join(err)
 	}
 	logrus.Info("Load orders from wb")
-	err = c.loadOrders(context, clnt, transactionID, &source)
+	err = c.loadOrders(clnt, transactionID, &source)
 	if err != nil {
 		return errors.Join(err)
 	}
@@ -108,14 +108,15 @@ func (c *WBService) loadSales(context context.Context, transactionID int64, err 
 /**
  * Load orders from WB
  */
-func (c *WBService) loadOrders(context context.Context, client *api.ClientWithResponses, transactionId int64, source *string) error {
+func (c *WBService) loadOrders(client *api.ClientWithResponses, transactionId int64, source *string) error {
 	sinceDate := api.DateFrom{
 		Time: time.Now(),
 	}
 	days := c.config.Order.LoadedDays
 
 	sinceDate.Time = sinceDate.Time.AddDate(0, 0, -1*days)
-	if err := c.fetchOrders(context, client, &sinceDate, transactionId, source, c.ownerCode); err != nil {
+	ctx, _ := context.WithTimeout(context.Background(), time.Duration(c.config.Timeout)*time.Second)
+	if err := c.fetchOrders(ctx, client, &sinceDate, transactionId, source, c.ownerCode); err != nil {
 		logrus.Debugf("Error while fetching orders from wb: %s", err.Error())
 		return err
 	}

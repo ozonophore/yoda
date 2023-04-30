@@ -71,7 +71,7 @@ func InitConfig(path string) *Config {
 	k.Load(confmap.Provider(map[string]interface{}{
 		"version":                "0.0.1",
 		"batch_size":             200,
-		"timeout":                30,
+		"timeout":                60,
 		"logging_level":          "info",
 		"database.logging_level": "",
 		"mq.consumer":            "yoda-server-consumer",
