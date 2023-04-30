@@ -34,6 +34,11 @@ func (s *Server) handler(w http.ResponseWriter, r *http.Request) {
 			logrus.Debug("Websocket connection closed by client")
 			break // Exit the loop if the client tries to close the connection or the connection is interrupted
 		}
+		if "__ping__" == string(message) {
+			logrus.Debug("Received ping message from client")
+			s.WriteMessage(connection, []byte("__pong__"))
+			continue
+		}
 		go s.handleMessage(connection, message)
 	}
 }
