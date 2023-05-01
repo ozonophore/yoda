@@ -70,7 +70,7 @@ func fileExists(pathe string) bool {
 func InitConfig(path string) *Config {
 	k.Load(confmap.Provider(map[string]interface{}{
 		"version":                "0.0.1",
-		"batch_size":             200,
+		"batch_size":             500,
 		"timeout":                60,
 		"logging_level":          "info",
 		"database.logging_level": "silent",
