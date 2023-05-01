@@ -14,6 +14,7 @@
  */
 
 import Autocomplete from "@mui/material/Autocomplete";
+import CircularProgress from "@mui/material/CircularProgress";
 import Icon from "@mui/material/Icon";
 
 // @mui material components
@@ -35,7 +36,7 @@ import DataTableHeadCell from "examples/Tables/DataTable/DataTableHeadCell";
 
 // prop-types is a library for typechecking of props
 import PropTypes from "prop-types";
-import { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 // react-table components
@@ -62,6 +63,7 @@ function StockDataTable({
   const [pageCount, setPageCount] = useState(0);
   const [canPreviousPage, setCanPreviousPage] = useState(true);
   const [items, setItems] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const defaultValue = entriesPerPage.defaultValue ? entriesPerPage.defaultValue : 10;
   const [pageSize, setPageSize] = useState(defaultValue);
   const entries = entriesPerPage.entries
@@ -95,14 +97,20 @@ function StockDataTable({
   const { getTableProps, getTableBodyProps, headerGroups, prepareRow, rows, page, pageOptions } =
     tableInstance;
 
+  const wrapSetItems = (dt) => {
+    setItems(dt);
+    setIsLoading(false);
+  };
+
   // Set the default value for the entries per page when component mounts
   useEffect(() => {
+    setIsLoading(true);
     onFetchData(
       pageIndex,
       pageSize,
       transactionDate,
       search,
-      setItems,
+      wrapSetItems,
       setTotalCount,
       setPageCount,
       setCanNextPage,
@@ -257,24 +265,34 @@ function StockDataTable({
               </TableRow>
             ))}
           </MDBox>
-          <TableBody {...getTableBodyProps()}>
-            {page.map((row, key) => {
-              prepareRow(row);
-              return (
-                <TableRow {...row.getRowProps()}>
-                  {row.cells.map((cell) => (
-                    <DataTableBodyCell
-                      noBorder={noEndBorder && rows.length - 1 === key}
-                      align={cell.column.align ? cell.column.align : "left"}
-                      {...cell.getCellProps()}
-                    >
-                      {cell.render("Cell")}
-                    </DataTableBodyCell>
-                  ))}
-                </TableRow>
-              );
-            })}
-          </TableBody>
+          {isLoading && (
+            <MDBox display="flex" justifyContent="center" alignItems="center" pt={2}>
+              <CircularProgress color="info" size={25} />
+              <MDTypography pl={2} variant="caption" color="secondary">
+                Loading...
+              </MDTypography>
+            </MDBox>
+          )}
+          {!isLoading && (
+            <TableBody {...getTableBodyProps()}>
+              {page.map((row, key) => {
+                prepareRow(row);
+                return (
+                  <TableRow {...row.getRowProps()}>
+                    {row.cells.map((cell) => (
+                      <DataTableBodyCell
+                        noBorder={noEndBorder && rows.length - 1 === key}
+                        align={cell.column.align ? cell.column.align : "left"}
+                        {...cell.getCellProps()}
+                      >
+                        {cell.render("Cell")}
+                      </DataTableBodyCell>
+                    ))}
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          )}
         </Table>
       </TableContainer>
       <MDBox

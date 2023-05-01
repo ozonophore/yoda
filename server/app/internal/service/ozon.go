@@ -140,7 +140,7 @@ func (c *OzonService) getClient(host string) (*api.ClientWithResponses, error) {
 	if c.client != nil {
 		return c.client, nil
 	}
-	return api.NewClientWithResponses(c.mustHost(host), api.WithRequestEditorFn(c.customProvider))
+	return api.NewClientWithResponses(c.mustHost(host), WithStandardLoggerFn(), api.WithRequestEditorFn(c.customProvider))
 }
 
 func (c *OzonService) mustHost(host string) string {
