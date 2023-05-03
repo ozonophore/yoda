@@ -21,17 +21,17 @@ type Scheduler struct {
 
 type JobFunc = func(config *configuration.Config, ctx context.Context, jobID int)
 
-func (s *Scheduler) notifyJobExecution(jobID int) {
+func (s Scheduler) notifyJobExecution(jobID int) {
 	for _, observer := range s.observers {
 		observer.BeforeJobExecution(jobID)
 	}
 }
 
-func (s *Scheduler) handleBeforeJobExecution(job *model.Job, transactionID int64, gJob *gocron.Job) {
+func (s Scheduler) handleBeforeJobExecution(job *model.Job, transactionID int64, gJob *gocron.Job) {
 	s.notifyJobExecution(job.ID)
 }
 
-func (s *Scheduler) handleAfterJobExecution(job *model.Job, transactionID int64, err error, gJob *gocron.Job) {
+func (s Scheduler) handleAfterJobExecution(job *model.Job, transactionID int64, err error, gJob *gocron.Job) {
 	s.notifyJobExecution(job.ID)
 }
 
@@ -49,11 +49,11 @@ func NewScheduler(config *configuration.Config) *Scheduler {
 	}
 }
 
-func (s *Scheduler) AddObserver(observer observer.SchedulerObserver) {
+func (s Scheduler) Subscribe(observer observer.SchedulerObserver) {
 	s.observers = append(s.observers, observer)
 }
 
-func (s *Scheduler) GetAllJobs() []*gocron.Job {
+func (s Scheduler) GetAllJobs() []*gocron.Job {
 	return append(s.scheduler.Jobs(), s.systemScheduler.Jobs()...)
 }
 
@@ -65,13 +65,13 @@ func (s Scheduler) RunImmediately(jobID int) {
 	}
 }
 
-func (s *Scheduler) InitJob() {
+func (s Scheduler) InitJob() {
 	ctx := context.Background()
 	s.initRegular(ctx)
 	s.initSystem(ctx)
 }
 
-func (s *Scheduler) Start() {
+func (s Scheduler) Start() {
 	s.scheduler.StartAsync()
 	_, t := s.scheduler.NextRun()
 	logrus.Debugf("Next run: %v", t)
@@ -79,13 +79,13 @@ func (s *Scheduler) Start() {
 	logrus.Info("scheduler started")
 }
 
-func (s *Scheduler) Stop() {
+func (s Scheduler) Stop() {
 	s.scheduler.Stop()
 	dao.UpdateScheduler(model.SCHEEDULER_MAIN, model.STATUS_STOPPED)
 	logrus.Info("scheduler stopped")
 }
 
-func (s *Scheduler) StopAll() {
+func (s Scheduler) StopAll() {
 	s.Stop()
 	s.systemScheduler.Stop()
 }

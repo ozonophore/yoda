@@ -14,6 +14,7 @@ import (
 
 var queues []string
 var observers []observer.EventObserver
+var observersOrg []observer.EventObserverUpdateOrg
 
 func InitEvent(ctx context.Context, config configuration.Mq) {
 	eventbus.NewBus(config.Url)
@@ -37,8 +38,20 @@ func InitEvent(ctx context.Context, config configuration.Mq) {
 			AddQueue(req.QueueName)
 			logrus.Info("Run job success for id: ", req.ID)
 			notifyRunTask(req.JobId)
+		case eventbus.EVENT_UPDATE_ORG:
+			var req eventbus.EmptyResponse
+			json.Unmarshal(msg.Body, &req)
+			logrus.Debugf("Update org %s", req.ID)
+			notifyUpdateOrg()
 		}
+
 	})()
+}
+
+func notifyUpdateOrg() {
+	for _, observersOrg := range observersOrg {
+		observersOrg.UpdateOrganizations()
+	}
 }
 
 func PublishToAll(body *[]byte, msgType, msgId string) {
@@ -72,8 +85,12 @@ func AddQueue(name string) {
 	queues = append(queues, name)
 }
 
-func AddObserver(observer observer.EventObserver) {
+func Subscribe(observer observer.EventObserver) {
 	observers = append(observers, observer)
+}
+
+func SubscribeOrg(observer observer.EventObserverUpdateOrg) {
+	observersOrg = append(observersOrg, observer)
 }
 
 func CloseEvent() {

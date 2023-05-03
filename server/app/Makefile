@@ -10,7 +10,7 @@ test:
 	go tool cover -html=coverage.out -o coverage.html
 generate:
 	oapi-codegen --package=api -generate=types,client -o internal/api/api.go ../../openapi/api.wb.yml
-	oapi-codegen --package=integration -generate=types,client -o internal/integration/integration.go ../../openapi/integration.yml
+	oapi-codegen --package=integration -generate=types,client -o internal/integration/api/client.go ../../openapi/integration.yml
 clean:
 	go clean
 	rm -f ./build/${BINARY_NAME}-darwin

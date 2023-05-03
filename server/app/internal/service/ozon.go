@@ -7,6 +7,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/yoda/app/internal/api"
 	"github.com/yoda/app/internal/configuration"
+	"github.com/yoda/app/internal/logging"
 	"github.com/yoda/app/internal/mapper"
 	"github.com/yoda/app/internal/repository"
 	"github.com/yoda/common/pkg/model"
@@ -140,7 +141,7 @@ func (c *OzonService) getClient(host string) (*api.ClientWithResponses, error) {
 	if c.client != nil {
 		return c.client, nil
 	}
-	return api.NewClientWithResponses(c.mustHost(host), WithStandardLoggerFn(), api.WithRequestEditorFn(c.customProvider))
+	return api.NewClientWithResponses(c.mustHost(host), logging.WithStandardLoggerFn(), api.WithRequestEditorFn(c.customProvider))
 }
 
 func (c *OzonService) mustHost(host string) string {

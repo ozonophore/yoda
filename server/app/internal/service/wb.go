@@ -8,6 +8,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/yoda/app/internal/api"
 	"github.com/yoda/app/internal/configuration"
+	"github.com/yoda/app/internal/logging"
 	"github.com/yoda/app/internal/mapper"
 	"github.com/yoda/app/internal/repository"
 	"github.com/yoda/common/pkg/model"
@@ -34,7 +35,7 @@ func NewWBService(ownerCode, apiKey string, config *configuration.Config) *WBSer
 func (c *WBService) Parsing(context context.Context, transactionID int64) error {
 	logrus.Info("Start parsing wb")
 	apiKeyProvider, _ := securityprovider.NewSecurityProviderApiKey("header", "Authorization", c.apiKey)
-	clnt, err := api.NewClientWithResponses(c.config.Wb.Host, WithStandardLoggerFn(), api.WithRequestEditorFn(apiKeyProvider.Intercept))
+	clnt, err := api.NewClientWithResponses(c.config.Wb.Host, logging.WithStandardLoggerFn(), api.WithRequestEditorFn(apiKeyProvider.Intercept))
 	if err != nil {
 		return err
 	}

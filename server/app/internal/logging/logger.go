@@ -1,9 +1,9 @@
-package service
+package logging
 
 import (
 	"github.com/sirupsen/logrus"
 	"github.com/yoda/app/internal/api"
-	"gorm.io/gorm/logger"
+	integration "github.com/yoda/app/internal/integration/api"
 	"net/http"
 	"time"
 )
@@ -24,11 +24,31 @@ func (c *LoggedClientWrapper) Do(req *http.Request) (*http.Response, error) {
 
 // WithLoggerFn allows setting up a logging function, which will be
 // wrote a log before sending the request and after.
-func WithLoggerFn(level logger.LogLevel) api.ClientOption {
+func WithLoggerFn(level string) api.ClientOption {
 	logger := logrus.New()
-	logger.SetLevel(logrus.Level(level))
+	lvl, err := logrus.ParseLevel(level)
+	if err != nil {
+		panic(err)
+	}
+	logger.SetLevel(lvl)
 	logger.Hooks = logrus.StandardLogger().Hooks
 	return func(c *api.Client) error {
+		c.Client = &LoggedClientWrapper{
+			logger: logger,
+		}
+		return nil
+	}
+}
+
+func WithLoggerIntegrationFn(level string) integration.ClientOption {
+	logger := logrus.New()
+	lvl, err := logrus.ParseLevel(level)
+	if err != nil {
+		panic(err)
+	}
+	logger.SetLevel(lvl)
+	logger.Hooks = logrus.StandardLogger().Hooks
+	return func(c *integration.Client) error {
 		c.Client = &LoggedClientWrapper{
 			logger: logger,
 		}

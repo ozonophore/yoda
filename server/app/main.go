@@ -6,6 +6,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/yoda/app/internal/configuration"
 	"github.com/yoda/app/internal/event"
+	"github.com/yoda/app/internal/integration"
 	"github.com/yoda/app/internal/repository"
 	"github.com/yoda/app/internal/timer"
 	"github.com/yoda/common/pkg/dao"
@@ -26,9 +27,12 @@ func main() {
 	event.InitEvent(ctxCancel, config.Mq)
 	defer event.CloseEvent()
 
+	uo := integration.NewUpdaterOrganisations(config.Integration)
+
 	scheduler := timer.NewScheduler(config)
-	scheduler.AddObserver(event.CreateObserver())
-	event.AddObserver(scheduler)
+	scheduler.Subscribe(event.CreateObserver())
+	event.Subscribe(scheduler)
+	event.SubscribeOrg(uo)
 	scheduler.InitJob()
 	scheduler.Start()
 	defer scheduler.StopAll()

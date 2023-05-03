@@ -60,25 +60,15 @@ components:
         updateAt:
           type: string
           format: date-time
+          x-go-type: types.CustomTime
+          x-go-import:
+            name: types
+            package: github.com/yoda/common/pkg/types
           description: Item update date
       required:
         - id
         - name
         - updateAt
-    Organizations:
-      type: object
-      properties:
-        count:
-          type: integer
-          format: int32
-          description: Count of organizations
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/Organization'
-      required:
-        - count
-        - items
     Organization:
       type: object
       properties:
@@ -97,11 +87,29 @@ components:
         updateAt:
           type: string
           format: date-time
+          x-go-type: types.CustomTime
+          x-go-import:
+            name: types
+            package: github.com/yoda/common/pkg/types
           description: Organization update date
       required:
         - id
         - name
         - updateAt
+    Organizations:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+          description: Count of organizations
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Organization'
+      required:
+        - count
+        - items
 paths:
   /stocks:
     get:

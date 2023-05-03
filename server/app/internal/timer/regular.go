@@ -4,15 +4,19 @@ import (
 	"context"
 	"fmt"
 	"github.com/sirupsen/logrus"
+	"github.com/yoda/app/internal/integration"
 	"github.com/yoda/app/internal/repository"
 	"strings"
 )
 
-func (sch *Scheduler) initRegular(ctx context.Context) bool {
+func (sch Scheduler) initRegular(ctx context.Context) bool {
 	wasChanged := false
 	logrus.Debugf("Init jobs")
 	config := sch.config
 	scheduler := sch.scheduler
+
+	integration.InstanceUpdaterOrganisations().UpdateOrganizations()
+
 	jobs, err := repository.GetJobs()
 	if err != nil {
 		logrus.Panicf("Error after get jobs: %s", err)
