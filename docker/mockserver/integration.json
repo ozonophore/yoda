@@ -1,0 +1,21 @@
+[
+  {
+    "httpRequest": {
+      "path": "/integration/organizations"
+    },
+    "httpResponse": {
+      "body": {
+        "count": 1,
+        "items": [
+          {
+            "id": "f6a89b8b-964d-11ed-852f-7c10c9211780",
+            "name": "Org1",
+            "inn": "",
+            "kpp": "",
+            "updateAt": "2023-04-27T09:50:33"
+          }
+        ]
+      }
+    }
+  }
+]
