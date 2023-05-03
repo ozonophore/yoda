@@ -50,7 +50,7 @@ func (i *UpdaterOrganisations) UpdateOrganizations() error {
 		return errors.New("invalid status code")
 	}
 	result := resp.JSON200
-	if result == nil || result == nil {
+	if result == nil {
 		return errors.New("invalid response")
 	}
 	if result.Count == 0 {
