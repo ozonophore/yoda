@@ -1,0 +1,460 @@
+{
+  "result": [
+    {
+      "order_id": 20007664240,
+      "order_number": "01994896-1073",
+      "posting_number": "01994896-1073-2",
+      "status": "delivered",
+      "cancel_reason_id": 0,
+      "created_at": "2023-03-24T06:02:47.733268Z",
+      "in_process_at": "2023-03-24T06:03:15.053790Z",
+      "products": [
+        {
+          "sku": 685064031,
+          "name": "Прокладки урологические Lady Ultra 28 штук Wellfix при недержании мочи",
+          "quantity": 1,
+          "offer_id": "ИР039738",
+          "price": "358.00",
+          "digital_codes": [],
+          "currency_code": "RUB"
+        }
+      ],
+      "analytics_data": {
+        "region": "Москва",
+        "city": "Щаповское",
+        "delivery_type": "Courier",
+        "is_premium": true,
+        "payment_type_group_name": "Картой онлайн",
+        "warehouse_id": 15431806189000,
+        "warehouse_name": "ХОРУГВИНО_РФЦ",
+        "is_legal": false
+      },
+      "financial_data": {
+        "products": [
+          {
+            "commission_amount": -39.38,
+            "commission_percent": 11,
+            "payout": 318.62,
+            "product_id": 685064031,
+            "old_price": 462,
+            "price": 358,
+            "total_discount_value": 104,
+            "total_discount_percent": 23,
+            "actions": [
+              "Системная виртуальная скидка селлера"
+            ],
+            "picking": null,
+            "quantity": 0,
+            "client_price": "",
+            "item_services": {
+              "marketplace_service_item_fulfillment": 0,
+              "marketplace_service_item_pickup": 0,
+              "marketplace_service_item_dropoff_pvz": 0,
+              "marketplace_service_item_dropoff_sc": 0,
+              "marketplace_service_item_dropoff_ff": 0,
+              "marketplace_service_item_direct_flow_trans": 0,
+              "marketplace_service_item_return_flow_trans": 0,
+              "marketplace_service_item_deliv_to_customer": -20,
+              "marketplace_service_item_return_not_deliv_to_customer": 0,
+              "marketplace_service_item_return_part_goods_customer": 0,
+              "marketplace_service_item_return_after_deliv_to_customer": 0
+            },
+            "currency_code": "RUB"
+          }
+        ],
+        "posting_services": {
+          "marketplace_service_item_fulfillment": 0,
+          "marketplace_service_item_pickup": 0,
+          "marketplace_service_item_dropoff_pvz": 0,
+          "marketplace_service_item_dropoff_sc": 0,
+          "marketplace_service_item_dropoff_ff": 0,
+          "marketplace_service_item_direct_flow_trans": 0,
+          "marketplace_service_item_return_flow_trans": 0,
+          "marketplace_service_item_deliv_to_customer": 0,
+          "marketplace_service_item_return_not_deliv_to_customer": 0,
+          "marketplace_service_item_return_part_goods_customer": 0,
+          "marketplace_service_item_return_after_deliv_to_customer": 0
+        },
+        "cluster_from": "",
+        "cluster_to": "Московская область Юг"
+      },
+      "additional_data": []
+    },
+    {
+      "order_id": 20007664240,
+      "order_number": "01994896-1073",
+      "posting_number": "01994896-1073-3",
+      "status": "delivered",
+      "cancel_reason_id": 0,
+      "created_at": "2023-03-24T06:03:18.865774Z",
+      "in_process_at": "2023-03-24T06:03:15.053790Z",
+      "products": [
+        {
+          "sku": 685064031,
+          "name": "Прокладки урологические Lady Ultra 28 штук Wellfix при недержании мочи",
+          "quantity": 1,
+          "offer_id": "ИР039738",
+          "price": "358.00",
+          "digital_codes": [],
+          "currency_code": "RUB"
+        }
+      ],
+      "analytics_data": {
+        "region": "Москва",
+        "city": "Щаповское",
+        "delivery_type": "Courier",
+        "is_premium": true,
+        "payment_type_group_name": "Картой онлайн",
+        "warehouse_id": 15431806189000,
+        "warehouse_name": "ХОРУГВИНО_РФЦ",
+        "is_legal": false
+      },
+      "financial_data": {
+        "products": [
+          {
+            "commission_amount": -39.38,
+            "commission_percent": 11,
+            "payout": 318.62,
+            "product_id": 685064031,
+            "old_price": 462,
+            "price": 358,
+            "total_discount_value": 104,
+            "total_discount_percent": 23,
+            "actions": [
+              "Системная виртуальная скидка селлера"
+            ],
+            "picking": null,
+            "quantity": 0,
+            "client_price": "",
+            "item_services": {
+              "marketplace_service_item_fulfillment": 0,
+              "marketplace_service_item_pickup": 0,
+              "marketplace_service_item_dropoff_pvz": 0,
+              "marketplace_service_item_dropoff_sc": 0,
+              "marketplace_service_item_dropoff_ff": 0,
+              "marketplace_service_item_direct_flow_trans": 0,
+              "marketplace_service_item_return_flow_trans": 0,
+              "marketplace_service_item_deliv_to_customer": -20,
+              "marketplace_service_item_return_not_deliv_to_customer": 0,
+              "marketplace_service_item_return_part_goods_customer": 0,
+              "marketplace_service_item_return_after_deliv_to_customer": 0
+            },
+            "currency_code": "RUB"
+          }
+        ],
+        "posting_services": {
+          "marketplace_service_item_fulfillment": 0,
+          "marketplace_service_item_pickup": 0,
+          "marketplace_service_item_dropoff_pvz": 0,
+          "marketplace_service_item_dropoff_sc": 0,
+          "marketplace_service_item_dropoff_ff": 0,
+          "marketplace_service_item_direct_flow_trans": 0,
+          "marketplace_service_item_return_flow_trans": 0,
+          "marketplace_service_item_deliv_to_customer": 0,
+          "marketplace_service_item_return_not_deliv_to_customer": 0,
+          "marketplace_service_item_return_part_goods_customer": 0,
+          "marketplace_service_item_return_after_deliv_to_customer": 0
+        },
+        "cluster_from": "",
+        "cluster_to": "Московская область Юг"
+      },
+      "additional_data": []
+    },
+    {
+      "order_id": 3022839109,
+      "order_number": "10459615-0408",
+      "posting_number": "10459615-0408-1",
+      "status": "awaiting_packaging",
+      "cancel_reason_id": 0,
+      "created_at": "2023-03-24T06:09:51.863Z",
+      "in_process_at": "2023-03-24T06:09:57.610Z",
+      "products": [
+        {
+          "sku": 680000379,
+          "name": "Прокладки WellFix Экстра урологические Бельгия 14 штук при недержании мочи",
+          "quantity": 1,
+          "offer_id": "ИР039735",
+          "price": "419.00",
+          "digital_codes": [],
+          "currency_code": "RUB"
+        }
+      ],
+      "analytics_data": {
+        "region": "Москва",
+        "city": "Москва",
+        "delivery_type": "Courier",
+        "is_premium": true,
+        "payment_type_group_name": "Ozon Карта",
+        "warehouse_id": 15431806189000,
+        "warehouse_name": "ХОРУГВИНО_РФЦ",
+        "is_legal": false
+      },
+      "financial_data": {
+        "products": [
+          {
+            "commission_amount": 0,
+            "commission_percent": 0,
+            "payout": 0,
+            "product_id": 680000379,
+            "old_price": 932,
+            "price": 419,
+            "total_discount_value": 513,
+            "total_discount_percent": 55,
+            "actions": [
+              "Системная виртуальная скидка селлера"
+            ],
+            "picking": null,
+            "quantity": 0,
+            "client_price": "",
+            "item_services": {
+              "marketplace_service_item_fulfillment": 0,
+              "marketplace_service_item_pickup": 0,
+              "marketplace_service_item_dropoff_pvz": 0,
+              "marketplace_service_item_dropoff_sc": 0,
+              "marketplace_service_item_dropoff_ff": 0,
+              "marketplace_service_item_direct_flow_trans": 0,
+              "marketplace_service_item_return_flow_trans": 0,
+              "marketplace_service_item_deliv_to_customer": 0,
+              "marketplace_service_item_return_not_deliv_to_customer": 0,
+              "marketplace_service_item_return_part_goods_customer": 0,
+              "marketplace_service_item_return_after_deliv_to_customer": 0
+            },
+            "currency_code": "RUB"
+          }
+        ],
+        "posting_services": null,
+        "cluster_from": "",
+        "cluster_to": "Москва Запад"
+      },
+      "additional_data": []
+    },
+    {
+      "order_id": 20009813663,
+      "order_number": "61132367-0059",
+      "posting_number": "61132367-0059-3",
+      "status": "delivered",
+      "cancel_reason_id": 0,
+      "created_at": "2023-03-24T06:54:39.254421Z",
+      "in_process_at": "2023-03-24T06:54:36.865011Z",
+      "products": [
+        {
+          "sku": 685064031,
+          "name": "Прокладки урологические Lady Ultra 28 штук Wellfix при недержании мочи",
+          "quantity": 1,
+          "offer_id": "ИР039738",
+          "price": "358.00",
+          "digital_codes": [],
+          "currency_code": "RUB"
+        }
+      ],
+      "analytics_data": {
+        "region": "Ленинградская",
+        "city": "",
+        "delivery_type": "PVZ",
+        "is_premium": false,
+        "payment_type_group_name": "Ozon Карта",
+        "warehouse_id": 15431806189000,
+        "warehouse_name": "ХОРУГВИНО_РФЦ",
+        "is_legal": false
+      },
+      "financial_data": {
+        "products": [
+          {
+            "commission_amount": -39.38,
+            "commission_percent": 11,
+            "payout": 318.62,
+            "product_id": 685064031,
+            "old_price": 462,
+            "price": 358,
+            "total_discount_value": 104,
+            "total_discount_percent": 23,
+            "actions": [
+              "Системная виртуальная скидка селлера"
+            ],
+            "picking": null,
+            "quantity": 0,
+            "client_price": "",
+            "item_services": {
+              "marketplace_service_item_fulfillment": 0,
+              "marketplace_service_item_pickup": 0,
+              "marketplace_service_item_dropoff_pvz": 0,
+              "marketplace_service_item_dropoff_sc": 0,
+              "marketplace_service_item_dropoff_ff": 0,
+              "marketplace_service_item_direct_flow_trans": 0,
+              "marketplace_service_item_return_flow_trans": 0,
+              "marketplace_service_item_deliv_to_customer": -20,
+              "marketplace_service_item_return_not_deliv_to_customer": 0,
+              "marketplace_service_item_return_part_goods_customer": 0,
+              "marketplace_service_item_return_after_deliv_to_customer": 0
+            },
+            "currency_code": "RUB"
+          }
+        ],
+        "posting_services": {
+          "marketplace_service_item_fulfillment": 0,
+          "marketplace_service_item_pickup": 0,
+          "marketplace_service_item_dropoff_pvz": 0,
+          "marketplace_service_item_dropoff_sc": 0,
+          "marketplace_service_item_dropoff_ff": 0,
+          "marketplace_service_item_direct_flow_trans": 0,
+          "marketplace_service_item_return_flow_trans": 0,
+          "marketplace_service_item_deliv_to_customer": 0,
+          "marketplace_service_item_return_not_deliv_to_customer": 0,
+          "marketplace_service_item_return_part_goods_customer": 0,
+          "marketplace_service_item_return_after_deliv_to_customer": 0
+        },
+        "cluster_from": "",
+        "cluster_to": "Ленинградская область"
+      },
+      "additional_data": []
+    },
+    {
+      "order_id": 20009813663,
+      "order_number": "61132367-0059",
+      "posting_number": "61132367-0059-5",
+      "status": "delivered",
+      "cancel_reason_id": 0,
+      "created_at": "2023-03-24T06:54:39.262698Z",
+      "in_process_at": "2023-03-24T06:54:36.865011Z",
+      "products": [
+        {
+          "sku": 685064031,
+          "name": "Прокладки урологические Lady Ultra 28 штук Wellfix при недержании мочи",
+          "quantity": 1,
+          "offer_id": "ИР039738",
+          "price": "358.00",
+          "digital_codes": [],
+          "currency_code": "RUB"
+        }
+      ],
+      "analytics_data": {
+        "region": "Ленинградская",
+        "city": "",
+        "delivery_type": "PVZ",
+        "is_premium": false,
+        "payment_type_group_name": "Ozon Карта",
+        "warehouse_id": 15431806189000,
+        "warehouse_name": "ХОРУГВИНО_РФЦ",
+        "is_legal": false
+      },
+      "financial_data": {
+        "products": [
+          {
+            "commission_amount": -39.38,
+            "commission_percent": 11,
+            "payout": 318.62,
+            "product_id": 685064031,
+            "old_price": 462,
+            "price": 358,
+            "total_discount_value": 104,
+            "total_discount_percent": 23,
+            "actions": [
+              "Системная виртуальная скидка селлера"
+            ],
+            "picking": null,
+            "quantity": 0,
+            "client_price": "",
+            "item_services": {
+              "marketplace_service_item_fulfillment": 0,
+              "marketplace_service_item_pickup": 0,
+              "marketplace_service_item_dropoff_pvz": 0,
+              "marketplace_service_item_dropoff_sc": 0,
+              "marketplace_service_item_dropoff_ff": 0,
+              "marketplace_service_item_direct_flow_trans": 0,
+              "marketplace_service_item_return_flow_trans": 0,
+              "marketplace_service_item_deliv_to_customer": -20,
+              "marketplace_service_item_return_not_deliv_to_customer": 0,
+              "marketplace_service_item_return_part_goods_customer": 0,
+              "marketplace_service_item_return_after_deliv_to_customer": 0
+            },
+            "currency_code": "RUB"
+          }
+        ],
+        "posting_services": {
+          "marketplace_service_item_fulfillment": 0,
+          "marketplace_service_item_pickup": 0,
+          "marketplace_service_item_dropoff_pvz": 0,
+          "marketplace_service_item_dropoff_sc": 0,
+          "marketplace_service_item_dropoff_ff": 0,
+          "marketplace_service_item_direct_flow_trans": 0,
+          "marketplace_service_item_return_flow_trans": 0,
+          "marketplace_service_item_deliv_to_customer": 0,
+          "marketplace_service_item_return_not_deliv_to_customer": 0,
+          "marketplace_service_item_return_part_goods_customer": 0,
+          "marketplace_service_item_return_after_deliv_to_customer": 0
+        },
+        "cluster_from": "",
+        "cluster_to": "Ленинградская область"
+      },
+      "additional_data": []
+    },
+    {
+      "order_id": 20007573086,
+      "order_number": "59206670-0089",
+      "posting_number": "59206670-0089-1",
+      "status": "delivering",
+      "cancel_reason_id": 0,
+      "created_at": "2023-03-24T08:02:25.948664Z",
+      "in_process_at": "2023-03-24T08:02:34.598395Z",
+      "products": [
+        {
+          "sku": 685064031,
+          "name": "Прокладки урологические Lady Ultra 28 штук Wellfix при недержании мочи",
+          "quantity": 1,
+          "offer_id": "ИР039738",
+          "price": "358.00",
+          "digital_codes": [],
+          "currency_code": "RUB"
+        }
+      ],
+      "analytics_data": {
+        "region": "Ярославская",
+        "city": "Ярославль",
+        "delivery_type": "PVZ",
+        "is_premium": false,
+        "payment_type_group_name": "Картой онлайн",
+        "warehouse_id": 15431806189000,
+        "warehouse_name": "ХОРУГВИНО_РФЦ",
+        "is_legal": false
+      },
+      "financial_data": {
+        "products": [
+          {
+            "commission_amount": 0,
+            "commission_percent": 0,
+            "payout": 0,
+            "product_id": 685064031,
+            "old_price": 462,
+            "price": 358,
+            "total_discount_value": 104,
+            "total_discount_percent": 23,
+            "actions": [
+              "Системная виртуальная скидка селлера"
+            ],
+            "picking": null,
+            "quantity": 0,
+            "client_price": "",
+            "item_services": {
+              "marketplace_service_item_fulfillment": 0,
+              "marketplace_service_item_pickup": 0,
+              "marketplace_service_item_dropoff_pvz": 0,
+              "marketplace_service_item_dropoff_sc": 0,
+              "marketplace_service_item_dropoff_ff": 0,
+              "marketplace_service_item_direct_flow_trans": 0,
+              "marketplace_service_item_return_flow_trans": 0,
+              "marketplace_service_item_deliv_to_customer": 0,
+              "marketplace_service_item_return_not_deliv_to_customer": 0,
+              "marketplace_service_item_return_part_goods_customer": 0,
+              "marketplace_service_item_return_after_deliv_to_customer": 0
+            },
+            "currency_code": "RUB"
+          }
+        ],
+        "posting_services": null,
+        "cluster_from": "",
+        "cluster_to": "Ярославль"
+      },
+      "additional_data": []
+    }
+  ]
+}

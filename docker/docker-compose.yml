@@ -35,17 +35,17 @@ services:
         condition: service_healthy
     networks:
       - default
-  mockServer:
-    image: mockserver/mockserver:5.14.0
-    ports:
-      - 1080:1080
-    environment:
-      MOCKSERVER_PROPERTY_FILE: /mockserver/mockserver.properties
-      MOCKSERVER_INITIALIZATION_JSON_PATH: /mockserver/*.json
-    volumes:
-      - type: bind
-        source: ./mockserver
-        target: /mockserver
+#  mockServer:
+#    image: mockserver/mockserver:5.14.0
+#    ports:
+#      - 1080:1080
+#    environment:
+#      MOCKSERVER_PROPERTY_FILE: /mockserver/mockserver.properties
+#      MOCKSERVER_INITIALIZATION_JSON_PATH: /mockserver/*.json
+#    volumes:
+#      - type: bind
+#        source: ./mockserver
+#        target: /mockserver
 networks:
   default:
     driver: bridge

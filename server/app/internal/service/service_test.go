@@ -2,27 +2,36 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"github.com/stretchr/testify/assert"
 	"github.com/testcontainers/testcontainers-go/modules/compose"
 	"github.com/yoda/app/internal/configuration"
 	"github.com/yoda/app/internal/repository"
 	"github.com/yoda/common/pkg/model"
 	"gorm.io/gorm"
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"testing"
 	"time"
 )
 
+var (
+	mux     *http.ServeMux
+	server  *httptest.Server
+	baseUrl string
+)
+
 func Test_Main(t *testing.T) {
-	err := setup(t)
-	assert.NoError(t, err, "setup error")
+	fn := setup(t)
+	defer fn()
 
 	config := configuration.InitConfig("config.yml")
 	config.Database.Dsn = "postgres://root:secret@localhost:5432/pdb"
 	config.Database.LoggingLevel = "error"
-	config.Ozon.Host = "http://localhost:1080/ozon"
-	config.Wb.Host = "http://localhost:1080/wb"
-	config.Integration.Host = "http://localhost:1080/integration"
+	config.Ozon.Host = fmt.Sprintf("%s/ozon", baseUrl)
+	config.Wb.Host = fmt.Sprintf("%s/wb", baseUrl)
+	config.Integration.Host = fmt.Sprintf(`%s/integration`, baseUrl)
 	database := repository.InitDatabase(config.Database)
 	initTestData(database)
 
@@ -88,7 +97,12 @@ func wbRun(t *testing.T, config *configuration.Config, transactionID int64, data
 	assert.Equal(t, int64(1391), count, "count of orders")
 }
 
-func setup(t *testing.T) error {
+func setup(t *testing.T) func() {
+	mux = http.NewServeMux()
+	server = httptest.NewServer(mux)
+	baseUrl = server.URL
+	mockHandlers()
+
 	dockerCompose, err := compose.NewDockerCompose("../../../../docker/docker-compose.yml")
 	if err != nil {
 		t.Fatalf("compose.NewDockerCompose() error: %v", err)
@@ -101,5 +115,84 @@ func setup(t *testing.T) error {
 	t.Cleanup(cancel)
 	dockerCompose.Up(ctx, compose.Wait(true))
 	time.Sleep(30 * time.Second)
-	return err
+	return func() {
+		server.Close()
+	}
+}
+
+func mockHandlers() {
+	orgs, _ := os.ReadFile("../../../../mockdata/dict.organisation.json")
+	mux.HandleFunc("/integration/organizations", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.Write(orgs)
+	})
+	ord, _ := os.ReadFile("../../../../mockdata/wb.order.json")
+	mux.HandleFunc("/wb/api/v1/supplier/orders", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.Write(ord)
+	})
+	sls, _ := os.ReadFile("../../../../mockdata/wb.sale.json")
+	mux.HandleFunc("/wb/api/v1/supplier/sales", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.Write(sls)
+	})
+	stockwb, _ := os.ReadFile("../../../../mockdata/wb.stock.json")
+	mux.HandleFunc("/wb/api/v1/supplier/stocks", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.Write(stockwb)
+	})
+	stock, _ := os.ReadFile("../../../../mockdata/ozon.stock.json")
+	mux.HandleFunc("/ozon/v2/analytics/stock_on_warehouses", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodPost {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusOK)
+			w.Write(stock)
+		} else {
+			panic("Unsupported method")
+		}
+	})
+	info, _ := os.ReadFile("../../../../mockdata/ozon.info.json")
+	mux.HandleFunc("/ozon/v2/product/info/list", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodPost {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusOK)
+			w.Write(info)
+		} else {
+			panic("Unsupported method")
+		}
+	})
+	prices, _ := os.ReadFile("../../../../mockdata/ozon.prices.json")
+	mux.HandleFunc("/ozon/v4/product/info/prices", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodPost {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusOK)
+			w.Write(prices)
+		} else {
+			panic("Unsupported method")
+		}
+	})
+	orders, _ := os.ReadFile("../../../../mockdata/ozon.orders.json")
+	mux.HandleFunc("/ozon/v2/posting/fbo/list", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodPost {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusOK)
+			w.Write(orders)
+		} else {
+			panic("Unsupported method")
+		}
+	})
+	attr, _ := os.ReadFile("../../../../mockdata/ozon.attributes.json")
+	mux.HandleFunc("/ozon/v3/products/info/attributes", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodPost {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusOK)
+			w.Write(attr)
+		} else {
+			panic("Unsupported method")
+		}
+	})
 }
