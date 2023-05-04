@@ -15,11 +15,36 @@ import (
 	"github.com/yoda/common/pkg/types"
 )
 
+// Barcode defines model for Barcode.
+type Barcode struct {
+	// Barcode Barcode
+	Barcode string `json:"barcode"`
+
+	// BarcodeId Barcode ID from 1c
+	BarcodeId string `json:"barcodeId"`
+
+	// ItemId ID from 1c
+	ItemId string `json:"itemId"`
+
+	// MarketId Market ID from 1c
+	MarketId string `json:"marketId"`
+
+	// OrgId Organization ID from 1c
+	OrgId string `json:"orgId"`
+
+	// UpdateAt Barcode update date
+	UpdateAt types.CustomTime `json:"updateAt"`
+}
+
+// Barcodes defines model for Barcodes.
+type Barcodes struct {
+	// Count Count of barcodes
+	Count int32     `json:"count"`
+	Items []Barcode `json:"items"`
+}
+
 // Item defines model for Item.
 type Item struct {
-	// Article Item article
-	Article *string `json:"article,omitempty"`
-
 	// Id Item ID from 1c
 	Id string `json:"id"`
 
@@ -35,6 +60,23 @@ type Items struct {
 	// Count Count of items
 	Count int32  `json:"count"`
 	Items []Item `json:"items"`
+}
+
+// Marketplace defines model for Marketplace.
+type Marketplace struct {
+	// Id Marketplace ID from 1c
+	Id string `json:"id"`
+
+	// Name Marketplace name
+	Name     string           `json:"name"`
+	UpdateAt types.CustomTime `json:"updateAt"`
+}
+
+// Marketplaces defines model for Marketplaces.
+type Marketplaces struct {
+	// Count Count of marketplaces
+	Count int32         `json:"count"`
+	Items []Marketplace `json:"items"`
 }
 
 // Organization defines model for Organization.
@@ -154,6 +196,12 @@ type ClientInterface interface {
 	// GetItems request
 	GetItems(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetItemsBarcodes request
+	GetItemsBarcodes(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetMarketplaces request
+	GetMarketplaces(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetOrganizations request
 	GetOrganizations(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -163,6 +211,30 @@ type ClientInterface interface {
 
 func (c *Client) GetItems(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetItemsRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetItemsBarcodes(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetItemsBarcodesRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetMarketplaces(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetMarketplacesRequest(c.Server)
 	if err != nil {
 		return nil, err
 	}
@@ -207,6 +279,60 @@ func NewGetItemsRequest(server string) (*http.Request, error) {
 	}
 
 	operationPath := fmt.Sprintf("/items")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetItemsBarcodesRequest generates requests for GetItemsBarcodes
+func NewGetItemsBarcodesRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/items/barcodes")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetMarketplacesRequest generates requests for GetMarketplaces
+func NewGetMarketplacesRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/marketplaces")
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -324,6 +450,12 @@ type ClientWithResponsesInterface interface {
 	// GetItems request
 	GetItemsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetItemsResponse, error)
 
+	// GetItemsBarcodes request
+	GetItemsBarcodesWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetItemsBarcodesResponse, error)
+
+	// GetMarketplaces request
+	GetMarketplacesWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetMarketplacesResponse, error)
+
 	// GetOrganizations request
 	GetOrganizationsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetOrganizationsResponse, error)
 
@@ -347,6 +479,50 @@ func (r GetItemsResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r GetItemsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetItemsBarcodesResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *Barcodes
+}
+
+// Status returns HTTPResponse.Status
+func (r GetItemsBarcodesResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetItemsBarcodesResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetMarketplacesResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *Marketplaces
+}
+
+// Status returns HTTPResponse.Status
+func (r GetMarketplacesResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetMarketplacesResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -406,6 +582,24 @@ func (c *ClientWithResponses) GetItemsWithResponse(ctx context.Context, reqEdito
 	return ParseGetItemsResponse(rsp)
 }
 
+// GetItemsBarcodesWithResponse request returning *GetItemsBarcodesResponse
+func (c *ClientWithResponses) GetItemsBarcodesWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetItemsBarcodesResponse, error) {
+	rsp, err := c.GetItemsBarcodes(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetItemsBarcodesResponse(rsp)
+}
+
+// GetMarketplacesWithResponse request returning *GetMarketplacesResponse
+func (c *ClientWithResponses) GetMarketplacesWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetMarketplacesResponse, error) {
+	rsp, err := c.GetMarketplaces(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetMarketplacesResponse(rsp)
+}
+
 // GetOrganizationsWithResponse request returning *GetOrganizationsResponse
 func (c *ClientWithResponses) GetOrganizationsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetOrganizationsResponse, error) {
 	rsp, err := c.GetOrganizations(ctx, reqEditors...)
@@ -440,6 +634,58 @@ func ParseGetItemsResponse(rsp *http.Response) (*GetItemsResponse, error) {
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest Items
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetItemsBarcodesResponse parses an HTTP response from a GetItemsBarcodesWithResponse call
+func ParseGetItemsBarcodesResponse(rsp *http.Response) (*GetItemsBarcodesResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetItemsBarcodesResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Barcodes
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetMarketplacesResponse parses an HTTP response from a GetMarketplacesWithResponse call
+func ParseGetMarketplacesResponse(rsp *http.Response) (*GetMarketplacesResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetMarketplacesResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Marketplaces
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}

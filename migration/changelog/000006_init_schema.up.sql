@@ -1,4 +1,4 @@
-create procedure calc_order_delivered(IN p_id integer)
+create or replace procedure calc_order_delivered(IN p_id integer)
     language plpgsql
 as
 $$

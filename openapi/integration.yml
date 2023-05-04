@@ -54,9 +54,6 @@ components:
         name:
           type: string
           description: Item name
-        article:
-          type: string
-          description: Item article
         updateAt:
           type: string
           format: date-time
@@ -110,6 +107,88 @@ components:
       required:
         - count
         - items
+    Barcodes:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+          description: Count of barcodes
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Barcode'
+      required:
+        - count
+        - items
+    Barcode:
+      type: object
+      properties:
+          itemId:
+            type: string
+            description: ID from 1c
+          barcodeId:
+            type: string
+            description: Barcode ID from 1c
+          barcode:
+            type: string
+            description: Barcode
+          orgId:
+            type: string
+            description: Organization ID from 1c
+          marketId:
+            type: string
+            description: Market ID from 1c
+          updateAt:
+            type: string
+            format: date-time
+            x-go-type: types.CustomTime
+            x-go-import:
+              name: types
+              package: github.com/yoda/common/pkg/types
+            description: Barcode update date
+      required:
+        - itemId
+        - barcodeId
+        - barcode
+        - orgId
+        - marketId
+        - updateAt
+    Marketplaces:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+          description: Count of marketplaces
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Marketplace'
+      required:
+        - count
+        - items
+    Marketplace:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Marketplace ID from 1c
+        name:
+          type: string
+          description: Marketplace name
+        updateAt:
+          type: string
+          format: date-time
+          x-go-type: types.CustomTime
+          x-go-import:
+            name: types
+            package: github.com/yoda/common/pkg/types
+            description: Marketplace update date
+      required:
+        - id
+        - name
+        - updateAt
 paths:
   /stocks:
     get:
@@ -135,6 +214,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Items'
+  /items/barcodes:
+    get:
+      summary: Get items barcodes
+      description: Get items barcodes
+      operationId: getItemsBarcodes
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Barcodes'
   /organizations:
     get:
       summary: Get organizations
@@ -147,3 +238,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Organizations'
+  /marketplaces:
+    get:
+      summary: Get marketplaces
+      description: Get marketplaces
+      operationId: getMarketplaces
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Marketplaces'

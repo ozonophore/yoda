@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"github.com/sirupsen/logrus"
-	"github.com/yoda/app/internal/integration"
 	"github.com/yoda/app/internal/repository"
 	"strings"
 )
@@ -14,8 +13,6 @@ func (sch Scheduler) initRegular(ctx context.Context) bool {
 	logrus.Debugf("Init jobs")
 	config := sch.config
 	scheduler := sch.scheduler
-
-	integration.InstanceUpdaterOrganisations().UpdateOrganizations()
 
 	jobs, err := repository.GetJobs()
 	if err != nil {

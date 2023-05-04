@@ -7,6 +7,7 @@ import (
 	"github.com/go-co-op/gocron"
 	"github.com/sirupsen/logrus"
 	"github.com/yoda/app/internal/configuration"
+	"github.com/yoda/app/internal/integration"
 	jobf "github.com/yoda/app/internal/job"
 	"github.com/yoda/app/internal/repository"
 	service "github.com/yoda/app/internal/service/logload"
@@ -51,6 +52,7 @@ func jobByTag(s *gocron.Scheduler, jobId int) *gocron.Job {
 }
 
 func RunRegularLoad(config *configuration.Config, ctx context.Context, jobID int, s *gocron.Scheduler, onBefore onBeforeJobExecution, onAfter onAfterJobExecution) {
+	loadDictionary()
 	job, err := repository.GetJobWithOwnerByJobId(jobID)
 	if err != nil {
 		logrus.Errorf("Error after get jobs: %s with id: %d", err, jobID)
@@ -106,4 +108,8 @@ func prepareParam(ctx context.Context, config *configuration.Config, param *mode
 	newContext, _ := context.WithTimeout(ctx, time.Duration(config.Timeout)*time.Second)
 	err = loader.Parsing(newContext, transactionID)
 	return err
+}
+
+func loadDictionary() {
+	integration.InstanceUpdaterOrganisations().UpdateOrganizations()
 }
