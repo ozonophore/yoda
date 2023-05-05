@@ -50,6 +50,10 @@ type Integration struct {
 	LogLevel string `koanf:"logging_level"` //panic | fatal | error | warn | info | debug | trace
 }
 
+type System struct {
+	LoggingLevel string `koanf:"logging_level"` //panic | fatal | error | warn | info | debug | trace
+}
+
 type Config struct {
 	Version      string      `koanf:"version"`
 	Database     Database    `koanf:"database"`
@@ -61,6 +65,7 @@ type Config struct {
 	Ozon         Ozon        `koanf:"ozon"`
 	LoggingLevel string      `koanf:"logging_level"` //panic | fatal | error | warn | info | debug | trace
 	Integration  Integration `koanf:"integration"`
+	System       System      `koanf:"system"`
 }
 
 var conf = koanf.Conf{
@@ -93,6 +98,7 @@ func InitConfig(path string) *Config {
 		"integration.token":         "ZTc4NzJkODYtYjQ4Mi00MTA5LWI3OTMtNTI4NWNiMjI1OGEw",
 		"integration.host":          "http://d4440c0ccab0.sn.mynetname.net:8899/ERP_IIS/hs/Market",
 		"integration.logging_level": "info",
+		"system.logging_level":      "info",
 	}, "."), nil)
 	if fileExists(path) {
 		k.Load(file.Provider(path), yaml.Parser())
@@ -167,6 +173,9 @@ func getEnvs(c *Config) error {
 	}
 	if v, exists := os.LookupEnv("YODA_INTEGRATION_LOGGING_LEVEL"); exists {
 		c.Integration.LogLevel = v
+	}
+	if v, exists := os.LookupEnv("YODA_SYSTEM_LOGGING_LEVEL"); exists {
+		c.System.LoggingLevel = v
 	}
 	return nil
 }

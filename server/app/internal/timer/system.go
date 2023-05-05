@@ -3,15 +3,25 @@ package timer
 import (
 	"context"
 	"github.com/sirupsen/logrus"
+	"github.com/yoda/app/internal/configuration"
 	"github.com/yoda/app/internal/event"
 )
 
-func (s Scheduler) initSystem(ctx context.Context) {
+var (
+	logger *logrus.Logger
+)
+
+func (s Scheduler) initSystem(ctx context.Context, config *configuration.System) {
+	if logger == nil {
+		logger = logrus.New()
+		loglevel, _ := logrus.ParseLevel(config.LoggingLevel)
+		logger.SetLevel(loglevel)
+	}
 	s.systemScheduler.Every(1).Minute().Do(func() {
-		logrus.Debug("Refresh jobs")
+		logger.Debug("Refresh jobs")
 		wasChanged := s.initRegular(ctx)
 		if wasChanged {
-			logrus.Debug("Jobs was changed")
+			logger.Debug("Jobs was changed")
 			event.RefreshJobs(GetJobsFromCache())
 		}
 	})
