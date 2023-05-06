@@ -68,7 +68,7 @@ func (s Scheduler) RunImmediately(jobID int) {
 func (s Scheduler) InitJob() {
 	ctx := context.Background()
 	s.initRegular(ctx)
-	s.initSystem(ctx)
+	s.initSystem(ctx, &s.config.System)
 }
 
 func (s Scheduler) Start() {
