@@ -1,8 +1,8 @@
 create schema if not exists "dl" authorization "user";
 create schema if not exists "ml" authorization "user";
 
-set "ml".search_path to 'dl';
-set search_path to 'dl','ml';
+set "ml".search_path to dl;
+set search_path to dl,ml,public;
 
 create table "ml"."owner"
 (
