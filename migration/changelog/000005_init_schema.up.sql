@@ -1,242 +1,50 @@
-create table "order_delivered_arch"
-(
-    "order_date"          date                                    not null,
-    "transaction_id"      integer references "transaction" ("id") not null,
-    "source"              varchar(20)                             not null,
-    "owner_code"          varchar(20) references "owner" ("code") not null,
-    "supplier_article"    varchar(75)                             not null,
-    "warehouse"           varchar(50)                             not null,
-    "barcode"             varchar(30),
-    "external_code"       varchar(50)                             not null,
-    "total_price"         numeric(10, 2),
-    "price_with_discount" numeric(10, 2),
-    "quantity"            numeric(10)                             not null
-) PARTITION BY RANGE("order_date");
+create or replace procedure "ml".calc_stock_daily(IN p_id integer)
+    language plpgsql
+as
+$$
+declare
+v_status "ml"."transaction"."status"%type;
+begin
+select "status" into v_status from "ml"."transaction" where "id" = p_id;
+if v_status not in ('COMPLETED', 'BEGIN') then
+        raise exception 'Transaction status is not completed';
+end if;
 
-CREATE TABLE order_delivered_arch_def PARTITION OF order_delivered_arch DEFAULT;
-CREATE TABLE order_delivered_arch_202304 PARTITION OF order_delivered_arch
-    FOR VALUES FROM
-(
-    '2023-04-01'
-) TO
-(
-    '2023-05-01'
-);
-CREATE TABLE order_delivered_arch_202305 PARTITION OF order_delivered_arch
-    FOR VALUES FROM
-(
-    '2023-05-01'
-) TO
-(
-    '2023-06-01'
-);
-CREATE TABLE order_delivered_arch_202306 PARTITION OF order_delivered_arch
-    FOR VALUES FROM
-(
-    '2023-06-01'
-) TO
-(
-    '2023-07-01'
-);
-CREATE TABLE order_delivered_arch_202307 PARTITION OF order_delivered_arch
-    FOR VALUES FROM
-(
-    '2023-07-01'
-) TO
-(
-    '2023-08-01'
-);
-CREATE TABLE order_delivered_arch_202308 PARTITION OF order_delivered_arch
-    FOR VALUES FROM
-(
-    '2023-08-01'
-) TO
-(
-    '2023-09-01'
-);
-CREATE TABLE order_delivered_arch_202309 PARTITION OF order_delivered_arch
-    FOR VALUES FROM
-(
-    '2023-09-01'
-) TO
-(
-    '2023-10-01'
-);
-CREATE TABLE order_delivered_arch_202310 PARTITION OF order_delivered_arch
-    FOR VALUES FROM
-(
-    '2023-10-01'
-) TO
-(
-    '2023-11-01'
-);
-CREATE TABLE order_delivered_arch_202311 PARTITION OF order_delivered_arch
-    FOR VALUES FROM
-(
-    '2023-11-01'
-) TO
-(
-    '2023-12-01'
-);
-CREATE TABLE order_delivered_arch_202312 PARTITION OF order_delivered_arch
-    FOR VALUES FROM
-(
-    '2023-12-01'
-) TO
-(
-    '2024-01-01'
-);
-
-comment
-on table "order_delivered_arch" is 'Архив заказов поставщиков';
-comment
-on column "order_delivered_arch"."order_date" is 'Дата заказа';
-comment
-on column "order_delivered_arch"."transaction_id" is 'Идентификатор транзакции';
-comment
-on column "order_delivered_arch"."source" is 'Источник заказа';
-comment
-on column "order_delivered_arch"."owner_code" is 'Код владельца';
-comment
-on column "order_delivered_arch"."supplier_article" is 'Артикул поставщика';
-comment
-on column "order_delivered_arch"."warehouse" is 'Склад';
-comment
-on column "order_delivered_arch"."barcode" is 'Штрихкод';
-comment
-on column "order_delivered_arch"."external_code" is 'Внешний код';
-comment
-on column "order_delivered_arch"."total_price" is 'Сумма заказа';
-comment
-on column "order_delivered_arch"."price_with_discount" is 'Сумма заказа с учетом скидки';
-comment
-on column "order_delivered_arch"."quantity" is 'Количество';
-
-create table "order_delivered"
-(
-    "order_date"          date                                    not null,
-    "source"              varchar(20)                             not null,
-    "owner_code"          varchar(20) references "owner" ("code") not null,
-    "supplier_article"    varchar(75)                             not null,
-    "warehouse"           varchar(50)                             not null,
-    "barcode"             varchar(30),
-    "external_code"       varchar(50)                             not null,
-    "total_price"         numeric(10, 2),
-    "price_with_discount" numeric(10, 2),
-    "quantity"            numeric(10)                             not null,
-    "create_at"           timestamp with time zone                not null default now(),
-    "updated_at"          timestamp with time zone                not null default now()
-) PARTITION BY RANGE("order_date");
-
-CREATE TABLE order_delivered_def PARTITION OF order_delivered DEFAULT;
-CREATE TABLE order_delivered_202304 PARTITION OF order_delivered
-    FOR VALUES FROM
-(
-    '2023-04-01'
-) TO
-(
-    '2023-05-01'
-);
-CREATE TABLE order_delivered_202305 PARTITION OF order_delivered
-    FOR VALUES FROM
-(
-    '2023-05-01'
-) TO
-(
-    '2023-06-01'
-);
-CREATE TABLE order_delivered_202306 PARTITION OF order_delivered
-    FOR VALUES FROM
-(
-    '2023-06-01'
-) TO
-(
-    '2023-07-01'
-);
-CREATE TABLE order_delivered_202307 PARTITION OF order_delivered
-    FOR VALUES FROM
-(
-    '2023-07-01'
-) TO
-(
-    '2023-08-01'
-);
-CREATE TABLE order_delivered_202308 PARTITION OF order_delivered
-    FOR VALUES FROM
-(
-    '2023-08-01'
-) TO
-(
-    '2023-09-01'
-);
-CREATE TABLE order_delivered_202309 PARTITION OF order_delivered
-    FOR VALUES FROM
-(
-    '2023-09-01'
-) TO
-(
-    '2023-10-01'
-);
-CREATE TABLE order_delivered_202310 PARTITION OF order_delivered
-    FOR VALUES FROM
-(
-    '2023-10-01'
-) TO
-(
-    '2023-11-01'
-);
-CREATE TABLE order_delivered_202311 PARTITION OF order_delivered
-    FOR VALUES FROM
-(
-    '2023-11-01'
-) TO
-(
-    '2023-12-01'
-);
-CREATE TABLE order_delivered_202312 PARTITION OF order_delivered
-    FOR VALUES FROM
-(
-    '2023-12-01'
-) TO
-(
-    '2024-01-01'
-);
-
-comment
-on table "order_delivered" is 'Таблица для хранения отгруженных заказов';
-comment
-on column "order_delivered"."order_date" is 'Дата заказа';
-comment
-on column "order_delivered"."source" is 'Источник заказа';
-comment
-on column "order_delivered"."owner_code" is 'Код владельца';
-comment
-on column "order_delivered"."supplier_article" is 'Артикул поставщика';
-comment
-on column "order_delivered"."warehouse" is 'Склад';
-comment
-on column "order_delivered"."barcode" is 'Штрихкод';
-comment
-on column "order_delivered"."total_price" is 'Сумма заказа';
-comment
-on column "order_delivered"."price_with_discount" is 'Сумма заказа с учетом скидки';
-comment
-on column "order_delivered"."warehouse" is 'Название склада';
-comment
-on column "order_delivered"."quantity" is 'Количество';
-comment
-on column "order_delivered"."external_code" is 'Внешний код';
-
-create table "order_delivered_log"
-(
-    "transaction_id" bigint references "transaction" ("id") not null primary key,
-    "created_at"     timestamp                              not null,
-    "added_rows"     integer                                not null
-);
-
-comment
-on table "order_delivered_log" is 'Таблица для хранения логов отгруженных заказов';
-comment
-on column "order_delivered_log"."transaction_id" is 'Идентификатор транзакции';
-comment
-on column "order_delivered_log"."created_at" is 'Дата создания записи';
+merge into "dl"."stock_daily" ss
+    using (select "transaction_date",
+                  "source",
+                  "owner_code",
+                  "warehouse_name",
+                  "external_code",
+                  "barcode",
+                  sum("quantity") quantity,
+                  sum("quantity_full") quantity_full,
+                  case when sum("quantity") = 0 then 0 else sum("price") / sum("quantity") end as "price",
+                  case
+                      when sum("quantity") = 0 then 0
+                      else sum("price_after_discount") / sum("quantity") end as "price_with_discount"
+           from "dl"."stock"
+           where "transaction_id" = p_id and "price" is not null
+           group by "source", "owner_code", "warehouse_name", "external_code", "barcode",
+                    "transaction_date") as data
+    on (ss."source" = data."source"
+        and ss."owner_code" = data."owner_code"
+        and ss."warehouse" = data."warehouse_name"
+        and ss."external_code" = data."external_code"
+        and ss."stock_date" = data."transaction_date")
+    when matched then
+        update
+            set "attention"           = "attention" + 1,
+                "quantity"            = (ss."quantity" * ss."attention" + data."quantity") / (ss."attention" + 1),
+                "quantity_full"       = (ss."quantity_full" * ss."attention" + data."quantity") / (ss."attention" + 1),
+                "price"               = case when (ss."quantity" + data."quantity") = 0 then 0 else (ss."price" * ss."quantity" + data."price") / (ss."quantity" + data."quantity") end,
+                "price_with_discount" = case when (ss."quantity" + data."quantity") = 0 then 0 else (ss."price_with_discount" * ss."quantity" + data."price_with_discount") /
+                                                                                                    (ss."quantity" + data."quantity") end,
+                "update_at"           = current_date
+    when not matched then
+        insert ("stock_date", "source", "owner_code", "warehouse", "external_code", "barcode", "quantity",
+                "quantity_full", "price", "price_with_discount", "create_at", "update_at", "attention")
+            values (data."transaction_date", data."source", data."owner_code", data."warehouse_name", data."external_code",
+                    data."barcode", data."quantity", data."quantity_full", data."price", data."price_with_discount", current_date, current_date, 1);
+end
+$$;

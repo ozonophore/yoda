@@ -1,8 +1,8 @@
 create schema if not exists "dl" authorization "user";
 create schema if not exists "ml" authorization "user";
 
-set "ml".search_path to 'dl';
-set search_path to 'dl','ml';
+set
+"ml".search_path to "ml", "dl";
 
 create table "ml"."owner"
 (
@@ -12,7 +12,7 @@ create table "ml"."owner"
     "is_deleted"  boolean      not null
 );
 
-create table "ml"."job"
+create table "ml""job"
 (
     "id"          integer primary key,
     "create_date" timestamp default now(),
@@ -42,14 +42,14 @@ on column "ml"."job"."max_runs" is 'Максимальное количеств�
 
 create table "ml"."job_owner"
 (
-    "job_id"     integer references "ml"."job" ("id")         not null,
-    "owner_code" varchar(20) references "ml"."owner" ("code") not null,
+    "job_id"     integer references "job" ("id")         not null,
+    "owner_code" varchar(20) references "owner" ("code") not null,
     primary key ("job_id", "owner_code")
 );
 
 create table "ml"."owner_marketplace"
 (
-    "owner_code" varchar(20) references "ml"."owner" ("code") not null,
+    "owner_code" varchar(20) references "owner" ("code") not null,
     "source"     varchar(20)                             not null,
     "host"       varchar(200)                            not null,
     "password"   varchar(200),
@@ -60,7 +60,7 @@ create table "ml"."owner_marketplace"
 create table "ml"."transaction"
 (
     "id"         serial primary key,
-    "job_id"     integer references "ml"."job" ("id") not null,
+    "job_id"     integer references "job" ("id") not null,
     "start_date" timestamp                       not null,
     "end_date"   timestamp,
     "status"     varchar(20),
@@ -71,9 +71,9 @@ create table "dl"."stock"
 (
     "id"                   serial primary key,
     "transaction_date"     date                                    not null,
-    "transaction_id"       integer references "ml"."transaction" ("id") not null,
+    "transaction_id"       integer references "transaction" ("id") not null,
     "source"               varchar(20)                             not null,
-    "owner_code"           varchar(20) references "ml"."owner" ("code") not null,
+    "owner_code"           varchar(20) references "owner" ("code") not null,
     "last_change_date"     date                                    not null,
     "last_change_time"     time                                    not null,
     "supplier_article"     varchar(75),
@@ -97,8 +97,6 @@ create table "dl"."stock"
     "price_after_discount" numeric(10, 2),
     "card_created"         date                                    not null
 );
-
-create index stock_soec_idx on "dl"."stock" ("transaction_id", "source", "owner_code", "warehouse_name", "external_code");
 
 comment
 on column "dl"."stock"."last_change_date" is 'Дата обновления информации в сервисе';
@@ -149,9 +147,9 @@ create table "dl"."sale"
 (
     "id"                  serial primary key,
     "transaction_date"    date                                    not null,
-    "transaction_id"      integer references "ml"."transaction" ("id") not null,
+    "transaction_id"      integer references "transaction" ("id") not null,
     "source"              varchar(20)                             not null,
-    "owner_code"          varchar(20) references "ml"."owner" ("code") not null,
+    "owner_code"          varchar(20) references "owner" ("code") not null,
     "last_change_date"    date                                    not null,
     "last_change_time"    time                                    not null,
     "sale_date"           date                                    not null,
@@ -185,8 +183,6 @@ create table "dl"."sale"
     "sticker"             varchar(200),
     "srid"                varchar(50)
 );
-
-create index sls__idxotrsrcodid on "dl"."sale" ("transaction_id", "odid");
 
 comment
 on column "dl"."sale"."last_change_date" is 'Дата обновления информации в сервисе';
@@ -257,9 +253,9 @@ create table "dl"."order"
 (
     "id"                  serial primary key,
     "transaction_date"    date                                    not null,
-    "transaction_id"      integer references "ml"."transaction" ("id") not null,
+    "transaction_id"      integer references "transaction" ("id") not null,
     "source"              varchar(20)                             not null,
-    "owner_code"          varchar(20) references "ml"."owner" ("code") not null,
+    "owner_code"          varchar(20) references "owner" ("code") not null,
     "last_change_date"    date                                    not null,
     "last_change_time"    time                                    not null,
     "order_date"          date                                    not null,
@@ -287,8 +283,6 @@ create table "dl"."order"
     "srid"                varchar(50),
     "quantity"            integer                                 not null
 );
-
-create index ordr__indx_tridsrc on "dl"."order" ("transaction_id", "source", "owner_code", "warehouse_name", "external_code", "srid");
 
 comment
 on column "dl"."order"."last_change_date" is 'Дата обновления информации в сервисе';
@@ -345,8 +339,8 @@ on column "dl"."order"."quantity" is 'Количество';
 
 create table "ml"."log_load"
 (
-    "transaction_id" integer references "ml"."transaction" ("id"),
-    "owner_code"     varchar(20) references "ml"."owner" ("code"),
+    "transaction_id" integer references "transaction" ("id"),
+    "owner_code"     varchar(20) references "owner" ("code"),
     "source"         varchar(20) not null,
     "description"    varchar(200),
     "status"         varchar(20) not null,
@@ -390,5 +384,9 @@ on column "dl"."item"."name" is 'Наименование';
     comment
 on column "dl"."item"."update_at" is 'Дата обновления';
 
-insert into "ml"."job"("id","is_active","description","week_days","at_time","type") values (1, true, 'Test job','monday,tuesday,wednesday,thursday,friday,saturday,sunday','06:00,12:00,16:00,20:00','REGULAR');
-commit;
+begin
+    insert into "job"("id","is_active","description","week_days","at_time","type") values (1, true, 'Test job','monday,tuesday,wednesday,thursday,friday,saturday,sunday','06:00,12:00,16:00,20:00','REGULAR');
+    commit;
+end;
+
+

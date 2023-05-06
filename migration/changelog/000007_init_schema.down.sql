@@ -1,2 +1,2 @@
-drop index sls__idxotrsrcodid;
-drop index ordr__indx_tridsrc;
+drop table "barcodes";
+drop table "marketplaces";

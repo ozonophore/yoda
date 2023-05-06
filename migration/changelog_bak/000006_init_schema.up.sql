@@ -1,17 +1,17 @@
-create or replace procedure "ml".calc_order_delivered(IN p_id integer)
+create or replace procedure calc_order_delivered(IN p_id integer)
     language plpgsql
 as
 $$
 declare
-v_id "ml"."transaction".id%type;
+v_id "transaction".id%type;
 v_count integer;
 begin
-select coalesce(max(transaction_id), 0) into v_id from "dl"."order_delivered_log";
+select coalesce(max(transaction_id), 0) into v_id from "order_delivered_log";
 if p_id <= v_id then
         raise exception 'transaction_id % is already processed', p_id;
 end if;
 ---- CALCULATE DELIVERED ORDERS ARCH
-insert into "dl"."order_delivered_arch" ("transaction_id",
+insert into "order_delivered_arch" ("transaction_id",
                                     "order_date",
                                     "owner_code",
                                     "source",
@@ -35,8 +35,8 @@ SELECT p_id,
        (sum(coalesce(oda.quantity, 0)) + sum(o.quantity))   as "total_price",
        (sum(coalesce(oda."price_with_discount", 0) * coalesce(oda."quantity", 0)) + sum(o."price_with_discount")) /
        (sum(coalesce(oda.quantity, 0)) + sum(o.quantity))   as "price_with_discount"
-FROM "dl"."order" o
-         left outer join "dl"."order_delivered_arch" oda on
+FROM "order" o
+         left outer join "order_delivered_arch" oda on
             oda."order_date" = o."order_date"
         and oda."order_date" <= current_date
         and oda."order_date" > current_date - 25
@@ -48,7 +48,7 @@ FROM "dl"."order" o
 WHERE o."transaction_id" = p_id
   AND o."status" = 'delivered'
   AND NOT EXISTS(SELECT *
-                 FROM "dl"."order" o2
+                 FROM "order" o2
                  WHERE o2."transaction_id" = v_id
                    AND o2."source" = o."source"
                    and o2."owner_code" = o."owner_code"
@@ -65,7 +65,7 @@ group by o."order_date",
          o."external_code";
 
 --- CALCULATE DELIVERED ORDERS
-MERGE INTO "dl"."order_delivered" AS od
+MERGE INTO "order_delivered" AS od
     USING (SELECT o."order_date",
                   o."owner_code",
                   o."source",
@@ -76,7 +76,7 @@ MERGE INTO "dl"."order_delivered" AS od
                   sum(o."quantity")                                as "quantity",
                   sum(o."total_price")         as "sum_total_price",
                   sum(o."price_with_discount") as "sum_price_with_discount"
-           FROM "dl"."order" o
+           FROM "order" o
            WHERE o."transaction_id" = p_id
              AND o."status" = 'delivered'
              AND NOT EXISTS(SELECT *
@@ -115,7 +115,7 @@ MERGE INTO "dl"."order_delivered" AS od
 
 GET DIAGNOSTICS v_count = ROW_COUNT;
 
-insert into "ml"."order_delivered_log" ("transaction_id", "created_at", "added_rows")
+insert into "order_delivered_log" ("transaction_id", "created_at", "added_rows")
 values (p_id, now(), v_count);
 end;
 $$;

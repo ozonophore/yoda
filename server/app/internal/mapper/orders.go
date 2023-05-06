@@ -36,6 +36,8 @@ func MapOrder(order *api.OrdersItem, transactionId int64, source string, ownerCo
 	status := "awaiting_deliver"
 	if wasSold(order.Odid) {
 		status = "delivered"
+	} else if utils.BooleanToBoolean(order.IsCancel) {
+		status = "canceled"
 	}
 	discountPercent := float64(*order.DiscountPercent)
 	newSrid := fmt.Sprintf(`%d`, *order.Odid)

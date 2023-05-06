@@ -82,11 +82,11 @@ func execute(config *configuration.Config, ctx context.Context, jobID int, job *
 			return err
 		}
 	}
-	err = repository.CallDailyData(transactionID)
-	if err != nil {
-		logrus.Errorf("Error after call daily data: %s", err)
-		return err
-	}
+	//err = repository.CallDailyData(transactionID)
+	//if err != nil {
+	//	logrus.Errorf("Error after call daily data: %s", err)
+	//	return err
+	//}
 	return nil
 }
 
