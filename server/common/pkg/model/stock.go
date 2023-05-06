@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-const TableNameStock = "stock"
+const TableNameStock = `"dl"."stock"`
 
 // Stock mapped from table <stock>
 type StockItem struct {

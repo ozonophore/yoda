@@ -8,13 +8,12 @@ import (
 	"time"
 )
 
-const TableNameMarketplace = "marketplace"
+const TableNameMarketplace = `"ml"."marketplace"`
 
 // Marketplace mapped from table <marketplace>
 type Marketplace struct {
 	ID        string    `gorm:"column:id;primaryKey" json:"id"`               // ID
 	Name      string    `gorm:"column:name;not null" json:"name"`             // Name
-	Article   *string   `gorm:"column:article" json:"article"`                // Article
 	UpdatedAt time.Time `gorm:"column:updated_at;not null" json:"updated_at"` // Updated at
 }
 

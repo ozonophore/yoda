@@ -20,7 +20,7 @@ const (
 	SCHEEDULER_SYSTEM = "SYSTEM"
 )
 
-const TableNameScheduler = "scheduler"
+const TableNameScheduler = `"ml"."scheduler"`
 
 // Scheduler mapped from table <scheduler>
 type Scheduler struct {

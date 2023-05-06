@@ -4,7 +4,7 @@ import (
 	"time"
 )
 
-const TableNameOrder = "order"
+const TableNameOrder = `"dl"."order"`
 
 // Order mapped from table <order>
 type Order struct {

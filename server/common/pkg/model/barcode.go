@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-const TableNameBarcode = "barcode"
+const TableNameBarcode = `"dl"."barcode"`
 
 // Barcode mapped from table <barcode>
 type Barcode struct {

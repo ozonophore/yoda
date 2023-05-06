@@ -1,5 +1,5 @@
-create schema if not exists "dl" authorization "user";
-create schema if not exists "ml" authorization "user";
+create schema if not exists "dl";
+create schema if not exists "ml";
 
 set "ml".search_path to dl;
 set search_path to dl,ml,public;

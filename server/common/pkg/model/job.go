@@ -4,7 +4,7 @@ import (
 	"time"
 )
 
-const TableNameJob = "job"
+const TableNameJob = `"ml"."job"`
 
 // Job mapped from table <job>
 type Job struct {

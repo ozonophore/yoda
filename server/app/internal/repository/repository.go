@@ -105,9 +105,9 @@ func GetJobWithOwnerByJobId(id int) (*model.Job, error) {
 		return nil, err
 	}
 	var params []model.OwnerMarketplace
-	err = repository.db.Raw(`select om.* from "owner" o
-			inner join "job_owner" jo on o."code" = jo."owner_code"
-			inner join "owner_marketplace" om on o."code" = om."owner_code"
+	err = repository.db.Raw(`select om.* from "ml"."owner" o
+			inner join "ml"."job_owner" jo on o."code" = jo."owner_code"
+			inner join "ml"."owner_marketplace" om on o."code" = om."owner_code"
 			where jo."job_id" = ? order by om."owner_code"`, id).Find(&params).Error
 	if err != nil {
 		return nil, err
@@ -151,7 +151,7 @@ func UpdatePrices(models *[]model.StockItem) error {
 	initIfError()
 	tx := repository.db.Begin()
 	for _, model := range *models {
-		err := tx.Exec(`UPDATE "stock" SET "barcode" = ?, "price" = ?, "discount" = ?, 
+		err := tx.Exec(`UPDATE "dl"."stock" SET "barcode" = ?, "price" = ?, "discount" = ?, 
                    "price_after_discount" = ?, "card_created" = ?, "days_on_site" = ? WHERE "transaction_id" = ? AND "external_code" = ?`,
 			model.Barcode, model.Price, model.Discount, model.PriceAfterDiscount, model.CardCreated, model.DaysOnSite, model.TransactionID, model.ExternalCode,
 		).Error
@@ -166,7 +166,7 @@ func UpdatePrices(models *[]model.StockItem) error {
 func SelectUniqueStockItem(transactionId int64) *[]string {
 	initIfError()
 	var ex []string
-	repository.db.Table("stock").Select(`"supplier_article"`).Distinct().Where(`"transaction_id" = ?`, transactionId).Find(&ex)
+	repository.db.Table(`"dl"."stock"`).Select(`"supplier_article"`).Distinct().Where(`"transaction_id" = ?`, transactionId).Find(&ex)
 	return &ex
 }
 

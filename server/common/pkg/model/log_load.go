@@ -4,7 +4,7 @@
 
 package model
 
-const TableNameLogLoad = "log_load"
+const TableNameLogLoad = `"ml"."log_load"`
 
 // LogLoad mapped from table <log_load>
 type LogLoad struct {

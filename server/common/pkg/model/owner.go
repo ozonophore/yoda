@@ -4,7 +4,7 @@ import (
 	"time"
 )
 
-const TableNameOwner = "owner"
+const TableNameOwner = `"ml"."owner"`
 
 type Owner struct {
 	Code             string    `gorm:"column:code;primaryKey" json:"code"`

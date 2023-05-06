@@ -175,8 +175,8 @@ func GetJobById(id int64) (*model.Job, error) {
 func GetOwners() ([]model.Owner, error) {
 	var models []model.Owner
 	if err := dao.database.
-		Raw(`select o."code", o."name", o."create_date", o."is_deleted", o."organisation_id", org."name" as organisation_name from "owner" o
-					left outer join "organisation" org on org."id" = o."organisation_id"
+		Raw(`select o."code", o."name", o."create_date", o."is_deleted", o."organisation_id", org."name" as organisation_name from "ml"."owner" o
+					left outer join "dl"."organisation" org on org."id" = o."organisation_id"
 					where o."is_deleted" = ? order by o."create_date" desc`, false).Find(&models).Error; err != nil {
 		return nil, err
 	}

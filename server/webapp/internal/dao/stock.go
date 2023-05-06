@@ -32,7 +32,7 @@ func GetPageStocks(limit, offset int, date time.Time, search *string) (*[]model.
                     "quantity_full",
                     "warehouse_name",
 			        "card_created"
-             FROM "stock"
+             FROM "dl"."stock"
              WHERE  date_trunc('day',"transaction_date") = ?
 					 %s
              ORDER by 1)

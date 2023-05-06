@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-const TableNameOrganisation = "organisation"
+const TableNameOrganisation = `"dl"."organisation"`
 
 // Organisation mapped from table <organisation>
 type Organisation struct {

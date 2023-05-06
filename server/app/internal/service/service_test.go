@@ -62,7 +62,7 @@ func ozonRun(t *testing.T, config *configuration.Config, transactionID int64, da
 	err := ozonSservice.Parsing(context.Background(), transactionID)
 	assert.NoError(t, err, `Error after parsing: %s transaction %d`, err, transactionID)
 	var count int64
-	database.Table("stock").Where(`"transaction_id"=?`, transactionID).Count(&count)
+	database.Table(`"dl"."stock"`).Where(`"transaction_id"=?`, transactionID).Count(&count)
 	assert.Equal(t, int64(132), count, "count of stock")
 	var stocks []model.StockItem
 	database.Where(`"supplier_article"=? and "transaction_id"=?`, "ИР078795", transactionID).Find(&stocks)
@@ -79,7 +79,7 @@ func wbRun(t *testing.T, config *configuration.Config, transactionID int64, data
 	err := wbService.Parsing(context.Background(), transactionID)
 	assert.NoError(t, err, `Error after parsing: %s transaction %d`, err, transactionID)
 	var count int64
-	database.Table("stock").Where(`"transaction_id"=?`, transactionID).Count(&count)
+	database.Table(`"dl"."stock"`).Where(`"transaction_id"=?`, transactionID).Count(&count)
 	assert.Equal(t, int64(49), count, "count of stock")
 	var stocks []model.StockItem
 	database.Where(`"supplier_article"=? and "transaction_id"=?`, "ИР060045", transactionID).Find(&stocks)
@@ -93,7 +93,7 @@ func wbRun(t *testing.T, config *configuration.Config, transactionID int64, data
 	lastChangeTime, _ := time.Parse(time.TimeOnly, "09:34:40")
 	assert.Equal(t, lastChangeTime, stock.LastChangeTime, "LastChangeTime")
 	assert.Equal(t, "4620003082726", *stock.Barcode, "barcode")
-	database.Table("order").Where(`"transaction_id"=?`, transactionID).Count(&count)
+	database.Table(`"dl"."order"`).Where(`"transaction_id"=?`, transactionID).Count(&count)
 	assert.Equal(t, int64(1391), count, "count of orders")
 }
 

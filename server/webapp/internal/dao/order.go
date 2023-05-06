@@ -34,7 +34,7 @@ func GetPageOrders(limit, offset int, date time.Time, search *string) (*[]model.
                     "total_price",
                     "price_with_discount",
                     "status"
-             FROM "order"
+             FROM "dl"."order"
              WHERE  date_trunc('day',"transaction_date") = ?
 					 %s
              ORDER by 1)

@@ -4,7 +4,7 @@
 
 package model
 
-const TableNameJobOwner = "job_owner"
+const TableNameJobOwner = `"ml"."job_owner"`
 
 // JobOwner mapped from table <job_owner>
 type JobOwner struct {

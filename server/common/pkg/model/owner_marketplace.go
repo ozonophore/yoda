@@ -4,7 +4,7 @@
 
 package model
 
-const TableNameOwnerMarketplace = "owner_marketplace"
+const TableNameOwnerMarketplace = `"ml"."owner_marketplace"`
 
 // OwnerMarketplace mapped from table <owner_marketplace>
 type OwnerMarketplace struct {
