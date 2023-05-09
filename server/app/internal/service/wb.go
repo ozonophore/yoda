@@ -13,7 +13,6 @@ import (
 	"github.com/yoda/app/internal/repository"
 	"github.com/yoda/common/pkg/model"
 	"github.com/yoda/common/pkg/types"
-	"k8s.io/utils/strings/slices"
 	"time"
 )
 
@@ -21,7 +20,7 @@ type WBService struct {
 	ownerCode string
 	apiKey    string
 	config    configuration.Config
-	salesOdid []string
+	salesOdid map[int64]bool
 }
 
 func NewWBService(ownerCode, apiKey string, config *configuration.Config) *WBService {
@@ -29,6 +28,7 @@ func NewWBService(ownerCode, apiKey string, config *configuration.Config) *WBSer
 		ownerCode: ownerCode,
 		apiKey:    apiKey,
 		config:    *config,
+		salesOdid: make(map[int64]bool),
 	}
 }
 
@@ -94,7 +94,7 @@ func (c *WBService) loadSales(context context.Context, transactionID int64, err 
 
 	if err = CallbackBatch[api.SalesItem](salesItems, c.config.BatchSize, func(items *[]api.SalesItem) error {
 		newItems := mapper.MapSaleArray(items, transactionID, &source, c.ownerCode, func(item *int64) {
-			c.salesOdid = append(c.salesOdid, fmt.Sprintf("%d", *item))
+			c.salesOdid[*item] = true
 		})
 		if err := repository.SaveSales(&newItems); err != nil {
 			return err
@@ -142,9 +142,12 @@ func (c *WBService) fetchOrders(context context.Context, client *api.ClientWithR
 	}
 	orders := response.JSON200
 	if err = CallbackBatch[api.OrdersItem](orders, c.config.BatchSize, func(items *[]api.OrdersItem) error {
+		start := time.Now()
 		orders, errMap := mapper.MapOrderArray(items, transactionId, *source, ownerCode, func(item *int64) bool {
-			return slices.Contains(c.salesOdid, fmt.Sprintf("%d", *item))
+			return c.salesOdid[*item]
 		})
+		elapsed := time.Since(start)
+		logrus.Debugf("Fetch took %s", elapsed)
 		if errMap != nil {
 			return errMap
 		}

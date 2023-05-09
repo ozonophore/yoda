@@ -6,7 +6,7 @@ declare
 v_id "ml"."transaction".id%type;
 v_count integer;
 begin
-select coalesce(max(transaction_id), 0) into v_id from "dl"."order_delivered_log";
+select coalesce(max(transaction_id), 0) into v_id from "ml"."order_delivered_log";
 if p_id <= v_id then
         raise exception 'transaction_id % is already processed', p_id;
 end if;
@@ -80,7 +80,7 @@ MERGE INTO "dl"."order_delivered" AS od
            WHERE o."transaction_id" = p_id
              AND o."status" = 'delivered'
              AND NOT EXISTS(SELECT *
-                            FROM "order" o2
+                            FROM "dl"."order" o2
                             WHERE o2."transaction_id" = v_id
                               AND o2."srid" = o."srid"
                               AND o2."source" = o."source"
