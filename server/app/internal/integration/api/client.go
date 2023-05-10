@@ -20,11 +20,11 @@ type Barcode struct {
 	// Barcode Barcode
 	Barcode string `json:"barcode"`
 
-	// BarcodeId Barcode ID from 1c
-	BarcodeId string `json:"barcodeId"`
+	// BarcodeID Barcode ID from 1c
+	BarcodeID string `json:"barcodeID"`
 
-	// ItemId ID from 1c
-	ItemId string `json:"itemId"`
+	// Id ID from 1c
+	Id string `json:"id"`
 
 	// MarketId Market ID from 1c
 	MarketId string `json:"marketId"`

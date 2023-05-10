@@ -5,7 +5,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func SaveOrUpdateBarcode(items *[]model.Barcode) error {
+func SaveOrUpdateItem(items *[]model.Item) error {
 	initIfError()
 	return repository.db.Transaction(func(tx *gorm.DB) error {
 		for _, item := range *items {

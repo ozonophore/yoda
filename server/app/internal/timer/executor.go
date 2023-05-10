@@ -8,11 +8,13 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/yoda/app/internal/configuration"
 	"github.com/yoda/app/internal/integration"
+	"github.com/yoda/app/internal/integration/dictionary"
 	jobf "github.com/yoda/app/internal/job"
 	"github.com/yoda/app/internal/repository"
 	service "github.com/yoda/app/internal/service/logload"
 	"github.com/yoda/common/pkg/model"
 	"github.com/yoda/common/pkg/types"
+	"sync"
 	"time"
 )
 
@@ -112,4 +114,28 @@ func prepareParam(ctx context.Context, config *configuration.Config, param *mode
 
 func loadDictionary() {
 	integration.InstanceUpdaterOrganisations().UpdateOrganizations()
+	wg := sync.WaitGroup{}
+	wg.Add(3)
+	go func() {
+		defer wg.Done()
+		err := dictionary.UpdateItems()
+		if err != nil {
+			errors.Join(err)
+		}
+	}()
+	go func() {
+		defer wg.Done()
+		err := dictionary.UpdateBarcode()
+		if err != nil {
+			errors.Join(err)
+		}
+	}()
+	go func() {
+		defer wg.Done()
+		err := dictionary.UpdateMarketplaces()
+		if err != nil {
+			errors.Join(err)
+		}
+	}()
+	wg.Wait()
 }

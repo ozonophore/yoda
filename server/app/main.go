@@ -7,6 +7,7 @@ import (
 	"github.com/yoda/app/internal/configuration"
 	"github.com/yoda/app/internal/event"
 	"github.com/yoda/app/internal/integration"
+	"github.com/yoda/app/internal/integration/dictionary"
 	"github.com/yoda/app/internal/repository"
 	"github.com/yoda/app/internal/timer"
 	"github.com/yoda/common/pkg/dao"
@@ -28,6 +29,7 @@ func main() {
 	defer event.CloseEvent()
 
 	uo := integration.NewUpdaterOrganisations(config.Integration)
+	dictionary.InitDictionary(config.Integration)
 
 	scheduler := timer.NewScheduler(config)
 	scheduler.Subscribe(event.CreateObserver())
@@ -36,6 +38,7 @@ func main() {
 	scheduler.InitJob()
 	scheduler.Start()
 	defer scheduler.StopAll()
+	scheduler.RunImmediately(1)
 
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)

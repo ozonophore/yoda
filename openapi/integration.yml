@@ -4,6 +4,14 @@ info:
   version: 1.0.0
 components:
   schemas:
+    LastUpdateDate:
+      type: string
+      format: date-time
+      description: Date with format ('yyyy-MM-ddTHH:mm:ss')
+      x-go-type: types.CustomTime
+      x-go-import:
+        name: types
+        package: github.com/yoda/common/pkg/types
     Stocks:
       type: object
       properties:
@@ -124,10 +132,10 @@ components:
     Barcode:
       type: object
       properties:
-          itemId:
+          id:
             type: string
             description: ID from 1c
-          barcodeId:
+          barcodeID:
             type: string
             description: Barcode ID from 1c
           barcode:
@@ -148,8 +156,8 @@ components:
               package: github.com/yoda/common/pkg/types
             description: Barcode update date
       required:
-        - itemId
-        - barcodeId
+        - id
+        - barcodeID
         - barcode
         - orgId
         - marketId
@@ -207,6 +215,11 @@ paths:
       summary: Get items
       description: Get items
       operationId: getItems
+      parameters:
+        - in: query
+          name: lastUpdateDate
+          schema:
+            $ref: '#/components/schemas/LastUpdateDate'
       responses:
         200:
           description: OK
@@ -219,6 +232,11 @@ paths:
       summary: Get items barcodes
       description: Get items barcodes
       operationId: getItemsBarcodes
+      parameters:
+        - in: query
+          name: lastUpdateDate
+          schema:
+            $ref: '#/components/schemas/LastUpdateDate'
       responses:
         200:
           description: OK
@@ -231,6 +249,11 @@ paths:
       summary: Get organizations
       description: Get organizations
       operationId: getOrganizations
+      parameters:
+        - in: query
+          name: lastUpdateDate
+          schema:
+            $ref: '#/components/schemas/LastUpdateDate'
       responses:
         200:
           description: OK
@@ -243,6 +266,11 @@ paths:
       summary: Get marketplaces
       description: Get marketplaces
       operationId: getMarketplaces
+      parameters:
+        - in: query
+          name: lastUpdateDate
+          schema:
+            $ref: '#/components/schemas/LastUpdateDate'
       responses:
         200:
           description: OK

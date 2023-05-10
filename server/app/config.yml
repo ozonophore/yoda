@@ -1,5 +1,6 @@
 database:
-  dsn: postgres://user:password@localhost:5432/db
+  dsn: postgresql://user:password@176.113.83.101:5432/db2
+#  dsn: postgres://user:password@localhost:5432/db
 timeout: 60
 mq:
   url: amqp://guest:guest@localhost:5672/
