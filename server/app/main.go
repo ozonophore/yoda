@@ -38,7 +38,6 @@ func main() {
 	scheduler.InitJob()
 	scheduler.Start()
 	defer scheduler.StopAll()
-	scheduler.RunImmediately(1)
 
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
