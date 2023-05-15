@@ -6,7 +6,11 @@ const (
 )
 
 const (
-	StatusTypeBegin     = "BEGIN"
-	StatusTypeCompleted = "COMPLETED"
-	StatusTypeRejected  = "REJECTED"
+	StatusTypeBegin              = "BEGIN"
+	StatusTypeExtractBegin       = "EXTRACT_BEGIN"
+	StatusTypeExtractCompleted   = "EXTRACT_COMPLETED"
+	StatusTypeTransformBegin     = "TRANSFORM_BEGIN"
+	StatusTypeTransformCompleted = "TRANSFORM_COMPLETED"
+	StatusTypeCompleted          = "COMPLETED"
+	StatusTypeRejected           = "REJECTED"
 )

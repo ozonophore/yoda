@@ -2,8 +2,8 @@ package service
 
 import (
 	"context"
+	"errors"
 	"fmt"
-	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"github.com/yoda/app/internal/api"
 	"github.com/yoda/app/internal/configuration"
@@ -12,8 +12,8 @@ import (
 	"github.com/yoda/app/internal/repository"
 	"github.com/yoda/common/pkg/model"
 	"github.com/yoda/common/pkg/types"
+	"github.com/yoda/common/pkg/utils"
 	"net/http"
-	"strconv"
 	"time"
 )
 
@@ -48,7 +48,7 @@ func (c *OzonService) customProvider(ctx context.Context, req *http.Request) err
 }
 
 func (c *OzonService) Parsing(context context.Context, transactionID int64) error {
-	logrus.Info("Start parsing ozon")
+	logrus.Info("Start parsing ozon ", c.ownerCode)
 	client, err := c.getClient(c.config.Ozon.Host)
 	if err != nil {
 		return err
@@ -183,14 +183,8 @@ func (c *OzonService) preparePrices(resp *api.GetOzonProductInfoResponse, transa
 	newItems := make([]model.StockItem, length)
 	for index, info := range *resp.JSON200.Result.Items {
 		c.productInfoCache[*info.FboSku] = info.Barcode
-		price, err := strconv.ParseFloat(*info.OldPrice, 64)
-		if err != nil {
-			return err
-		}
-		priceAfterDisc, err := strconv.ParseFloat(*info.MarketingPrice, 64)
-		if err != nil {
-			return err
-		}
+		price := utils.StringToFloat64(info.OldPrice)
+		priceAfterDisc := utils.StringToFloat64(info.MarketingPrice)
 		disc := price - priceAfterDisc
 		extCode := fmt.Sprintf("%d", *info.FboSku)
 		daysOnSite := int32(time.Now().Sub(*info.CreatedAt).Hours() / 24)

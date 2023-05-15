@@ -197,6 +197,15 @@ func SaveOrders(items *[]model.Order) error {
 	return nil
 }
 
+func SaveOrdersInBatches(items *[]model.Order, batchSize int) error {
+	initIfError()
+	tx := repository.db.CreateInBatches(items, batchSize)
+	if tx.Error != nil {
+		return tx.Error
+	}
+	return nil
+}
+
 func UpdateAttributes(models *[]model.StockItem) error {
 	initIfError()
 	tx := repository.db.Begin()

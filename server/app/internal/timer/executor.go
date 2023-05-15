@@ -15,7 +15,6 @@ import (
 	"github.com/yoda/common/pkg/model"
 	"github.com/yoda/common/pkg/types"
 	"sync"
-	"time"
 )
 
 type onBeforeJobExecution func(job *model.Job, transactionID int64, gJob *gocron.Job)
@@ -54,7 +53,7 @@ func jobByTag(s *gocron.Scheduler, jobId int) *gocron.Job {
 }
 
 func RunRegularLoad(config *configuration.Config, ctx context.Context, jobID int, s *gocron.Scheduler, onBefore onBeforeJobExecution, onAfter onAfterJobExecution) {
-	loadDictionary()
+	//loadDictionary()
 	job, err := repository.GetJobWithOwnerByJobId(jobID)
 	if err != nil {
 		logrus.Errorf("Error after get jobs: %s with id: %d", err, jobID)
@@ -84,6 +83,7 @@ func execute(config *configuration.Config, ctx context.Context, jobID int, job *
 			return err
 		}
 	}
+	//TODO: Run a transformation stage
 	//err = repository.CallDailyData(transactionID)
 	//if err != nil {
 	//	logrus.Errorf("Error after call daily data: %s", err)
@@ -107,8 +107,7 @@ func prepareParam(ctx context.Context, config *configuration.Config, param *mode
 	if err != nil {
 		logrus.Panicf("Error after lookup a loader: %s", err)
 	}
-	newContext, _ := context.WithTimeout(ctx, time.Duration(config.Timeout)*time.Second)
-	err = loader.Parsing(newContext, transactionID)
+	err = loader.Parsing(ctx, transactionID)
 	return err
 }
 
