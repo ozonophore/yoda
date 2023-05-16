@@ -53,7 +53,7 @@ func jobByTag(s *gocron.Scheduler, jobId int) *gocron.Job {
 }
 
 func RunRegularLoad(config *configuration.Config, ctx context.Context, jobID int, s *gocron.Scheduler, onBefore onBeforeJobExecution, onAfter onAfterJobExecution) {
-	//loadDictionary()
+	loadDictionary()
 	job, err := repository.GetJobWithOwnerByJobId(jobID)
 	if err != nil {
 		logrus.Errorf("Error after get jobs: %s with id: %d", err, jobID)

@@ -20,7 +20,7 @@ type WBService struct {
 	ownerCode string
 	apiKey    string
 	config    configuration.Config
-	salesOdid map[int64]bool
+	salesSet  map[int64]bool
 }
 
 func NewWBService(ownerCode, apiKey string, config *configuration.Config) *WBService {
@@ -28,7 +28,6 @@ func NewWBService(ownerCode, apiKey string, config *configuration.Config) *WBSer
 		ownerCode: ownerCode,
 		apiKey:    apiKey,
 		config:    *config,
-		salesOdid: make(map[int64]bool),
 	}
 }
 
@@ -108,7 +107,7 @@ func (c *WBService) extractOrdersAndSales(ctx context.Context, transactionID int
 	orders := <-o
 	start := time.Now()
 	newOrders, errMap := mapper.MapOrderArray(orders, transactionID, source, c.ownerCode, func(item *int64) bool {
-		return c.salesOdid[*item]
+		return c.salesSet[*item]
 	})
 	elapsed := time.Since(start)
 	logrus.Debugf("Fetch took %s", elapsed)
@@ -134,9 +133,10 @@ func (c *WBService) extractSales(ctx context.Context, transactionID int64, clnt 
 	}
 	salesItems := respSales.JSON200
 
+	c.salesSet = make(map[int64]bool, len(*salesItems))
 	if err = CallbackBatch[api.SalesItem](salesItems, c.config.BatchSize, func(items *[]api.SalesItem) error {
 		newItems := mapper.MapSaleArray(items, transactionID, &source, c.ownerCode, func(item *int64) {
-			c.salesOdid[*item] = true
+			c.salesSet[*item] = true
 		})
 		if err := repository.SaveSales(&newItems); err != nil {
 			return err
@@ -172,7 +172,7 @@ func (c *WBService) fetchOrders(client *api.ClientWithResponses, dateFrom *api.D
 	if err = CallbackBatch[api.OrdersItem](orders, c.config.BatchSize, func(items *[]api.OrdersItem) error {
 		start := time.Now()
 		orders, errMap := mapper.MapOrderArray(items, transactionId, *source, ownerCode, func(item *int64) bool {
-			return c.salesOdid[*item]
+			return c.salesSet[*item]
 		})
 		elapsed := time.Since(start)
 		logrus.Debugf("Fetch took %s", elapsed)
