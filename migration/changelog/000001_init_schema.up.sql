@@ -95,7 +95,10 @@ create table "dl"."stock"
     "price"                numeric(10, 2),
     "discount"             numeric(10, 2),
     "price_after_discount" numeric(10, 2),
-    "card_created"         date                                    not null
+    "card_created"         date                                    not null,
+    "item_id"              varchar(36),
+    "barcode_id"           varchar(36),
+    "message"              varchar(250)
 );
 
 create index stock_soec_idx on "dl"."stock" ("transaction_id", "source", "owner_code", "warehouse_name", "external_code");
@@ -285,7 +288,10 @@ create table "dl"."order"
     "g_number"            varchar(50),
     "sticker"             varchar(200),
     "srid"                varchar(50),
-    "quantity"            integer                                 not null
+    "quantity"            integer                                 not null,
+    "item_id"             varchar(36),
+    "barcode_id"          varchar(36),
+    "message"             varchar(250)
 );
 
 create index ordr__indx_tridsrc on "dl"."order" ("transaction_id", "source", "owner_code", "warehouse_name", "external_code", "srid");
