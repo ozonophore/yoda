@@ -39,6 +39,9 @@ type Order struct {
 	Sticker           *string    `gorm:"column:sticker" json:"sticker"`                                            // Цифровое значение стикера
 	Srid              *string    `gorm:"column:srid" json:"srid"`                                                  // Уникальный идентификатор заказа
 	Quantity          int64      `gorm:"column:quantity" json:"quantity"`                                          // Количество
+	ItemId            *string    `gorm:"column:item_id" json:"item_id"`                                            // Уникальный идентификатор товара
+	BarcodeId         *string    `gorm:"column:barcode_id" json:"barcode_id"`                                      // Уникальный идентификатор штрихкода
+	Message           *string    `gorm:"column:message" json:"message"`                                            // Сообщение
 }
 
 // TableName Order's table name

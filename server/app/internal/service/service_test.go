@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/testcontainers/testcontainers-go/modules/compose"
 	"github.com/yoda/app/internal/configuration"
-	"github.com/yoda/app/internal/repository"
+	"github.com/yoda/app/internal/storage"
 	"github.com/yoda/common/pkg/model"
 	"gorm.io/gorm"
 	"net/http"
@@ -32,13 +32,13 @@ func Test_Main(t *testing.T) {
 	config.Ozon.Host = fmt.Sprintf("%s/ozon", baseUrl)
 	config.Wb.Host = fmt.Sprintf("%s/wb", baseUrl)
 	config.Integration.Host = fmt.Sprintf(`%s/integration`, baseUrl)
-	database := repository.InitDatabase(config.Database)
+	database := storage.InitDatabase(config.Database)
 	initTestData(database)
 
-	dao := repository.NewRepositoryDAO(database)
+	dao := storage.NewRepositoryDAO(database)
 	assert.NotNil(t, dao, "repository is nil")
 	jobId := 1
-	transactionID := repository.BeginOperation(jobId)
+	transactionID := storage.BeginOperation(jobId)
 	t.Run("WB", func(t *testing.T) {
 		wbRun(t, config, transactionID, database)
 	})

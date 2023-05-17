@@ -7,7 +7,7 @@ import (
 	"github.com/sirupsen/logrus"
 	integration "github.com/yoda/app/internal/integration/api"
 	"github.com/yoda/app/internal/logging"
-	"github.com/yoda/app/internal/repository"
+	"github.com/yoda/app/internal/storage"
 	"github.com/yoda/common/pkg/model"
 	"net/http"
 	"time"
@@ -43,5 +43,5 @@ func UpdateMarketplaces() error {
 		marketplaces[i].Name = item.Name
 		marketplaces[i].UpdatedAt = item.UpdateAt.ToTime()
 	}
-	return errors.Join(repository.SaveOrUpdateMarketplaces(&marketplaces))
+	return errors.Join(storage.SaveOrUpdateMarketplaces(&marketplaces))
 }

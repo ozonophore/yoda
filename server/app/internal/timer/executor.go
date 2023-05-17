@@ -10,11 +10,13 @@ import (
 	"github.com/yoda/app/internal/integration"
 	"github.com/yoda/app/internal/integration/dictionary"
 	jobf "github.com/yoda/app/internal/job"
-	"github.com/yoda/app/internal/repository"
+	dictionary2 "github.com/yoda/app/internal/service/dictionary"
 	service "github.com/yoda/app/internal/service/logload"
+	"github.com/yoda/app/internal/storage"
 	"github.com/yoda/common/pkg/model"
 	"github.com/yoda/common/pkg/types"
 	"sync"
+	"time"
 )
 
 type onBeforeJobExecution func(job *model.Job, transactionID int64, gJob *gocron.Job)
@@ -29,10 +31,10 @@ func callOnBeforeJonExecution(job *model.Job, transactionID int64, gJob *gocron.
 func callOnAfterJonExecution(job *model.Job, transactionID int64, gJob *gocron.Job, err error, onAfter onAfterJobExecution) {
 	if err == nil {
 		logrus.Debugf("Job %d finished successfully", job.ID)
-		repository.EndOperation(transactionID, types.StatusTypeCompleted)
+		storage.EndOperation(transactionID, types.StatusTypeCompleted)
 	} else {
 		logrus.Errorf("Job %d finished with error: %s", job.ID, err)
-		repository.EndOperationWithMessage(transactionID, types.StatusTypeRejected, err.Error())
+		storage.EndOperationWithMessage(transactionID, types.StatusTypeRejected, err.Error())
 	}
 	logrus.Infof("Finish job: %d. Next run: %s", job.ID, gJob.NextRun())
 	if onAfter != nil {
@@ -54,7 +56,7 @@ func jobByTag(s *gocron.Scheduler, jobId int) *gocron.Job {
 
 func RunRegularLoad(config *configuration.Config, ctx context.Context, jobID int, s *gocron.Scheduler, onBefore onBeforeJobExecution, onAfter onAfterJobExecution) {
 	loadDictionary()
-	job, err := repository.GetJobWithOwnerByJobId(jobID)
+	job, err := storage.GetJobWithOwnerByJobId(jobID)
 	if err != nil {
 		logrus.Errorf("Error after get jobs: %s with id: %d", err, jobID)
 		return
@@ -63,7 +65,7 @@ func RunRegularLoad(config *configuration.Config, ctx context.Context, jobID int
 		logrus.Infof("Job %d is not active", jobID)
 		return
 	}
-	transactionID := repository.BeginOperation(jobID)
+	transactionID := storage.BeginOperation(jobID)
 	gJob := jobByTag(s, jobID)
 	if gJob == nil {
 		err = errors.New(fmt.Sprintf("Job %d not found", jobID))
@@ -137,4 +139,18 @@ func loadDictionary() {
 		}
 	}()
 	wg.Wait()
+	RefreshItemDecoder()
+}
+
+func RefreshItemDecoder() {
+	decoder := dictionary2.GetItemDecoder()
+	items, err := storage.GetBarcodeDictionary()
+	if err != nil {
+		logrus.Panicf("Error after get barcode dictionary: %s", err)
+	}
+	start := time.Now()
+	for _, item := range *items {
+		decoder.Add(item.OrgCode, item.Source, item.Barcode, item.BarcodeId, item.ItemId)
+	}
+	logrus.Debugf("RefreshItemDecoder: %s", time.Since(start))
 }

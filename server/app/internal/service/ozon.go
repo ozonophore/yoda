@@ -9,7 +9,8 @@ import (
 	"github.com/yoda/app/internal/configuration"
 	"github.com/yoda/app/internal/logging"
 	"github.com/yoda/app/internal/mapper"
-	"github.com/yoda/app/internal/repository"
+	"github.com/yoda/app/internal/service/dictionary"
+	"github.com/yoda/app/internal/storage"
 	"github.com/yoda/common/pkg/model"
 	"github.com/yoda/common/pkg/types"
 	"github.com/yoda/common/pkg/utils"
@@ -81,7 +82,7 @@ func (c *OzonService) Parsing(context context.Context, transactionID int64) erro
 		offset = length
 	}
 	logrus.Info("Take an information about prices")
-	suppArt := repository.SelectUniqueStockItem(transactionID)
+	suppArt := storage.SelectUniqueStockItem(transactionID)
 
 	err = CallbackBatch[string](suppArt, c.config.BatchSize, func(batch *[]string) error {
 		req := api.GetOzonProductInfoJSONRequestBody{
@@ -122,7 +123,7 @@ func (c *OzonService) Parsing(context context.Context, transactionID int64) erro
 		}
 		lastId = resp.JSON200.LastId
 		newItems := c.prepareAttributes(resp, transactionID)
-		if err = repository.UpdateAttributes(newItems); err != nil {
+		if err = storage.UpdateAttributes(newItems); err != nil {
 			return err
 		}
 		return nil
@@ -200,23 +201,38 @@ func (c *OzonService) preparePrices(resp *api.GetOzonProductInfoResponse, transa
 		}
 		newItems[index] = *si
 	}
-	return repository.UpdatePrices(&newItems)
+	return storage.UpdatePrices(&newItems)
 }
 
 func (c *OzonService) prepareItems(items *[]api.RowItem, dt time.Time, transactionId int64, source string) error {
 	newItems := make([]model.StockItem, len(*items))
+	decoder := dictionary.GetItemDecoder()
 	for index, item := range *items {
 		si, err := mapper.MapRowItem(&item, &dt)
 		if err != nil {
 			logrus.Errorf("Couldn't map a value at row %d (%s)", index, err)
 			return err
 		}
+		var barcodeId, itemId, message *string
+		if si.Barcode != nil {
+			decode, err := decoder.Decode(c.ownerCode, source, *si.Barcode)
+			if err != nil {
+				s := err.Error()
+				message = &s
+			} else {
+				barcodeId = &decode.BarcodeId
+				itemId = &decode.ItemId
+			}
+		}
 		si.OwnerCode = c.ownerCode
 		si.Source = source
 		si.TransactionID = transactionId
+		si.BarcodeId = barcodeId
+		si.ItemId = itemId
+		si.Message = message
 		newItems[index] = *si
 	}
-	return repository.SaveStocks(&newItems)
+	return storage.SaveStocks(&newItems)
 }
 
 func (c *OzonService) loadOrders(ctx context.Context, client *api.ClientWithResponses, transactionId int64, source string) error {
@@ -260,11 +276,12 @@ func (c *OzonService) parseFBO(FBOResponse *api.GetOzonFBOResponse, transactionI
 		return 0, nil
 	}
 	var orders []model.Order
+	decoder := dictionary.GetItemDecoder()
 	for _, item := range *FBOItems {
-		o := mapper.MapFBOToOrder(&item, transactionId, source, ownerCode, &c.productInfoCache)
+		o := mapper.MapFBOToOrder(&item, transactionId, source, ownerCode, &c.productInfoCache, decoder)
 		orders = append(orders, *o...)
 	}
-	if err := repository.SaveOrders(&orders); err != nil {
+	if err := storage.SaveOrders(&orders); err != nil {
 		return 0, err
 	}
 	return int64(count), nil

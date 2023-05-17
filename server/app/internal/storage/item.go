@@ -1,4 +1,4 @@
-package repository
+package storage
 
 import (
 	"github.com/yoda/common/pkg/model"
@@ -15,4 +15,11 @@ func SaveOrUpdateItem(items *[]model.Item) error {
 		}
 		return nil
 	})
+}
+
+func GetItemCount() int {
+	initIfError()
+	var count int
+	repository.db.Raw(`select count(*) from dl.item`).Scan(&count)
+	return count
 }

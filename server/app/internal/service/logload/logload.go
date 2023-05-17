@@ -2,12 +2,12 @@ package service
 
 import (
 	"github.com/sirupsen/logrus"
-	"github.com/yoda/app/internal/repository"
+	"github.com/yoda/app/internal/storage"
 	"github.com/yoda/common/pkg/model"
 )
 
 func CreateLogLoad(transactionId int64, owner string, source string) error {
-	return repository.CreateOrUpdateLogLoad(&model.LogLoad{
+	return storage.CreateOrUpdateLogLoad(&model.LogLoad{
 		TransactionID: transactionId,
 		OwnerCode:     owner,
 		Source:        source,
@@ -16,7 +16,7 @@ func CreateLogLoad(transactionId int64, owner string, source string) error {
 }
 
 func CompleteLogLoad(transactionId int64, owner string, source string) {
-	err := repository.CreateOrUpdateLogLoad(&model.LogLoad{
+	err := storage.CreateOrUpdateLogLoad(&model.LogLoad{
 		TransactionID: transactionId,
 		OwnerCode:     owner,
 		Source:        source,
@@ -29,7 +29,7 @@ func CompleteLogLoad(transactionId int64, owner string, source string) {
 
 func ErrorLogLoad(transactionId int64, owner string, source string, e error) {
 	msg := e.Error()
-	err := repository.CreateOrUpdateLogLoad(&model.LogLoad{
+	err := storage.CreateOrUpdateLogLoad(&model.LogLoad{
 		TransactionID: transactionId,
 		OwnerCode:     owner,
 		Source:        source,

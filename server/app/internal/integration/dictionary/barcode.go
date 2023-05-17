@@ -7,7 +7,7 @@ import (
 	"github.com/sirupsen/logrus"
 	integration "github.com/yoda/app/internal/integration/api"
 	"github.com/yoda/app/internal/logging"
-	"github.com/yoda/app/internal/repository"
+	"github.com/yoda/app/internal/storage"
 	"github.com/yoda/common/pkg/model"
 	"net/http"
 	"time"
@@ -36,6 +36,10 @@ func UpdateBarcode() error {
 	if result.Count == 0 {
 		return nil
 	}
+	actualCount := storage.GetBarcodeCount()
+	if int32(actualCount) >= result.Count {
+		return nil
+	}
 	items := result.Items
 	var barcodes = make([]model.Barcode, len(items))
 	for i, item := range items {
@@ -46,5 +50,5 @@ func UpdateBarcode() error {
 		barcodes[i].MarketplaceID = item.MarketId
 		barcodes[i].UpdatedAt = item.UpdateAt.ToTime()
 	}
-	return errors.Join(repository.SaveOrUpdateBarcodes(&barcodes))
+	return errors.Join(storage.SaveOrUpdateBarcodes(&barcodes))
 }

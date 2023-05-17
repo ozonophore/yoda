@@ -3,6 +3,7 @@ package mapper
 import (
 	"fmt"
 	"github.com/yoda/app/internal/api"
+	"github.com/yoda/app/internal/service/dictionary"
 	"github.com/yoda/common/pkg/model"
 	"github.com/yoda/common/pkg/utils"
 	"time"
@@ -10,8 +11,23 @@ import (
 
 func MapOrderArray(orders *[]api.OrdersItem, transactionId int64, source string, ownerCode string, wasSold func(odid *int64) bool) (*[]model.Order, error) {
 	var result []model.Order
+	decoder := dictionary.GetItemDecoder()
 	for _, order := range *orders {
 		newOrder, err := MapOrder(&order, transactionId, source, ownerCode, wasSold)
+		var barcodeId, itemId, message *string
+		if newOrder.Barcode != nil {
+			decode, err := decoder.Decode(ownerCode, source, *newOrder.Barcode)
+			if err != nil {
+				s := err.Error()
+				message = &s
+			} else {
+				barcodeId = &decode.BarcodeId
+				itemId = &decode.ItemId
+			}
+		}
+		newOrder.BarcodeId = barcodeId
+		newOrder.ItemId = itemId
+		newOrder.Message = message
 		if err != nil {
 			return nil, err
 		}

@@ -3,11 +3,12 @@ package mapper
 import (
 	"fmt"
 	"github.com/yoda/app/internal/api"
+	"github.com/yoda/app/internal/service/dictionary"
 	"github.com/yoda/common/pkg/model"
 	"time"
 )
 
-func MapFBOToOrder(fbo *api.FBO, transactionId int64, source string, ownerCode string, cache *map[int64]*string) *[]model.Order {
+func MapFBOToOrder(fbo *api.FBO, transactionId int64, source string, ownerCode string, cache *map[int64]*string, decoder *dictionary.ItemDecoder) *[]model.Order {
 	var orders = make([]model.Order, len(*fbo.Products))
 	var finData = make(map[int64]*api.PostingFinancialDataProduct)
 
@@ -21,6 +22,17 @@ func MapFBOToOrder(fbo *api.FBO, transactionId int64, source string, ownerCode s
 		var barcode *string
 		if item != nil {
 			barcode = item
+		}
+		var barcodeId, itemId, message *string
+		if barcode != nil {
+			decod, err := decoder.Decode(ownerCode, source, *barcode)
+			if err != nil {
+				s := err.Error()
+				message = &s
+			} else {
+				barcodeId = &decod.BarcodeId
+				itemId = &decod.ItemId
+			}
 		}
 		orders[i] = model.Order{
 			TransactionID:     transactionId,
@@ -50,6 +62,9 @@ func MapFBOToOrder(fbo *api.FBO, transactionId int64, source string, ownerCode s
 			Sticker:           nil,
 			Srid:              fbo.PostingNumber,
 			Quantity:          product.Quantity,
+			BarcodeId:         barcodeId,
+			ItemId:            itemId,
+			Message:           message,
 		}
 	}
 	return &orders

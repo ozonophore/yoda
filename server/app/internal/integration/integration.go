@@ -8,7 +8,7 @@ import (
 	"github.com/yoda/app/internal/configuration"
 	integration "github.com/yoda/app/internal/integration/api"
 	"github.com/yoda/app/internal/logging"
-	"github.com/yoda/app/internal/repository"
+	"github.com/yoda/app/internal/storage"
 	"github.com/yoda/common/pkg/model"
 	"net/http"
 	"time"
@@ -65,5 +65,5 @@ func (i *UpdaterOrganisations) UpdateOrganizations() error {
 		organizations[i].Kpp = item.Kpp
 		organizations[i].UpdateAt = item.UpdateAt.ToTime()
 	}
-	return errors.Join(repository.SaveOrganisations(&organizations))
+	return errors.Join(storage.SaveOrganisations(&organizations))
 }

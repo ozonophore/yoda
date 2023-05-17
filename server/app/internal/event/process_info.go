@@ -3,12 +3,12 @@ package event
 import (
 	"github.com/sirupsen/logrus"
 	"github.com/yoda/app/internal/mqserver"
-	"github.com/yoda/app/internal/repository"
+	"github.com/yoda/app/internal/storage"
 	"github.com/yoda/common/pkg/mq"
 )
 
 func ProcessInfo(data *[]string) {
-	events, err := repository.GetTlgEvents()
+	events, err := storage.GetTlgEvents()
 	if err != nil {
 		logrus.Error(err)
 		return

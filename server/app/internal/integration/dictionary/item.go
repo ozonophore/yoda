@@ -8,7 +8,7 @@ import (
 	"github.com/yoda/app/internal/configuration"
 	integration "github.com/yoda/app/internal/integration/api"
 	"github.com/yoda/app/internal/logging"
-	"github.com/yoda/app/internal/repository"
+	"github.com/yoda/app/internal/storage"
 	"github.com/yoda/common/pkg/model"
 	"net/http"
 	"time"
@@ -43,6 +43,10 @@ func UpdateItems() error {
 	if result.Count == 0 {
 		return nil
 	}
+	actualCount := storage.GetItemCount()
+	if int32(actualCount) >= result.Count {
+		return nil
+	}
 	items := result.Items
 	var newItems = make([]model.Item, len(items))
 	for i, item := range items {
@@ -50,5 +54,5 @@ func UpdateItems() error {
 		newItems[i].Name = item.Name
 		newItems[i].UpdatedAt = item.UpdateAt.ToTime()
 	}
-	return errors.Join(repository.SaveOrUpdateItem(&newItems))
+	return errors.Join(storage.SaveOrUpdateItem(&newItems))
 }

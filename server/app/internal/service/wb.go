@@ -10,7 +10,8 @@ import (
 	"github.com/yoda/app/internal/configuration"
 	"github.com/yoda/app/internal/logging"
 	"github.com/yoda/app/internal/mapper"
-	"github.com/yoda/app/internal/repository"
+	"github.com/yoda/app/internal/service/dictionary"
+	"github.com/yoda/app/internal/storage"
 	"github.com/yoda/common/pkg/model"
 	"github.com/yoda/common/pkg/types"
 	"time"
@@ -61,7 +62,7 @@ func (c *WBService) Parsing(context context.Context, transactionID int64) error 
 	if err != nil {
 		return errors.Join(err)
 	}
-	if err = repository.SaveStocks(&newItems); err != nil {
+	if err = storage.SaveStocks(&newItems); err != nil {
 		return err
 	}
 
@@ -114,7 +115,7 @@ func (c *WBService) extractOrdersAndSales(ctx context.Context, transactionID int
 	if errMap != nil {
 		return errMap
 	}
-	if err := repository.SaveOrdersInBatches(newOrders, c.config.BatchSize); err != nil {
+	if err := storage.SaveOrdersInBatches(newOrders, c.config.BatchSize); err != nil {
 		return err
 	}
 	return nil
@@ -138,7 +139,7 @@ func (c *WBService) extractSales(ctx context.Context, transactionID int64, clnt 
 		newItems := mapper.MapSaleArray(items, transactionID, &source, c.ownerCode, func(item *int64) {
 			c.salesSet[*item] = true
 		})
-		if err := repository.SaveSales(&newItems); err != nil {
+		if err := storage.SaveSales(&newItems); err != nil {
 			return err
 		}
 		return nil
@@ -179,7 +180,7 @@ func (c *WBService) fetchOrders(client *api.ClientWithResponses, dateFrom *api.D
 		if errMap != nil {
 			return errMap
 		}
-		if err := repository.SaveOrders(orders); err != nil {
+		if err := storage.SaveOrders(orders); err != nil {
 			return err
 		}
 		return nil
@@ -210,9 +211,25 @@ func (c *WBService) callOrders(client *api.ClientWithResponses, dateFrom *api.Da
 
 func (c *WBService) prepareStocks(length int, items []api.StocksItem, transactionId int64, source string, ownerCode string) ([]model.StockItem, error) {
 	newItems := make([]model.StockItem, length)
+	decoder := dictionary.GetItemDecoder()
 	for index, item := range items {
+		var barcodeId, itemId, message *string
+		if item.Barcode != nil {
+			decode, err := decoder.Decode(ownerCode, source, *item.Barcode)
+			if err != nil {
+				s := err.Error()
+				message = &s
+			} else {
+				barcodeId = &decode.BarcodeId
+				itemId = &decode.ItemId
+			}
+		}
+
 		si, err := mapper.MapStockItem(&item)
 		si.OwnerCode = ownerCode
+		si.BarcodeId = barcodeId
+		si.ItemId = itemId
+		si.Message = message
 		priceAfterDiscount := *si.Price - *si.Discount
 		si.PriceAfterDiscount = &priceAfterDiscount
 		if err != nil {

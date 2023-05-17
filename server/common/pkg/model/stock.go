@@ -39,6 +39,9 @@ type StockItem struct {
 	Discount           *float64  `gorm:"column:discount" json:"discount"`                                          // Скидка
 	PriceAfterDiscount *float64  `gorm:"column:price_after_discount" json:"price_after_discount"`                  // Цена после скидки
 	CardCreated        time.Time `gorm:"column:card_created;not null" json:"card_created"`                         //Дата создания карточки
+	ItemId             *string   `gorm:"column:item_id" json:"item_id"`                                            // Уникальный идентификатор товара
+	BarcodeId          *string   `gorm:"column:barcode_id" json:"barcode_id"`                                      // Уникальный идентификатор штрихкода
+	Message            *string   `gorm:"column:message" json:"message"`                                            // Сообщение
 }
 
 // TableName Stock's table name

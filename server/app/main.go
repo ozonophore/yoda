@@ -8,7 +8,7 @@ import (
 	"github.com/yoda/app/internal/event"
 	"github.com/yoda/app/internal/integration"
 	"github.com/yoda/app/internal/integration/dictionary"
-	"github.com/yoda/app/internal/repository"
+	"github.com/yoda/app/internal/storage"
 	"github.com/yoda/app/internal/timer"
 	"github.com/yoda/common/pkg/dao"
 	"os"
@@ -20,8 +20,8 @@ func main() {
 	ctx := context.Background()
 	config := configuration.InitConfig("config.yml")
 	initLogging(config)
-	database := repository.InitDatabase(config.Database)
-	repository.NewRepositoryDAO(database)
+	database := storage.InitDatabase(config.Database)
+	storage.NewRepositoryDAO(database)
 	dao.NewDao(database)
 
 	ctxCancel, cancel := context.WithCancel(ctx)

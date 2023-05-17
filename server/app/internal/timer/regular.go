@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/sirupsen/logrus"
-	"github.com/yoda/app/internal/repository"
+	"github.com/yoda/app/internal/storage"
 	"strings"
 )
 
@@ -14,7 +14,7 @@ func (sch Scheduler) initRegular(ctx context.Context) bool {
 	config := sch.config
 	scheduler := sch.scheduler
 
-	jobs, err := repository.GetJobs()
+	jobs, err := storage.GetJobs()
 	if err != nil {
 		logrus.Panicf("Error after get jobs: %s", err)
 	}
