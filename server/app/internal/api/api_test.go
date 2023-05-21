@@ -3,6 +3,7 @@ package api
 import (
 	"bytes"
 	"context"
+	"github.com/yoda/common/pkg/types"
 	"io"
 	"net/http"
 	"testing"
@@ -73,9 +74,7 @@ func TestApi(t *testing.T) {
 		t.Errorf("err: %v", err)
 	}
 
-	df := DateFrom{
-		Time: time.Now(),
-	}
+	df := types.CustomTime(time.Now())
 
 	resp, err := client.GetWBSalesWithResponse(context.Background(), &GetWBSalesParams{
 		DateFrom: df,

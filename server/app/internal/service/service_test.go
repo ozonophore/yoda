@@ -199,4 +199,14 @@ func mockHandlers() {
 			panic("Unsupported method")
 		}
 	})
+	report, _ := os.ReadFile("../../../../mockdata/wb.reportDetailByPeriod.json")
+	mux.HandleFunc("/wb/api/v1/supplier/reportDetailByPeriod", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodGet {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusOK)
+			w.Write(report)
+		} else {
+			panic("Unsupported method")
+		}
+	})
 }
