@@ -60,12 +60,27 @@ components:
       name: Authorization
       in: header
   parameters:
+    dateTo:
+      in: query
+      name: dateTo
+      schema:
+        type: string
+        format: date
+        x-go-type: types.CustomTime
+        x-go-import:
+          name: types
+          package: github.com/yoda/common/pkg/types
+      required: true
     dateFrom:
       in: query
       name: dateFrom
       schema:
         type: string
         format: date
+        x-go-type: types.CustomTime
+        x-go-import:
+          name: types
+          package: github.com/yoda/common/pkg/types
       required: true
       description: 'Дата в формате RFC3339. Можно передать дату или дату со временем.  Время
         можно указывать с точностью до секунд или миллисекунд.  Литера `Z` в конце
@@ -89,6 +104,292 @@ components:
         type: integer
         example: 1234
   schemas:
+    ReportDetailByPeriodItem:
+      type: object
+      properties:
+        realizationreport_id:
+          type: integer
+          format: int64
+          description: Номер отчёта
+        date_from:
+          type: string
+          format: date-time
+          x-go-type: types.CustomTime
+          x-go-import:
+              name: types
+              package: github.com/yoda/common/pkg/types
+          description: Дата начала отчётного периода
+          example: 2021-01-01T00:00:00Z
+        date_to:
+          type: string
+          format: date-time
+          x-go-type: types.CustomTime
+          x-go-import:
+            name: types
+            package: github.com/yoda/common/pkg/types
+          description: Дата конца отчётного периода
+          example: 2021-01-31T23:59:59Z
+        create_dt:
+          type: string
+          format: date-time
+          x-go-type: types.CustomTime
+          x-go-import:
+            name: types
+            package: github.com/yoda/common/pkg/types
+          description: Дата формирования отчёта
+          example: 2021-02-01T00:00:00Z
+        suppliercontract_code:
+          type: string
+          description: Номер договора
+          example: 1234
+        rrd_id:
+          type: integer
+          format: int64
+          description: Номер строки
+          example: 1234
+        gi_id:
+          type: integer
+          format: int64
+          description: Номер поставки
+          example: 1234
+        subject_name:
+          type: string
+          description: Наименование предмета
+          example: "Предмет"
+        nm_id:
+          type: integer
+          format: int64
+          description: Номер номенклатуры
+          example: 1234
+        brand_name:
+          type: string
+          description: Бренд
+          example: "Бренд"
+        sa_name:
+          type: string
+          description: Артикул продавца
+          example: "Артикул продавца"
+        ts_name:
+          type: string
+          description: Артикул поставщика
+          example: "Артикул поставщика"
+        barcode:
+          type: string
+          description: Баркод
+          example: "Баркод"
+        doc_type_name:
+          type: string
+          description: Тип документа
+          example: "Тип документа"
+        doc_number:
+          type: string
+          description: Номер документа
+          example: "Номер документа"
+        quantity:
+          type: integer
+          format: int64
+          description: Количество
+          example: 1234
+        retail_price:
+          type: number
+          format: double
+          description: Цена розничная
+          example: 1234.56
+        retail_amount:
+          type: number
+          format: double
+          description: Сумма продаж (возвратов)
+          example: 1234.56
+        sale_percent:
+          type: integer
+          format: int64
+          description: Согласованная скидка
+          example: 1234
+        commission_percent:
+          type: number
+          format: double
+          description: Процент комиссии
+          example: 1234
+        office_name:
+          type: string
+          description: Склад
+          example: "Склад"
+        supplier_oper_name:
+          type: string
+          description: Обоснование для оплаты
+          example: "Обоснование для оплаты"
+        order_dt:
+          type: string
+          format: date-time
+          x-go-type: types.CustomTime
+          x-go-import:
+              name: types
+              package: github.com/yoda/common/pkg/types
+          description: Дата заказа
+          example: 2021-01-01T00:00:00Z
+        sale_dt:
+          type: string
+          format: date-time
+          x-go-type: types.CustomTime
+          x-go-import:
+              name: types
+              package: github.com/yoda/common/pkg/types
+          description: Дата продажи
+          example: 2021-01-01T00:00:00Z
+        rr_dt:
+          type: string
+          format: date-time
+          x-go-type: types.CustomTime
+          x-go-import:
+              name: types
+              package: github.com/yoda/common/pkg/types
+          description: Дата операции
+          example: 2021-01-01T00:00:00Z
+        shk_id:
+          type: integer
+          format: int64
+          description: Номер штрих-кода
+          example: 1234
+        retail_price_withdisc_rub:
+          type: number
+          format: double
+          description: Цена розничная с учетом согласованной скидки
+          example: 1234.56
+        delivery_amount:
+          type: integer
+          format: int64
+          description: Количество доставок
+        return_amount:
+          type: integer
+          format: int64
+          description: Количество возвратов
+        delivery_rub:
+          type: number
+          format: double
+          description: Стоимость логистики
+          example: 1234.56
+        gi_box_type_name:
+          type: string
+          description: Тип коробов
+          example: "Тип коробов"
+        product_discount_for_report:
+          type: number
+          format: double
+          description: Согласованный продуктовый дисконт
+          example: 1234.56
+        supplier_promo:
+          type: number
+          format: double
+          description: Скидка поставщика
+          example: 1234.56
+        rid:
+          type: integer
+          format: int64
+          description: Номер строки
+          example: 1234
+        ppvz_spp_prc:
+          type: number
+          format: double
+          description: Стоимость доставки на ПВЗ
+          example: 1234.56
+        ppvz_kvw_prc_base:
+          type: number
+          format: double
+          description: Размер кВВ без НДС, % базовый
+          example: 1234.56
+        ppvz_kvw_prc:
+          type: number
+          format: double
+          description: Размер кВВ без НДС, %
+          example: 1234.56
+        ppvz_sales_commission:
+          type: number
+          format: double
+          description: Вознаграждение с продаж до вычета услуг поверенного, без НДC
+        ppvz_for_pay:
+          type: number
+          format: double
+          description: К перечислению продавцу за реализованный товар
+          example: 1234.56
+        ppvz_reward:
+          type: number
+          format: double
+          description: Вознаграждение за выдачу и возврат товаров на ПВЗ
+          example: 1234.56
+        acquiring_fee:
+          type: number
+          format: double
+          description: Возмещение расходов по эквайрингу
+          example: 1234.56
+        acquiring_bank:
+          type: string
+          description: Наименование банка, предоставляющего услуги эквайринга
+          example: "Наименование банка, предоставляющего услуги эквайринга"
+        ppvz_vw:
+          type: number
+          format: double
+          description: Вознаграждение WB без НДС
+          example: 1234.56
+        ppvz_vw_nds:
+          type: number
+          format: double
+          description: Вознаграждение WB с НДС
+          example: 1234.56
+        ppvz_office_id:
+          type: integer
+          format: int64
+          description: Номер офиса
+          example: 1234
+        ppvz_office_name:
+          type: string
+          description: Наименование офиса доставки
+          example: "Наименование офиса доставки"
+        ppvz_supplier_id:
+          type: integer
+          format: int64
+          description: Номер партнера
+          example: 1234
+        ppvz_supplier_name:
+          type: string
+          description: Наименование партнера
+          example: "Наименование партнера"
+        ppvz_inn:
+          type: string
+          description: ИНН партнера
+          example: "ИНН партнера"
+        declaration_number:
+          type: string
+          description: Номер таможенной декларации
+          example: "Номер таможенной декларации"
+        bonus_type_name:
+          type: string
+          description: Обоснование штрафов и доплат
+          example: "Тип бонуса"
+        sticker_id:
+          type: string
+          description: Цифровое значение стикера, который клеится на товар в процессе сборки заказа по схеме "Маркетплейс"
+          example: "1234"
+        site_country:
+          type: string
+          description: Страна продажи
+          example: "Страна продажи"
+        penalty:
+          type: number
+          format: double
+          description: Штрафы
+          example: 1234.56
+        additional_payment:
+          type: number
+          format: double
+          description: Доплаты
+          example: 1234.56
+        kiz:
+          type: string
+          description: Код маркировки
+          example: "Код маркировки"
+        srid:
+          type: string
+          description: Уникальный идентификатор заказа
     PostingProduct:
       type: object
       required:
@@ -446,6 +747,7 @@ components:
           description: Бар-код
         totalPrice:
           type: number
+          format: double
           description: Цена до согласованной скидки/промо/спп. Для получения цены
             со скидкой можно воспользоваться формулой `priceWithDiscount = totalPrice
             * (1 - discountPercent/100)`
@@ -460,6 +762,7 @@ components:
           description: Договор реализации
         promoCodeDiscount:
           type: number
+          format: double
           description: Скидка по промокоду
         warehouseName:
           type: string
@@ -1075,6 +1378,42 @@ paths:
               example:
                 errors:
                   - can't parse dateFrom
+  /api/v1/supplier/reportDetailByPeriod:
+    servers:
+      - url: https://statistics-api.wildberries.ru
+    get:
+      operationId: getWBReportDetailByPeriod
+      security:
+          - HeaderApiKey: [ ]
+      summary: Отчет по продажам
+      parameters:
+        - $ref: '#/components/parameters/dateFrom'
+        - $ref: '#/components/parameters/dateTo'
+        - name: limit
+          in: query
+          description: Количество записей на странице
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 100000
+        - name: rrdid
+          in: query
+          description: Идентификатор отчета
+          required: false
+          schema:
+            type: integer
+            default: 0
+      responses:
+        200:
+          description: Список продаж
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ReportDetailByPeriodItem'
+
   /v2/analytics/stock_on_warehouses:
     servers:
       - url: https://api-seller.ozon.ru/

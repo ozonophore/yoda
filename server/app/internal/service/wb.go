@@ -14,6 +14,7 @@ import (
 	"github.com/yoda/app/internal/storage"
 	"github.com/yoda/common/pkg/model"
 	"github.com/yoda/common/pkg/types"
+	"sync"
 	"time"
 )
 
@@ -40,9 +41,7 @@ func (c *WBService) Parsing(context context.Context, transactionID int64) error 
 		return err
 	}
 
-	dateFrom := api.DateFrom{
-		Time: time.Now().AddDate(0, 0, -1*c.config.Wb.RemainingDays),
-	}
+	dateFrom := types.CustomTime(time.Now().AddDate(0, 0, -1*c.config.Wb.RemainingDays))
 
 	request := api.GetSupplierStocksParams{DateFrom: dateFrom}
 	resp, err := clnt.GetSupplierStocksWithResponse(context, &request)
@@ -58,6 +57,13 @@ func (c *WBService) Parsing(context context.Context, transactionID int64) error 
 		logrus.Warn("There aren't stocks")
 	}
 	source := types.SourceTypeWB
+	ws := sync.WaitGroup{}
+	ws.Add(1)
+	go func() {
+		defer ws.Done()
+		c.extractReportDetailByPeriod(clnt, transactionID, source)
+	}()
+
 	newItems, err := c.prepareStocks(length, items, transactionID, source, c.ownerCode)
 	if err != nil {
 		return errors.Join(err)
@@ -66,16 +72,8 @@ func (c *WBService) Parsing(context context.Context, transactionID int64) error 
 		return err
 	}
 
-	//err = c.extractSales(context, transactionID, clnt, dateFrom, source)
-	//if err != nil {
-	//	return errors.Join(err)
-	//}
-	//logrus.Info("Load orders from wb")
-	//err = c.extractOrders(clnt, transactionID, &source)
-	//if err != nil {
-	//	return errors.Join(err)
-	//}
 	c.extractOrdersAndSales(context, transactionID, clnt, dateFrom, source)
+	ws.Wait()
 	logrus.Info("Finish load orders from wb")
 	logrus.Info("Finish parsing wb")
 	return nil
@@ -90,11 +88,8 @@ func (c *WBService) extractOrdersAndSales(ctx context.Context, transactionID int
 	o := make(chan *[]api.OrdersItem, 1)
 	defer close(o)
 	go func() {
-		sinceDate := api.DateFrom{
-			Time: time.Now(),
-		}
 		days := c.config.Order.LoadedDays
-		sinceDate.Time = sinceDate.Time.AddDate(0, 0, -1*days)
+		sinceDate := types.CustomTime(time.Now().AddDate(0, 0, -1*days))
 		orders, err := c.callOrders(clnt, &sinceDate)
 		e <- err
 		o <- orders
@@ -153,11 +148,8 @@ func (c *WBService) extractSales(ctx context.Context, transactionID int64, clnt 
  * Load orders from WB
  */
 func (c *WBService) extractOrders(client *api.ClientWithResponses, transactionId int64, source *string) error {
-	sinceDate := api.DateFrom{
-		Time: time.Now(),
-	}
 	days := c.config.Order.LoadedDays
-	sinceDate.Time = sinceDate.Time.AddDate(0, 0, -1*days)
+	sinceDate := types.CustomTime(time.Now().AddDate(0, 0, -1*days))
 	if err := c.fetchOrders(client, &sinceDate, transactionId, source, c.ownerCode); err != nil {
 		logrus.Debugf("Error while fetching orders from wb: %s", err.Error())
 		return err
@@ -240,4 +232,44 @@ func (c *WBService) prepareStocks(length int, items []api.StocksItem, transactio
 		newItems[index] = *si
 	}
 	return newItems, nil
+}
+
+func (c *WBService) extractReportDetailByPeriod(client *api.ClientWithResponses, transactionId int64, source string) error {
+	dateTo := types.CustomTime(time.Now())
+	dateFrom := types.CustomTime(dateTo.ToTime().AddDate(0, 0, -7))
+
+	resp, err := client.GetWBReportDetailByPeriodWithResponse(context.Background(), &api.GetWBReportDetailByPeriodParams{
+		DateFrom: dateFrom,
+		DateTo:   dateTo,
+	})
+
+	if err != nil {
+		logrus.Error(err.Error())
+		return err
+	}
+	if resp.StatusCode() != 200 {
+		return fmt.Errorf("ReportDetailByPeriod response status : %d", resp.StatusCode())
+	}
+	items := resp.JSON200
+	newItems := make([]model.ReportDetailByPeriod, len(*items))
+	decoder := dictionary.GetItemDecoder()
+	for index, item := range *items {
+		var barcodeId, itemId, message *string
+		if item.Barcode != nil {
+			decode, err := decoder.Decode(c.ownerCode, source, *item.Barcode)
+			if err != nil {
+				s := err.Error()
+				message = &s
+			} else {
+				barcodeId = &decode.BarcodeId
+				itemId = &decode.ItemId
+			}
+		}
+		newItems[index] = *mapper.MapReportDetailByPeriodItem(&item, transactionId, source, c.ownerCode, barcodeId, itemId, message)
+	}
+	err = storage.SaveReportDetail(&newItems, c.config.BatchSize)
+	if err != nil {
+		logrus.Error(err.Error())
+	}
+	return err
 }

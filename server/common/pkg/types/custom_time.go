@@ -12,7 +12,7 @@ type CustomTime time.Time
 
 // UnmarshalJSON Parses the json string in the custom format
 func (ct *CustomTime) UnmarshalJSON(b []byte) (err error) {
-	s := strings.Trim(string(b), `"`)
+	s := strings.ReplaceAll(strings.Trim(string(b), `"`), "Z", "")
 	nt, err := time.Parse(ctLayout, s)
 	if err != nil {
 		return err

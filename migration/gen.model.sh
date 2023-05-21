@@ -1,1 +1,1 @@
-gentool -dsn "postgres://user:password@localhost:5432/db2" -db "postgres" -outPath "../server/common/pkg/model" -modelPkgName "model" -fieldNullable -onlyModel --tables="md.item"
+gentool -dsn "postgres://user:password@localhost:5432/db2" -db "postgres" -outPath "../server/common/pkg/model" -modelPkgName "model" -fieldNullable -onlyModel --tables="report_detail_by_period"

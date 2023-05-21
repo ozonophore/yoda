@@ -28,7 +28,7 @@ type Sale struct {
 	DiscountPercent   *int32    `gorm:"column:discount_percent" json:"discount_percent"`          // Согласованный итоговый дисконт
 	IsSupply          *bool     `gorm:"column:is_supply" json:"is_supply"`                        // Договор поставки
 	IsRealization     *bool     `gorm:"column:is_realization" json:"is_realization"`              // Договор реализации
-	PromoCodeDiscount *float32  `gorm:"column:promo_code_discount" json:"promo_code_discount"`    // Скидка по промокоду
+	PromoCodeDiscount *float64  `gorm:"column:promo_code_discount" json:"promo_code_discount"`    // Скидка по промокоду
 	WarehouseName     *string   `gorm:"column:warehouse_name" json:"warehouse_name"`              // Название склада отгрузки
 	CountryName       *string   `gorm:"column:country_name" json:"country_name"`                  // Страна
 	OblastOkrugName   *string   `gorm:"column:oblast_okrug_name" json:"oblast_okrug_name"`        // Область

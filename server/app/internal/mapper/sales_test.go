@@ -30,7 +30,7 @@ func TestMapSale(t *testing.T) {
 	oblastOkrugName := "oblastOkrugName"
 	odid := int64(32)
 	priceWithDiscount := float32(2.5)
-	promoCodeDiscount := float32(1.2)
+	promoCodeDiscount := 1.2
 	regionName := "regionName"
 	saleID := "saleID"
 	spp := float32(10)
@@ -39,7 +39,7 @@ func TestMapSale(t *testing.T) {
 	subject := "subject"
 	supplierArticle := "supplierArticle"
 	techSize := "techSize"
-	totalPrice := float32(10.58)
+	totalPrice := 10.58
 	warehouseName := "warehouseName"
 	s := api.SalesItem{
 		Barcode:           &barcode,
@@ -162,7 +162,7 @@ func TestMapSale(t *testing.T) {
 	if *target.TechSize != *s.TechSize {
 		t.Errorf("MapSale() = %v, want %v", target.TechSize, *s.TechSize)
 	}
-	if *target.TotalPrice != *utils.Float32ToFloat64(s.TotalPrice) {
+	if *target.TotalPrice != *s.TotalPrice {
 		t.Errorf("MapSale() = %v, want %v", target.TotalPrice, *s.TotalPrice)
 	}
 	if *target.WarehouseName != *s.WarehouseName {

@@ -33,7 +33,7 @@ func MapSale(s api.SalesItem, transactionId int64, source *string, ownerCode str
 		SaleTime:          date,
 		SupplierArticle:   s.SupplierArticle,
 		TechSize:          s.TechSize,
-		TotalPrice:        utils.Float32ToFloat64(s.TotalPrice),
+		TotalPrice:        s.TotalPrice,
 		DiscountPercent:   utils.IntToInt32(s.DiscountPercent),
 		IsSupply:          s.IsSupply,
 		IsRealization:     s.IsRealization,

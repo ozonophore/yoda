@@ -215,11 +215,6 @@ paths:
       summary: Get items
       description: Get items
       operationId: getItems
-      parameters:
-        - in: query
-          name: lastUpdateDate
-          schema:
-            $ref: '#/components/schemas/LastUpdateDate'
       responses:
         200:
           description: OK
@@ -232,11 +227,6 @@ paths:
       summary: Get items barcodes
       description: Get items barcodes
       operationId: getItemsBarcodes
-      parameters:
-        - in: query
-          name: lastUpdateDate
-          schema:
-            $ref: '#/components/schemas/LastUpdateDate'
       responses:
         200:
           description: OK
@@ -249,11 +239,6 @@ paths:
       summary: Get organizations
       description: Get organizations
       operationId: getOrganizations
-      parameters:
-        - in: query
-          name: lastUpdateDate
-          schema:
-            $ref: '#/components/schemas/LastUpdateDate'
       responses:
         200:
           description: OK
@@ -266,11 +251,6 @@ paths:
       summary: Get marketplaces
       description: Get marketplaces
       operationId: getMarketplaces
-      parameters:
-        - in: query
-          name: lastUpdateDate
-          schema:
-            $ref: '#/components/schemas/LastUpdateDate'
       responses:
         200:
           description: OK

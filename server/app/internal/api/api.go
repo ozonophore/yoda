@@ -15,7 +15,6 @@ import (
 	"time"
 
 	"github.com/deepmap/oapi-codegen/pkg/runtime"
-	openapi_types "github.com/deepmap/oapi-codegen/pkg/types"
 	"github.com/yoda/common/pkg/types"
 )
 
@@ -430,6 +429,180 @@ type ProductInfo struct {
 	Vat            *string    `json:"vat,omitempty"`
 }
 
+// ReportDetailByPeriodItem defines model for ReportDetailByPeriodItem.
+type ReportDetailByPeriodItem struct {
+	// AcquiringBank Наименование банка, предоставляющего услуги эквайринга
+	AcquiringBank *string `json:"acquiring_bank,omitempty"`
+
+	// AcquiringFee Возмещение расходов по эквайрингу
+	AcquiringFee *float64 `json:"acquiring_fee,omitempty"`
+
+	// AdditionalPayment Доплаты
+	AdditionalPayment *float64 `json:"additional_payment,omitempty"`
+
+	// Barcode Баркод
+	Barcode *string `json:"barcode,omitempty"`
+
+	// BonusTypeName Обоснование штрафов и доплат
+	BonusTypeName *string `json:"bonus_type_name,omitempty"`
+
+	// BrandName Бренд
+	BrandName *string `json:"brand_name,omitempty"`
+
+	// CommissionPercent Процент комиссии
+	CommissionPercent *float64 `json:"commission_percent,omitempty"`
+
+	// CreateDt Дата формирования отчёта
+	CreateDt *types.CustomTime `json:"create_dt,omitempty"`
+
+	// DateFrom Дата начала отчётного периода
+	DateFrom *types.CustomTime `json:"date_from,omitempty"`
+
+	// DateTo Дата конца отчётного периода
+	DateTo *types.CustomTime `json:"date_to,omitempty"`
+
+	// DeclarationNumber Номер таможенной декларации
+	DeclarationNumber *string `json:"declaration_number,omitempty"`
+
+	// DeliveryAmount Количество доставок
+	DeliveryAmount *int64 `json:"delivery_amount,omitempty"`
+
+	// DeliveryRub Стоимость логистики
+	DeliveryRub *float64 `json:"delivery_rub,omitempty"`
+
+	// DocNumber Номер документа
+	DocNumber *string `json:"doc_number,omitempty"`
+
+	// DocTypeName Тип документа
+	DocTypeName *string `json:"doc_type_name,omitempty"`
+
+	// GiBoxTypeName Тип коробов
+	GiBoxTypeName *string `json:"gi_box_type_name,omitempty"`
+
+	// GiId Номер поставки
+	GiId *int64 `json:"gi_id,omitempty"`
+
+	// Kiz Код маркировки
+	Kiz *string `json:"kiz,omitempty"`
+
+	// NmId Номер номенклатуры
+	NmId *int64 `json:"nm_id,omitempty"`
+
+	// OfficeName Склад
+	OfficeName *string `json:"office_name,omitempty"`
+
+	// OrderDt Дата заказа
+	OrderDt *types.CustomTime `json:"order_dt,omitempty"`
+
+	// Penalty Штрафы
+	Penalty *float64 `json:"penalty,omitempty"`
+
+	// PpvzForPay К перечислению продавцу за реализованный товар
+	PpvzForPay *float64 `json:"ppvz_for_pay,omitempty"`
+
+	// PpvzInn ИНН партнера
+	PpvzInn *string `json:"ppvz_inn,omitempty"`
+
+	// PpvzKvwPrc Размер кВВ без НДС, %
+	PpvzKvwPrc *float64 `json:"ppvz_kvw_prc,omitempty"`
+
+	// PpvzKvwPrcBase Размер кВВ без НДС, % базовый
+	PpvzKvwPrcBase *float64 `json:"ppvz_kvw_prc_base,omitempty"`
+
+	// PpvzOfficeId Номер офиса
+	PpvzOfficeId *int64 `json:"ppvz_office_id,omitempty"`
+
+	// PpvzOfficeName Наименование офиса доставки
+	PpvzOfficeName *string `json:"ppvz_office_name,omitempty"`
+
+	// PpvzReward Вознаграждение за выдачу и возврат товаров на ПВЗ
+	PpvzReward *float64 `json:"ppvz_reward,omitempty"`
+
+	// PpvzSalesCommission Вознаграждение с продаж до вычета услуг поверенного, без НДC
+	PpvzSalesCommission *float64 `json:"ppvz_sales_commission,omitempty"`
+
+	// PpvzSppPrc Стоимость доставки на ПВЗ
+	PpvzSppPrc *float64 `json:"ppvz_spp_prc,omitempty"`
+
+	// PpvzSupplierId Номер партнера
+	PpvzSupplierId *int64 `json:"ppvz_supplier_id,omitempty"`
+
+	// PpvzSupplierName Наименование партнера
+	PpvzSupplierName *string `json:"ppvz_supplier_name,omitempty"`
+
+	// PpvzVw Вознаграждение WB без НДС
+	PpvzVw *float64 `json:"ppvz_vw,omitempty"`
+
+	// PpvzVwNds Вознаграждение WB с НДС
+	PpvzVwNds *float64 `json:"ppvz_vw_nds,omitempty"`
+
+	// ProductDiscountForReport Согласованный продуктовый дисконт
+	ProductDiscountForReport *float64 `json:"product_discount_for_report,omitempty"`
+
+	// Quantity Количество
+	Quantity *int64 `json:"quantity,omitempty"`
+
+	// RealizationreportId Номер отчёта
+	RealizationreportId *int64 `json:"realizationreport_id,omitempty"`
+
+	// RetailAmount Сумма продаж (возвратов)
+	RetailAmount *float64 `json:"retail_amount,omitempty"`
+
+	// RetailPrice Цена розничная
+	RetailPrice *float64 `json:"retail_price,omitempty"`
+
+	// RetailPriceWithdiscRub Цена розничная с учетом согласованной скидки
+	RetailPriceWithdiscRub *float64 `json:"retail_price_withdisc_rub,omitempty"`
+
+	// ReturnAmount Количество возвратов
+	ReturnAmount *int64 `json:"return_amount,omitempty"`
+
+	// Rid Номер строки
+	Rid *int64 `json:"rid,omitempty"`
+
+	// RrDt Дата операции
+	RrDt *types.CustomTime `json:"rr_dt,omitempty"`
+
+	// RrdId Номер строки
+	RrdId *int64 `json:"rrd_id,omitempty"`
+
+	// SaName Артикул продавца
+	SaName *string `json:"sa_name,omitempty"`
+
+	// SaleDt Дата продажи
+	SaleDt *types.CustomTime `json:"sale_dt,omitempty"`
+
+	// SalePercent Согласованная скидка
+	SalePercent *int64 `json:"sale_percent,omitempty"`
+
+	// ShkId Номер штрих-кода
+	ShkId *int64 `json:"shk_id,omitempty"`
+
+	// SiteCountry Страна продажи
+	SiteCountry *string `json:"site_country,omitempty"`
+
+	// Srid Уникальный идентификатор заказа
+	Srid *string `json:"srid,omitempty"`
+
+	// StickerId Цифровое значение стикера, который клеится на товар в процессе сборки заказа по схеме "Маркетплейс"
+	StickerId *string `json:"sticker_id,omitempty"`
+
+	// SubjectName Наименование предмета
+	SubjectName *string `json:"subject_name,omitempty"`
+
+	// SupplierOperName Обоснование для оплаты
+	SupplierOperName *string `json:"supplier_oper_name,omitempty"`
+
+	// SupplierPromo Скидка поставщика
+	SupplierPromo *float64 `json:"supplier_promo,omitempty"`
+
+	// SuppliercontractCode Номер договора
+	SuppliercontractCode *string `json:"suppliercontract_code,omitempty"`
+
+	// TsName Артикул поставщика
+	TsName *string `json:"ts_name,omitempty"`
+}
+
 // RowItem defines model for RowItem.
 type RowItem struct {
 	FreeToSellAmount *int    `json:"free_to_sell_amount,omitempty"`
@@ -498,7 +671,7 @@ type SalesItem struct {
 	PriceWithDisc *float32 `json:"priceWithDisc,omitempty"`
 
 	// PromoCodeDiscount Скидка по промокоду
-	PromoCodeDiscount *float32 `json:"promoCodeDiscount,omitempty"`
+	PromoCodeDiscount *float64 `json:"promoCodeDiscount,omitempty"`
 
 	// RegionName Регион
 	RegionName *string `json:"regionName,omitempty"`
@@ -525,7 +698,7 @@ type SalesItem struct {
 	TechSize *string `json:"techSize,omitempty"`
 
 	// TotalPrice Цена до согласованной скидки/промо/спп. Для получения цены со скидкой можно воспользоваться формулой `priceWithDiscount = totalPrice * (1 - discountPercent/100)`
-	TotalPrice *float32 `json:"totalPrice,omitempty"`
+	TotalPrice *float64 `json:"totalPrice,omitempty"`
 
 	// WarehouseName Название склада отгрузки
 	WarehouseName *string `json:"warehouseName,omitempty"`
@@ -586,7 +759,10 @@ type StocksItem struct {
 }
 
 // DateFrom defines model for dateFrom.
-type DateFrom = openapi_types.Date
+type DateFrom = types.CustomTime
+
+// DateTo defines model for dateTo.
+type DateTo = types.CustomTime
 
 // Flag defines model for flag.
 type Flag = int
@@ -596,6 +772,19 @@ type GetWBOrdersParams struct {
 	// DateFrom Дата в формате RFC3339. Можно передать дату или дату со временем.  Время можно указывать с точностью до секунд или миллисекунд.  Литера `Z` в конце строки означает, что время передается в UTC-часовом поясе.  При ее отсутствии время считается в часовом поясе МСК (UTC+3). <br>Примеры: <ul> <li> `2019-06-20` <li> `2019-06-20T00:00:00Z` <li> `2019-06-20T23:59:59` <li> `2019-06-20T00:00:00.12345Z` <li> `2019-06-20T00:00:00.12345` <li> `2017-03-25T00:00:00` </ul>
 	DateFrom DateFrom `form:"dateFrom" json:"dateFrom"`
 	Flag     *Flag    `form:"flag,omitempty" json:"flag,omitempty"`
+}
+
+// GetWBReportDetailByPeriodParams defines parameters for GetWBReportDetailByPeriod.
+type GetWBReportDetailByPeriodParams struct {
+	// DateFrom Дата в формате RFC3339. Можно передать дату или дату со временем.  Время можно указывать с точностью до секунд или миллисекунд.  Литера `Z` в конце строки означает, что время передается в UTC-часовом поясе.  При ее отсутствии время считается в часовом поясе МСК (UTC+3). <br>Примеры: <ul> <li> `2019-06-20` <li> `2019-06-20T00:00:00Z` <li> `2019-06-20T23:59:59` <li> `2019-06-20T00:00:00.12345Z` <li> `2019-06-20T00:00:00.12345` <li> `2017-03-25T00:00:00` </ul>
+	DateFrom DateFrom `form:"dateFrom" json:"dateFrom"`
+	DateTo   DateTo   `form:"dateTo" json:"dateTo"`
+
+	// Limit Количество записей на странице
+	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// Rrdid Идентификатор отчета
+	Rrdid *int `form:"rrdid,omitempty" json:"rrdid,omitempty"`
 }
 
 // GetWBSalesParams defines parameters for GetWBSales.
@@ -709,6 +898,9 @@ type ClientInterface interface {
 	// GetWBOrders request
 	GetWBOrders(ctx context.Context, params *GetWBOrdersParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetWBReportDetailByPeriod request
+	GetWBReportDetailByPeriod(ctx context.Context, params *GetWBReportDetailByPeriodParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetWBSales request
 	GetWBSales(ctx context.Context, params *GetWBSalesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -738,6 +930,18 @@ type ClientInterface interface {
 
 func (c *Client) GetWBOrders(ctx context.Context, params *GetWBOrdersParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetWBOrdersRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetWBReportDetailByPeriod(ctx context.Context, params *GetWBReportDetailByPeriodParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetWBReportDetailByPeriodRequest(c.Server, params)
 	if err != nil {
 		return nil, err
 	}
@@ -904,6 +1108,93 @@ func NewGetWBOrdersRequest(server string, params *GetWBOrdersParams) (*http.Requ
 	if params.Flag != nil {
 
 		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "flag", runtime.ParamLocationQuery, *params.Flag); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+	}
+
+	queryURL.RawQuery = queryValues.Encode()
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetWBReportDetailByPeriodRequest generates requests for GetWBReportDetailByPeriod
+func NewGetWBReportDetailByPeriodRequest(server string, params *GetWBReportDetailByPeriodParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/supplier/reportDetailByPeriod")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	queryValues := queryURL.Query()
+
+	if queryFrag, err := runtime.StyleParamWithLocation("form", true, "dateFrom", runtime.ParamLocationQuery, params.DateFrom); err != nil {
+		return nil, err
+	} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+		return nil, err
+	} else {
+		for k, v := range parsed {
+			for _, v2 := range v {
+				queryValues.Add(k, v2)
+			}
+		}
+	}
+
+	if queryFrag, err := runtime.StyleParamWithLocation("form", true, "dateTo", runtime.ParamLocationQuery, params.DateTo); err != nil {
+		return nil, err
+	} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+		return nil, err
+	} else {
+		for k, v := range parsed {
+			for _, v2 := range v {
+				queryValues.Add(k, v2)
+			}
+		}
+	}
+
+	if params.Limit != nil {
+
+		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "limit", runtime.ParamLocationQuery, *params.Limit); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+	}
+
+	if params.Rrdid != nil {
+
+		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "rrdid", runtime.ParamLocationQuery, *params.Rrdid); err != nil {
 			return nil, err
 		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 			return nil, err
@@ -1235,6 +1526,9 @@ type ClientWithResponsesInterface interface {
 	// GetWBOrders request
 	GetWBOrdersWithResponse(ctx context.Context, params *GetWBOrdersParams, reqEditors ...RequestEditorFn) (*GetWBOrdersResponse, error)
 
+	// GetWBReportDetailByPeriod request
+	GetWBReportDetailByPeriodWithResponse(ctx context.Context, params *GetWBReportDetailByPeriodParams, reqEditors ...RequestEditorFn) (*GetWBReportDetailByPeriodResponse, error)
+
 	// GetWBSales request
 	GetWBSalesWithResponse(ctx context.Context, params *GetWBSalesParams, reqEditors ...RequestEditorFn) (*GetWBSalesResponse, error)
 
@@ -1278,6 +1572,28 @@ func (r GetWBOrdersResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r GetWBOrdersResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetWBReportDetailByPeriodResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *[]ReportDetailByPeriodItem
+}
+
+// Status returns HTTPResponse.Status
+func (r GetWBReportDetailByPeriodResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetWBReportDetailByPeriodResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -1445,6 +1761,15 @@ func (c *ClientWithResponses) GetWBOrdersWithResponse(ctx context.Context, param
 	return ParseGetWBOrdersResponse(rsp)
 }
 
+// GetWBReportDetailByPeriodWithResponse request returning *GetWBReportDetailByPeriodResponse
+func (c *ClientWithResponses) GetWBReportDetailByPeriodWithResponse(ctx context.Context, params *GetWBReportDetailByPeriodParams, reqEditors ...RequestEditorFn) (*GetWBReportDetailByPeriodResponse, error) {
+	rsp, err := c.GetWBReportDetailByPeriod(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetWBReportDetailByPeriodResponse(rsp)
+}
+
 // GetWBSalesWithResponse request returning *GetWBSalesResponse
 func (c *ClientWithResponses) GetWBSalesWithResponse(ctx context.Context, params *GetWBSalesParams, reqEditors ...RequestEditorFn) (*GetWBSalesResponse, error) {
 	rsp, err := c.GetWBSales(ctx, params, reqEditors...)
@@ -1547,6 +1872,32 @@ func ParseGetWBOrdersResponse(rsp *http.Response) (*GetWBOrdersResponse, error) 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest []OrdersItem
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetWBReportDetailByPeriodResponse parses an HTTP response from a GetWBReportDetailByPeriodWithResponse call
+func ParseGetWBReportDetailByPeriodResponse(rsp *http.Response) (*GetWBReportDetailByPeriodResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetWBReportDetailByPeriodResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest []ReportDetailByPeriodItem
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
