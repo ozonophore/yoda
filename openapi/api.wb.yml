@@ -201,8 +201,8 @@ components:
           description: Сумма продаж (возвратов)
           example: 1234.56
         sale_percent:
-          type: integer
-          format: int64
+          type: number
+          format: double
           description: Согласованная скидка
           example: 1234
         commission_percent:

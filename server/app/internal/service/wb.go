@@ -188,7 +188,7 @@ func (c *WBService) callOrders(client *api.ClientWithResponses, dateFrom *api.Da
 		DateFrom: *dateFrom,
 		Flag:     &flag,
 	}
-	logrus.Debugf("Request to wb by date: %v", *dateFrom)
+	logrus.Debugf("Request to wb by date: %s", dateFrom.String())
 	ctx, _ := context.WithTimeout(context.Background(), time.Duration(c.config.Timeout)*time.Second)
 	response, err := client.GetWBOrdersWithResponse(ctx, &request)
 	if err != nil {

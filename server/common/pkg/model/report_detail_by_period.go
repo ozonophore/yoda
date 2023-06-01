@@ -63,7 +63,7 @@ type ReportDetailByPeriod struct {
 	RrdID                    *int64     `gorm:"column:rrd_id" json:"rrd_id"`
 	SaName                   *string    `gorm:"column:sa_name" json:"sa_name"`
 	SaleDt                   *time.Time `gorm:"column:sale_dt" json:"sale_dt"`
-	SalePercent              *int64     `gorm:"column:sale_percent" json:"sale_percent"`
+	SalePercent              *float64   `gorm:"column:sale_percent" json:"sale_percent"`
 	ShkID                    *int64     `gorm:"column:shk_id" json:"shk_id"`
 	SiteCountry              *string    `gorm:"column:site_country" json:"site_country"`
 	Srid                     *string    `gorm:"column:srid" json:"srid"`

@@ -573,7 +573,7 @@ type ReportDetailByPeriodItem struct {
 	SaleDt *types.CustomTime `json:"sale_dt,omitempty"`
 
 	// SalePercent Согласованная скидка
-	SalePercent *int64 `json:"sale_percent,omitempty"`
+	SalePercent *float64 `json:"sale_percent,omitempty"`
 
 	// ShkId Номер штрих-кода
 	ShkId *int64 `json:"shk_id,omitempty"`
