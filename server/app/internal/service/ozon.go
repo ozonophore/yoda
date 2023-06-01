@@ -239,6 +239,7 @@ func (c *OzonService) loadOrders(ctx context.Context, client *api.ClientWithResp
 	toDate := time.Now()
 	sinceDate := toDate.AddDate(0, 0, -c.config.Order.LoadedDays)
 	return FetchBatch(ctx, int64(c.config.BatchSize), func(offset int64, limit int64) (int64, error) {
+		logrus.Debugf("Load orders with offset %d and limit %d", offset, limit)
 		filter := api.GetOzonFBOJSONRequestBody{
 			Dir: "asc",
 			Filter: api.FBOFilterFilter{
