@@ -265,7 +265,7 @@ func (c *OzonService) loadOrders(ctx context.Context, client *api.ClientWithResp
 
 func (c *OzonService) parseFBO(FBOResponse *api.GetOzonFBOResponse, transactionId int64, source string, ownerCode string) (int64, error) {
 	if FBOResponse.StatusCode() != 200 {
-		return 0, errors.New(fmt.Sprintf("Ozon resp code %d", FBOResponse.StatusCode()))
+		return 0, errors.New(fmt.Sprintf("Ozon resp code %d %s Body: %s", FBOResponse.StatusCode(), FBOResponse.Status(), string(FBOResponse.Body)))
 	}
 	if FBOResponse.JSON200 == nil {
 		return 0, errors.New("Ozon resp is nil")
