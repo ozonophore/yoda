@@ -235,33 +235,63 @@ func (c *OzonService) prepareItems(items *[]api.RowItem, dt time.Time, transacti
 	return storage.SaveStocks(&newItems)
 }
 
+func createRequest(sinceDate, toDate time.Time, limit, offset int64) *api.GetOzonFBOJSONRequestBody {
+	return &api.GetOzonFBOJSONRequestBody{
+		Dir: "asc",
+		Filter: api.FBOFilterFilter{
+			Status: "",
+			Since:  sinceDate,
+			To:     toDate,
+		},
+		Translit: true,
+		With: api.FBOFilterWith{
+			AnalyticsData: true,
+			FinancialData: true,
+		},
+		Limit:  limit,
+		Offset: offset,
+	}
+}
+
 func (c *OzonService) loadOrders(ctx context.Context, client *api.ClientWithResponses, transactionId int64, source string) error {
-	toDate := time.Now()
-	sinceDate := toDate.AddDate(0, 0, -c.config.Order.LoadedDays)
-	return FetchBatch(ctx, int64(c.config.BatchSize), func(offset int64, limit int64) (int64, error) {
-		logrus.Debugf("Load orders with offset %d and limit %d", offset, limit)
-		filter := api.GetOzonFBOJSONRequestBody{
-			Dir: "asc",
-			Filter: api.FBOFilterFilter{
-				Status: "",
-				Since:  sinceDate,
-				To:     toDate,
-			},
-			Translit: true,
-			With: api.FBOFilterWith{
-				AnalyticsData: true,
-				FinancialData: true,
-			},
-			Limit:  limit,
-			Offset: offset,
-		}
+	toDate := time.Now().AddDate(0, 0, 1).Truncate(24 * time.Hour)
+	sinceDate := toDate.AddDate(0, 0, -1)
+
+	lastDate := toDate.AddDate(0, 0, -c.config.Order.LoadedDays)
+	req := createRequest(sinceDate, toDate, int64(c.config.BatchSize), 0)
+
+	limit := int64(c.config.BatchSize)
+	offset := int64(0)
+	affected := int64(0)
+	for {
+		req.Offset = offset
+		req.Limit = limit
+		req.Filter.To = toDate
+		req.Filter.Since = sinceDate
+
 		ctxCancel, _ := context.WithTimeout(ctx, time.Second*time.Duration(c.config.Timeout))
-		response, err := client.GetOzonFBOWithResponse(ctxCancel, filter)
+		response, err := client.GetOzonFBOWithResponse(ctxCancel, *req)
 		if err != nil {
-			return 0, err
+			return err
 		}
-		return c.parseFBO(response, transactionId, source, c.ownerCode)
-	})
+		count, err := c.parseFBO(response, transactionId, source, c.ownerCode)
+		affected += count
+		if err != nil {
+			return err
+		}
+		if count < limit {
+			offset = 0
+			toDate = sinceDate
+			sinceDate = toDate.AddDate(0, 0, -1)
+			logrus.Debugf("Loaded date %s and %s", toDate.Format("2006-01-02"), sinceDate.Format("2006-01-02"))
+			if lastDate.After(sinceDate) {
+				logrus.Debugf("Loaded %d orders end date %s", affected, sinceDate.Format("2006-01-02"))
+				return nil
+			}
+		} else {
+			offset += limit
+		}
+	}
 }
 
 func (c *OzonService) parseFBO(FBOResponse *api.GetOzonFBOResponse, transactionId int64, source string, ownerCode string) (int64, error) {
