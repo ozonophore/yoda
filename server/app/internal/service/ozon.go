@@ -178,7 +178,7 @@ func (c *OzonService) prepareAttributes(resp *api.GetOzonProductAttributesRespon
 
 func (c *OzonService) preparePrices(resp *api.GetOzonProductInfoResponse, transactionId int64) error {
 	if resp.StatusCode() != 200 || resp.JSON200 == nil {
-		return errors.New(fmt.Sprintf("Ozon resp %d", resp.StatusCode()))
+		return errors.New(fmt.Sprintf("Ozon resp %d %s Body: %s", resp.StatusCode(), resp.Status(), string(resp.Body)))
 	}
 	length := len(*resp.JSON200.Result.Items)
 	newItems := make([]model.StockItem, length)
