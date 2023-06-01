@@ -273,6 +273,7 @@ func (c *OzonService) parseFBO(FBOResponse *api.GetOzonFBOResponse, transactionI
 	}
 	FBOItems := FBOResponse.JSON200.Result
 	count := len(*FBOItems)
+	logrus.Debugf("Loaded %d orders", count)
 	if count == 0 {
 		return 0, nil
 	}
