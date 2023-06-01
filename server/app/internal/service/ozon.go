@@ -60,8 +60,9 @@ func (c *OzonService) Parsing(context context.Context, transactionID int64) erro
 	dt := time.Now()
 	//----------------- LOAD STOCK -----------------
 	for {
+		limit := offset + c.config.BatchSize
 		resp, err := client.GetOzonSupplierStocksWithResponse(context, api.GetOzonSupplierStocksJSONRequestBody{
-			Limit:         &c.config.BatchSize,
+			Limit:         &limit,
 			Offset:        &offset,
 			WarehouseType: &whType,
 		})
@@ -79,7 +80,7 @@ func (c *OzonService) Parsing(context context.Context, transactionID int64) erro
 		if length < c.config.BatchSize {
 			break
 		}
-		offset = length
+		offset += length
 	}
 	logrus.Info("Take an information about prices")
 	suppArt := storage.SelectUniqueStockItem(transactionID)
