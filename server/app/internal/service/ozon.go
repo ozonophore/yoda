@@ -49,17 +49,17 @@ func (p *products) getSkus() *[]int64 {
 func (p *products) addProduct(sku int64, product *model.StockItem) bool {
 	val, ok := p.data[sku]
 	if !ok {
-		p.data[sku] = &productInfo{
+		val = &productInfo{
 			Sku:       sku,
 			Barcode:   product.Barcode,
 			BarcodeId: product.BarcodeId,
 			ItemId:    product.ItemId,
 			Items:     []*model.StockItem{},
 		}
-		return true
+		p.data[sku] = val
 	}
 	val.Items = append(val.Items, product)
-	return false
+	return true
 }
 
 func (p *products) get(sku int64) (*productInfo, bool) {
@@ -110,7 +110,7 @@ func (c *OzonService) Parsing(context context.Context, transactionID int64) erro
 	source := types.SourceTypeOzon
 	dt := time.Now()
 	//----------------- LOAD STOCK -----------------
-	var data *[]model.StockItem
+	var data []*model.StockItem
 	for {
 		resp, err := client.GetOzonSupplierStocksWithResponse(context, api.GetOzonSupplierStocksJSONRequestBody{
 			Limit:         &c.config.BatchSize,
@@ -128,11 +128,7 @@ func (c *OzonService) Parsing(context context.Context, transactionID int64) erro
 		if err != nil {
 			return err
 		}
-		if data == nil {
-			data = newItem
-		} else {
-			*data = append(*data, *newItem...)
-		}
+		data = append(data, *newItem...)
 		length := len(*items)
 		if length < c.config.BatchSize {
 			break
@@ -141,7 +137,7 @@ func (c *OzonService) Parsing(context context.Context, transactionID int64) erro
 	}
 	logrus.Info("Take an information about prices")
 	err = c.enrichProductPrices(client, context, source)
-	storage.SaveStocksInBatches(data, c.config.BatchSize)
+	storage.SaveStocksInBatches(&data, c.config.BatchSize)
 	if err != nil {
 		return err
 	}
@@ -280,8 +276,8 @@ func (c *OzonService) preparePrices(resp *api.GetOzonProductInfoResponse, transa
 	return storage.UpdatePrices(&newItems)
 }
 
-func (c *OzonService) createItems(items *[]api.RowItem, dt time.Time, transactionId int64, source string) (*[]model.StockItem, error) {
-	newItems := make([]model.StockItem, len(*items))
+func (c *OzonService) createItems(items *[]api.RowItem, dt time.Time, transactionId int64, source string) (*[]*model.StockItem, error) {
+	newItems := make([]*model.StockItem, len(*items))
 	for index, item := range *items {
 		si, err := mapper.MapRowItem(&item, &dt)
 		if err != nil {
@@ -291,7 +287,7 @@ func (c *OzonService) createItems(items *[]api.RowItem, dt time.Time, transactio
 		si.OwnerCode = c.ownerCode
 		si.Source = source
 		si.TransactionID = transactionId
-		newItems[index] = *si
+		newItems[index] = si
 		c.products.addProduct(*item.Sku, si)
 	}
 	return &newItems, nil

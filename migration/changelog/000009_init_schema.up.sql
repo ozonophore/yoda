@@ -46,7 +46,7 @@ create table dl."report_detail_by_period"
     retail_price                numeric(10, 2),
     retail_price_withdisc_rub   numeric(10, 2),
     return_amount               numeric(18),
-    rid                         numeric(18),
+    rid                         varchar(50),
     rr_dt                       date,
     rrd_id                      numeric(18),
     sa_name                     varchar(100),
