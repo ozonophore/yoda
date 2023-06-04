@@ -39,7 +39,7 @@ func MapStockItem(s *api.StocksItem) (*model.StockItem, error) {
 }
 
 func MapRowItem(s *api.RowItem, d *time.Time) (*model.StockItem, error) {
-	externalCode := strconv.Itoa(*s.Sku)
+	externalCode := strconv.FormatInt(*s.Sku, 10)
 	q := int32(*s.FreeToSellAmount)
 	qf := int32(*s.FreeToSellAmount) + int32(*s.ReservedAmount)
 	qp := int32(*s.PromisedAmount)

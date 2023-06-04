@@ -408,7 +408,7 @@ type ProductAttributesImage struct {
 type ProductFilter struct {
 	OfferId   *[]string `json:"offer_id,omitempty"`
 	ProductId *[]string `json:"product_id,omitempty"`
-	Sku       *[]string `json:"sku,omitempty"`
+	Sku       *[]int64  `json:"sku,omitempty"`
 }
 
 // ProductInfo defines model for ProductInfo.
@@ -557,8 +557,8 @@ type ReportDetailByPeriodItem struct {
 	// ReturnAmount Количество возвратов
 	ReturnAmount *int64 `json:"return_amount,omitempty"`
 
-	// Rid Номер строки
-	Rid *int64 `json:"rid,omitempty"`
+	// Rid Уникальный идентификатор заказа
+	Rid *string `json:"rid,omitempty"`
 
 	// RrDt Дата операции
 	RrDt *types.CustomTime `json:"rr_dt,omitempty"`
@@ -610,7 +610,7 @@ type RowItem struct {
 	ItemName         *string `json:"item_name,omitempty"`
 	PromisedAmount   *int    `json:"promised_amount,omitempty"`
 	ReservedAmount   *int    `json:"reserved_amount,omitempty"`
-	Sku              *int    `json:"sku,omitempty"`
+	Sku              *int64  `json:"sku,omitempty"`
 	WarehouseName    *string `json:"warehouse_name,omitempty"`
 }
 

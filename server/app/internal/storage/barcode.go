@@ -2,19 +2,15 @@ package storage
 
 import (
 	"github.com/yoda/common/pkg/model"
-	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 func SaveOrUpdateBarcodes(items *[]model.Barcode) error {
 	initIfError()
-	return repository.db.Transaction(func(tx *gorm.DB) error {
-		for _, item := range *items {
-			if err := tx.Where(`"barcode_id" =?`, item.BarcodeID).Assign(item).FirstOrCreate(&item).Error; err != nil {
-				return err
-			}
-		}
-		return nil
-	})
+	return repository.db.Clauses(clause.OnConflict{
+		Columns:   []clause.Column{{Name: "barcode_id"}},
+		DoNothing: true,
+	}).CreateInBatches(items, len(*items)).Error
 }
 
 func GetBarcodeCount() int {

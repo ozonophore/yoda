@@ -18,6 +18,55 @@ import (
 	"time"
 )
 
+type productInfo struct {
+	Sku int64
+	Barcode,
+	BarcodeId,
+	ItemId *string
+	Items []*model.StockItem
+}
+
+type products struct {
+	data map[int64]*productInfo
+}
+
+func newProducts() *products {
+	return &products{
+		data: make(map[int64]*productInfo),
+	}
+}
+
+func (p *products) getSkus() *[]int64 {
+	skus := make([]int64, len(p.data))
+	index := 0
+	for sku := range p.data {
+		skus[index] = sku
+		index++
+	}
+	return &skus
+}
+
+func (p *products) addProduct(sku int64, product *model.StockItem) bool {
+	val, ok := p.data[sku]
+	if !ok {
+		p.data[sku] = &productInfo{
+			Sku:       sku,
+			Barcode:   product.Barcode,
+			BarcodeId: product.BarcodeId,
+			ItemId:    product.ItemId,
+			Items:     []*model.StockItem{},
+		}
+		return true
+	}
+	val.Items = append(val.Items, product)
+	return false
+}
+
+func (p *products) get(sku int64) (*productInfo, bool) {
+	val, ok := p.data[sku]
+	return val, ok
+}
+
 type OzonService struct {
 	clientId         string
 	apiKey           string
@@ -25,6 +74,7 @@ type OzonService struct {
 	productInfoCache map[int64]*string
 	config           *configuration.Config
 	client           *api.ClientWithResponses
+	products         *products
 }
 
 func NewOzonService(ownerCode, clientId, apiKey string, config *configuration.Config) *OzonService {
@@ -39,6 +89,7 @@ func NewOzonServiceWIthClient(ownerCode, clientId, apiKey string, client *api.Cl
 		ownerCode:        ownerCode,
 		client:           client,
 		productInfoCache: make(map[int64]*string),
+		products:         newProducts(),
 	}
 }
 
@@ -59,6 +110,7 @@ func (c *OzonService) Parsing(context context.Context, transactionID int64) erro
 	source := types.SourceTypeOzon
 	dt := time.Now()
 	//----------------- LOAD STOCK -----------------
+	var data *[]model.StockItem
 	for {
 		resp, err := client.GetOzonSupplierStocksWithResponse(context, api.GetOzonSupplierStocksJSONRequestBody{
 			Limit:         &c.config.BatchSize,
@@ -72,8 +124,14 @@ func (c *OzonService) Parsing(context context.Context, transactionID int64) erro
 			return errors.New(fmt.Sprintf("Ozon resp %d: %s", resp.StatusCode(), resp.Status()))
 		}
 		items := resp.JSON200.Result.Rows
-		if err = c.prepareItems(items, dt, transactionID, source); err != nil {
+		newItem, err := c.createItems(items, dt, transactionID, source)
+		if err != nil {
 			return err
+		}
+		if data == nil {
+			data = newItem
+		} else {
+			*data = append(*data, *newItem...)
 		}
 		length := len(*items)
 		if length < c.config.BatchSize {
@@ -82,52 +140,11 @@ func (c *OzonService) Parsing(context context.Context, transactionID int64) erro
 		offset += length
 	}
 	logrus.Info("Take an information about prices")
-	suppArt := storage.SelectUniqueStockItem(transactionID)
-
-	err = CallbackBatch[string](suppArt, c.config.BatchSize, func(batch *[]string) error {
-		req := api.GetOzonProductInfoJSONRequestBody{
-			OfferId: batch,
-		}
-		resp, err := client.GetOzonProductInfoWithResponse(context, req)
-		if err != nil {
-			return err
-		}
-		err = c.preparePrices(resp, transactionID)
-		if err != nil {
-			return err
-		}
-		return nil
-	})
+	err = c.enrichProductPrices(client, context, source)
+	storage.SaveStocksInBatches(data, c.config.BatchSize)
 	if err != nil {
 		return err
 	}
-	logrus.Info("Take an information about product")
-	visibility := api.ProductAttributeFilterFilterVisibilityALL
-	var lastId *string
-	err = CallbackBatch[string](suppArt, c.config.BatchSize, func(batch *[]string) error {
-		limit := len(*batch)
-		request := api.ProductAttributeFilter{
-			Filter: &api.ProductAttributeFilterFilter{
-				OfferId:    batch,
-				Visibility: &visibility,
-			},
-			LastId: lastId,
-			Limit:  &limit,
-		}
-		resp, err := client.GetOzonProductAttributesWithResponse(context, request)
-		if err != nil {
-			return err
-		}
-		if resp.StatusCode() == 404 {
-			return errors.New(fmt.Sprintf("Ozon resp 404: %s", *resp.JSON404.Message))
-		}
-		lastId = resp.JSON200.LastId
-		newItems := c.prepareAttributes(resp, transactionID)
-		if err = storage.UpdateAttributes(newItems); err != nil {
-			return err
-		}
-		return nil
-	})
 	//------------------ LOAD ORDERS ------------------
 	logrus.Info("Load orders")
 	if err := c.loadOrders(context, client, transactionID, source); err != nil {
@@ -135,6 +152,65 @@ func (c *OzonService) Parsing(context context.Context, transactionID int64) erro
 	}
 	logrus.Info("Finish to load orders")
 	logrus.Info("Finish parsing ozon")
+	return nil
+}
+
+func (c *OzonService) enrichProductPrices(client *api.ClientWithResponses, ctx context.Context, source string) error {
+	skus := c.products.getSkus()
+
+	decoder := dictionary.GetItemDecoder()
+	err := CallbackBatch[int64](skus, c.config.BatchSize, func(batch *[]int64) error {
+		req := api.GetOzonProductInfoJSONRequestBody{
+			Sku: batch,
+		}
+		timeCtx, _ := context.WithTimeout(ctx, time.Duration(c.config.Timeout)*time.Second)
+		resp, err := client.GetOzonProductInfoWithResponse(timeCtx, req)
+		if err != nil {
+			return err
+		}
+		if resp.StatusCode() != 200 || resp.JSON200 == nil {
+			return errors.New(fmt.Sprintf("Ozon resp %d %s Body: %s", resp.StatusCode(), resp.Status(), string(resp.Body)))
+		}
+		for _, info := range *resp.JSON200.Result.Items {
+			item, ok := c.products.get(*info.FboSku)
+			if !ok {
+				logrus.Errorf("Can't find product with sku %d", *info.FboSku)
+				continue
+			}
+			var barcodeId, itemId, message *string
+			if info.Barcode != nil {
+				decode, err := decoder.Decode(c.ownerCode, source, *info.Barcode)
+				if err != nil {
+					s := err.Error()
+					message = &s
+				} else {
+					barcodeId = &decode.BarcodeId
+					itemId = &decode.ItemId
+				}
+			}
+			price := utils.StringToFloat64(info.OldPrice)
+			priceAfterDisc := utils.StringToFloat64(info.MarketingPrice)
+			disc := price - priceAfterDisc
+			extCode := fmt.Sprintf("%d", *info.FboSku)
+			daysOnSite := int32(time.Now().Sub(*info.CreatedAt).Hours() / 24)
+			items := item.Items
+			for i := 0; i < len(items); i++ {
+				items[i].Price = &price
+				items[i].PriceAfterDiscount = &priceAfterDisc
+				items[i].Discount = &disc
+				items[i].ExternalCode = &extCode
+				items[i].DaysOnSite = &daysOnSite
+				items[i].Barcode = info.Barcode
+				items[i].BarcodeId = barcodeId
+				items[i].ItemId = itemId
+				items[i].Message = message
+			}
+		}
+		return nil
+	})
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -204,6 +280,23 @@ func (c *OzonService) preparePrices(resp *api.GetOzonProductInfoResponse, transa
 	return storage.UpdatePrices(&newItems)
 }
 
+func (c *OzonService) createItems(items *[]api.RowItem, dt time.Time, transactionId int64, source string) (*[]model.StockItem, error) {
+	newItems := make([]model.StockItem, len(*items))
+	for index, item := range *items {
+		si, err := mapper.MapRowItem(&item, &dt)
+		if err != nil {
+			logrus.Errorf("Couldn't map a value at row %d (%s)", index, err)
+			return nil, errors.Join(fmt.Errorf("Couldn't map a value at row %d sku %d", index, item.Sku), err)
+		}
+		si.OwnerCode = c.ownerCode
+		si.Source = source
+		si.TransactionID = transactionId
+		newItems[index] = *si
+		c.products.addProduct(*item.Sku, si)
+	}
+	return &newItems, nil
+}
+
 func (c *OzonService) prepareItems(items *[]api.RowItem, dt time.Time, transactionId int64, source string) error {
 	newItems := make([]model.StockItem, len(*items))
 	decoder := dictionary.GetItemDecoder()
@@ -231,6 +324,7 @@ func (c *OzonService) prepareItems(items *[]api.RowItem, dt time.Time, transacti
 		si.ItemId = itemId
 		si.Message = message
 		newItems[index] = *si
+		c.products.addProduct(*item.Sku, si)
 	}
 	return storage.SaveStocks(&newItems)
 }

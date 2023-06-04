@@ -283,9 +283,8 @@ components:
           description: Скидка поставщика
           example: 1234.56
         rid:
-          type: integer
-          format: int64
-          description: Номер строки
+          type: string
+          description: Уникальный идентификатор заказа
           example: 1234
         ppvz_spp_prc:
           type: number
@@ -1027,12 +1026,14 @@ components:
         sku:
           type: array
           items:
-            type: string
+            type: integer
+            format: int64
     RowItem:
       type: object
       properties:
         sku:
           type: integer
+          format: int64
         item_code:
           type: string
         item_name:
