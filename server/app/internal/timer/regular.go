@@ -47,7 +47,7 @@ func (sch Scheduler) initRegular(ctx context.Context) bool {
 		job, err := PrepareWeekDay(*job.WeekDays, s).At(atTime).Tag(tag).Do(RunRegularLoad, config, ctx, job.ID, scheduler, sch.handleBeforeJobExecution, sch.handleAfterJobExecution)
 		logrus.Debugf("Next run: %s", job.NextRun())
 		if err != nil {
-			logrus.Panicf("Error after create job: %w", err)
+			logrus.Panicf("Error after create job: %s", err)
 		}
 		wasChanged = true
 	}
