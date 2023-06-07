@@ -49,6 +49,10 @@ func NewScheduler(config *configuration.Config) *Scheduler {
 	}
 }
 
+func (s Scheduler) GetScheduler() *gocron.Scheduler {
+	return s.scheduler
+}
+
 func (s Scheduler) Subscribe(observer observer.SchedulerObserver) {
 	s.observers = append(s.observers, observer)
 }

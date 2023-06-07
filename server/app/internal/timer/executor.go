@@ -42,7 +42,7 @@ func callOnAfterJonExecution(job *model.Job, transactionID int64, gJob *gocron.J
 	}
 }
 
-func jobByTag(s *gocron.Scheduler, jobId int) *gocron.Job {
+func JobByTag(s *gocron.Scheduler, jobId int) *gocron.Job {
 	tag := fmt.Sprintf("%d", jobId)
 	jobs, err := s.FindJobsByTag(tag)
 	if err != nil {
@@ -66,7 +66,7 @@ func RunRegularLoad(config *configuration.Config, ctx context.Context, jobID int
 		return
 	}
 	transactionID := storage.BeginOperation(jobID)
-	gJob := jobByTag(s, jobID)
+	gJob := JobByTag(s, jobID)
 	if gJob == nil {
 		err = errors.New(fmt.Sprintf("Job %d not found", jobID))
 		return

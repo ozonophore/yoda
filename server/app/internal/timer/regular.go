@@ -23,6 +23,9 @@ func (sch Scheduler) initRegular(ctx context.Context) bool {
 		case "interval":
 			continue
 		}
+		if job.Type != "REGULAR" {
+			continue
+		}
 		if job.Type == "REGULAR" && job.WeekDays == nil {
 			logrus.Panicf("Job %d has no week days", job.ID)
 		}
@@ -44,7 +47,7 @@ func (sch Scheduler) initRegular(ctx context.Context) bool {
 		job, err := PrepareWeekDay(*job.WeekDays, s).At(atTime).Tag(tag).Do(RunRegularLoad, config, ctx, job.ID, scheduler, sch.handleBeforeJobExecution, sch.handleAfterJobExecution)
 		logrus.Debugf("Next run: %s", job.NextRun())
 		if err != nil {
-			logrus.Panicf("Error after create job: %s", err)
+			logrus.Panicf("Error after create job: %w", err)
 		}
 		wasChanged = true
 	}

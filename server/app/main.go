@@ -2,17 +2,24 @@ package main
 
 import (
 	"context"
+	"github.com/go-co-op/gocron"
 	"github.com/rifflock/lfshook"
 	"github.com/sirupsen/logrus"
 	"github.com/yoda/app/internal/configuration"
 	"github.com/yoda/app/internal/event"
 	"github.com/yoda/app/internal/integration"
 	"github.com/yoda/app/internal/integration/dictionary"
+	"github.com/yoda/app/internal/pipeline"
+	service "github.com/yoda/app/internal/service/stock"
+	"github.com/yoda/app/internal/stage/stock"
 	"github.com/yoda/app/internal/storage"
 	"github.com/yoda/app/internal/timer"
 	"github.com/yoda/common/pkg/dao"
+	"gorm.io/gorm"
 	"os"
 	"os/signal"
+	"sort"
+	"strings"
 	"time"
 )
 
@@ -36,6 +43,9 @@ func main() {
 	event.Subscribe(scheduler)
 	event.SubscribeOrg(uo)
 	scheduler.InitJob()
+
+	startStockAggregator(database, scheduler.GetScheduler())
+
 	scheduler.Start()
 	defer scheduler.StopAll()
 
@@ -63,4 +73,38 @@ func initLogging(config *configuration.Config) {
 		&logrus.JSONFormatter{},
 	))
 	logrus.SetLevel(lvl)
+}
+
+func startStockAggregator(db *gorm.DB, sch *gocron.Scheduler) {
+	rep := storage.NewRepository(db)
+	j, err := rep.GetJob(2)
+	if err != nil {
+		logrus.Panicf("Error while getting job(%d): %v", 2, err)
+	}
+	job := timer.JobByTag(sch, 2)
+	atTime := strings.ReplaceAll(*j.AtTime, ",", ";")
+	if job != nil {
+		logrus.Infof("Job with tag(%d) already exists", 2)
+		actualAtTimes := job.ScheduledAtTimes()
+		expectedAtTimes := strings.Split(atTime, ";")
+		sort.Strings(actualAtTimes)
+		sort.Strings(expectedAtTimes)
+		if strings.Join(actualAtTimes, ";") == strings.Join(expectedAtTimes, ";") {
+			return
+		}
+		err := sch.RemoveByTag("2")
+		if err != nil {
+			logrus.Errorf("Error while removing job with tag(%d): %v", 2, err)
+		}
+	}
+	srv := service.NewStockService(rep)
+	step := stock.NewDailyStep(srv)
+	stage := pipeline.NewSimpleStageWithTag(step, "stock-daily-aggregator")
+	stage.AddNext(pipeline.NewSimpleStageWithTag(stock.NewDefectureStep(srv), "stock-defecture-aggregator"))
+	sch.Every(1).Day().At(atTime).Tag("2").Do(func() {
+		err := pipeline.Pipeline(context.Background(), stage)
+		if err != nil {
+			logrus.Errorf("Error while running stock aggregator: %v", err)
+		}
+	})
 }
