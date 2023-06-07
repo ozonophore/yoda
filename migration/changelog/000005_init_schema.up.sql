@@ -34,16 +34,16 @@ merge into "dl"."stock_daily" ss
         and ss."stock_date" = data."transaction_date")
     when matched then
         update
-            set "attention"           = "attention" + 1,
-                "quantity"            = (ss."quantity" * ss."attention" + data."quantity") / (ss."attention" + 1),
-                "quantity_full"       = (ss."quantity_full" * ss."attention" + data."quantity") / (ss."attention" + 1),
+            set "attemption"           = "attemption" + 1,
+                "quantity"            = (ss."quantity" * ss."attemption" + data."quantity") / (ss."attemption" + 1),
+                "quantity_full"       = (ss."quantity_full" * ss."attemption" + data."quantity") / (ss."attemption" + 1),
                 "price"               = case when (ss."quantity" + data."quantity") = 0 then 0 else (ss."price" * ss."quantity" + data."price") / (ss."quantity" + data."quantity") end,
                 "price_with_discount" = case when (ss."quantity" + data."quantity") = 0 then 0 else (ss."price_with_discount" * ss."quantity" + data."price_with_discount") /
                                                                                                     (ss."quantity" + data."quantity") end,
                 "update_at"           = current_date
     when not matched then
         insert ("stock_date", "source", "owner_code", "warehouse", "external_code", "barcode", "quantity",
-                "quantity_full", "price", "price_with_discount", "create_at", "update_at", "attention")
+                "quantity_full", "price", "price_with_discount", "create_at", "update_at", "attemption")
             values (data."transaction_date", data."source", data."owner_code", data."warehouse_name", data."external_code",
                     data."barcode", data."quantity", data."quantity_full", data."price", data."price_with_discount", current_date, current_date, 1);
 end

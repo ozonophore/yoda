@@ -66,4 +66,4 @@ create table dl."report_detail_by_period"
     message                     varchar(250)
 );
 
-create index report_detail_by_period_transaction_id_idx on dl.report_detail_by_period(transaction_id, source, owner_code, barcode);
+create index report_detail_by_period_transaction_id_idx on "dl"."report_detail_by_period"(transaction_id, source, owner_code, barcode);

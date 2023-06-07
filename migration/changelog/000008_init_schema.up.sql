@@ -12,11 +12,6 @@ comment on column "ml"."transaction_log".status is 'Статус транзак�
 comment on column "ml"."transaction_log".msg is 'Сообщение об ошибке';
 comment on column "ml"."transaction_log".created_at is 'Дата создания записи';
 
-alter table "dl"."item" add primary key (id);
-alter table "dl"."marketplace" add primary key (id);
-alter table "ml"."owner" add primary key (code);
-alter table "ml"."owner_marketplace" add primary key ("owner_code", "source");
-
 create table "ml"."marketplace" (
                                     "code" varchar(15) not null primary key ,
                                     "marketplace_id" varchar(36) not null

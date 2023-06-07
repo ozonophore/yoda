@@ -9,7 +9,7 @@ begin
 select count(*) into v_count from "ml"."transaction"
 where date_trunc('day', "start_date") = v_day
   and "status" = 'COMPLETED';
-insert into dl.stock_daily(stock_date, source, owner_code, supplier_article, barcode, external_code, warehouse, quantity, quantity_full, attention, price, price_with_discount, create_at, update_at)
+insert into dl.stock_daily(stock_date, source, owner_code, supplier_article, barcode, external_code, warehouse, quantity, quantity_full, attemption, price, price_with_discount, create_at, update_at)
 select s.transaction_date
      , s.source
      , s.owner_code
@@ -19,7 +19,7 @@ select s.transaction_date
      , s.warehouse_name
      , sum(s.quantity) / v_count                              quantity
      , sum(s.quantity_full) / v_count                          quantity_full
-     , v_count                                                attention
+     , v_count                                                attemption
      , case
            when sum(s.quantity) / v_count = 0
                then sum(coalesce(s.price, 0)) / count(1)
@@ -40,5 +40,3 @@ group by s.transaction_date, s.source, s.owner_code, s.supplier_article, s.barco
          s.barcode_id, s.item_id, s.warehouse_name, s.external_code;
 end
 $$;
-
-alter procedure dl.calc_stock_daily_by_day(date) owner to "user";

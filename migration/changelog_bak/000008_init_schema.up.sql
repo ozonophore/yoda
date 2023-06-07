@@ -15,7 +15,7 @@ create table stock_daily
     "update_at" date,
     "quantity" numeric(10,2) not null,
     "quantity_full" numeric(10,2) not null,
-    "attention" int not null,
+    "attemption" int not null,
     "price" numeric(10,2) not null,
     "price_with_discount" numeric(10,2) not null
 ) PARTITION BY RANGE("stock_date");
