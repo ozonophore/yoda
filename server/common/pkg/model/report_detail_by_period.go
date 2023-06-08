@@ -58,7 +58,7 @@ type ReportDetailByPeriod struct {
 	RetailPrice              *float64   `gorm:"column:retail_price" json:"retail_price"`
 	RetailPriceWithdiscRub   *float64   `gorm:"column:retail_price_withdisc_rub" json:"retail_price_withdisc_rub"`
 	ReturnAmount             *int64     `gorm:"column:return_amount" json:"return_amount"`
-	Rid                      *string    `gorm:"column:rid" json:"rid"`
+	Rid                      *int64     `gorm:"column:rid" json:"rid"`
 	RrDt                     *time.Time `gorm:"column:rr_dt" json:"rr_dt"`
 	RrdID                    *int64     `gorm:"column:rrd_id" json:"rrd_id"`
 	SaName                   *string    `gorm:"column:sa_name" json:"sa_name"`

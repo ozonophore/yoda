@@ -101,10 +101,19 @@ func startStockAggregator(db *gorm.DB, sch *gocron.Scheduler) {
 	step := stock.NewDailyStep(srv)
 	stage := pipeline.NewSimpleStageWithTag(step, "stock-daily-aggregator")
 	stage.AddNext(pipeline.NewSimpleStageWithTag(stock.NewDefectureStep(srv), "stock-defecture-aggregator"))
-	sch.Every(1).Day().At(atTime).Tag("2").Do(func() {
+	sj, err := sch.Every(1).Day().At(atTime).Tag("2").Do(func() {
 		err := pipeline.Pipeline(context.Background(), stage)
 		if err != nil {
 			logrus.Errorf("Error while running stock aggregator: %v", err)
 		}
 	})
+	if err != nil {
+		logrus.Panicf("Error while scheduling job: %v", err)
+	}
+	sj.SetEventListeners(func() {
+		logrus.Infof("Job with tag(%d) is running", 2)
+	}, func() {
+		logrus.Infof("Job with tag(%d) is done. Next run: %s", 2, sj.NextRun().UTC())
+	})
+
 }

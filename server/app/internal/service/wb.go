@@ -41,7 +41,8 @@ func (c *WBService) Parsing(context context.Context, transactionID int64) error 
 		return err
 	}
 
-	dateFrom := types.CustomTime(time.Now().AddDate(0, 0, -1*c.config.Wb.RemainingDays))
+	dateFrom := types.CustomTime(time.Now().AddDate(0, 0, -1*c.config.Wb.RemainingDays).UTC())
+	logrus.Debugf("Date from: %s", dateFrom.String())
 
 	request := api.GetSupplierStocksParams{DateFrom: dateFrom}
 	resp, err := clnt.GetSupplierStocksWithResponse(context, &request)
@@ -89,7 +90,8 @@ func (c *WBService) extractOrdersAndSales(ctx context.Context, transactionID int
 	defer close(o)
 	go func() {
 		days := c.config.Order.LoadedDays
-		sinceDate := types.CustomTime(time.Now().AddDate(0, 0, -1*days))
+		sinceDate := types.CustomTime(time.Now().AddDate(0, 0, -1*days).UTC())
+		logrus.Debugf("Orders since date: %s", sinceDate.String())
 		orders, err := c.callOrders(clnt, &sinceDate)
 		e <- err
 		o <- orders

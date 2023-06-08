@@ -558,7 +558,7 @@ type ReportDetailByPeriodItem struct {
 	ReturnAmount *int64 `json:"return_amount,omitempty"`
 
 	// Rid Уникальный идентификатор заказа
-	Rid *string `json:"rid,omitempty"`
+	Rid *int64 `json:"rid,omitempty"`
 
 	// RrDt Дата операции
 	RrDt *types.CustomTime `json:"rr_dt,omitempty"`
