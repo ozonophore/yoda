@@ -79,9 +79,6 @@ func RunRegularLoad(config *configuration.Config, ctx context.Context, jobID int
 func execute(config *configuration.Config, ctx context.Context, jobID int, job *model.Job, err error, transactionID int64) error {
 	logrus.Info("Start parsing for job: ", jobID)
 	for _, param := range *job.Params {
-		if param.Source != "WB" {
-			continue
-		}
 		err = prepareParam(ctx, config, &param, transactionID)
 		if err != nil {
 			logrus.Errorf("Error after prepare param: %s", err)

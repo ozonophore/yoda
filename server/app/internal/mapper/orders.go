@@ -5,12 +5,14 @@ import (
 	"github.com/yoda/app/internal/api"
 	"github.com/yoda/app/internal/service/dictionary"
 	"github.com/yoda/common/pkg/model"
+	"github.com/yoda/common/pkg/types"
 	"github.com/yoda/common/pkg/utils"
 	"time"
 )
 
-func MapOrderArray(orders *[]api.OrdersItem, transactionId int64, source string, ownerCode string, wasSold func(odid *int64) bool) (*[]model.Order, error) {
+func MapOrderArray(orders *[]api.OrdersItem, transactionId int64, source string, ownerCode string, wasSold func(odid *int64) bool) (*[]model.Order, *time.Time, error) {
 	var result []model.Order
+	var lastChangeDate *time.Time
 	decoder := dictionary.GetItemDecoder()
 	for _, order := range *orders {
 		newOrder, err := MapOrder(&order, transactionId, source, ownerCode, wasSold)
@@ -28,26 +30,25 @@ func MapOrderArray(orders *[]api.OrdersItem, transactionId int64, source string,
 		newOrder.BarcodeId = barcodeId
 		newOrder.ItemId = itemId
 		newOrder.Message = message
+		if lastChangeDate == nil || newOrder.LastChangeDate.After(*lastChangeDate) {
+			lastChangeDate = &newOrder.LastChangeDate
+		}
 		if err != nil {
-			return nil, err
+			return nil, lastChangeDate, err
 		}
 		result = append(result, *newOrder)
 	}
-	return &result, nil
+	return &result, lastChangeDate, nil
 }
 
 func MapOrder(order *api.OrdersItem, transactionId int64, source string, ownerCode string, wasSold func(odid *int64) bool) (result *model.Order, err error) {
-	orderDate, err := time.Parse(time.DateOnly+"T"+time.TimeOnly, *order.Date)
+	orderDate := types.CustomTimeToTime(order.Date)
 	if err != nil {
 		return nil, err
 	}
 	var cancelDt *time.Time
-	if order.CancelDt != nil && "0001-01-01T00:00:00" != *order.CancelDt {
-		cancelDtP, err := time.Parse(time.DateOnly+"T"+time.TimeOnly, *order.CancelDt)
-		if err != nil {
-			return nil, err
-		}
-		cancelDt = &cancelDtP
+	if order.CancelDt != nil && order.CancelDt.ToTime().Year() > 2000 {
+		cancelDt = types.CustomTimeToTime(order.CancelDt)
 	}
 	status := "awaiting_deliver"
 	if wasSold(order.Odid) {
@@ -64,8 +65,8 @@ func MapOrder(order *api.OrdersItem, transactionId int64, source string, ownerCo
 		OwnerCode:         ownerCode,
 		LastChangeDate:    order.LastChangeDate.ToTime(),
 		LastChangeTime:    order.LastChangeDate.ToTime(),
-		OrderDate:         orderDate,
-		OrderTime:         orderDate,
+		OrderDate:         *orderDate,
+		OrderTime:         *orderDate,
 		SupplierArticle:   order.SupplierArticle,
 		TechSize:          order.TechSize,
 		Barcode:           order.Barcode,

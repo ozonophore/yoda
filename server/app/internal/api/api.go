@@ -186,13 +186,13 @@ type OrdersItem struct {
 	Brand *string `json:"brand,omitempty"`
 
 	// CancelDt Дата и время отмены заказа. Если заказ не был отменен, то `"0001-01-01T00:00:00"`. Если часовой пояс не указан, то берется Московское время UTC+3.
-	CancelDt *string `json:"cancel_dt,omitempty"`
+	CancelDt *types.CustomTime `json:"cancel_dt,omitempty"`
 
 	// Category Категория
 	Category *string `json:"category,omitempty"`
 
 	// Date Дата и время заказа. Это поле соответствует параметру `dateFrom` в запросе, если параметр `flag=1`. Если часовой пояс не указан, то берется Московское время UTC+3.
-	Date *string `json:"date,omitempty"`
+	Date *types.CustomTime `json:"date,omitempty"`
 
 	// DiscountPercent Согласованный итоговый дисконт. Будучи примененным к `totalPrice`, даёт сумму к оплате.
 	DiscountPercent *int `json:"discountPercent,omitempty"`

@@ -46,7 +46,7 @@ func TestMapOrder(t *testing.T) {
 func generateOrder() api.OrdersItem {
 	tm, _ := time.Parse(time.DateOnly+"T"+time.TimeOnly, "2020-01-01T10:30:00")
 	lastChangeDate := types.CustomTime(tm)
-	date := "2023-03-10T11:20:00"
+	date := types.StringToCustomTime("2023-03-10T11:20:00")
 	supplierArticle := "supplierArticle"
 	techSize := "techSize"
 	barcode := "barcode"
@@ -64,7 +64,7 @@ func generateOrder() api.OrdersItem {
 	nmId := 12
 	totalPrice := 12.50
 	return api.OrdersItem{
-		Date:            &date,
+		Date:            date,
 		LastChangeDate:  &lastChangeDate,
 		SupplierArticle: &supplierArticle,
 		TechSize:        &techSize,

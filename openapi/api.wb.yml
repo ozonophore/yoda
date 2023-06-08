@@ -629,6 +629,10 @@ components:
           description: Номер заказа. Объединяет все позиции одного заказа.
         date:
           type: string
+          x-go-type: types.CustomTime
+          x-go-import:
+            name: types
+            package: github.com/yoda/common/pkg/types
           description: Дата и время заказа. Это поле соответствует параметру `dateFrom`
             в запросе, если параметр `flag=1`. Если часовой пояс не указан, то берется
             Московское время UTC+3.
@@ -700,6 +704,10 @@ components:
           description: Отмена заказа. true - заказ отменен до оплаты.
         cancel_dt:
           type: string
+          x-go-type: types.CustomTime
+          x-go-import:
+            name: types
+            package: github.com/yoda/common/pkg/types
           description: Дата и время отмены заказа. Если заказ не был отменен, то `"0001-01-01T00:00:00"`.
             Если часовой пояс не указан, то берется Московское время UTC+3.
         sticker:

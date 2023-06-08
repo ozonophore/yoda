@@ -73,65 +73,78 @@ func (c *WBService) Parsing(context context.Context, transactionID int64) error 
 		return err
 	}
 
-	c.extractOrdersAndSales(context, transactionID, clnt, dateFrom, source)
+	err = c.extractOrdersAndSales(context, transactionID, clnt, source)
+	if err != nil {
+		return fmt.Errorf("extractOrdersAndSales: %w", err)
+	}
 	ws.Wait()
 	logrus.Info("Finish load orders from wb")
 	logrus.Info("Finish parsing wb")
 	return nil
 }
 
-func (c *WBService) extractOrdersAndSales(ctx context.Context, transactionID int64, clnt *api.ClientWithResponses, dateFrom api.DateFrom, source string) error {
-	e := make(chan error, 2)
-	defer close(e)
-	go func() {
-		e <- c.extractSales(ctx, transactionID, clnt, dateFrom, source)
-	}()
-	o := make(chan *[]api.OrdersItem, 1)
-	defer close(o)
-	go func() {
-		days := c.config.Order.LoadedDays
-		sinceDate := types.CustomTime(time.Now().AddDate(0, 0, -1*days).UTC())
+func (c *WBService) extractOrdersAndSales(ctx context.Context, transactionID int64, clnt *api.ClientWithResponses, source string) error {
+
+	startDate := time.Now().AddDate(0, 0, 1).UTC()
+	sinceDate := startDate.AddDate(0, 0, -1*c.config.Order.LoadedDays).UTC()
+	logrus.Debugf("Sales since date: %s", sinceDate.String())
+	count, err := c.extractSales(ctx, transactionID, clnt, sinceDate, source)
+	logrus.Debugf("Sales count: %d", count)
+	if err != nil {
+		return err
+	}
+
+	startDate = time.Now().AddDate(0, 0, 1).UTC()
+	sinceDate = startDate.AddDate(0, 0, -1*c.config.Order.LoadedDays).UTC()
+	for {
 		logrus.Debugf("Orders since date: %s", sinceDate.String())
-		orders, err := c.callOrders(clnt, &sinceDate)
-		e <- err
-		o <- orders
-	}()
-	errs := []error{<-e, <-e}
-	for _, err := range errs {
+		orders, err := c.callOrders(clnt, sinceDate)
 		if err != nil {
 			return err
 		}
-	}
-	orders := <-o
-	start := time.Now()
-	newOrders, errMap := mapper.MapOrderArray(orders, transactionID, source, c.ownerCode, func(item *int64) bool {
-		return c.salesSet[*item]
-	})
-	elapsed := time.Since(start)
-	logrus.Debugf("Fetch took %s", elapsed)
-	if errMap != nil {
-		return errMap
-	}
-	if err := storage.SaveOrdersInBatches(newOrders, c.config.BatchSize); err != nil {
-		return err
+		start := time.Now()
+		newOrders, lastChangeDate, err := mapper.MapOrderArray(orders, transactionID, source, c.ownerCode, func(item *int64) bool {
+			return c.salesSet[*item]
+		})
+		if err != nil {
+			return err
+		}
+		elapsed := time.Since(start)
+		logrus.Debugf("Fetch took %s", elapsed)
+		count, err := storage.SaveOrdersInBatches(newOrders, c.config.BatchSize)
+		if err != nil {
+			return err
+		}
+		logrus.Debugf("Orders count: %d", count)
+		if len(*orders) < 10000 {
+			break
+		}
+		sinceDate = lastChangeDate.Add(time.Second)
 	}
 	return nil
 }
 
-func (c *WBService) extractSales(ctx context.Context, transactionID int64, clnt *api.ClientWithResponses, dateFrom api.DateFrom, source string) error {
+func (c *WBService) extractSales(ctx context.Context, transactionID int64, clnt *api.ClientWithResponses, df time.Time, source string) (int, error) {
 	ctxt, _ := context.WithTimeout(ctx, time.Duration(c.config.Timeout)*time.Second)
+	flag := 0
+	dateFrom := types.CustomTime(df)
 	respSales, err := clnt.GetWBSalesWithResponse(ctxt, &api.GetWBSalesParams{
 		DateFrom: dateFrom,
+		Flag:     &flag,
 	})
 	if err != nil {
-		return err
+		return 0, err
 	}
 	if respSales.StatusCode() != 200 {
-		return fmt.Errorf("Sales response status : %d", respSales.StatusCode())
+		return 0, fmt.Errorf("Sales response status : %d", respSales.StatusCode())
 	}
 	salesItems := respSales.JSON200
 
-	c.salesSet = make(map[int64]bool, len(*salesItems))
+	logrus.Debugf("Sales count: %d", len(*salesItems))
+	if c.salesSet == nil {
+		c.salesSet = make(map[int64]bool, len(*salesItems))
+	}
+
 	if err = CallbackBatch[api.SalesItem](salesItems, c.config.BatchSize, func(items *[]api.SalesItem) error {
 		newItems := mapper.MapSaleArray(items, transactionID, &source, c.ownerCode, func(item *int64) {
 			c.salesSet[*item] = true
@@ -141,53 +154,16 @@ func (c *WBService) extractSales(ctx context.Context, transactionID int64, clnt 
 		}
 		return nil
 	}); err != nil {
-		return err
+		return 0, err
 	}
-	return nil
+	return len(*salesItems), nil
 }
 
-/**
- * Load orders from WB
- */
-func (c *WBService) extractOrders(client *api.ClientWithResponses, transactionId int64, source *string) error {
-	days := c.config.Order.LoadedDays
-	sinceDate := types.CustomTime(time.Now().AddDate(0, 0, -1*days))
-	if err := c.fetchOrders(client, &sinceDate, transactionId, source, c.ownerCode); err != nil {
-		logrus.Debugf("Error while fetching orders from wb: %s", err.Error())
-		return err
-	}
-	return nil
-}
-
-func (c *WBService) fetchOrders(client *api.ClientWithResponses, dateFrom *api.DateFrom, transactionId int64, source *string, ownerCode string) error {
-	orders, err := c.callOrders(client, dateFrom)
-	if err != nil {
-		return err
-	}
-	if err = CallbackBatch[api.OrdersItem](orders, c.config.BatchSize, func(items *[]api.OrdersItem) error {
-		start := time.Now()
-		orders, errMap := mapper.MapOrderArray(items, transactionId, *source, ownerCode, func(item *int64) bool {
-			return c.salesSet[*item]
-		})
-		elapsed := time.Since(start)
-		logrus.Debugf("Fetch took %s", elapsed)
-		if errMap != nil {
-			return errMap
-		}
-		if err := storage.SaveOrders(orders); err != nil {
-			return err
-		}
-		return nil
-	}); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (c *WBService) callOrders(client *api.ClientWithResponses, dateFrom *api.DateFrom) (*[]api.OrdersItem, error) {
+func (c *WBService) callOrders(client *api.ClientWithResponses, df time.Time) (*[]api.OrdersItem, error) {
 	flag := 0
+	var dateFrom = types.CustomTime(df)
 	request := api.GetWBOrdersParams{
-		DateFrom: *dateFrom,
+		DateFrom: dateFrom,
 		Flag:     &flag,
 	}
 	logrus.Debugf("Request to wb by date: %s", dateFrom.String())
