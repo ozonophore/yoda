@@ -6,6 +6,10 @@ import (
 	"sync"
 )
 
+type Pipeline struct {
+	err error
+}
+
 func getErrors(stages *[]Stage) error {
 	if stages == nil {
 		return nil
@@ -81,13 +85,26 @@ func searchRootStage(stage ...Stage) []Stage {
 	return rootStages
 }
 
-func Pipeline(ctx context.Context, stages ...Stage) error {
+func skipStatus(stages []Stage) {
+	for i := 0; i < len(stages); i++ {
+		stages[i].SkipStatus()
+	}
+}
+
+func NewPipeline() *Pipeline {
+	return &Pipeline{}
+}
+
+func (p *Pipeline) Error() error {
+	return p.err
+}
+
+func (p *Pipeline) Do(ctx context.Context, stages ...Stage) *Pipeline {
+	skipStatus(stages)
 	deps := make(map[string]Stage)
 	scanPipeline(&deps, searchRootStage(stages...)...)
 	wg := sync.WaitGroup{}
-	var err error
-	runStages(&wg, ctx, &deps, &err, &sync.Mutex{}, stages...)
+	runStages(&wg, ctx, &deps, &p.err, &sync.Mutex{}, stages...)
 	wg.Wait()
-
-	return err
+	return p
 }

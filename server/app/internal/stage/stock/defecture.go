@@ -8,6 +8,7 @@ import (
 )
 
 type defectureService interface {
+	CalcDefFor30(day time.Time) error
 }
 
 type DefectureStep struct {
@@ -27,6 +28,5 @@ func (d *DefectureStep) Do(ctx context.Context, deps *map[string]pipeline.Stage,
 	}
 	status := ps.GetStatus()
 	date := status.Value.(time.Time)
-	println("defecture", date.Format("2006-01-02"))
-	return nil, nil
+	return nil, d.service.CalcDefFor30(date)
 }

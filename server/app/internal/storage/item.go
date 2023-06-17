@@ -2,19 +2,25 @@ package storage
 
 import (
 	"github.com/yoda/common/pkg/model"
-	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 func SaveOrUpdateItem(items *[]model.Item) error {
 	initIfError()
-	return repository.db.Transaction(func(tx *gorm.DB) error {
-		for _, item := range *items {
-			if err := tx.Where(`"id" =?`, item.ID).Assign(item).FirstOrCreate(&item).Error; err != nil {
-				return err
-			}
-		}
-		return nil
-	})
+	tx := repository.db.Clauses(
+		clause.OnConflict{
+			Columns:   []clause.Column{{Name: "id"}},
+			DoNothing: true,
+		}).CreateInBatches(items, len(*items))
+	return tx.Error
+	//return repository.db.Transaction(func(tx *gorm.DB) error {
+	//	for _, item := range *items {
+	//		if err := tx.Where(`"id" =?`, item.ID).Assign(item).FirstOrCreate(&item).Error; err != nil {
+	//			return err
+	//		}
+	//	}
+	//	return nil
+	//})
 }
 
 func GetItemCount() int {

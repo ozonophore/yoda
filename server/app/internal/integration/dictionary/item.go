@@ -41,6 +41,7 @@ func UpdateItems() error {
 		return errors.New("invalid response")
 	}
 	if result.Count == 0 {
+		logrus.Error("Items count is 0")
 		return nil
 	}
 	actualCount := storage.GetItemCount()

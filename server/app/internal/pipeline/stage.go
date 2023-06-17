@@ -57,18 +57,18 @@ type SimpleStage struct {
 	next        []Stage     `json:"next"`
 	prev        []Stage     `json:"prev"`
 	condition   string      `json:"condition"`
-	subscribers []*Subscriber
+	subscribers []Subscriber
 }
 
-func NewSimpleStage(runner StageRunner) Stage {
+func NewSimpleStage(runner StageRunner) *SimpleStage {
 	return NewSimpleStageWithTag(runner, "")
 }
 
-func NewSimpleStageWithTag(runner StageRunner, tag string) Stage {
+func NewSimpleStageWithTag(runner StageRunner, tag string) *SimpleStage {
 	return NewSimpleStageWithCondition(runner, tag, RunOnSuccess)
 }
 
-func NewSimpleStageWithCondition(runner StageRunner, tag, condition string) Stage {
+func NewSimpleStageWithCondition(runner StageRunner, tag, condition string) *SimpleStage {
 	return &SimpleStage{
 		Runner: runner,
 		status: StageResult{
@@ -88,7 +88,7 @@ func (s *SimpleStage) MarshalJSON() ([]byte, error) {
 	})
 }
 
-func (s *SimpleStage) AddSubscriber(subscriber *Subscriber) {
+func (s *SimpleStage) AddSubscriber(subscriber Subscriber) {
 	s.subscribers = append(s.subscribers, subscriber)
 }
 
@@ -178,7 +178,7 @@ func (s *SimpleStage) notificationBeforeDo(ctx context.Context, runner StageRunn
 		return
 	}
 	for _, ss := range s.subscribers {
-		(*ss).OnBeforeRun(ctx, runner, tag, deps)
+		ss.OnBeforeRun(ctx, runner, tag, deps)
 	}
 }
 
@@ -187,7 +187,7 @@ func (s *SimpleStage) notificationAfterDo(ctx context.Context, runner StageRunne
 		return
 	}
 	for _, ss := range s.subscribers {
-		(*ss).OnAfterRun(ctx, runner, tag, deps, err)
+		ss.OnAfterRun(ctx, runner, tag, deps, err)
 	}
 }
 

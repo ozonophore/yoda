@@ -1,0 +1,1 @@
+create sequence ml.log_id_seq;

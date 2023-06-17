@@ -9,6 +9,7 @@ import (
 	"github.com/yoda/app/internal/event"
 	"github.com/yoda/app/internal/integration"
 	"github.com/yoda/app/internal/integration/dictionary"
+	"github.com/yoda/app/internal/logging"
 	"github.com/yoda/app/internal/pipeline"
 	service "github.com/yoda/app/internal/service/stock"
 	"github.com/yoda/app/internal/stage/stock"
@@ -78,6 +79,10 @@ func initLogging(config *configuration.Config) {
 func startStockAggregator(db *gorm.DB, sch *gocron.Scheduler) {
 	rep := storage.NewRepository(db)
 	j, err := rep.GetJob(2)
+	if !j.IsActive {
+		logrus.Infof("Job with tag(%d) is not active", 2)
+		return
+	}
 	if err != nil {
 		logrus.Panicf("Error while getting job(%d): %v", 2, err)
 	}
@@ -98,11 +103,14 @@ func startStockAggregator(db *gorm.DB, sch *gocron.Scheduler) {
 		}
 	}
 	srv := service.NewStockService(rep)
+	interceptor := logging.NewInterceptor(logrus.New())
 	step := stock.NewDailyStep(srv)
 	stage := pipeline.NewSimpleStageWithTag(step, "stock-daily-aggregator")
+	stage.AddSubscriber(interceptor)
 	stage.AddNext(pipeline.NewSimpleStageWithTag(stock.NewDefectureStep(srv), "stock-defecture-aggregator"))
 	sj, err := sch.Every(1).Day().At(atTime).Tag("2").Do(func() {
-		err := pipeline.Pipeline(context.Background(), stage)
+		pipe := pipeline.NewPipeline()
+		err := pipe.Do(context.Background(), stage).Error()
 		if err != nil {
 			logrus.Errorf("Error while running stock aggregator: %v", err)
 		}
@@ -115,5 +123,4 @@ func startStockAggregator(db *gorm.DB, sch *gocron.Scheduler) {
 	}, func() {
 		logrus.Infof("Job with tag(%d) is done. Next run: %s", 2, sj.NextRun().UTC())
 	})
-
 }
