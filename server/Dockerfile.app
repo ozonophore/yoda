@@ -15,7 +15,7 @@ WORKDIR /app/app
 RUN make build
 
 ## Deploy
-FROM amd64/ubuntu:lates
+FROM amd64/ubuntu:latest
 
 WORKDIR /app
 
