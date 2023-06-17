@@ -126,11 +126,13 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-      - name: Get Previous tag
+      - name: 'Get Previous tag'
         id: previoustag
-        uses: WyriHaximus/github-action-get-previous-tag@v1
+        uses: "WyriHaximus/github-action-get-previous-tag@v1"
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
         with:
-          pattern: 'v*'
+          prefix: "v"
       - name: Echo previous version
         run: echo ${{ steps.previoustag.outputs.tag }}
       - uses: actions-ecosystem/action-get-latest-tag@v1.6.0
