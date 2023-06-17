@@ -88,8 +88,9 @@ func (s *SimpleStage) MarshalJSON() ([]byte, error) {
 	})
 }
 
-func (s *SimpleStage) AddSubscriber(subscriber Subscriber) {
+func (s *SimpleStage) AddSubscriber(subscriber Subscriber) *SimpleStage {
 	s.subscribers = append(s.subscribers, subscriber)
+	return s
 }
 
 func (s *SimpleStage) SkipStatus() bool {

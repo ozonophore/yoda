@@ -22,5 +22,5 @@ func (s *StockService) CalcAggrByDay(day time.Time) error {
 }
 
 func (s *StockService) CalcDefFor30(day time.Time) error {
-	return nil
+	return s.dao.CalcDefFor30(day)
 }
