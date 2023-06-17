@@ -157,7 +157,7 @@ jobs:
           push: true
           tags: ghcr.io/${{ github.actor }}/yoda-app:latest,ghcr.io/${{ github.actor }}/yoda-app:${{ steps.get-version.outputs.substring }}
   release:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     needs:
       - migration
       - website
