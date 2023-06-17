@@ -15,7 +15,7 @@ WORKDIR /app/app
 RUN make build
 
 ## Deploy
-FROM centos:7
+FROM amd64/ubuntu:lates
 
 WORKDIR /app
 
