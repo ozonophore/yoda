@@ -159,9 +159,9 @@ jobs:
   release:
     runs-on: ubuntu-20.04
     needs:
-      - migration
-      - website
-      - web
+#      - migration
+#      - website
+#      - web
       - app
     steps:
       - name: Checkout code
