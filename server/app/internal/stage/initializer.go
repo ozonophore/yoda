@@ -122,10 +122,6 @@ func (s *Initializer) createJobWeekdaysAndAtTime(tag, atTime string, weekDays []
 }
 
 func (s *Initializer) Do(jobId int) error {
-	stage, err := s.stageFactory.CreateStage(jobId)
-	if err != nil {
-		return fmt.Errorf("error while creating stage for job(%d): %v", jobId, err)
-	}
 	ok, weekdays, atTime, err := s.check(jobId)
 	if err != nil {
 		return fmt.Errorf("error while checking job(%d): %v", jobId, err)
@@ -133,6 +129,10 @@ func (s *Initializer) Do(jobId int) error {
 	if !ok {
 		logrus.Debugf("Cehck was failed for job(%d) weekdays(%s) and atTime(%s)", jobId, *weekdays, *atTime)
 		return nil
+	}
+	stage, err := s.stageFactory.CreateStage(jobId)
+	if err != nil {
+		return fmt.Errorf("error while creating stage for job(%d): %v", jobId, err)
 	}
 	tag := fmt.Sprintf("%d", jobId)
 	var job *gocron.Job
