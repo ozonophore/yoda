@@ -95,7 +95,7 @@ func (c *WBService) extractOrdersAndSales(ctx context.Context, transactionID int
 	}
 
 	startDate = time.Now().AddDate(0, 0, 1).UTC()
-	sinceDate = startDate.AddDate(0, 0, -1*c.config.Order.LoadedDays).UTC()
+	sinceDate = startDate.AddDate(0, 0, -14).UTC()
 	for {
 		logrus.Debugf("Orders since date: %s", sinceDate.String())
 		orders, err := c.callOrders(clnt, sinceDate)
@@ -103,7 +103,7 @@ func (c *WBService) extractOrdersAndSales(ctx context.Context, transactionID int
 			return err
 		}
 		start := time.Now()
-		newOrders, _, err := mapper.MapOrderArray(orders, transactionID, source, c.ownerCode, func(item *int64) bool {
+		newOrders, lastChangeDate, err := mapper.MapOrderArray(orders, transactionID, source, c.ownerCode, func(item *int64) bool {
 			return c.salesSet[*item]
 		})
 		if err != nil {
@@ -116,14 +116,10 @@ func (c *WBService) extractOrdersAndSales(ctx context.Context, transactionID int
 			return err
 		}
 		logrus.Debugf("Orders count: %d", count)
-		//if len(*orders) < 10000 {
-		//	break
-		//}
-		//sinceDate = lastChangeDate.Add(time.Second)
-		sinceDate = sinceDate.AddDate(0, 0, 1).UTC()
-		if sinceDate.After(startDate) {
+		if len(*orders) < 10000 {
 			break
 		}
+		sinceDate = lastChangeDate.Add(time.Second)
 	}
 	return nil
 }
@@ -164,7 +160,7 @@ func (c *WBService) extractSales(ctx context.Context, transactionID int64, clnt 
 }
 
 func (c *WBService) callOrders(client *api.ClientWithResponses, df time.Time) (*[]api.OrdersItem, error) {
-	flag := 1
+	flag := 0
 	var dateFrom = types.CustomTime(df)
 	request := api.GetWBOrdersParams{
 		DateFrom: dateFrom,
