@@ -17,7 +17,8 @@ RUN make build
 ## Deploy
 FROM ubuntu:latest
 
-RUN apt-get add --no-cache tzdata
+RUN apt-get update -y
+RUN apt-get install -y tzdata
 
 WORKDIR /app
 
