@@ -127,9 +127,9 @@ func (s *Initializer) Do(jobId int) error {
 		return fmt.Errorf("error while checking job(%d): %v", jobId, err)
 	}
 	if !ok {
-		logrus.Debugf("Cehck was failed for job(%d) weekdays(%s) and atTime(%s)", jobId, *weekdays, *atTime)
 		return nil
 	}
+	logrus.Debugf("check was passed for job(%d) weekdays(%s) and atTime(%s)", jobId, *weekdays, *atTime)
 	stage, err := s.stageFactory.CreateStage(jobId)
 	if err != nil {
 		return fmt.Errorf("error while creating stage for job(%d): %v", jobId, err)
