@@ -17,7 +17,7 @@ RUN make build
 ## Deploy
 FROM ubuntu:latest
 
-RUN apk add --no-cache tzdata
+RUN apt-get add --no-cache tzdata
 
 WORKDIR /app
 
