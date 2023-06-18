@@ -1,7 +1,7 @@
 BINARY_NAME=app
 build: clean
 	go build -o ./build/${BINARY_NAME}-darwim main.go
-	GOOS=linux GOARCH=amd64 go build -o ./build/${BINARY_NAME}-amd64-linux main.go
+	GOOS=linux CGO_ENABLED=0 GOARCH=amd64 go build -o ./build/${BINARY_NAME}-amd64-linux main.go
 run:
 	go run main.go -c config.app.yml
 #go mod tidy
