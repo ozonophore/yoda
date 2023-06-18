@@ -95,7 +95,7 @@ func (c *WBService) extractOrdersAndSales(ctx context.Context, transactionID int
 	}
 
 	startDate = time.Now().AddDate(0, 0, 1).UTC()
-	sinceDate = startDate.AddDate(0, 0, -14).UTC()
+	sinceDate = startDate.AddDate(0, 0, -1*c.config.Order.LoadedDays).UTC()
 	for {
 		logrus.Debugf("Orders since date: %s", sinceDate.String())
 		orders, err := c.callOrders(clnt, sinceDate)
@@ -116,7 +116,7 @@ func (c *WBService) extractOrdersAndSales(ctx context.Context, transactionID int
 			return err
 		}
 		logrus.Debugf("Orders count: %d", count)
-		if len(*orders) < 10000 {
+		if len(*orders) < 70000 {
 			break
 		}
 		sinceDate = lastChangeDate.Add(time.Second)
@@ -168,15 +168,27 @@ func (c *WBService) callOrders(client *api.ClientWithResponses, df time.Time) (*
 	}
 	logrus.Debugf("Request to wb by date: %s", dateFrom.String())
 	ctx, _ := context.WithTimeout(context.Background(), time.Duration(c.config.Timeout)*time.Second)
-	response, err := client.GetWBOrdersWithResponse(ctx, &request)
-	if err != nil {
-		return nil, err
+	attemption := 3
+	sleepTime := 30 * time.Second
+	for {
+		response, err := client.GetWBOrdersWithResponse(ctx, &request)
+		if err != nil {
+			return nil, err
+		}
+		if response.StatusCode() == 429 {
+			attemption--
+			if attemption != 0 {
+				time.Sleep(sleepTime)
+				logrus.Debugf("response status: %d, sleep %s", response.StatusCode(), sleepTime.String())
+				continue
+			}
+		}
+		if response.StatusCode() != 200 {
+			return nil, errors.New(fmt.Sprintf("Response status : %d msg: %s", response.StatusCode(), response.Status()))
+		}
+		orders := response.JSON200
+		return orders, err
 	}
-	if response.StatusCode() != 200 {
-		return nil, errors.New(fmt.Sprintf("Response status : %d msg: %s", response.StatusCode(), response.Status()))
-	}
-	orders := response.JSON200
-	return orders, err
 }
 
 func (c *WBService) prepareStocks(length int, items []api.StocksItem, transactionId int64, source string, ownerCode string) ([]model.StockItem, error) {
