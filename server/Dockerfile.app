@@ -15,7 +15,9 @@ WORKDIR /app/app
 RUN make build
 
 ## Deploy
-FROM alpine:latest
+FROM ubuntu:latest
+
+RUN apk add --no-cache tzdata
 
 WORKDIR /app
 
