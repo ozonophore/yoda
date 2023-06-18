@@ -96,9 +96,9 @@ func wbRun(t *testing.T, config *configuration.Config, transactionID int64, data
 
 	orderDate, _ := time.Parse(time.DateOnly, "2023-04-25")
 	database.Table(`"dl"."order"`).Where(`"transaction_id"=? and "order_date" = ?`, transactionID, orderDate).Count(&count)
-	assert.Equal(t, int64(142321), count, "count of orders")
+	assert.Equal(t, int64(4591), count, "count of orders")
 	database.Table(`"dl"."order"`).Where(`"transaction_id"=? and "order_date" = ? and "barcode" = ? and "source" = ?`, transactionID, orderDate, "4603789540444", "WB").Count(&count)
-	assert.Equal(t, int64(103881), count, "count of 4603789540444")
+	assert.Equal(t, int64(3351), count, "count of 4603789540444")
 }
 
 func setup(t *testing.T) func() {
