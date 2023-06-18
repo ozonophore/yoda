@@ -15,7 +15,7 @@ WORKDIR /app/app
 RUN make build
 
 ## Deploy
-FROM centos
+FROM alpine:latest
 
 WORKDIR /app
 
