@@ -15,10 +15,7 @@ WORKDIR /app/app
 RUN make build
 
 ## Deploy
-FROM ubuntu:latest
-
-RUN apt-get update -y
-RUN apt-get install -y tzdata
+FROM centos:7
 
 WORKDIR /app
 
