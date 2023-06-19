@@ -23,8 +23,8 @@ func (s *Repository) CallDailyAggr(day time.Time) error {
 	return nil
 }
 
-func (s *Repository) CalcDefFor30(day time.Time) error {
-	err := s.db.Exec("call dl.calc_stock_def30_by_day(?)", day).Error
+func (s *Repository) CalcDef(day time.Time) error {
+	err := s.db.Exec("call dl.calc_stock_def_by_day(?)", day).Error
 	if err != nil {
 		return fmt.Errorf("call calc_stock_daily_by_day with date %s error: %w", day, err)
 	}

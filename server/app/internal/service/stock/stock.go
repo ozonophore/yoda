@@ -4,7 +4,7 @@ import "time"
 
 type stockDAOInterface interface {
 	CallDailyAggr(day time.Time) error
-	CalcDefFor30(day time.Time) error
+	CalcDef(day time.Time) error
 }
 
 type StockService struct {
@@ -21,6 +21,6 @@ func (s *StockService) CalcAggrByDay(day time.Time) error {
 	return s.dao.CallDailyAggr(day)
 }
 
-func (s *StockService) CalcDefFor30(day time.Time) error {
-	return s.dao.CalcDefFor30(day)
+func (s *StockService) CalcDef(day time.Time) error {
+	return s.dao.CalcDef(day)
 }
