@@ -31,6 +31,14 @@ func (s *Repository) CalcDef(day time.Time) error {
 	return nil
 }
 
+func (s *Repository) CalcReport(day time.Time) error {
+	err := s.db.Exec("call dl.calc_sales_stock_by_day(?)", day).Error
+	if err != nil {
+		return fmt.Errorf("call calc_sales_stock_by_day with date %s error: %w", day, err)
+	}
+	return nil
+}
+
 func (s *Repository) GetJob(id int) (*model.Job, error) {
 	var job model.Job
 	err := s.db.Where(`"id"=?`, id).First(&job).Error

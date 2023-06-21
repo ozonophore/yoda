@@ -105,9 +105,12 @@ func startStockAggregator(db *gorm.DB, sch *gocron.Scheduler) {
 	srv := service.NewStockService(rep)
 	interceptor := logging.NewInterceptor(logrus.StandardLogger())
 	step := stock.NewDailyStep(srv)
-	stage := pipeline.NewSimpleStageWithTag(step, "stock-daily-aggregator")
-	stage.AddSubscriber(interceptor)
-	stage.AddNext(pipeline.NewSimpleStageWithTag(stock.NewDefectureStep(srv), "stock-defecture-aggregator").AddSubscriber(interceptor))
+	stage := pipeline.NewSimpleStageWithTag(step, "stock-daily-aggregator").AddSubscriber(interceptor)
+	defStage := pipeline.NewSimpleStageWithTag(stock.NewDefectureStep(srv), "stock-defecture-aggregator").AddSubscriber(interceptor)
+	stage.AddNext(defStage)
+	repStage := pipeline.NewSimpleStageWithTag(stock.NewReportStep(srv), "stock-report-aggregator").AddSubscriber(interceptor)
+	defStage.AddNext(repStage)
+
 	sj, err := sch.Every(1).Day().At(atTime).Tag("2").Do(func() {
 		pipe := pipeline.NewPipeline()
 		err := pipe.Do(context.Background(), stage).Error()
