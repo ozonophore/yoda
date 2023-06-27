@@ -21,6 +21,6 @@ func NewDailyStep(service dailyService) *DailyStep {
 }
 
 func (d *DailyStep) Do(ctx context.Context, deps *map[string]pipeline.Stage, e error) (interface{}, error) {
-	day := time.Now().UTC().Truncate(24*time.Hour).AddDate(0, 0, -1)
+	day := time.Now().UTC().Truncate(24 * time.Hour)
 	return day, d.service.CalcAggrByDay(day)
 }

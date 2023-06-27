@@ -6,6 +6,7 @@ import (
 	"github.com/yoda/common/pkg/types"
 	"github.com/yoda/common/pkg/utils"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -20,7 +21,7 @@ func MapStockItem(s *api.StocksItem) (*model.StockItem, error) {
 		LastChangeTime:   *changeDate,
 		SupplierArticle:  s.SupplierArticle,
 		Barcode:          s.Barcode,
-		WarehouseName:    *s.WarehouseName,
+		WarehouseName:    strings.ToUpper(*s.WarehouseName),
 		ExternalCode:     &externalCode,
 		Subject:          s.Subject,
 		Category:         s.Category,
@@ -49,7 +50,7 @@ func MapRowItem(s *api.RowItem, d *time.Time) (*model.StockItem, error) {
 		LastChangeTime:   *d,
 		SupplierArticle:  s.ItemCode,
 		Barcode:          nil,
-		WarehouseName:    *s.WarehouseName,
+		WarehouseName:    strings.ToUpper(*s.WarehouseName),
 		ExternalCode:     &externalCode,
 		Name:             s.ItemName,
 		Category:         nil,

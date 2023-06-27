@@ -5,6 +5,7 @@ import (
 	"github.com/yoda/app/internal/api"
 	"github.com/yoda/common/pkg/model"
 	"github.com/yoda/common/pkg/utils"
+	"strings"
 	"time"
 )
 
@@ -21,6 +22,11 @@ func MapSale(s api.SalesItem, transactionId int64, source *string, ownerCode str
 	date, _ := time.Parse(time.DateOnly+"T"+time.TimeOnly, *s.Date)
 	isStorno := utils.IntToBoolean(s.IsStorno)
 	externalCode := fmt.Sprintf("%d", s.NmId)
+	var warehouse *string
+	if s.WarehouseName != nil {
+		s := strings.ToUpper(*s.WarehouseName)
+		warehouse = &s
+	}
 	return &model.Sale{
 		TransactionID:     transactionId,
 		TransactionDate:   time.Now(),
@@ -38,7 +44,7 @@ func MapSale(s api.SalesItem, transactionId int64, source *string, ownerCode str
 		IsSupply:          s.IsSupply,
 		IsRealization:     s.IsRealization,
 		PromoCodeDiscount: s.PromoCodeDiscount,
-		WarehouseName:     s.WarehouseName,
+		WarehouseName:     warehouse,
 		CountryName:       s.CountryName,
 		OblastOkrugName:   s.OblastOkrugName,
 		RegionName:        s.RegionName,
