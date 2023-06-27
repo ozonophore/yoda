@@ -5,6 +5,7 @@ import (
 	"github.com/yoda/app/internal/api"
 	"github.com/yoda/common/pkg/types"
 	"github.com/yoda/common/pkg/utils"
+	"strings"
 	"testing"
 	"time"
 )
@@ -165,7 +166,7 @@ func TestMapSale(t *testing.T) {
 	if *target.TotalPrice != *s.TotalPrice {
 		t.Errorf("MapSale() = %v, want %v", target.TotalPrice, *s.TotalPrice)
 	}
-	if *target.WarehouseName != *s.WarehouseName {
+	if *target.WarehouseName != strings.ToUpper(*s.WarehouseName) {
 		t.Errorf("MapSale() = %v, want %v", target.WarehouseName, *s.WarehouseName)
 	}
 }
