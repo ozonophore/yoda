@@ -5,6 +5,7 @@ import (
 	"github.com/yoda/app/internal/api"
 	"github.com/yoda/common/pkg/types"
 	"github.com/yoda/common/pkg/utils"
+	"strings"
 	"testing"
 	"time"
 )
@@ -89,7 +90,7 @@ func TestMapStockItem(t *testing.T) {
 	if *r.TechSize != *s.TechSize {
 		t.Fatalf("TechSize is not equal")
 	}
-	if r.WarehouseName != *s.WarehouseName {
+	if r.WarehouseName != strings.ToUpper(*s.WarehouseName) {
 		t.Fatalf("WarehouseName is not equal")
 	}
 }
