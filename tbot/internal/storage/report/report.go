@@ -31,4 +31,5 @@ type Report struct {
 	ItemName        string    `gorm:"column:item_name"`
 	MarketplaceId   string    `gorm:"column:marketplace_id"`
 	OrgId           string    `gorm:"column:org_id"`
+	Quantity        int64     `gorm:"column:quantity"`
 }

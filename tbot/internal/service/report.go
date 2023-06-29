@@ -12,6 +12,7 @@ func getHeaders() []string {
 		"Площадка",
 		"Код склада",
 		"ID товара",
+		"Наименование",
 		"Артикул",
 		"Артикул 1С",
 		"Наименование",
@@ -27,7 +28,7 @@ func getHeaders() []string {
 		"Прогноз продаж на 30 дней, шт",
 		"В поставке, шт",
 		"Нужно поставить, шт",
-		"Наименование",
+		"Текущий остаток товара, шт",
 	}
 }
 
@@ -68,22 +69,23 @@ func (r *ReportService) Print(date time.Time, finaName string) error {
 		f.SetCellValue("Sheet1", fmt.Sprintf("B%d", index+3), report.Source)
 		f.SetCellValue("Sheet1", fmt.Sprintf("C%d", index+3), report.WarehouseName)
 		f.SetCellValue("Sheet1", fmt.Sprintf("D%d", index+3), report.ExternalCode)
-		f.SetCellValue("Sheet1", fmt.Sprintf("E%d", index+3), report.SupplierArticle)
-		f.SetCellValue("Sheet1", fmt.Sprintf("F%d", index+3), report.ItemId)
-		f.SetCellValue("Sheet1", fmt.Sprintf("G%d", index+3), "")
-		f.SetCellValue("Sheet1", fmt.Sprintf("H%d", index+3), report.Barcode)
-		f.SetCellValue("Sheet1", fmt.Sprintf("I%d", index+3), "")
+		f.SetCellValue("Sheet1", fmt.Sprintf("E%d", index+3), report.ItemName)
+		f.SetCellValue("Sheet1", fmt.Sprintf("F%d", index+3), report.SupplierArticle)
+		f.SetCellValue("Sheet1", fmt.Sprintf("G%d", index+3), report.ItemId)
+		f.SetCellValue("Sheet1", fmt.Sprintf("H%d", index+3), "")
+		f.SetCellValue("Sheet1", fmt.Sprintf("I%d", index+3), report.Barcode)
 		f.SetCellValue("Sheet1", fmt.Sprintf("J%d", index+3), "")
-		f.SetCellValue("Sheet1", fmt.Sprintf("K%d", index+3), report.Quantity30)
-		f.SetCellValue("Sheet1", fmt.Sprintf("L%d", index+3), report.Quantity5)
-		f.SetCellValue("Sheet1", fmt.Sprintf("M%d", index+3), "")
-		f.SetCellValue("Sheet1", fmt.Sprintf("N%d", index+3), report.Def30)
-		f.SetCellValue("Sheet1", fmt.Sprintf("O%d", index+3), report.Def5)
-		f.SetCellValue("Sheet1", fmt.Sprintf("P%d", index+3), "")
-		f.SetCellValue("Sheet1", fmt.Sprintf("Q%d", index+3), report.ForecastOrder30)
-		f.SetCellValue("Sheet1", fmt.Sprintf("R%d", index+3), "")
+		f.SetCellValue("Sheet1", fmt.Sprintf("K%d", index+3), "")
+		f.SetCellValue("Sheet1", fmt.Sprintf("L%d", index+3), report.Quantity30)
+		f.SetCellValue("Sheet1", fmt.Sprintf("M%d", index+3), report.Quantity5)
+		f.SetCellValue("Sheet1", fmt.Sprintf("N%d", index+3), "")
+		f.SetCellValue("Sheet1", fmt.Sprintf("O%d", index+3), report.Def30)
+		f.SetCellValue("Sheet1", fmt.Sprintf("P%d", index+3), report.Def5)
+		f.SetCellValue("Sheet1", fmt.Sprintf("Q%d", index+3), "")
+		f.SetCellValue("Sheet1", fmt.Sprintf("R%d", index+3), report.ForecastOrder30)
 		f.SetCellValue("Sheet1", fmt.Sprintf("S%d", index+3), "")
-		f.SetCellValue("Sheet1", fmt.Sprintf("T%d", index+3), report.ItemName)
+		f.SetCellValue("Sheet1", fmt.Sprintf("T%d", index+3), "")
+		f.SetCellValue("Sheet1", fmt.Sprintf("U%d", index+3), report.Quantity)
 	}
 	f.SetSheetName("Sheet1", fmt.Sprintf(`Отчет %s`, date.Format("02.01.2006")))
 	// Set active sheet of the workbook.
