@@ -158,12 +158,50 @@ jobs:
           file: ./server/Dockerfile.app
           push: true
           tags: ghcr.io/${{ github.actor }}/yoda-app:latest,ghcr.io/${{ github.actor }}/yoda-app:${{ steps.get-version.outputs.substring }}
+  tbot:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - uses: ozonophore/action-get-latest-tag@v1.6.1
+        id: get-latest-tag
+        with:
+          semver_only: true
+      - name: Echo current version
+        run: echo ${{ steps.get-latest-tag.outputs.tag }}
+      - uses: actions-ecosystem/action-bump-semver@v1
+        id: bump-semver
+        with:
+          current_version: ${{ steps.get-latest-tag.outputs.tag }}
+          level: patch
+      - uses: bhowell2/github-substring-action@v1.0.0
+        name: Get the version number
+        id: get-version
+        with:
+          value: ${{ steps.bump-semver.outputs.new_version }}
+          index_of_str: v
+      - name: Echo new version
+        run: echo ${{ steps.get-version.outputs.substring }}
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push app
+        uses: docker/build-push-action@v4
+        with:
+          context: ./tbot
+          file: ./tbot/Dockerfile
+          push: true
+          tags: ghcr.io/${{ github.actor }}/yoda-tbot:latest,ghcr.io/${{ github.actor }}/yoda-tbot:${{ steps.get-version.outputs.substring }}
   release:
     runs-on: ubuntu-20.04
     needs:
 #      - migration
 #      - website
 #      - web
+      - tbot
       - app
     steps:
       - name: Checkout code

@@ -1,0 +1,18 @@
+version: "3"
+services:
+
+  tbot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: on-failure
+    environment:
+      - YODA_TOKEN=5912839636:AAHa3HGr2eJCUGf6KzrmxCcys1tsGAcmE6I
+      - YODA_DATABASE_DSN=postgresql://user:password@212.48.159.224:5432/db
+      - YODA_LOGGING_LEVEL=debug
+    networks:
+      - default
+
+networks:
+  default:
+    driver: bridge

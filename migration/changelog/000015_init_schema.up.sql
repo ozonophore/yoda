@@ -6,6 +6,10 @@ create table dl.sales_stock(
                                barcode varchar(50),
                                warehouse_name varchar(50),
                                external_code varchar(50),
+                               item_id varchar(36),
+                               item_name varchar(255),
+                               marketplace_id varchar(36),
+                               org_id varchar(36),
                                def30 numeric(10),
                                days_in_stock30 numeric(10),
                                def5 numeric(10),
@@ -87,7 +91,9 @@ if v_count > 0 then
         return;
 end if;
 select max(id) into v_t_id from ml.transaction where date_trunc('day', "start_date") = v_day;
-insert into dl.sales_stock(report_date, source, owner_code, supplier_article, barcode, warehouse_name, external_code, def30, days_in_stock30, def5, days_in_stock5, avg_price, min_price, max_price, quantity30, quantity5, order_by_day30, forecast_order30, order_by_day5, forecast_order5)
+insert into dl.sales_stock(report_date, source, owner_code, supplier_article, barcode, warehouse_name, external_code, def30, days_in_stock30, def5, days_in_stock5, avg_price, min_price,
+                           max_price, quantity30, quantity5, order_by_day30, forecast_order30, order_by_day5, forecast_order5,
+                           item_id, item_name, marketplace_id, org_id)
 select
     sd.stock_date report_date
      ,sd.source
@@ -109,6 +115,10 @@ select
      ,case when sd.def30 = 30 then 0 else (oo.quantity30 * 30) / (30 - sd.def30) end forecast_order30
      ,case when sd.def5 = 5 then 0 else oo.quantity5 / (5 - sd.def5)  end order_by_day5
      ,case when sd.def5 = 5 then 0 else (oo.quantity5 * 5) / (5 - sd.def5)  end forecast_order5
+     ,sd.item_id
+     ,sd.item_name
+     ,sd.marketplace_id
+     ,sd.org_id
 from dl.stock_def sd
          left outer join
      (select owner_code, source, warehouse_name, external_code, sum(total_price) total_price, sum(price_with_discount) price_with_discount,
@@ -122,3 +132,5 @@ from dl.stock_def sd
 where sd.stock_date=v_day;
 end
 $$;
+
+create index stock_daily_dwosec on dl.stock_daily(stock_date,source,owner_code,warehouse,external_code);
