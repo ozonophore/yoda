@@ -56,6 +56,13 @@ func ifBool(b bool) string {
 	return "Нет"
 }
 
+func ifString(s *string) string {
+	if s == nil {
+		return ""
+	}
+	return *s
+}
+
 func (r *ReportService) Print(date time.Time, finaName string) error {
 	f := excelize.NewFile()
 	defer func() {
@@ -94,7 +101,7 @@ func (r *ReportService) Print(date time.Time, finaName string) error {
 		f.SetCellValue("Sheet1", fmt.Sprintf("S%d", index+3), "")
 		f.SetCellValue("Sheet1", fmt.Sprintf("T%d", index+3), "")
 		f.SetCellValue("Sheet1", fmt.Sprintf("U%d", index+3), report.Quantity)
-		f.SetCellValue("Sheet1", fmt.Sprintf("V%d", index+3), report.Cluster)
+		f.SetCellValue("Sheet1", fmt.Sprintf("V%d", index+3), ifString(report.Cluster))
 	}
 	f.SetSheetName("Sheet1", fmt.Sprintf(`Отчет %s`, date.Format("02.01.2006")))
 	// Set active sheet of the workbook.
