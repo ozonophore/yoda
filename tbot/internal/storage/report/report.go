@@ -33,4 +33,5 @@ type Report struct {
 	OrgId           string    `gorm:"column:org_id"`
 	Quantity        int64     `gorm:"column:quantity"`
 	IsExcluded      bool      `gorm:"column:is_excluded"`
+	Cluster         *string   `gorm:"column:cluster"`
 }

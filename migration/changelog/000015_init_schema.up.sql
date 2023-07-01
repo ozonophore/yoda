@@ -121,7 +121,7 @@ select
      ,s.name item_name
      ,s.marketplace_id marketplace_id
      ,s.organisation_id org_id
-     ,case when ei.barcode != null then true else false end is_exclud
+     ,case when ei.barcode is null then false else true end is_exclud
 from dl.stock_def sd
     left outer join (select o.code owner_code, m.code source, item_id, barcode_id, barcode, b.organisation_id,b.marketplace_id, i.name from dl.barcode b
     inner join dl.item i on i.id = b.item_id
@@ -165,3 +165,9 @@ alter table exclud_item owner to "user";
 
 create unique index idx_exclud_item
     on exclud_item (source, owner_code, barcode);
+
+create table dl.warehouse (
+  code varchar(50) not null primary key,
+  cluster varchar(50) not null,
+  source varchar(10) not null
+);

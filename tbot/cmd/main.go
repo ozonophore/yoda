@@ -8,9 +8,12 @@ import (
 	"github.com/yoda/tnot/internal/storage"
 	"os"
 	"os/signal"
+	"time"
 )
 
 func main() {
+	println(time.Now().AddDate(0, 0, -1).Format("2006-01-02"))
+	os.Exit(0)
 	config := configuration.InitConfig("config.yml")
 	repository := storage.NewRepository(config.Database)
 	reportService := service.NewReportService(repository)
