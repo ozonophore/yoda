@@ -59,3 +59,20 @@ func (r *Repository) GetReport(date time.Time) (*[]report.Report, error) {
 	}
 	return &reports, nil
 }
+
+func (r *Repository) AddGroup(userName, groupName string, chatId int64) error {
+	return r.db.Exec(`INSERT INTO ml."tg_group" ("user_name", "group_name", "chat_id") VALUES (?, ?, ?)`, userName, groupName, chatId).Error
+}
+
+func (r *Repository) DeleteGroup(userName, groupName string) error {
+	return r.db.Exec(`DELETE FROM ml."tg_group" WHERE "user_name" = ? AND "group_name" = ?`, userName, groupName).Error
+}
+
+func (r *Repository) GetChatIds() (*[]int64, error) {
+	var values []int64
+	err := r.db.Raw(`SELECT "chat_id" FROM ml."tg_group"`).Scan(&values).Error
+	if err != nil {
+		return nil, err
+	}
+	return &values, nil
+}

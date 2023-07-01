@@ -6,7 +6,9 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/sirupsen/logrus"
 	"os"
+	"path"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -14,7 +16,13 @@ type reportInterface interface {
 	Print(date time.Time, finaName string) error
 }
 
+type repositoryInterface interface {
+	AddGroup(userName, groupName string, chatId int64) error
+	DeleteGroup(userName, groupName string) error
+}
+
 var (
+	mutax = &sync.Mutex{}
 	// Menu texts
 	firstMenu  = "<b>Menu</b>\n\nОтчет."
 	secondMenu = "<b>Menu 2</b>\n\nA better menu with even more shiny inline buttons."
@@ -29,9 +37,11 @@ var (
 	threeDaysAgoButton = "3 дня назад"
 
 	// Store bot screaming status
-	screaming = false
-	bot       *tgbotapi.BotAPI
-	service   reportInterface
+	screaming  = false
+	bot        *tgbotapi.BotAPI
+	service    reportInterface
+	repository repositoryInterface
+	baseDir    string
 
 	// Keyboard layout for the first menu. One button, one row
 	firstMenuMarkup = tgbotapi.NewInlineKeyboardMarkup(
@@ -53,9 +63,11 @@ var (
 	)
 )
 
-func StartBot(token string, ctx context.Context, srv reportInterface) {
+func StartBot(token, workDir string, ctx context.Context, srv reportInterface, rep repositoryInterface) {
 	logrus.Info("Starting bot ", token)
+	baseDir = workDir
 	service = srv
+	repository = rep
 	var err error
 	bot, err = tgbotapi.NewBotAPI(token)
 	if err != nil {
@@ -128,19 +140,8 @@ func handleButton(query *tgbotapi.CallbackQuery) {
 	} else {
 		text = "Unknown button"
 	}
-	fileName := fmt.Sprintf(`%s%s.xlsx`, os.TempDir(), date.Format("2006-01-02"))
-	defer func() {
-		os.Remove(fileName)
-	}()
-	err := service.Print(date, fileName)
-	var msg tgbotapi.Chattable
-	if err == nil {
-		doc := tgbotapi.NewDocument(message.Chat.ID, tgbotapi.FilePath(fileName))
-		doc.Caption = text
-		msg = doc
-	} else {
-		msg = tgbotapi.NewMessage(message.Chat.ID, err.Error())
-	}
+
+	msg := createReport(message.Chat.ID, text, date)
 
 	//callbackCfg := tgbotapi.NewCallback(query.ID, "")
 	//bot.Send(callbackCfg)
@@ -149,6 +150,28 @@ func handleButton(query *tgbotapi.CallbackQuery) {
 	//msg := tgbotapi.NewEditMessageTextAndMarkup(message.Chat.ID, message.MessageID, text, markup)
 	//msg.ParseMode = tgbotapi.ModeHTML
 	bot.Send(msg)
+}
+
+func createReport(chatId int64, text string, date time.Time) tgbotapi.Chattable {
+	mutax.Lock()
+	defer mutax.Unlock()
+	fileName := fmt.Sprintf(`%s.xlsx`, date.Format("2006-01-02"))
+	absoluteFilePath := path.Join(baseDir, fileName)
+	_, err := os.Stat(absoluteFilePath)
+	if err != nil && os.IsNotExist(err) {
+		//If file exists
+		err = service.Print(date, absoluteFilePath)
+	}
+
+	var msg tgbotapi.Chattable
+	if err == nil {
+		doc := tgbotapi.NewDocument(chatId, tgbotapi.FilePath(absoluteFilePath))
+		doc.Caption = text
+		msg = doc
+	} else {
+		msg = tgbotapi.NewMessage(chatId, err.Error())
+	}
+	return msg
 }
 
 func handleMessage(message *tgbotapi.Message) {
@@ -163,7 +186,13 @@ func handleMessage(message *tgbotapi.Message) {
 	logrus.Debugf("%s wrote %s", user.FirstName, text)
 
 	var err error
-	if strings.HasPrefix(text, "/") {
+	if message.NewChatMembers != nil {
+		userName := message.NewChatMembers[0].UserName
+		err = handleNewChatMembers(message.Chat.ID, userName, message.Chat.Title)
+	} else if message.LeftChatMember != nil {
+		userName := message.LeftChatMember.UserName
+		err = handleLeftChatMember(message.Chat.ID, userName, message.Chat.Title)
+	} else if strings.HasPrefix(text, "/") {
 		err = handleCommand(message.Chat.ID, text)
 	} else if screaming && len(text) > 0 {
 		msg := tgbotapi.NewMessage(message.Chat.ID, strings.ToUpper(text))
@@ -179,6 +208,22 @@ func handleMessage(message *tgbotapi.Message) {
 	if err != nil {
 		logrus.Errorf("An error occured: %s", err.Error())
 	}
+}
+
+func handleLeftChatMember(chatId int64, userName, groupName string) error {
+	msg := tgbotapi.NewMessage(chatId, "Пока, я буду скучать")
+	repository.DeleteGroup(userName, groupName)
+	_, err := bot.Send(msg)
+	return err
+}
+
+func handleNewChatMembers(chatId int64, userName, groupName string) error {
+	msg := tgbotapi.NewMessage(chatId, fmt.Sprintf("Привет %s, я бот для отчетов", groupName))
+	_, err := bot.Send(msg)
+	if err != nil {
+		return err
+	}
+	return repository.AddGroup(userName, groupName, chatId)
 }
 
 // When we get a command, we react accordingly
@@ -208,4 +253,14 @@ func sendMenu(chatId int64) error {
 	msg.ReplyMarkup = firstMenuMarkup
 	_, err := bot.Send(msg)
 	return err
+}
+
+func Notify(chatIds *[]int64) {
+	if len(*chatIds) == 0 {
+		return
+	}
+	for _, chatId := range *chatIds {
+		msg := createReport(chatId, "Отчет за вчера", time.Now().AddDate(0, 0, -1))
+		bot.Send(msg)
+	}
 }

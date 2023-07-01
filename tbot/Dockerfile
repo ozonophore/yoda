@@ -14,6 +14,8 @@ FROM centos:7
 
 WORKDIR /app
 
+VOLUME /tmp
+
 COPY --from=build /app/build/app-amd64-linux /app/app-amd64-linux
 
 ENTRYPOINT ["/app/app-amd64-linux"]

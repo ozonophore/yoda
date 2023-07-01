@@ -32,4 +32,5 @@ type Report struct {
 	MarketplaceId   string    `gorm:"column:marketplace_id"`
 	OrgId           string    `gorm:"column:org_id"`
 	Quantity        int64     `gorm:"column:quantity"`
+	IsExcluded      bool      `gorm:"column:is_excluded"`
 }

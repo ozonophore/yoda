@@ -48,6 +48,13 @@ func NewReportService(repository reportRepository) *ReportService {
 	return &ReportService{repository: repository}
 }
 
+func ifBool(b bool) string {
+	if b {
+		return "Да"
+	}
+	return "Нет"
+}
+
 func (r *ReportService) Print(date time.Time, finaName string) error {
 	f := excelize.NewFile()
 	defer func() {
@@ -74,7 +81,7 @@ func (r *ReportService) Print(date time.Time, finaName string) error {
 		f.SetCellValue("Sheet1", fmt.Sprintf("G%d", index+3), report.ItemId)
 		f.SetCellValue("Sheet1", fmt.Sprintf("H%d", index+3), "")
 		f.SetCellValue("Sheet1", fmt.Sprintf("I%d", index+3), report.Barcode)
-		f.SetCellValue("Sheet1", fmt.Sprintf("J%d", index+3), "")
+		f.SetCellValue("Sheet1", fmt.Sprintf("J%d", index+3), ifBool(report.IsExcluded))
 		f.SetCellValue("Sheet1", fmt.Sprintf("K%d", index+3), "")
 		f.SetCellValue("Sheet1", fmt.Sprintf("L%d", index+3), report.Quantity30)
 		f.SetCellValue("Sheet1", fmt.Sprintf("M%d", index+3), report.Quantity5)

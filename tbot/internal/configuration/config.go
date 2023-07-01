@@ -22,6 +22,7 @@ type Config struct {
 	Database     Database `koanf:"database"`
 	LoggingLevel string   `koanf:"logging_level"` //panic | fatal | error | warn | info | debug | trace
 	Token        string   `koanf:"token"`
+	WorkDir      string   `koanf:"work_dir"`
 }
 
 var conf = koanf.Conf{
@@ -41,6 +42,7 @@ func InitConfig(path string) *Config {
 		"version":                "0.0.1",
 		"logging_level":          "info",
 		"database.logging_level": "silent",
+		"work_dir":               "/tmp",
 	}, "."), nil)
 	if fileExists(path) {
 		k.Load(file.Provider(path), yaml.Parser())
@@ -66,5 +68,8 @@ func getEnvs(c *Config) {
 	}
 	if v, exists := os.LookupEnv("YODA_TOKEN"); exists {
 		c.Token = v
+	}
+	if v, exists := os.LookupEnv("YODA_WORK_DIR"); exists {
+		c.WorkDir = v
 	}
 }
