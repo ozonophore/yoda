@@ -7,6 +7,7 @@ import (
 	"github.com/yoda/common/pkg/model"
 	"github.com/yoda/common/pkg/types"
 	"github.com/yoda/common/pkg/utils"
+	"strings"
 	"time"
 )
 
@@ -41,6 +42,14 @@ func MapOrderArray(orders *[]api.OrdersItem, transactionId int64, source string,
 	return &result, lastChangeDate, nil
 }
 
+func ToUpper(v *string) *string {
+	if v == nil {
+		return nil
+	}
+	result := strings.ToUpper(*v)
+	return &result
+}
+
 func MapOrder(order *api.OrdersItem, transactionId int64, source string, ownerCode string, wasSold func(odid *int64) bool) (result *model.Order, err error) {
 	orderDate := types.CustomTimeToTime(order.Date)
 	if err != nil {
@@ -73,7 +82,7 @@ func MapOrder(order *api.OrdersItem, transactionId int64, source string, ownerCo
 		TotalPrice:        *order.TotalPrice,
 		DiscountPercent:   discountPercent,
 		PriceWithDiscount: *order.TotalPrice * (1 - discountPercent/100),
-		WarehouseName:     order.WarehouseName,
+		WarehouseName:     ToUpper(order.WarehouseName),
 		Oblast:            order.Oblast,
 		IncomeID:          order.IncomeID,
 		ExternalCode:      fmt.Sprintf(`%d`, *order.NmId),

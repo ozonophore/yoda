@@ -47,7 +47,7 @@ func MapFBOToOrder(fbo *api.FBO, transactionId int64, source string, ownerCode s
 			DiscountPercent:   finData[product.Sku].TotalDiscountPercent,
 			DiscountValue:     finData[product.Sku].TotalDiscountValue,
 			PriceWithDiscount: finData[product.Sku].Price,
-			WarehouseName:     fbo.AnalyticsData.WarehouseName,
+			WarehouseName:     ToUpper(fbo.AnalyticsData.WarehouseName),
 			Oblast:            fbo.AnalyticsData.Region,
 			IncomeID:          nil,
 			ExternalCode:      fmt.Sprintf(`%d`, product.Sku),

@@ -30,7 +30,7 @@ func TestMapOrder(t *testing.T) {
 	assert.Equal(t, "techSize", *order.TechSize)
 	assert.Equal(t, "barcode", *order.Barcode)
 	assert.Equal(t, float64(12), order.DiscountPercent)
-	assert.Equal(t, "warehouseName", *order.WarehouseName)
+	assert.Equal(t, "WAREHOUSENAME", *order.WarehouseName)
 	assert.Equal(t, "oblast", *order.Oblast)
 	assert.Equal(t, int64(43), *order.IncomeID)
 	assert.Equal(t, int64(76), *order.Odid)
