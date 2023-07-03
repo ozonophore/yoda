@@ -69,7 +69,7 @@ func (c *WBService) Parsing(context context.Context, transactionID int64) error 
 	if err != nil {
 		return errors.Join(err)
 	}
-	if err = storage.SaveStocks(&newItems); err != nil {
+	if err = storage.SaveStocksInBatches(newItems, c.config.BatchSize); err != nil {
 		return err
 	}
 
@@ -191,8 +191,8 @@ func (c *WBService) callOrders(client *api.ClientWithResponses, df time.Time) (*
 	}
 }
 
-func (c *WBService) prepareStocks(length int, items []api.StocksItem, transactionId int64, source string, ownerCode string) ([]model.StockItem, error) {
-	newItems := make([]model.StockItem, length)
+func (c *WBService) prepareStocks(length int, items []api.StocksItem, transactionId int64, source string, ownerCode string) (*[]*model.StockItem, error) {
+	newItems := make([]*model.StockItem, length)
 	decoder := dictionary.GetItemDecoder()
 	for index, item := range items {
 		var barcodeId, itemId, message *string
@@ -219,9 +219,9 @@ func (c *WBService) prepareStocks(length int, items []api.StocksItem, transactio
 		}
 		si.Source = source
 		si.TransactionID = transactionId
-		newItems[index] = *si
+		newItems[index] = si
 	}
-	return newItems, nil
+	return &newItems, nil
 }
 
 func (c *WBService) extractReportDetailByPeriod(client *api.ClientWithResponses, transactionId int64, source string) error {

@@ -294,7 +294,7 @@ func (c *OzonService) createItems(items *[]api.RowItem, dt time.Time, transactio
 }
 
 func (c *OzonService) prepareItems(items *[]api.RowItem, dt time.Time, transactionId int64, source string) error {
-	newItems := make([]model.StockItem, len(*items))
+	newItems := make([]*model.StockItem, len(*items))
 	decoder := dictionary.GetItemDecoder()
 	for index, item := range *items {
 		si, err := mapper.MapRowItem(&item, &dt)
@@ -319,10 +319,10 @@ func (c *OzonService) prepareItems(items *[]api.RowItem, dt time.Time, transacti
 		si.BarcodeId = barcodeId
 		si.ItemId = itemId
 		si.Message = message
-		newItems[index] = *si
+		newItems[index] = si
 		c.products.addProduct(*item.Sku, si)
 	}
-	return storage.SaveStocks(&newItems)
+	return storage.SaveStocksInBatches(&newItems, c.config.BatchSize)
 }
 
 func createRequest(sinceDate, toDate time.Time, limit, offset int64) *api.GetOzonFBOJSONRequestBody {

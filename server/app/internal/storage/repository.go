@@ -170,15 +170,6 @@ func SelectUniqueStockItem(transactionId int64) *[]string {
 	return &ex
 }
 
-func SaveStocks(items *[]model.StockItem) error {
-	initIfError()
-	tx := repository.db.CreateInBatches(items, len(*items))
-	if tx.Error != nil {
-		return tx.Error
-	}
-	return nil
-}
-
 func SaveStocksInBatches(items *[]*model.StockItem, batchSize int) error {
 	initIfError()
 	tx := repository.db.CreateInBatches(items, batchSize)
