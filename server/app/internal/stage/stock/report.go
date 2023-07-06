@@ -3,6 +3,7 @@ package stock
 import (
 	"context"
 	"errors"
+	"github.com/sirupsen/logrus"
 	"github.com/yoda/app/internal/pipeline"
 	"time"
 )
@@ -13,11 +14,13 @@ type reportService interface {
 
 type ReportStep struct {
 	service reportService
+	logger  *logrus.Logger
 }
 
-func NewReportStep(service reportService) *ReportStep {
+func NewReportStep(service reportService, logg *logrus.Logger) *ReportStep {
 	return &ReportStep{
 		service: service,
+		logger:  logg,
 	}
 }
 
@@ -28,5 +31,6 @@ func (d *ReportStep) Do(ctx context.Context, deps *map[string]pipeline.Stage, e 
 	}
 	status := ps.GetStatus()
 	date := status.Value.(time.Time)
+	d.logger.Debugf("ReportStep: %s", date)
 	return nil, d.service.CalcReport(date)
 }

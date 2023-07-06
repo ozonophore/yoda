@@ -3,6 +3,7 @@ package stock
 import (
 	"context"
 	"errors"
+	"github.com/sirupsen/logrus"
 	"github.com/yoda/app/internal/pipeline"
 	"time"
 )
@@ -13,11 +14,13 @@ type defectureService interface {
 
 type DefectureStep struct {
 	service defectureService
+	logger  *logrus.Logger
 }
 
-func NewDefectureStep(service defectureService) *DefectureStep {
+func NewDefectureStep(service defectureService, logg *logrus.Logger) *DefectureStep {
 	return &DefectureStep{
 		service: service,
+		logger:  logg,
 	}
 }
 

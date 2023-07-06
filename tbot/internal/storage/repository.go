@@ -60,6 +60,15 @@ func (r *Repository) GetReport(date time.Time) (*[]report.Report, error) {
 	return &reports, nil
 }
 
+func (r *Repository) GetReportByCluster(date time.Time) (*[]report.ReportByCluster, error) {
+	var reports []report.ReportByCluster
+	err := r.db.Model(&report.ReportByCluster{}).Where(`"report_date" = ?`, date).Find(&reports).Error
+	if err != nil {
+		return nil, err
+	}
+	return &reports, nil
+}
+
 func (r *Repository) AddGroup(userName, groupName string, chatId int64) error {
 	return r.db.Exec(`INSERT INTO ml."tg_group" ("user_name", "group_name", "chat_id") VALUES (?, ?, ?)`, userName, groupName, chatId).Error
 }
