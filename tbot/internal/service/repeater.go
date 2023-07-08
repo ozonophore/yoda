@@ -50,7 +50,7 @@ func repeat() {
 		logger.Debugf("Notification: %s", sender)
 		if n.Sender != "all" && n.Sender != sender {
 			logger.Debugf("Sender: %s not equal %s", n.Sender, sender)
-			return
+			continue
 		}
 		logger.Debugf("Notification: %s", n.Type)
 		switch {
