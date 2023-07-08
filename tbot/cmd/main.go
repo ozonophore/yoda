@@ -14,6 +14,7 @@ func main() {
 	config := configuration.InitConfig("config.yml")
 	repository := storage.NewRepository(config.Database)
 	reportService := service.NewReportService(repository)
+	logrus.SetLevel(logrus.DebugLevel)
 
 	ctx := context.Background()
 	ctx, cancel := context.WithCancel(ctx)
