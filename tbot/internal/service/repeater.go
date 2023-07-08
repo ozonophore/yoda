@@ -51,6 +51,7 @@ func repeat() {
 		if n.Sender != "all" && n.Sender != sender {
 			return
 		}
+		logger.Debugf("Notification: %s", n.Type)
 		switch {
 		case n.Type == "report_yesterday":
 			date, err := time.Parse(time.DateOnly, *n.Message)
@@ -58,7 +59,10 @@ func repeat() {
 				logger.Error(err)
 				break
 			}
-			notificator.SendReport(date, clients)
+			err = notificator.SendReport(date, clients)
+			if err != nil {
+				logger.Error(err)
+			}
 			rep.ConfirmNotification(n.ID)
 		}
 	}

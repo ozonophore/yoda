@@ -97,5 +97,8 @@ func (r *Repository) GetNotifications() (*[]notification.Notification, error) {
 }
 
 func (r *Repository) ConfirmNotification(id int64) {
-	r.db.Exec(`UPDATE ml."notification" SET "is_sent" = true WHERE "id" = ?`, id)
+	err := r.db.Exec(`UPDATE ml."notification" SET "is_sent" = true WHERE "id" = ?`, id)
+	if err.Error != nil {
+		logrus.Error(err.Error)
+	}
 }
