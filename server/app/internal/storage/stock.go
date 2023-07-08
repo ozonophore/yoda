@@ -71,5 +71,5 @@ func (s *Repository) GetUniqueId() int64 {
 }
 
 func (s *Repository) SetNotification(msg, sender, mtype string) error {
-	return s.db.Exec(`insert into ml.notification (msg, sender, type, is_sent) values (?, ?, ?, ?)`, msg, sender, mtype, false).Error
+	return s.db.Exec(`insert into ml.notification (message, sender, type, is_sent) values (?, ?, ?, ?)`, msg, sender, mtype, false).Error
 }

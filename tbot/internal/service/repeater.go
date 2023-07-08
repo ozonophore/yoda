@@ -34,6 +34,7 @@ func StartRepeater(repository repeaterStorageInterface, ntf repeaterNotifierInte
 }
 
 func repeat() {
+	logrus.Debug("start repeat")
 	ntfc, err := rep.GetNotifications()
 	if err != nil {
 		logger.Errorf("Error while getting notifications: %v", err)
@@ -43,8 +44,10 @@ func repeat() {
 		logger.Error(err)
 		return
 	}
+	logger.Debugf("Unconfirmed notifications: %d", len(*ntfc))
 	for _, n := range *ntfc {
 		sender := notificator.GetSender()
+		logger.Debugf("Notification: %s", sender)
 		if n.Sender != "all" && n.Sender != sender {
 			return
 		}

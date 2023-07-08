@@ -33,6 +33,6 @@ func (d *NotificationStep) Do(ctx context.Context, deps *map[string]pipeline.Sta
 	}
 	status := ps.GetStatus()
 	date := status.Value.(time.Time)
-	d.logger.Debugf("ReportStep: %s", date)
+	d.logger.Debugf("Notification: %s", date)
 	return nil, d.service.SetNotification(date.Format(time.DateOnly), d.sender, "report_yesterday")
 }

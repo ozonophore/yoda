@@ -34,11 +34,11 @@ func (s *StockService) CalcReport(day time.Time) error {
 }
 
 func (s *StockService) CalcDefByClusters(day time.Time) error {
-	return s.dao.CalcDef(day)
+	return s.dao.CalcDefByClusters(day)
 }
 
 func (s *StockService) CalcReportByClusters(day time.Time) error {
-	return s.dao.CalcReport(day)
+	return s.dao.CalcReportByClusters(day)
 }
 
 func (s *StockService) SetNotification(msg, sender, mtype string) error {

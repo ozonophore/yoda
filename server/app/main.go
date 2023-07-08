@@ -114,10 +114,10 @@ func startStockAggregator(db *gorm.DB, sch *gocron.Scheduler, config *configurat
 	defStage.AddNext(repStage)
 
 	stageDefCluster := pipeline.NewSimpleStageWithTag(stock.NewDefByClustersStep(srv, logger), "def-cluster").AddSubscriber(interceptor)
-	stageRepCluster := pipeline.NewSimpleStageWithTag(stock.NewDefByClustersStep(srv, logger), "def-cluster").AddSubscriber(interceptor)
+	stageRepCluster := pipeline.NewSimpleStageWithTag(stock.NewReportByClustersStep(srv, logger), "rep-cluster").AddSubscriber(interceptor)
 	stage.AddNext(stageDefCluster.AddNext(stageRepCluster))
 
-	stageNotification := pipeline.NewSimpleStageWithTag(stage2.NewNotifyStep(srv, config.Sender, logger), "stock-notification-aggregator").AddSubscriber(interceptor)
+	stageNotification := pipeline.NewSimpleStageWithTag(stage2.NewNotifyStep(srv, config.Sender, logger), "notification").AddSubscriber(interceptor)
 	stageRepCluster.AddNext(stageNotification)
 	repStage.AddNext(stageNotification)
 

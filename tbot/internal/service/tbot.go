@@ -94,7 +94,7 @@ func (b *Bot) GetSender() string {
 
 func (b *Bot) StartBot() {
 	logrus.Infof("Authorized on account %s", bot.Self.UserName)
-	bot.Debug = true
+	bot.Debug = false
 
 	updateConfig := tgbotapi.NewUpdate(0)
 
