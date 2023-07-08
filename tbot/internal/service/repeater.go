@@ -49,6 +49,7 @@ func repeat() {
 		sender := notificator.GetSender()
 		logger.Debugf("Notification: %s", sender)
 		if n.Sender != "all" && n.Sender != sender {
+			logger.Debugf("Sender: %s not equal %s", n.Sender, sender)
 			return
 		}
 		logger.Debugf("Notification: %s", n.Type)
