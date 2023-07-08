@@ -66,6 +66,7 @@ type Config struct {
 	LoggingLevel string      `koanf:"logging_level"` //panic | fatal | error | warn | info | debug | trace
 	Integration  Integration `koanf:"integration"`
 	System       System      `koanf:"system"`
+	Sender       string      `koanf:"sender"`
 }
 
 var conf = koanf.Conf{
@@ -176,6 +177,9 @@ func getEnvs(c *Config) error {
 	}
 	if v, exists := os.LookupEnv("YODA_SYSTEM_LOGGING_LEVEL"); exists {
 		c.System.LoggingLevel = v
+	}
+	if v, exists := os.LookupEnv("YODA_SENDER"); exists {
+		c.Sender = v
 	}
 	return nil
 }

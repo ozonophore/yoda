@@ -12,8 +12,17 @@ type defectureService interface {
 	CalcDef(day time.Time) error
 }
 
+type defByClusterService interface {
+	CalcDefByClusters(day time.Time) error
+}
+
 type DefectureStep struct {
 	service defectureService
+	logger  *logrus.Logger
+}
+
+type DefByClustersStep struct {
+	service defByClusterService
 	logger  *logrus.Logger
 }
 
@@ -32,4 +41,21 @@ func (d *DefectureStep) Do(ctx context.Context, deps *map[string]pipeline.Stage,
 	status := ps.GetStatus()
 	date := status.Value.(time.Time)
 	return nil, d.service.CalcDef(date)
+}
+
+func NewDefByClustersStep(service defByClusterService, logg *logrus.Logger) *DefByClustersStep {
+	return &DefByClustersStep{
+		service: service,
+		logger:  logg,
+	}
+}
+
+func (d *DefByClustersStep) Do(ctx context.Context, deps *map[string]pipeline.Stage, e error) (interface{}, error) {
+	ps, ok := (*deps)["stock-daily-aggregator"]
+	if !ok {
+		return nil, errors.New("stock-daily-aggregator not found")
+	}
+	status := ps.GetStatus()
+	date := status.Value.(time.Time)
+	return nil, d.service.CalcDefByClusters(date)
 }

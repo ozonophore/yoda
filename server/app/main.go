@@ -12,6 +12,7 @@ import (
 	"github.com/yoda/app/internal/logging"
 	"github.com/yoda/app/internal/pipeline"
 	service "github.com/yoda/app/internal/service/stock"
+	stage2 "github.com/yoda/app/internal/stage"
 	"github.com/yoda/app/internal/stage/stock"
 	"github.com/yoda/app/internal/storage"
 	"github.com/yoda/app/internal/timer"
@@ -45,7 +46,7 @@ func main() {
 	event.SubscribeOrg(uo)
 	scheduler.InitJob()
 
-	startStockAggregator(database, scheduler.GetScheduler())
+	startStockAggregator(database, scheduler.GetScheduler(), config)
 
 	scheduler.Start()
 	defer scheduler.StopAll()
@@ -76,7 +77,7 @@ func initLogging(config *configuration.Config) {
 	logrus.SetLevel(lvl)
 }
 
-func startStockAggregator(db *gorm.DB, sch *gocron.Scheduler) {
+func startStockAggregator(db *gorm.DB, sch *gocron.Scheduler, config *configuration.Config) {
 	rep := storage.NewRepository(db)
 	j, err := rep.GetJob(2)
 	if !j.IsActive {
@@ -111,6 +112,14 @@ func startStockAggregator(db *gorm.DB, sch *gocron.Scheduler) {
 	stage.AddNext(defStage)
 	repStage := pipeline.NewSimpleStageWithTag(stock.NewReportStep(srv, logger), "stock-report-aggregator").AddSubscriber(interceptor)
 	defStage.AddNext(repStage)
+
+	stageDefCluster := pipeline.NewSimpleStageWithTag(stock.NewDefByClustersStep(srv, logger), "def-cluster").AddSubscriber(interceptor)
+	stageRepCluster := pipeline.NewSimpleStageWithTag(stock.NewDefByClustersStep(srv, logger), "def-cluster").AddSubscriber(interceptor)
+	stage.AddNext(stageDefCluster.AddNext(stageRepCluster))
+
+	stageNotification := pipeline.NewSimpleStageWithTag(stage2.NewNotifyStep(srv, config.Sender, logger), "stock-notification-aggregator").AddSubscriber(interceptor)
+	stageRepCluster.AddNext(stageNotification)
+	repStage.AddNext(stageNotification)
 
 	sj, err := sch.Every(1).Day().At(atTime).Tag("2").Do(func() {
 		pipe := pipeline.NewPipeline()

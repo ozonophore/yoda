@@ -6,6 +6,9 @@ type stockDAOInterface interface {
 	CallDailyAggr(day time.Time) error
 	CalcDef(day time.Time) error
 	CalcReport(day time.Time) error
+	CalcDefByClusters(day time.Time) error
+	CalcReportByClusters(day time.Time) error
+	SetNotification(msg, sender, mtype string) error
 }
 
 type StockService struct {
@@ -28,4 +31,16 @@ func (s *StockService) CalcDef(day time.Time) error {
 
 func (s *StockService) CalcReport(day time.Time) error {
 	return s.dao.CalcReport(day)
+}
+
+func (s *StockService) CalcDefByClusters(day time.Time) error {
+	return s.dao.CalcDef(day)
+}
+
+func (s *StockService) CalcReportByClusters(day time.Time) error {
+	return s.dao.CalcReport(day)
+}
+
+func (s *StockService) SetNotification(msg, sender, mtype string) error {
+	return s.dao.SetNotification(msg, sender, mtype)
 }

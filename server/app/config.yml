@@ -10,3 +10,4 @@ mq:
 #ozon:
 #  host: http://localhost:1080/ozon
 logging_level: debug
+sender: likatomrktbot

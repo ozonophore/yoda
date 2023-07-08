@@ -42,7 +42,8 @@ type Stage interface {
 	AddNext(stage ...Stage) Stage
 	AddPrev(stage ...Stage)
 	GetCondition() string
-	SkipStatus() bool
+	ResetStatus() bool
+	AddSubscriber(subscriber Subscriber) Stage
 }
 
 type Subscriber interface {
@@ -60,15 +61,15 @@ type SimpleStage struct {
 	subscribers []Subscriber
 }
 
-func NewSimpleStage(runner StageRunner) *SimpleStage {
+func NewSimpleStage(runner StageRunner) Stage {
 	return NewSimpleStageWithTag(runner, "")
 }
 
-func NewSimpleStageWithTag(runner StageRunner, tag string) *SimpleStage {
+func NewSimpleStageWithTag(runner StageRunner, tag string) Stage {
 	return NewSimpleStageWithCondition(runner, tag, RunOnSuccess)
 }
 
-func NewSimpleStageWithCondition(runner StageRunner, tag, condition string) *SimpleStage {
+func NewSimpleStageWithCondition(runner StageRunner, tag, condition string) Stage {
 	return &SimpleStage{
 		Runner: runner,
 		status: StageResult{
@@ -88,19 +89,19 @@ func (s *SimpleStage) MarshalJSON() ([]byte, error) {
 	})
 }
 
-func (s *SimpleStage) AddSubscriber(subscriber Subscriber) *SimpleStage {
+func (s *SimpleStage) AddSubscriber(subscriber Subscriber) Stage {
 	s.subscribers = append(s.subscribers, subscriber)
 	return s
 }
 
-func (s *SimpleStage) SkipStatus() bool {
+func (s *SimpleStage) ResetStatus() bool {
 	wg := sync.WaitGroup{}
 	if s.Next() != nil {
 		go func(stages *[]Stage, wg *sync.WaitGroup) {
 			for _, stage := range *stages {
 				wg.Add(1)
 				if stage != nil {
-					stage.SkipStatus()
+					stage.ResetStatus()
 				}
 			}
 		}(s.Next(), &wg)
@@ -140,8 +141,9 @@ func (s *SimpleStage) IsReady() bool {
 	}
 	isReady := s.status.Status == StageStatusPending
 	for _, stage := range s.prev {
-		if stage != nil && (stage.GetStatus().Status == StageStatusSuccess ||
-			(stage.GetStatus().Status == StageStatusFailed && s.GetCondition() == RunOnFailure)) {
+		if stage != nil && (stage.GetStatus().Status == StageStatusSuccess) ||
+			(stage.GetStatus().Status == StageStatusFailed && s.GetCondition() == RunOnFailure) ||
+			(s.GetCondition() == RunAlways && stage.GetStatus().Status != StageStatusPending) {
 			isReady = true && isReady
 		} else {
 			isReady = false && isReady

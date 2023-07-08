@@ -63,7 +63,12 @@ var (
 	)
 )
 
-func StartBot(token, workDir string, ctx context.Context, srv reportInterface, rep repositoryInterface) {
+type Bot struct {
+	ctx  context.Context
+	name string
+}
+
+func NewBot(token, workDir string, ctx context.Context, srv reportInterface, rep repositoryInterface) *Bot {
 	logrus.Info("Starting bot ", token)
 	baseDir = workDir
 	service = srv
@@ -73,7 +78,21 @@ func StartBot(token, workDir string, ctx context.Context, srv reportInterface, r
 	if err != nil {
 		panic(err)
 	}
+	user, err := bot.GetMe()
+	if err != nil {
+		panic(err)
+	}
+	return &Bot{
+		ctx:  ctx,
+		name: user.UserName,
+	}
+}
 
+func (b *Bot) GetSender() string {
+	return b.name
+}
+
+func (b *Bot) StartBot() {
 	logrus.Infof("Authorized on account %s", bot.Self.UserName)
 	bot.Debug = true
 
@@ -84,7 +103,7 @@ func StartBot(token, workDir string, ctx context.Context, srv reportInterface, r
 	updates := bot.GetUpdatesChan(updateConfig)
 
 	// Pass cancellable context to goroutine
-	receiveUpdates(ctx, updates)
+	receiveUpdates(b.ctx, updates)
 }
 
 func receiveUpdates(ctx context.Context, updates tgbotapi.UpdatesChannel) {
@@ -111,7 +130,19 @@ func handleUpdate(update tgbotapi.Update) {
 	case update.CallbackQuery != nil:
 		handleButton(update.CallbackQuery)
 		break
+	case update.MyChatMember != nil:
+		handleMember(update.MyChatMember)
+		break
 	}
+}
+
+func handleMember(member *tgbotapi.ChatMemberUpdated) {
+	if member.NewChatMember.Status == "member" && member.Chat.Type == "group" {
+		handleNewChatMembers(member.Chat.ID, member.NewChatMember.User.UserName, member.Chat.Title)
+	} else if member.NewChatMember.Status == "left" && member.Chat.Type == "group" {
+		handleLeftChatMember(member.Chat.ID, member.NewChatMember.User.UserName, member.Chat.Title)
+	}
+
 }
 
 func handleButton(query *tgbotapi.CallbackQuery) {
@@ -186,14 +217,9 @@ func handleMessage(message *tgbotapi.Message) {
 	logrus.Debugf("%s wrote %s", user.FirstName, text)
 
 	var err error
-	if message.NewChatMembers != nil {
-		userName := message.NewChatMembers[0].UserName
-		err = handleNewChatMembers(message.Chat.ID, userName, message.Chat.Title)
-	} else if message.LeftChatMember != nil {
-		userName := message.LeftChatMember.UserName
-		err = handleLeftChatMember(message.Chat.ID, userName, message.Chat.Title)
-	} else if strings.HasPrefix(text, "/") {
-		err = handleCommand(message.Chat.ID, text)
+	if strings.HasPrefix(text, "/") {
+		command := strings.Split(text, "@")
+		err = handleCommand(message.Chat.ID, command[0])
 	} else if screaming && len(text) > 0 {
 		msg := tgbotapi.NewMessage(message.Chat.ID, strings.ToUpper(text))
 		// To preserve markdown, we attach entities (bold, italic..)
@@ -255,12 +281,13 @@ func sendMenu(chatId int64) error {
 	return err
 }
 
-func Notify(chatIds *[]int64) {
+func (*Bot) SendReport(date time.Time, chatIds *[]int64) error {
 	if len(*chatIds) == 0 {
-		return
+		return nil
 	}
 	for _, chatId := range *chatIds {
-		msg := createReport(chatId, "Отчет за вчера", time.Now().AddDate(0, 0, -1))
+		msg := createReport(chatId, fmt.Sprintf("Отчет за %s", date.Format(time.DateOnly)), date)
 		bot.Send(msg)
 	}
+	return nil
 }

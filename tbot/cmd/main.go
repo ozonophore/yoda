@@ -17,8 +17,9 @@ func main() {
 
 	ctx := context.Background()
 	ctx, cancel := context.WithCancel(ctx)
-	go service.StartBot(config.Token, config.WorkDir, ctx, reportService, repository)
-
+	bot := service.NewBot(config.Token, config.WorkDir, ctx, reportService, repository)
+	go bot.StartBot()
+	service.StartRepeater(repository, bot, logrus.New())
 	// Tell the user the bot is online
 	logrus.Println("Start listening for updates. Press enter to stop")
 

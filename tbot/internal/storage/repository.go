@@ -3,6 +3,7 @@ package storage
 import (
 	"github.com/sirupsen/logrus"
 	"github.com/yoda/tnot/internal/configuration"
+	"github.com/yoda/tnot/internal/storage/notification"
 	"github.com/yoda/tnot/internal/storage/report"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -77,11 +78,24 @@ func (r *Repository) DeleteGroup(userName, groupName string) error {
 	return r.db.Exec(`DELETE FROM ml."tg_group" WHERE "user_name" = ? AND "group_name" = ?`, userName, groupName).Error
 }
 
-func (r *Repository) GetChatIds() (*[]int64, error) {
+func (r *Repository) GetClients() (*[]int64, error) {
 	var values []int64
 	err := r.db.Raw(`SELECT "chat_id" FROM ml."tg_group"`).Scan(&values).Error
 	if err != nil {
 		return nil, err
 	}
 	return &values, nil
+}
+
+func (r *Repository) GetNotifications() (*[]notification.Notification, error) {
+	var values []notification.Notification
+	err := r.db.Model(&notification.Notification{}).Where(`"is_sent" = false`).Scan(&values).Error
+	if err != nil {
+		return nil, err
+	}
+	return &values, nil
+}
+
+func (r *Repository) ConfirmNotification(id int64) {
+	r.db.Exec(`UPDATE ml."notification" SET "is_sent" = true WHERE "id" = ?`, id)
 }

@@ -6,10 +6,6 @@ import (
 	"sync"
 )
 
-type Pipeline struct {
-	err error
-}
-
 func getErrors(stages *[]Stage) error {
 	if stages == nil {
 		return nil
@@ -49,15 +45,33 @@ func runStages(wg *sync.WaitGroup, ctx context.Context, deps *map[string]Stage, 
 					for _, st := range *next {
 						if st.GetCondition() == RunOnFailure || st.GetCondition() == RunAlways {
 							newNext = append(newNext, st)
+						} else {
+							newNext = append(newNext, findNext(st)...)
+							st.GetStatus().Status = StageStatusSkipped
 						}
 					}
 					if len(newNext) > 0 {
-						runStages(wg, ctx, deps, errs, errMut, *next...)
+						runStages(wg, ctx, deps, errs, errMut, newNext...)
 					}
 				}
 			}
 		}(stage)
 	}
+}
+
+func findNext(st Stage) []Stage {
+	next := st.Next()
+	newNext := make([]Stage, 0, 2)
+	if next != nil {
+		for _, stage := range *next {
+			if stage.GetCondition() == RunAlways {
+				newNext = append(newNext, stage)
+			} else if stage.Next() != nil {
+				newNext = append(newNext, findNext(stage)...)
+			}
+		}
+	}
+	return newNext
 }
 
 func scanPipeline(stageMap *map[string]Stage, stages ...Stage) {
@@ -85,22 +99,26 @@ func searchRootStage(stage ...Stage) []Stage {
 	return rootStages
 }
 
-func skipStatus(stages []Stage) {
+func resetStatus(stages []Stage) {
 	for i := 0; i < len(stages); i++ {
-		stages[i].SkipStatus()
+		stages[i].ResetStatus()
 	}
 }
 
-func NewPipeline() *Pipeline {
-	return &Pipeline{}
+type Pipeline struct {
+	err error
 }
 
 func (p *Pipeline) Error() error {
 	return p.err
 }
 
+func NewPipeline() *Pipeline {
+	return &Pipeline{}
+}
+
 func (p *Pipeline) Do(ctx context.Context, stages ...Stage) *Pipeline {
-	skipStatus(stages)
+	resetStatus(stages)
 	deps := make(map[string]Stage)
 	scanPipeline(&deps, searchRootStage(stages...)...)
 	wg := sync.WaitGroup{}
