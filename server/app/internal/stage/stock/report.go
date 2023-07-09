@@ -58,6 +58,6 @@ func (d *ReportByClustersStep) Do(ctx context.Context, deps *map[string]pipeline
 	}
 	status := ps.GetStatus()
 	date := status.Value.(time.Time)
-	d.logger.Debugf("ReportStep: %s", date)
+	d.logger.Debugf("ReporClustertStep: %s", date)
 	return nil, d.service.CalcReportByClusters(date)
 }

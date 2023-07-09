@@ -45,7 +45,6 @@ func main() {
 	event.Subscribe(scheduler)
 	event.SubscribeOrg(uo)
 	scheduler.InitJob()
-
 	startStockAggregator(database, scheduler.GetScheduler(), config)
 
 	scheduler.Start()
