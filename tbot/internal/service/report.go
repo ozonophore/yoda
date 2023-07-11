@@ -24,7 +24,6 @@ func getHeaders() []string {
 		"Продажи за 5 дней неделю назад, шт",
 		"Дней в дефектуре за 30 дней",
 		"Дней в дефектуре за 5 дней",
-		"Текущий остаток товара, шт",
 		"Прогноз продаж на 30 дней, шт",
 		"В поставке, шт",
 		"Нужно поставить, шт",
@@ -50,7 +49,6 @@ func getClusterHeaders() []string {
 		"Продажи за 5 дней неделю назад, шт",
 		"Дней в дефектуре за 30 дней",
 		"Дней в дефектуре за 5 дней",
-		"Текущий остаток товара, шт",
 		"Прогноз продаж на 30 дней, шт",
 		"В поставке, шт",
 		"Нужно поставить, шт",
@@ -123,12 +121,11 @@ func (r *ReportService) Print(date time.Time, finaName string) error {
 		f.SetCellValue(activeSheet, fmt.Sprintf("N%d", index+3), "")
 		f.SetCellValue(activeSheet, fmt.Sprintf("O%d", index+3), report.Def30)
 		f.SetCellValue(activeSheet, fmt.Sprintf("P%d", index+3), report.Def5)
-		f.SetCellValue(activeSheet, fmt.Sprintf("Q%d", index+3), "")
-		f.SetCellValue(activeSheet, fmt.Sprintf("R%d", index+3), report.ForecastOrder30)
+		f.SetCellValue(activeSheet, fmt.Sprintf("Q%d", index+3), report.ForecastOrder30)
+		f.SetCellValue(activeSheet, fmt.Sprintf("R%d", index+3), "")
 		f.SetCellValue(activeSheet, fmt.Sprintf("S%d", index+3), "")
-		f.SetCellValue(activeSheet, fmt.Sprintf("T%d", index+3), "")
-		f.SetCellValue(activeSheet, fmt.Sprintf("U%d", index+3), report.Quantity)
-		f.SetCellValue(activeSheet, fmt.Sprintf("V%d", index+3), ifString(report.Cluster))
+		f.SetCellValue(activeSheet, fmt.Sprintf("T%d", index+3), report.Quantity)
+		f.SetCellValue(activeSheet, fmt.Sprintf("U%d", index+3), ifString(report.Cluster))
 	}
 	f.SetSheetName(activeSheet, fmt.Sprintf(`Отчет %s`, date.Format("02.01.2006")))
 
@@ -162,11 +159,10 @@ func (r *ReportService) Print(date time.Time, finaName string) error {
 		f.SetCellValue(activeSheet, fmt.Sprintf("N%d", index+3), "")
 		f.SetCellValue(activeSheet, fmt.Sprintf("O%d", index+3), report.Def30)
 		f.SetCellValue(activeSheet, fmt.Sprintf("P%d", index+3), report.Def5)
-		f.SetCellValue(activeSheet, fmt.Sprintf("Q%d", index+3), "")
-		f.SetCellValue(activeSheet, fmt.Sprintf("R%d", index+3), report.ForecastOrder30)
+		f.SetCellValue(activeSheet, fmt.Sprintf("Q%d", index+3), report.ForecastOrder30)
+		f.SetCellValue(activeSheet, fmt.Sprintf("R%d", index+3), "")
 		f.SetCellValue(activeSheet, fmt.Sprintf("S%d", index+3), "")
-		f.SetCellValue(activeSheet, fmt.Sprintf("T%d", index+3), "")
-		f.SetCellValue(activeSheet, fmt.Sprintf("U%d", index+3), report.Quantity)
+		f.SetCellValue(activeSheet, fmt.Sprintf("T%d", index+3), report.Quantity)
 	}
 	f.SetSheetName(activeSheet, fmt.Sprintf(`Отчет по кластерам %s`, date.Format("02.01.2006")))
 

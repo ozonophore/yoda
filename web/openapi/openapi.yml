@@ -1,0 +1,94 @@
+openapi: 3.0.0
+info:
+  contact:
+    email:
+    name: API Support
+    url: http://www.swagger.io/support
+  description:
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: Open API
+  version: "1.0"
+security:
+  - ApiKeyAuth: []
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
+  schemas:
+    Stocks:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+          description: Count of stocks
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Stock'
+      required:
+        - count
+        - items
+    Stock:
+      type: object
+      properties:
+          organization:
+            type: string
+            description: Организация
+          organization_id:
+            type: string
+            description: ID организации
+          marketplace:
+            type: string
+            description: Торговая точка
+          marketplace_id:
+            type: string
+            description: ID торговой точки
+          barcode:
+            type: string
+            description: Штрихкод
+          quantity:
+            type: integer
+            format: int32
+            description: Stock quantity
+      required:
+          - organization
+          - organization_id
+          - marketplace
+          - marketplace_id
+          - barcode
+          - quantity
+paths:
+  /stocks/{date}:
+    get:
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - description: Дата (YYYY-MM-DD)
+          in: path
+          name: date
+          required: true
+          schema:
+            type: string
+            format: date
+      description: Получение отстатоков за дату
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Stocks'
+          description: OK
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+      summary: Получение остатков товаров
+      tags:
+        - Stocks

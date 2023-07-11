@@ -1,7 +1,9 @@
 package storage
 
 import (
+	"context"
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"github.com/yoda/common/pkg/model"
 	"gorm.io/gorm"
 	"time"
@@ -40,7 +42,15 @@ func (s *Repository) CalcDefByClusters(day time.Time) error {
 }
 
 func (s *Repository) CalcReport(day time.Time) error {
-	err := s.db.Exec("call dl.calc_sales_stock_by_day(?)", day).Error
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Minute)
+	defer cancel()
+	startTime := time.Now()
+	logrus.Debugf("Start calc report %s", startTime)
+	err := s.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		err := tx.Exec("call dl.calc_sales_stock_by_day(?)", day).Error
+		return err
+	}).Error
+	logrus.Debugf("End calc report %s", time.Since(startTime))
 	if err != nil {
 		return fmt.Errorf("call calc_sales_stock_by_day with date %s error: %w", day, err)
 	}
