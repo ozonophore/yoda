@@ -49,7 +49,7 @@ func (s *Repository) CalcReport(day time.Time) error {
 	err := s.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		err := tx.Exec("call dl.calc_sales_stock_by_day(?)", day).Error
 		return err
-	}).Error
+	})
 	logrus.Debugf("End calc report %s", time.Since(startTime))
 	if err != nil {
 		return fmt.Errorf("call calc_sales_stock_by_day with date %s error: %w", day, err)
