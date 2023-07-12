@@ -225,10 +225,6 @@ func handleMessage(message *tgbotapi.Message) {
 		// To preserve markdown, we attach entities (bold, italic..)
 		msg.Entities = message.Entities
 		_, err = bot.Send(msg)
-	} else {
-		// This is equivalent to forwarding, without the sender's name
-		copyMsg := tgbotapi.NewCopyMessage(message.Chat.ID, message.Chat.ID, message.MessageID)
-		_, err = bot.CopyMessage(copyMsg)
 	}
 
 	if err != nil {
