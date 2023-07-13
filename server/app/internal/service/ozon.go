@@ -173,6 +173,7 @@ func (c *OzonService) enrichProductPrices(client *api.ClientWithResponses, ctx c
 				logrus.Errorf("Can't find product with sku %d", *info.FboSku)
 				continue
 			}
+			item.Barcode = info.Barcode
 			var barcodeId, itemId, message *string
 			if info.Barcode != nil {
 				decode, err := decoder.Decode(c.ownerCode, source, *info.Barcode)
@@ -399,8 +400,17 @@ func (c *OzonService) parseFBO(FBOResponse *api.GetOzonFBOResponse, transactionI
 	}
 	var orders []model.Order
 	decoder := dictionary.GetItemDecoder()
+
+	searchFun := func(sku int64) *string {
+		info, ok := c.products.get(sku)
+		if !ok {
+			return nil
+		}
+		return info.Barcode
+	}
+
 	for _, item := range *FBOItems {
-		o := mapper.MapFBOToOrder(&item, transactionId, source, ownerCode, &c.productInfoCache, decoder)
+		o := mapper.MapFBOToOrder(&item, transactionId, source, ownerCode, searchFun, decoder)
 		orders = append(orders, *o...)
 	}
 	if err := storage.SaveOrders(&orders); err != nil {

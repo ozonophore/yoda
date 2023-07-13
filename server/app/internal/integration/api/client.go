@@ -110,7 +110,7 @@ type Stock struct {
 	Id string `json:"id"`
 
 	// Quantity Stock quantity
-	Quantity int32 `json:"quantity"`
+	Quantity float64 `json:"quantity"`
 }
 
 // Stocks defines model for Stocks.

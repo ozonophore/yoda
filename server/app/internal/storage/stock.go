@@ -4,17 +4,22 @@ import (
 	"context"
 	"fmt"
 	"github.com/sirupsen/logrus"
+	"github.com/yoda/app/internal/configuration"
 	"github.com/yoda/common/pkg/model"
 	"gorm.io/gorm"
 	"time"
 )
 
 type Repository struct {
-	db *gorm.DB
+	db     *gorm.DB
+	config *configuration.Config
 }
 
-func NewRepository(db *gorm.DB) *Repository {
-	return &Repository{db: db}
+func NewRepository(db *gorm.DB, config *configuration.Config) *Repository {
+	return &Repository{
+		db:     db,
+		config: config,
+	}
 }
 
 func (s *Repository) CallDailyAggr(day time.Time) error {

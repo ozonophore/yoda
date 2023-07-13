@@ -2,12 +2,14 @@ package stage
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"github.com/go-co-op/gocron"
 	"github.com/sirupsen/logrus"
 	"github.com/yoda/app/internal/pipeline"
 	time2 "github.com/yoda/app/internal/time"
 	"github.com/yoda/common/pkg/model"
+	"gorm.io/gorm"
 	"sort"
 	"strings"
 	"time"
@@ -25,10 +27,11 @@ type Initializer struct {
 	rep          stageRepository
 	stageFactory stageFactory
 	sch          *gocron.Scheduler
+	jobs         map[int]bool
 }
 
 func NewInitializer(rep stageRepository, stageFactory stageFactory, sch *gocron.Scheduler) *Initializer {
-	return &Initializer{rep: rep, stageFactory: stageFactory, sch: sch}
+	return &Initializer{rep: rep, stageFactory: stageFactory, sch: sch, jobs: make(map[int]bool)}
 }
 
 func (s *Initializer) jobByTag(jobId int) *gocron.Job {
@@ -46,11 +49,15 @@ func (s *Initializer) jobByTag(jobId int) *gocron.Job {
 func (s *Initializer) check(jobId int) (bool, *string, *string, error) {
 	const ok = false
 	j, err := s.rep.GetJob(jobId)
-	if !j.IsActive {
-		return ok, nil, nil, fmt.Errorf("job with tag(%d) is not active", jobId)
+	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
+		logrus.Errorf("Job with tag(%d) not found", jobId)
+		return ok, nil, nil, nil
 	}
 	if err != nil {
 		logrus.Panicf("Error while getting job(%d): %v", 2, err)
+	}
+	if !j.IsActive {
+		return ok, nil, nil, fmt.Errorf("job with tag(%d) is not active", jobId)
 	}
 	job := s.jobByTag(jobId)
 	atTime := strings.ReplaceAll(*j.AtTime, ",", ";")
@@ -60,7 +67,7 @@ func (s *Initializer) check(jobId int) (bool, *string, *string, error) {
 	}
 
 	if job != nil {
-		logrus.Infof("Job with tag(%d) already exists", jobId)
+		logrus.Warnf("Job with tag(%d) already exists", jobId)
 		weekDaysEquals := false
 		if len(atWeekDays) > 0 {
 			actualWeekdays := time2.WeekdayToArray(job.Weekdays())
@@ -136,6 +143,7 @@ func (s *Initializer) Do(jobId int) error {
 	}
 	tag := fmt.Sprintf("%d", jobId)
 	var job *gocron.Job
+	s.jobs[jobId] = true
 	if (weekdays != nil) && (len(*weekdays) > 0) {
 		days := strings.Split(*weekdays, ";")
 		wds := time2.StringsToWeekdays(days)
@@ -144,9 +152,19 @@ func (s *Initializer) Do(jobId int) error {
 		job = s.createJobAtTime(tag, *atTime, stage)
 	}
 	job.SetEventListeners(func() {
-		logrus.Infof("Job with tag(%d) is running", 2)
+		logrus.Infof("Job with tag(%d) is running", jobId)
 	}, func() {
 		logrus.Infof("Job with tag(%d) is done. Next run: %s", 2, job.NextRun().UTC())
 	})
+	return nil
+}
+
+func (s *Initializer) Repeat() error {
+	for id := range s.jobs {
+		err := s.Do(id)
+		if err != nil {
+			logrus.Errorf("Error while initializing job(%d): %v", id, err)
+		}
+	}
 	return nil
 }

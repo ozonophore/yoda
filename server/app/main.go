@@ -2,17 +2,21 @@ package main
 
 import (
 	"context"
+	"github.com/deepmap/oapi-codegen/pkg/securityprovider"
 	"github.com/go-co-op/gocron"
 	"github.com/rifflock/lfshook"
 	"github.com/sirupsen/logrus"
 	"github.com/yoda/app/internal/configuration"
 	"github.com/yoda/app/internal/event"
 	"github.com/yoda/app/internal/integration"
+	api "github.com/yoda/app/internal/integration/api"
 	"github.com/yoda/app/internal/integration/dictionary"
 	"github.com/yoda/app/internal/logging"
 	"github.com/yoda/app/internal/pipeline"
+	integration4 "github.com/yoda/app/internal/service/integration"
 	service "github.com/yoda/app/internal/service/stock"
-	stage2 "github.com/yoda/app/internal/stage"
+	"github.com/yoda/app/internal/stage"
+	integration2 "github.com/yoda/app/internal/stage/integration"
 	"github.com/yoda/app/internal/stage/stock"
 	"github.com/yoda/app/internal/storage"
 	"github.com/yoda/app/internal/timer"
@@ -46,6 +50,8 @@ func main() {
 	event.SubscribeOrg(uo)
 	scheduler.InitJob()
 	startStockAggregator(database, scheduler.GetScheduler(), config)
+	client, _ := InitClient(config)
+	StartInitializer(storage.NewRepository(database, config), scheduler.GetScheduler(), client)
 
 	scheduler.Start()
 	defer scheduler.StopAll()
@@ -76,8 +82,32 @@ func initLogging(config *configuration.Config) {
 	logrus.SetLevel(lvl)
 }
 
+func InitClient(config *configuration.Config) (api.ClientWithResponsesInterface, error) {
+	apiKeyProvider, _ := securityprovider.NewSecurityProviderApiKey("header", "Key", config.Integration.Token)
+	return api.NewClientWithResponses(config.Integration.Host,
+		logging.WithLoggerIntegrationFn(config.Integration.LogLevel),
+		api.WithRequestEditorFn(apiKeyProvider.Intercept),
+	)
+}
+
+func StartInitializer(repository *storage.Repository, sch *gocron.Scheduler, client api.ClientWithResponsesInterface) *stage.Initializer {
+	stage.Register(3, func() pipeline.Stage {
+		service := integration4.NewStockService(repository)
+		return integration2.NewStockStage(service, client, logrus.StandardLogger())
+	})
+
+	factory := stage.NewStageFactory()
+	initializer := stage.NewInitializer(repository, factory, sch)
+	initializer.Do(3)
+
+	sch.Every(1).Minute().Do(func() {
+		initializer.Repeat()
+	})
+	return initializer
+}
+
 func startStockAggregator(db *gorm.DB, sch *gocron.Scheduler, config *configuration.Config) {
-	rep := storage.NewRepository(db)
+	rep := storage.NewRepository(db, config)
 	j, err := rep.GetJob(2)
 	if !j.IsActive {
 		logrus.Infof("Job with tag(%d) is not active", 2)
@@ -106,23 +136,23 @@ func startStockAggregator(db *gorm.DB, sch *gocron.Scheduler, config *configurat
 	interceptor := logging.NewInterceptor(logrus.StandardLogger())
 	logger := logrus.StandardLogger()
 	step := stock.NewDailyStep(srv, logger)
-	stage := pipeline.NewSimpleStageWithTag(step, "stock-daily-aggregator").AddSubscriber(interceptor)
+	stg := pipeline.NewSimpleStageWithTag(step, "stock-daily-aggregator").AddSubscriber(interceptor)
 	defStage := pipeline.NewSimpleStageWithTag(stock.NewDefectureStep(srv, logger), "stock-defecture-aggregator").AddSubscriber(interceptor)
-	stage.AddNext(defStage)
+	stg.AddNext(defStage)
 	repStage := pipeline.NewSimpleStageWithTag(stock.NewReportStep(srv, logger), "stock-report-aggregator").AddSubscriber(interceptor)
 	defStage.AddNext(repStage)
 
 	stageDefCluster := pipeline.NewSimpleStageWithTag(stock.NewDefByClustersStep(srv, logger), "def-cluster").AddSubscriber(interceptor)
 	stageRepCluster := pipeline.NewSimpleStageWithTag(stock.NewReportByClustersStep(srv, logger), "rep-cluster").AddSubscriber(interceptor)
-	stage.AddNext(stageDefCluster.AddNext(stageRepCluster))
+	stg.AddNext(stageDefCluster.AddNext(stageRepCluster))
 
-	stageNotification := pipeline.NewSimpleStageWithTag(stage2.NewNotifyStep(srv, config.Sender, logger), "notification").AddSubscriber(interceptor)
+	stageNotification := pipeline.NewSimpleStageWithTag(stage.NewNotifyStep(srv, config.Sender, logger), "notification").AddSubscriber(interceptor)
 	stageRepCluster.AddNext(stageNotification)
 	repStage.AddNext(stageNotification)
 
 	sj, err := sch.Every(1).Day().At(atTime).Tag("2").Do(func() {
 		pipe := pipeline.NewPipeline()
-		err := pipe.Do(context.Background(), stage).Error()
+		err := pipe.Do(context.Background(), stg).Error()
 		if err != nil {
 			logrus.Errorf("Error while running stock aggregator: %v", err)
 		}
