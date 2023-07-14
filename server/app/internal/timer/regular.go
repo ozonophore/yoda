@@ -10,7 +10,7 @@ import (
 
 func (sch Scheduler) initRegular(ctx context.Context) bool {
 	wasChanged := false
-	logrus.Debugf("Init jobs")
+	//logrus.Debugf("Init jobs")
 	config := sch.config
 	scheduler := sch.scheduler
 

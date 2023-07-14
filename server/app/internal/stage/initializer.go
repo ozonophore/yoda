@@ -67,7 +67,7 @@ func (s *Initializer) check(jobId int) (bool, *string, *string, error) {
 	}
 
 	if job != nil {
-		logrus.Warnf("Job with tag(%d) already exists", jobId)
+		//logrus.Warnf("Job with tag(%d) already exists", jobId)
 		weekDaysEquals := false
 		if len(atWeekDays) > 0 {
 			actualWeekdays := time2.WeekdayToArray(job.Weekdays())
