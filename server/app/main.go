@@ -132,9 +132,9 @@ func startStockAggregator(db *gorm.DB, sch *gocron.Scheduler, config *configurat
 			logrus.Errorf("Error while removing job with tag(%d): %v", 2, err)
 		}
 	}
-	srv := service.NewStockService(rep)
-	interceptor := logging.NewInterceptor(logrus.StandardLogger())
 	logger := logrus.StandardLogger()
+	srv := service.NewStockService(rep, logger)
+	interceptor := logging.NewInterceptor(logrus.StandardLogger())
 	step := stock.NewDailyStep(srv, logger)
 	stg := pipeline.NewSimpleStageWithTag(step, "stock-daily-aggregator").AddSubscriber(interceptor)
 	defStage := pipeline.NewSimpleStageWithTag(stock.NewDefectureStep(srv, logger), "stock-defecture-aggregator").AddSubscriber(interceptor)

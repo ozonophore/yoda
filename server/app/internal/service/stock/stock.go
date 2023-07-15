@@ -1,6 +1,9 @@
 package service
 
-import "time"
+import (
+	"github.com/sirupsen/logrus"
+	"time"
+)
 
 type stockDAOInterface interface {
 	CallDailyAggr(day time.Time) error
@@ -12,12 +15,14 @@ type stockDAOInterface interface {
 }
 
 type StockService struct {
-	dao stockDAOInterface
+	dao    stockDAOInterface
+	logger *logrus.Logger
 }
 
-func NewStockService(dao stockDAOInterface) *StockService {
+func NewStockService(dao stockDAOInterface, logger *logrus.Logger) *StockService {
 	return &StockService{
-		dao: dao,
+		dao:    dao,
+		logger: logger,
 	}
 }
 
@@ -38,7 +43,18 @@ func (s *StockService) CalcDefByClusters(day time.Time) error {
 }
 
 func (s *StockService) CalcReportByClusters(day time.Time) error {
-	return s.dao.CalcReportByClusters(day)
+	i := 0
+	for {
+		err := s.dao.CalcReportByClusters(day)
+		if err == nil {
+			return nil
+		}
+		s.logger.Errorf("attept %d of CalcReportByClusters failed: %s", i, err)
+		i++
+		if i > 3 {
+			return err
+		}
+	}
 }
 
 func (s *StockService) SetNotification(msg, sender, mtype string) error {

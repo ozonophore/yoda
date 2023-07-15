@@ -34,6 +34,7 @@ func MapFBOToOrder(fbo *api.FBO, transactionId int64, source string, ownerCode s
 				itemId = &decod.ItemId
 			}
 		}
+		supplierArticle := product.OfferId
 		orders[i] = model.Order{
 			TransactionID:     transactionId,
 			TransactionDate:   time.Now(),
@@ -41,7 +42,7 @@ func MapFBOToOrder(fbo *api.FBO, transactionId int64, source string, ownerCode s
 			OwnerCode:         ownerCode,
 			OrderDate:         fbo.CreatedAt,
 			OrderTime:         fbo.CreatedAt,
-			SupplierArticle:   &product.OfferId,
+			SupplierArticle:   &supplierArticle,
 			Barcode:           barcode,
 			TotalPrice:        finData[product.Sku].OldPrice,
 			DiscountPercent:   finData[product.Sku].TotalDiscountPercent,
