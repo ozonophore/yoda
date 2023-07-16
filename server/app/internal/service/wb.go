@@ -128,10 +128,23 @@ func (c *WBService) extractSales(ctx context.Context, transactionID int64, clnt 
 	ctxt, _ := context.WithTimeout(ctx, time.Duration(c.config.Timeout)*time.Second)
 	flag := 0
 	dateFrom := types.CustomTime(df)
-	respSales, err := clnt.GetWBSalesWithResponse(ctxt, &api.GetWBSalesParams{
-		DateFrom: dateFrom,
-		Flag:     &flag,
-	})
+	i := 0
+	var respSales *api.GetWBSalesResponse
+	var err error
+	for {
+		respSales, err = clnt.GetWBSalesWithResponse(ctxt, &api.GetWBSalesParams{
+			DateFrom: dateFrom,
+			Flag:     &flag,
+		})
+		if err != nil || respSales.StatusCode() != 200 {
+			i++
+		} else {
+			break
+		}
+		if i > 3 {
+			break
+		}
+	}
 	if err != nil {
 		return 0, err
 	}

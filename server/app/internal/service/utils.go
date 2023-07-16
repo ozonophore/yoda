@@ -1,8 +1,6 @@
 package service
 
 import (
-	"context"
-	"github.com/sirupsen/logrus"
 	"gopkg.in/errgo.v2/fmt/errors"
 	"math"
 )
@@ -32,25 +30,4 @@ func CallbackBatch[T any](items *[]T, batchSize int, callback CallbackFunc[T]) e
 		}
 	}
 	return nil
-}
-
-func FetchBatch(context context.Context, batchSize int64, fetchFunc FetchFunc) error {
-	var offset int64
-	offset = 0
-	for {
-		select {
-		case <-context.Done():
-			logrus.Error("Process was canceled")
-			break
-		default:
-			count, err := fetchFunc(offset, batchSize)
-			if err != nil {
-				return err
-			}
-			if count < batchSize {
-				return nil
-			}
-			offset += batchSize
-		}
-	}
 }
