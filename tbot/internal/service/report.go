@@ -56,6 +56,28 @@ func getClusterHeaders() []string {
 	}
 }
 
+func getItemHeaders() []string {
+	return []string{"Кабинет",
+		"Площадка",
+		"ID товара",
+		"Наименование",
+		"Артикул",
+		"Артикул 1С",
+		"Штрихкод",
+		"Выведенная позиция",
+		"Комплект, шт",
+		"Продажи за 30 дней, шт",
+		"Продажи за 5 дней, шт",
+		"Продажи за 5 дней неделю назад, шт",
+		"Дней в дефектуре за 30 дней",
+		"Дней в дефектуре за 5 дней",
+		"Прогноз продаж на 30 дней, шт",
+		"В поставке, шт",
+		"Нужно поставить, шт",
+		"Текущий остаток товара, шт",
+	}
+}
+
 func toChar(i int) string {
 	return string('A' + i)
 }
@@ -63,6 +85,7 @@ func toChar(i int) string {
 type reportRepository interface {
 	GetReport(date time.Time) (*[]report.Report, error)
 	GetReportByCluster(date time.Time) (*[]report.ReportByCluster, error)
+	GetReportByItem(date time.Time) (*[]report.ReportByItem, error)
 }
 
 type ReportService struct {
@@ -165,6 +188,49 @@ func (r *ReportService) Print(date time.Time, finaName string) error {
 		f.SetCellValue(activeSheet, fmt.Sprintf("T%d", index+3), report.Quantity)
 	}
 	f.SetSheetName(activeSheet, fmt.Sprintf(`Отчет по кластерам %s`, date.Format("02.01.2006")))
+
+	sheetIndex, err := f.NewSheet("Сводный отчет")
+	if err != nil {
+		return err
+	}
+	sheetName := f.GetSheetName(sheetIndex)
+	headers = getItemHeaders()
+	for index, header := range headers {
+		f.SetCellValue(sheetName, fmt.Sprintf("%s2", toChar(index)), header)
+	}
+	items, err := r.repository.GetReportByItem(date)
+	if err != nil {
+		return err
+	}
+	for index, item := range *items {
+		f.SetCellValue(sheetName, fmt.Sprintf("A%d", index+3), item.OwnerCode)
+		f.SetCellValue(sheetName, fmt.Sprintf("B%d", index+3), item.Source)
+		f.SetCellValue(sheetName, fmt.Sprintf("C%d", index+3), item.ExternalCode)
+		f.SetCellValue(sheetName, fmt.Sprintf("D%d", index+3), item.ItemName)
+		f.SetCellValue(sheetName, fmt.Sprintf("E%d", index+3), item.SupplierArticle)
+		f.SetCellValue(sheetName, fmt.Sprintf("F%d", index+3), item.ItemId)
+		f.SetCellValue(sheetName, fmt.Sprintf("G%d", index+3), item.Barcode)
+		f.SetCellValue(sheetName, fmt.Sprintf("H%d", index+3), ifBool(item.IsExcluded))
+
+		f.SetCellValue(sheetName, fmt.Sprintf("J%d", index+3), item.Quantity30)
+		f.SetCellValue(sheetName, fmt.Sprintf("K%d", index+3), item.Quantity5)
+
+		f.SetCellValue(sheetName, fmt.Sprintf("M%d", index+3), item.Def30)
+		f.SetCellValue(sheetName, fmt.Sprintf("N%d", index+3), item.Def5)
+		f.SetCellValue(sheetName, fmt.Sprintf("O%d", index+3), item.ForecastOrder30)
+
+		f.SetCellValue(sheetName, fmt.Sprintf("R%d", index+3), item.Quantity)
+	}
+	f.AutoFilter(sheetName, "A2:R2", []excelize.AutoFilterOptions{})
+	err = f.SetPanes(sheetName, &excelize.Panes{
+		Freeze:      true,
+		TopLeftCell: "B3",
+		YSplit:      2,
+		ActivePane:  "bottomLeft",
+	})
+	if err != nil {
+		fmt.Println(err)
+	}
 
 	// Set active sheet of the workbook.
 	// Save spreadsheet by the given path.

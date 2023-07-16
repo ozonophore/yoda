@@ -12,6 +12,10 @@ type reportService interface {
 	CalcReport(day time.Time) error
 }
 
+type reportByItemService interface {
+	CalcReportByItem(day time.Time) error
+}
+
 type reportByCluesterService interface {
 	CalcReportByClusters(day time.Time) error
 }
@@ -19,6 +23,18 @@ type reportByCluesterService interface {
 type ReportStep struct {
 	service reportService
 	logger  *logrus.Logger
+}
+
+type ReportByItemStep struct {
+	service reportByItemService
+	logger  *logrus.Logger
+}
+
+func NewReportByItemStep(service reportByItemService, logg *logrus.Logger) *ReportByItemStep {
+	return &ReportByItemStep{
+		service: service,
+		logger:  logg,
+	}
 }
 
 func NewReportStep(service reportService, logg *logrus.Logger) *ReportStep {
@@ -60,4 +76,15 @@ func (d *ReportByClustersStep) Do(ctx context.Context, deps *map[string]pipeline
 	date := status.Value.(time.Time)
 	d.logger.Debugf("ReporClustertStep: %s", date)
 	return nil, d.service.CalcReportByClusters(date)
+}
+
+func (d *ReportByItemStep) Do(ctx context.Context, deps *map[string]pipeline.Stage, e error) (interface{}, error) {
+	ps, ok := (*deps)["stock-daily-aggregator"]
+	if !ok {
+		return nil, errors.New("stock-daily-aggregator not found")
+	}
+	status := ps.GetStatus()
+	date := status.Value.(time.Time)
+	d.logger.Debugf("ReporByItemStep: %s", date)
+	return nil, d.service.CalcReportByItem(date)
 }

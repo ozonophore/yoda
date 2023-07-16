@@ -11,6 +11,8 @@ type stockDAOInterface interface {
 	CalcReport(day time.Time) error
 	CalcDefByClusters(day time.Time) error
 	CalcReportByClusters(day time.Time) error
+	CalcDefByItem(day time.Time) error
+	CalcReportByItem(day time.Time) error
 	SetNotification(msg, sender, mtype string) error
 }
 
@@ -42,6 +44,10 @@ func (s *StockService) CalcDefByClusters(day time.Time) error {
 	return s.dao.CalcDefByClusters(day)
 }
 
+func (s *StockService) CalcDefByItem(day time.Time) error {
+	return s.dao.CalcDefByItem(day)
+}
+
 func (s *StockService) CalcReportByClusters(day time.Time) error {
 	i := 0
 	for {
@@ -50,6 +56,21 @@ func (s *StockService) CalcReportByClusters(day time.Time) error {
 			return nil
 		}
 		s.logger.Errorf("attept %d of CalcReportByClusters failed: %s", i, err)
+		i++
+		if i > 3 {
+			return err
+		}
+	}
+}
+
+func (s *StockService) CalcReportByItem(day time.Time) error {
+	i := 0
+	for {
+		err := s.dao.CalcReportByItem(day)
+		if err == nil {
+			return nil
+		}
+		s.logger.Errorf("attept %d of CalcReportByItem failed: %s", i, err)
 		i++
 		if i > 3 {
 			return err

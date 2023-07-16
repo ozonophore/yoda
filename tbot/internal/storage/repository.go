@@ -54,7 +54,7 @@ func NewRepository(config configuration.Database) *Repository {
 
 func (r *Repository) GetReport(date time.Time) (*[]report.Report, error) {
 	var reports []report.Report
-	err := r.db.Model(&report.Report{}).Where(`"report_date" = ?`, date).Find(&reports).Error
+	err := r.db.Model(&report.Report{}).Where(`"report_date" = ?`, date.Format(time.DateOnly)).Find(&reports).Error
 	if err != nil {
 		return nil, err
 	}
@@ -63,7 +63,16 @@ func (r *Repository) GetReport(date time.Time) (*[]report.Report, error) {
 
 func (r *Repository) GetReportByCluster(date time.Time) (*[]report.ReportByCluster, error) {
 	var reports []report.ReportByCluster
-	err := r.db.Model(&report.ReportByCluster{}).Where(`"report_date" = ?`, date).Find(&reports).Error
+	err := r.db.Model(&report.ReportByCluster{}).Where(`"report_date" = ?`, date.Format(time.DateOnly)).Find(&reports).Error
+	if err != nil {
+		return nil, err
+	}
+	return &reports, nil
+}
+
+func (r *Repository) GetReportByItem(date time.Time) (*[]report.ReportByItem, error) {
+	var reports []report.ReportByItem
+	err := r.db.Model(&report.ReportByItem{}).Where(`"report_date" = ?`, date.Format(time.DateOnly)).Find(&reports).Error
 	if err != nil {
 		return nil, err
 	}

@@ -2,5 +2,5 @@ database:
 #  logging_level: info
   dsn: postgresql://user:password@212.48.159.224:5432/db
 #  dsn: postgres://user:password@localhost:5432/db
-logging_level: debug
+  logging_level: info
 token: "6166076058:AAHrXZ8rjFDmIME2LdoSeduaiwB1MXAf8TA"

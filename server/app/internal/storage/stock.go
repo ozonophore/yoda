@@ -46,6 +46,14 @@ func (s *Repository) CalcDefByClusters(day time.Time) error {
 	return nil
 }
 
+func (s *Repository) CalcDefByItem(day time.Time) error {
+	err := s.db.Exec("call dl.calc_stock_item_def_by_day(?)", day).Error
+	if err != nil {
+		return fmt.Errorf("call calc_stock_item_def_by_day with date %s error: %w", day, err)
+	}
+	return nil
+}
+
 func (s *Repository) CalcReport(day time.Time) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Minute)
 	defer cancel()
@@ -58,6 +66,22 @@ func (s *Repository) CalcReport(day time.Time) error {
 	logrus.Debugf("End calc report %s", time.Since(startTime))
 	if err != nil {
 		return fmt.Errorf("call calc_sales_stock_by_day with date %s error: %w", day, err)
+	}
+	return nil
+}
+
+func (s *Repository) CalcReportByItem(day time.Time) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Minute)
+	defer cancel()
+	startTime := time.Now()
+	logrus.Debugf("Start calc report %s", startTime)
+	err := s.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		err := tx.Exec("call dl.calc_report_by_item(?)", day).Error
+		return err
+	})
+	logrus.Debugf("End calc report by Item %s", time.Since(startTime))
+	if err != nil {
+		return fmt.Errorf("call calc_report_by_item with date %s error: %w", day, err)
 	}
 	return nil
 }
