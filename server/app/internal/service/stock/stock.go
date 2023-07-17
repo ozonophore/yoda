@@ -37,7 +37,18 @@ func (s *StockService) CalcDef(day time.Time) error {
 }
 
 func (s *StockService) CalcReport(day time.Time) error {
-	return s.dao.CalcReport(day)
+	i := 0
+	for {
+		err := s.dao.CalcReport(day)
+		if err == nil {
+			return nil
+		}
+		s.logger.Errorf("attept %d of CalcReport failed: %s", i, err)
+		i++
+		if i > 3 {
+			return err
+		}
+	}
 }
 
 func (s *StockService) CalcDefByClusters(day time.Time) error {
