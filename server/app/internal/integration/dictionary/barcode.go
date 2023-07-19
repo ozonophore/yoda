@@ -37,9 +37,11 @@ func UpdateBarcode() error {
 		return nil
 	}
 	actualCount := storage.GetBarcodeCount()
-	if int32(actualCount) >= result.Count {
+	if int32(actualCount) == result.Count {
+		logrus.Debug("No new barcodes")
 		return nil
 	}
+	logrus.Debug("Start save barcodes")
 	items := result.Items
 	var barcodes = make([]model.Barcode, len(items))
 	for i, item := range items {
