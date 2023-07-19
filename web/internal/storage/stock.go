@@ -20,7 +20,6 @@ func (s *Storage) GetStocksByDate(date time.Time) (*[]Stock, error) {
 			select o.name owner_code, o.organisation_id, t.source, m.marketplace_id, barcode, quantity
 			from t
 			inner join ml.marketplace m on m.code = t.source
-			inner join ml.owner o on o.code = t.owner_code
 			inner join ml.owner o on o.code = t.owner_code`, date.Format(time.DateOnly)).Scan(&stocks).Error
 	if err != nil {
 		return nil, err
