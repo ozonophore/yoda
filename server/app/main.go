@@ -154,6 +154,7 @@ func startStockAggregator(db *gorm.DB, sch *gocron.Scheduler, config *configurat
 	stageNotification := pipeline.NewSimpleStageWithTag(stage.NewNotifyStep(srv, config.Sender, logger), "notification").AddSubscriber(interceptor)
 	stageRepCluster.AddNext(stageNotification)
 	repStage.AddNext(stageNotification)
+	stageRepItem.AddNext(stageNotification)
 
 	sj, err := sch.Every(1).Day().At(atTime).Tag("2").Do(func() {
 		pipe := pipeline.NewPipeline()
