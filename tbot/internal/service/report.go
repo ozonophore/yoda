@@ -75,6 +75,7 @@ func getItemHeaders() []string {
 		"В поставке, шт",
 		"Нужно поставить, шт",
 		"Текущий остаток товара, шт",
+		"Текущий остаток из 1С товара, шт",
 	}
 }
 
@@ -220,11 +221,12 @@ func (r *ReportService) Print(date time.Time, finaName string) error {
 		f.SetCellValue(sheetName, fmt.Sprintf("O%d", index+3), item.ForecastOrder30)
 
 		f.SetCellValue(sheetName, fmt.Sprintf("R%d", index+3), item.Quantity)
+		f.SetCellValue(sheetName, fmt.Sprintf("R%d", index+3), item.Quantity1С)
 	}
 	f.AutoFilter(sheetName, "A2:R2", []excelize.AutoFilterOptions{})
 	err = f.SetPanes(sheetName, &excelize.Panes{
 		Freeze:      true,
-		TopLeftCell: "B3",
+		TopLeftCell: " H3",
 		YSplit:      2,
 		ActivePane:  "bottomLeft",
 	})
