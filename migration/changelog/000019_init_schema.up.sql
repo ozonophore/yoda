@@ -24,7 +24,8 @@ create table dl.report_by_item
     order_by_day5    numeric(10, 2),
     forecast_order5  numeric(10, 2),
     quantity         numeric(10),
-    is_excluded      boolean
+    is_excluded      boolean,
+    quantity1c       numeric(10)
 ) partition by RANGE (report_date);
 
 comment on table dl.report_by_item is 'Отчет по кластерам';
