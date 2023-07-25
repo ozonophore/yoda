@@ -221,13 +221,14 @@ func (r *ReportService) Print(date time.Time, finaName string) error {
 		f.SetCellValue(sheetName, fmt.Sprintf("O%d", index+3), item.ForecastOrder30)
 
 		f.SetCellValue(sheetName, fmt.Sprintf("R%d", index+3), item.Quantity)
-		f.SetCellValue(sheetName, fmt.Sprintf("R%d", index+3), item.Quantity1С)
+		f.SetCellValue(sheetName, fmt.Sprintf("S%d", index+3), item.Quantity1С)
 	}
 	f.AutoFilter(sheetName, "A2:R2", []excelize.AutoFilterOptions{})
 	err = f.SetPanes(sheetName, &excelize.Panes{
 		Freeze:      true,
-		TopLeftCell: " H3",
+		TopLeftCell: "F3",
 		YSplit:      2,
+		XSplit:      5,
 		ActivePane:  "bottomLeft",
 	})
 	if err != nil {
