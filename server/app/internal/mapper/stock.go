@@ -15,6 +15,14 @@ func MapStockItem(s *api.StocksItem) (*model.StockItem, error) {
 	externalCode := strconv.Itoa(*s.NmId)
 	changeDate := types.CustomTimeToTime(s.LastChangeDate)
 	qp := int32(0)
+	var cardCreated *time.Time
+	if changeDate != nil {
+		dt := changeDate.AddDate(0, 0, *s.DaysOnSite*-1)
+		cardCreated = &dt
+	} else {
+		dt := time.Now()
+		cardCreated = &dt
+	}
 	return &model.StockItem{
 		TransactionDate:  time.Now(),
 		LastChangeDate:   *changeDate,
@@ -35,7 +43,7 @@ func MapStockItem(s *api.StocksItem) (*model.StockItem, error) {
 		DaysOnSite:       utils.IntToInt32(s.DaysOnSite),
 		IsRealization:    s.IsRealization,
 		TechSize:         s.TechSize,
-		CardCreated:      changeDate.AddDate(0, 0, *s.DaysOnSite*-1),
+		CardCreated:      *cardCreated,
 	}, nil
 }
 
