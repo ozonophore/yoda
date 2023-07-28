@@ -16,7 +16,7 @@ func MapStockItem(s *api.StocksItem) (*model.StockItem, error) {
 	changeDate := types.CustomTimeToTime(s.LastChangeDate)
 	qp := int32(0)
 	var cardCreated *time.Time
-	if changeDate != nil {
+	if changeDate != nil && s.DaysOnSite != nil {
 		dt := changeDate.AddDate(0, 0, *s.DaysOnSite*-1)
 		cardCreated = &dt
 	} else {
