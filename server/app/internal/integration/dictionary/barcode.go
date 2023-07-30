@@ -50,7 +50,7 @@ func UpdateBarcode() error {
 		barcodes[i].Barcode = item.Barcode
 		barcodes[i].OrganisationID = item.OrgId
 		barcodes[i].MarketplaceID = item.MarketId
-		barcodes[i].UpdatedAt = item.UpdateAt.ToTime()
+		barcodes[i].UpdatedAt = time.Now()
 	}
 	return errors.Join(storage.SaveOrUpdateBarcodes(&barcodes))
 }

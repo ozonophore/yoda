@@ -1,16 +1,19 @@
 package storage
 
 import (
+	"github.com/sirupsen/logrus"
 	"github.com/yoda/common/pkg/model"
 	"gorm.io/gorm/clause"
 )
 
 func SaveOrUpdateBarcodes(items *[]model.Barcode) error {
 	initIfError()
-	return repository.db.Clauses(clause.OnConflict{
+	tx := repository.db.Clauses(clause.OnConflict{
 		Columns:   []clause.Column{{Name: "barcode_id"}},
-		DoNothing: true,
-	}).CreateInBatches(items, len(*items)).Error
+		DoUpdates: clause.AssignmentColumns([]string{"barcode", "item_id", "marketplace_id", "organisation_id", "updated_at"}),
+	}).CreateInBatches(items, len(*items))
+	logrus.Debug("Added ", tx.RowsAffected, " barcodes")
+	return tx.Error
 }
 
 func GetBarcodeCount() int {

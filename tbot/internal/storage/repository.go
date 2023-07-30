@@ -52,13 +52,16 @@ func NewRepository(config configuration.Database) *Repository {
 	return &Repository{db: db}
 }
 
-func (r *Repository) GetReport(date time.Time) (*[]report.Report, error) {
-	var reports []report.Report
-	err := r.db.Model(&report.Report{}).Where(`"report_date" = ?`, date.Format(time.DateOnly)).Find(&reports).Error
+func (r *Repository) GetReport(date time.Time) (*[]map[string]interface{}, error) {
+	//var reports []report.Report
+	//err := r.db.Model(&report.Report{}).Where(`"report_date" = ?`, date.Format(time.DateOnly)).Find(&reports).Error
+
+	var results []map[string]interface{}
+	err := r.db.Table("dl.sales_stock").Where(`"report_date" = ?`, date.Format(time.DateOnly)).Find(&results).Error
 	if err != nil {
 		return nil, err
 	}
-	return &reports, nil
+	return &results, nil
 }
 
 func (r *Repository) GetReportByCluster(date time.Time) (*[]report.ReportByCluster, error) {
