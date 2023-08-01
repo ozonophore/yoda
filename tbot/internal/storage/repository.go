@@ -4,7 +4,6 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/yoda/tnot/internal/configuration"
 	"github.com/yoda/tnot/internal/storage/notification"
-	"github.com/yoda/tnot/internal/storage/report"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -53,9 +52,6 @@ func NewRepository(config configuration.Database) *Repository {
 }
 
 func (r *Repository) GetReport(date time.Time) (*[]map[string]interface{}, error) {
-	//var reports []report.Report
-	//err := r.db.Model(&report.Report{}).Where(`"report_date" = ?`, date.Format(time.DateOnly)).Find(&reports).Error
-
 	var results []map[string]interface{}
 	err := r.db.Table("dl.sales_stock").Where(`"report_date" = ?`, date.Format(time.DateOnly)).Find(&results).Error
 	if err != nil {
@@ -64,22 +60,22 @@ func (r *Repository) GetReport(date time.Time) (*[]map[string]interface{}, error
 	return &results, nil
 }
 
-func (r *Repository) GetReportByCluster(date time.Time) (*[]report.ReportByCluster, error) {
-	var reports []report.ReportByCluster
-	err := r.db.Model(&report.ReportByCluster{}).Where(`"report_date" = ?`, date.Format(time.DateOnly)).Find(&reports).Error
+func (r *Repository) GetReportByCluster(date time.Time) (*[]map[string]interface{}, error) {
+	var results []map[string]interface{}
+	err := r.db.Table("dl.report_by_cluster").Where(`"report_date" = ?`, date.Format(time.DateOnly)).Find(&results).Error
 	if err != nil {
 		return nil, err
 	}
-	return &reports, nil
+	return &results, nil
 }
 
-func (r *Repository) GetReportByItem(date time.Time) (*[]report.ReportByItem, error) {
-	var reports []report.ReportByItem
-	err := r.db.Model(&report.ReportByItem{}).Where(`"report_date" = ?`, date.Format(time.DateOnly)).Find(&reports).Error
+func (r *Repository) GetReportByItem(date time.Time) (*[]map[string]interface{}, error) {
+	var results []map[string]interface{}
+	err := r.db.Table("dl.report_by_item").Where(`"report_date" = ?`, date.Format(time.DateOnly)).Find(&results).Error
 	if err != nil {
 		return nil, err
 	}
-	return &reports, nil
+	return &results, nil
 }
 
 func (r *Repository) AddGroup(userName, groupName string, chatId int64) error {

@@ -44,6 +44,10 @@ func repeat() {
 		logger.Error(err)
 		return
 	}
+	if ntfc == nil || len(*ntfc) == 0 {
+		logger.Debug("No notifications")
+		return
+	}
 	logger.Debugf("Unconfirmed notifications: %d", len(*ntfc))
 	for _, n := range *ntfc {
 		sender := notificator.GetSender()
