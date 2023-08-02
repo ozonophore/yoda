@@ -410,7 +410,10 @@ func (c *OzonService) parseFBO(FBOResponse *api.GetOzonFBOResponse, transactionI
 	}
 
 	for _, item := range *FBOItems {
-		o := mapper.MapFBOToOrder(&item, transactionId, source, ownerCode, searchFun, decoder)
+		o, err := mapper.MapFBOToOrder(&item, transactionId, source, ownerCode, searchFun, decoder)
+		if err != nil {
+			return 0, fmt.Errorf("Couldn't map a value at row %s (%w)", item, err)
+		}
 		orders = append(orders, *o...)
 	}
 	if err := storage.SaveOrders(&orders); err != nil {

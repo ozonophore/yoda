@@ -2,20 +2,19 @@ package mapper
 
 import (
 	"fmt"
-	"github.com/sirupsen/logrus"
 	"github.com/yoda/app/internal/api"
 	"github.com/yoda/app/internal/service/dictionary"
 	"github.com/yoda/common/pkg/model"
 	"time"
 )
 
-func MapFBOToOrder(fbo *api.FBO, transactionId int64, source string, ownerCode string, cache func(int64) *string, decoder *dictionary.ItemDecoder) *[]model.Order {
+func MapFBOToOrder(fbo *api.FBO, transactionId int64, source string, ownerCode string, cache func(int64) *string, decoder *dictionary.ItemDecoder) (*[]model.Order, error) {
 	var orders = make([]model.Order, len(*fbo.Products))
 	var finData = make(map[int64]*api.PostingFinancialDataProduct)
 
 	finDate := fbo.FinancialData
 	if finDate == nil || fbo.FinancialData.Products == nil {
-		logrus.Panicf("Financial data is empty for order %d", *fbo.OrderId)
+		return nil, fmt.Errorf("financial data is empty for order %d", *fbo.OrderId)
 	}
 	for _, f := range *finDate.Products {
 		finData[f.ProductId] = &f
@@ -73,5 +72,5 @@ func MapFBOToOrder(fbo *api.FBO, transactionId int64, source string, ownerCode s
 			Message:           message,
 		}
 	}
-	return &orders
+	return &orders, nil
 }
