@@ -2,6 +2,7 @@ package mapper
 
 import (
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"github.com/yoda/app/internal/api"
 	"github.com/yoda/app/internal/service/dictionary"
 	"github.com/yoda/common/pkg/model"
@@ -12,7 +13,11 @@ func MapFBOToOrder(fbo *api.FBO, transactionId int64, source string, ownerCode s
 	var orders = make([]model.Order, len(*fbo.Products))
 	var finData = make(map[int64]*api.PostingFinancialDataProduct)
 
-	for _, f := range *fbo.FinancialData.Products {
+	finDate := fbo.FinancialData
+	if finDate == nil || fbo.FinancialData.Products == nil {
+		logrus.Panicf("Financial data is empty for order %d", *fbo.OrderId)
+	}
+	for _, f := range *finDate.Products {
 		finData[f.ProductId] = &f
 	}
 	gNumber := fmt.Sprintf(`%d`, *fbo.OrderId)
