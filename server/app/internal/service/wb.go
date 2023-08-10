@@ -125,13 +125,13 @@ func (c *WBService) extractOrdersAndSales(ctx context.Context, transactionID int
 }
 
 func (c *WBService) extractSales(ctx context.Context, transactionID int64, clnt *api.ClientWithResponses, df time.Time, source string) (int, error) {
-	ctxt, _ := context.WithTimeout(ctx, time.Duration(c.config.Timeout)*time.Second)
 	flag := 0
 	dateFrom := types.CustomTime(df)
 	i := 0
 	var respSales *api.GetWBSalesResponse
 	var err error
 	for {
+		ctxt, _ := context.WithTimeout(ctx, time.Duration(c.config.Timeout)*time.Second)
 		respSales, err = clnt.GetWBSalesWithResponse(ctxt, &api.GetWBSalesParams{
 			DateFrom: dateFrom,
 			Flag:     &flag,
@@ -146,6 +146,7 @@ func (c *WBService) extractSales(ctx context.Context, transactionID int64, clnt 
 		}
 	}
 	if err != nil {
+		logrus.Debugf("Sales error: %s", err.Error())
 		return 0, err
 	}
 	if respSales.StatusCode() != 200 {
