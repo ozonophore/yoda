@@ -178,93 +178,93 @@ func drawBody(sheet string, header *[]column, data *[]map[string]interface{}, f 
 	}
 }
 
-func (r *ReportService) Print(date time.Time, finaName string) error {
+func (r *ReportService) Print(date time.Time, fileName string) error {
 	f := excelize.NewFile()
 	defer func() {
 		if err := f.Close(); err != nil {
 			fmt.Println(err)
 		}
 	}()
-
-	headersByWarehouses := getHeaders()
-	// Draw  the header
-	activeSheet := "Sheet1"
-	drawHeaders(activeSheet, headersByWarehouses, f)
-	f.SetPanes(activeSheet, &excelize.Panes{
-		Freeze:      true,
-		TopLeftCell: fmt.Sprintf("%s3", toChar(9)),
-		Split:       true,
-		XSplit:      9,
-		YSplit:      2,
-		ActivePane:  "bottomLeft",
-	})
-
-	//Fill the body
-	reports, err := r.repository.GetReport(date)
-	if err != nil {
-		return err
-	}
-	drawBody(activeSheet, &headersByWarehouses, reports, f)
-	f.SetPanes(activeSheet, &excelize.Panes{
-		Freeze:      true,
-		TopLeftCell: fmt.Sprintf("%s3", toChar(9)),
-		Split:       true,
-		XSplit:      9,
-		YSplit:      2,
-		ActivePane:  "bottomLeft",
-	})
-	f.SetSheetName(activeSheet, fmt.Sprintf(`Отчет %s`, date.Format("02.01.2006")))
-
-	// Draw the second sheet
-	sheetIndex, err := f.NewSheet(activeSheet)
-	if err != nil {
-		return err
-	}
-	activeSheet = f.GetSheetName(sheetIndex)
-
-	headers := getClusterHeaders()
-	drawHeaders(activeSheet, headers, f)
-	clusters, err := r.repository.GetReportByCluster(date)
-	if err != nil {
-		return err
-	}
-	drawBody(activeSheet, &headers, clusters, f)
-
-	f.SetPanes(activeSheet, &excelize.Panes{
-		Freeze:      true,
-		TopLeftCell: fmt.Sprintf("%s3", toChar(9)),
-		Split:       true,
-		XSplit:      9,
-		YSplit:      2,
-		ActivePane:  "bottomLeft",
-	})
-	f.SetSheetName(activeSheet, fmt.Sprintf(`Отчет по кластерам %s`, date.Format("02.01.2006")))
-
-	sheetIndex, err = f.NewSheet("Сводный отчет")
-	if err != nil {
-		return err
-	}
-	activeSheet = f.GetSheetName(sheetIndex)
-	headers = getItemHeaders()
-	drawHeaders(activeSheet, headers, f)
-	items, err := r.repository.GetReportByItem(date)
-	if err != nil {
-		return err
-	}
-	drawBody(activeSheet, &headers, items, f)
-
-	err = f.SetPanes(activeSheet, &excelize.Panes{
-		Freeze:      true,
-		TopLeftCell: "I3",
-		YSplit:      2,
-		XSplit:      8,
-		ActivePane:  "bottomLeft",
-	})
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	// Set active sheet of the workbook.
-	// Save spreadsheet by the given path.
-	return f.SaveAs(finaName)
+	//
+	//headersByWarehouses := getHeaders()
+	//// Draw  the header
+	//activeSheet := "Sheet1"
+	//drawHeaders(activeSheet, headersByWarehouses, f)
+	//f.SetPanes(activeSheet, &excelize.Panes{
+	//	Freeze:      true,
+	//	TopLeftCell: fmt.Sprintf("%s3", toChar(9)),
+	//	Split:       true,
+	//	XSplit:      9,
+	//	YSplit:      2,
+	//	ActivePane:  "bottomLeft",
+	//})
+	//
+	////Fill the body
+	//reports, err := r.repository.GetReport(date)
+	//if err != nil {
+	//	return err
+	//}
+	//drawBody(activeSheet, &headersByWarehouses, reports, f)
+	//f.SetPanes(activeSheet, &excelize.Panes{
+	//	Freeze:      true,
+	//	TopLeftCell: fmt.Sprintf("%s3", toChar(9)),
+	//	Split:       true,
+	//	XSplit:      9,
+	//	YSplit:      2,
+	//	ActivePane:  "bottomLeft",
+	//})
+	//f.SetSheetName(activeSheet, fmt.Sprintf(`Отчет %s`, date.Format("02.01.2006")))
+	//
+	//// Draw the second sheet
+	//sheetIndex, err := f.NewSheet(activeSheet)
+	//if err != nil {
+	//	return err
+	//}
+	//activeSheet = f.GetSheetName(sheetIndex)
+	//
+	//headers := getClusterHeaders()
+	//drawHeaders(activeSheet, headers, f)
+	//clusters, err := r.repository.GetReportByCluster(date)
+	//if err != nil {
+	//	return err
+	//}
+	//drawBody(activeSheet, &headers, clusters, f)
+	//
+	//f.SetPanes(activeSheet, &excelize.Panes{
+	//	Freeze:      true,
+	//	TopLeftCell: fmt.Sprintf("%s3", toChar(9)),
+	//	Split:       true,
+	//	XSplit:      9,
+	//	YSplit:      2,
+	//	ActivePane:  "bottomLeft",
+	//})
+	//f.SetSheetName(activeSheet, fmt.Sprintf(`Отчет по кластерам %s`, date.Format("02.01.2006")))
+	//
+	//sheetIndex, err = f.NewSheet("Сводный отчет")
+	//if err != nil {
+	//	return err
+	//}
+	//activeSheet = f.GetSheetName(sheetIndex)
+	//headers = getItemHeaders()
+	//drawHeaders(activeSheet, headers, f)
+	//items, err := r.repository.GetReportByItem(date)
+	//if err != nil {
+	//	return err
+	//}
+	//drawBody(activeSheet, &headers, items, f)
+	//
+	//err = f.SetPanes(activeSheet, &excelize.Panes{
+	//	Freeze:      true,
+	//	TopLeftCell: "I3",
+	//	YSplit:      2,
+	//	XSplit:      8,
+	//	ActivePane:  "bottomLeft",
+	//})
+	//if err != nil {
+	//	fmt.Println(err)
+	//}
+	//
+	//// Set active sheet of the workbook.
+	//// Save spreadsheet by the given path.
+	return f.SaveAs(fileName)
 }
