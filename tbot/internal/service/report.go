@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"github.com/xuri/excelize/v2"
 	"time"
 )
@@ -567,7 +568,7 @@ func getRoomHeader() []groupColumn {
 func toChar(i int) string {
 	value := string('A' + i)
 	if i > 25 {
-		value = "A" + string('A'+i-26)
+		value = "A" + string(i)
 	}
 	return value
 }
@@ -660,7 +661,10 @@ func drawGroupHeaders(sheet string, headers []groupColumn, f *excelize.File) {
 }
 
 func drawHeaders(sheet string, headers []column, f *excelize.File) {
-	headerStyle, _ := f.NewStyle(getHeaderStyle())
+	headerStyle, err := f.NewStyle(getHeaderStyle())
+	if err != nil {
+		logrus.Errorf("Can't create style of header")
+	}
 	for index, header := range headers {
 		cell := fmt.Sprintf("%s2", toChar(index))
 		f.SetCellValue(sheet, cell, header.title)
@@ -669,7 +673,10 @@ func drawHeaders(sheet string, headers []column, f *excelize.File) {
 		f.SetColWidth(sheet, "A", toChar(index), header.width)
 	}
 	lastColName := toChar(len(headers) - 1)
-	f.AutoFilter(sheet, fmt.Sprintf("A2:%s2", lastColName), []excelize.AutoFilterOptions{})
+	err = f.AutoFilter(sheet, fmt.Sprintf("A2:%s2", lastColName), []excelize.AutoFilterOptions{})
+	if err != nil {
+		logrus.Errorf("Couldn't set AutoFilter")
+	}
 }
 
 func drawBody(sheet string, header *[]column, data *[]map[string]interface{}, f *excelize.File) {
