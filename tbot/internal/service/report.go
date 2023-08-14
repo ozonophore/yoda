@@ -568,7 +568,7 @@ func getRoomHeader() []groupColumn {
 func toChar(i int) string {
 	value := string('A' + i)
 	if i > 25 {
-		value = "A" + string(i)
+		value = "A" + string(i-26)
 	}
 	return value
 }
@@ -637,19 +637,19 @@ func getCellStyle(color string) *excelize.Style {
 }
 
 func drawGroupHeaders(sheet string, headers []groupColumn, f *excelize.File) {
-	headerStyle, _ := f.NewStyle(getHeaderStyle())
+	//headerStyle, _ := f.NewStyle(getHeaderStyle())
 
 	prevGroup := ""
 	for index, header := range headers {
 		cell := fmt.Sprintf("%s3", toChar(index))
 		f.SetCellValue(sheet, cell, header.title)
-		f.SetCellStyle(sheet, cell, cell, headerStyle)
+		//f.SetCellStyle(sheet, cell, cell, headerStyle)
 
 		f.SetColWidth(sheet, "A", toChar(index), header.width)
 
 		if header.group != "" {
 			f.SetCellValue(sheet, fmt.Sprintf("%s2", toChar(index)), header.group)
-			f.SetCellStyle(sheet, fmt.Sprintf("%s2", toChar(index)), fmt.Sprintf("%s2", toChar(index)), headerStyle)
+			//f.SetCellStyle(sheet, fmt.Sprintf("%s2", toChar(index)), fmt.Sprintf("%s2", toChar(index)), headerStyle)
 		}
 		if prevGroup != "" && prevGroup == header.group {
 			f.MergeCell(sheet, fmt.Sprintf("%s2", toChar(index-1)), fmt.Sprintf("%s2", toChar(index)))
