@@ -46,6 +46,41 @@ func (s *Repository) CalcDefByClusters(day time.Time) error {
 	return nil
 }
 
+// Дефектура по продукту
+func (s *Repository) CalcDefByProduct(day time.Time) error {
+	err := s.db.Exec("call dl.calc_item_def_by_day(?)", day).Error
+	if err != nil {
+		return fmt.Errorf("call calc_stock_item_def_by_day with date %s error: %w", day, err)
+	}
+	return nil
+}
+
+// Отчет по продутку
+func (s *Repository) CalcReportByProduct(day time.Time) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Minute)
+	defer cancel()
+	startTime := time.Now()
+	logrus.Debugf("Start calc report(calc_report_by_product) %s", startTime)
+	err := s.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		err := tx.Exec("call dl.calc_report_by_product(?)", day).Error
+		return err
+	})
+	logrus.Debugf("End calc report(calc_report_by_product) %s", time.Since(startTime))
+	if err != nil {
+		return fmt.Errorf("call calc_report_by_product with date %s error: %w", day, err)
+	}
+	return nil
+}
+
+// Дефектура по кабинетам
+func (s *Repository) CalcDefByOwner(day time.Time) error {
+	err := s.db.Exec("call dl.calc_item_owner_def_by_day(?)", day).Error
+	if err != nil {
+		return fmt.Errorf("call calc_stock_item_def_by_day with date %s error: %w", day, err)
+	}
+	return nil
+}
+
 func (s *Repository) CalcDefByItem(day time.Time) error {
 	err := s.db.Exec("call dl.calc_stock_item_def_by_day(?)", day).Error
 	if err != nil {

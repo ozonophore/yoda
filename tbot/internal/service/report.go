@@ -808,22 +808,22 @@ func (r *ReportService) Print(date time.Time, finaName string) error {
 		ActivePane:  "bottomLeft",
 	})
 	//-------------------
-	sheetIndex, err = f.NewSheet("На уровне кабинетов")
-	if err != nil {
-		return err
-	}
-	activeSheet = f.GetSheetName(sheetIndex)
-	groupHeaders = getRoomHeader()
-	drawGroupHeaders(activeSheet, groupHeaders, f)
-
-	f.SetPanes(activeSheet, &excelize.Panes{
-		Freeze:      true,
-		TopLeftCell: fmt.Sprintf("%s4", toChar(5)),
-		Split:       true,
-		XSplit:      5,
-		YSplit:      3,
-		ActivePane:  "bottomLeft",
-	})
+	//sheetIndex, err = f.NewSheet("На уровне кабинетов")
+	//if err != nil {
+	//	return err
+	//}
+	//activeSheet = f.GetSheetName(sheetIndex)
+	//groupHeaders = getRoomHeader()
+	//drawGroupHeaders(activeSheet, groupHeaders, f)
+	//
+	//f.SetPanes(activeSheet, &excelize.Panes{
+	//	Freeze:      true,
+	//	TopLeftCell: fmt.Sprintf("%s4", toChar(5)),
+	//	Split:       true,
+	//	XSplit:      5,
+	//	YSplit:      3,
+	//	ActivePane:  "bottomLeft",
+	//})
 	// Set active sheet of the workbook.
 	// Save spreadsheet by the given path.
 	return f.SaveAs(finaName)

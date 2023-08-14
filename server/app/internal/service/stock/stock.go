@@ -14,6 +14,9 @@ type stockDAOInterface interface {
 	CalcDefByItem(day time.Time) error
 	CalcReportByItem(day time.Time) error
 	SetNotification(msg, sender, mtype string) error
+
+	CalcDefByProduct(day time.Time) error
+	CalcReportByProduct(day time.Time) error
 }
 
 type StockService struct {
@@ -57,6 +60,18 @@ func (s *StockService) CalcDefByClusters(day time.Time) error {
 
 func (s *StockService) CalcDefByItem(day time.Time) error {
 	return s.dao.CalcDefByItem(day)
+}
+
+func (s *StockService) CalcDefAndReportByProduct(day time.Time) error {
+	err := s.dao.CalcDefByProduct(day)
+	if err != nil {
+		return err
+	}
+	err = s.dao.CalcReportByProduct(day)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (s *StockService) CalcReportByClusters(day time.Time) error {

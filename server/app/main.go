@@ -17,6 +17,7 @@ import (
 	service "github.com/yoda/app/internal/service/stock"
 	"github.com/yoda/app/internal/stage"
 	integration2 "github.com/yoda/app/internal/stage/integration"
+	"github.com/yoda/app/internal/stage/product"
 	"github.com/yoda/app/internal/stage/stock"
 	"github.com/yoda/app/internal/storage"
 	"github.com/yoda/app/internal/timer"
@@ -155,6 +156,10 @@ func startStockAggregator(db *gorm.DB, sch *gocron.Scheduler, config *configurat
 	stageRepCluster.AddNext(stageNotification)
 	repStage.AddNext(stageNotification)
 	stageRepItem.AddNext(stageNotification)
+
+	stageProduct := pipeline.NewSimpleStageWithTag(product.NewProductStep(srv, logger), "def-item").AddSubscriber(interceptor)
+	stg.AddNext(stageProduct)
+	stageProduct.AddNext(stageNotification)
 
 	sj, err := sch.Every(1).Day().At(atTime).Tag("2").Do(func() {
 		pipe := pipeline.NewPipeline()
