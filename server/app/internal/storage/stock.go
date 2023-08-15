@@ -57,7 +57,7 @@ func (s *Repository) CalcDefByProduct(day time.Time) error {
 
 // Отчет по продутку
 func (s *Repository) CalcReportByProduct(day time.Time) error {
-	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Minute)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
 	defer cancel()
 	startTime := time.Now()
 	logrus.Debugf("Start calc report(calc_report_by_product) %s", startTime)

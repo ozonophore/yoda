@@ -157,7 +157,7 @@ func startStockAggregator(db *gorm.DB, sch *gocron.Scheduler, config *configurat
 	repStage.AddNext(stageNotification)
 	stageRepItem.AddNext(stageNotification)
 
-	stageProduct := pipeline.NewSimpleStageWithTag(product.NewProductStep(srv, logger), "def-item").AddSubscriber(interceptor)
+	stageProduct := pipeline.NewSimpleStageWithTag(product.NewProductStep(srv, logger), "report-by-product").AddSubscriber(interceptor)
 	stg.AddNext(stageProduct)
 	stageProduct.AddNext(stageNotification)
 

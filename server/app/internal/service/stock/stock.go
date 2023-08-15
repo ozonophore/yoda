@@ -67,7 +67,17 @@ func (s *StockService) CalcDefAndReportByProduct(day time.Time) error {
 	if err != nil {
 		return err
 	}
-	err = s.dao.CalcReportByProduct(day)
+	atteption := 3
+	for {
+		err = s.dao.CalcReportByProduct(day)
+		if err == nil {
+			break
+		}
+		atteption--
+		if atteption == 0 {
+			break
+		}
+	}
 	if err != nil {
 		return err
 	}
