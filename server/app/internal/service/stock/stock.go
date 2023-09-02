@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"time"
 )
@@ -67,19 +68,19 @@ func (s *StockService) CalcDefAndReportByProduct(day time.Time) error {
 	if err != nil {
 		return err
 	}
-	atteption := 3
+	attemption := 3
 	for {
 		err = s.dao.CalcReportByProduct(day)
 		if err == nil {
 			break
 		}
-		atteption--
-		if atteption == 0 {
+		attemption--
+		if attemption == 0 {
 			break
 		}
 	}
 	if err != nil {
-		return err
+		return errors.Errorf("Error after 3 attemptions: %s", err)
 	}
 	return nil
 }
