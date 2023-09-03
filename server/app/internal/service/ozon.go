@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	errors2 "github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"github.com/yoda/app/internal/api"
 	"github.com/yoda/app/internal/configuration"
@@ -360,10 +361,9 @@ func (c *OzonService) loadOrders(ctx context.Context, client *api.ClientWithResp
 		req.Filter.To = toDate
 		req.Filter.Since = sinceDate
 
-		ctxCancel, _ := context.WithTimeout(ctx, time.Second*time.Duration(c.config.Timeout))
-		response, err := client.GetOzonFBOWithResponse(ctxCancel, *req)
+		response, err := getFBOList(ctx, client, c, req)
 		if err != nil {
-			return err
+			return errors2.Errorf("Error from GetFBO List: %s", err)
 		}
 		count, err := c.parseFBO(response, transactionId, source, c.ownerCode)
 		affected += count
@@ -382,6 +382,21 @@ func (c *OzonService) loadOrders(ctx context.Context, client *api.ClientWithResp
 		} else {
 			offset += limit
 		}
+	}
+}
+
+func getFBOList(ctx context.Context, client *api.ClientWithResponses, c *OzonService, req *api.GetOzonFBOJSONRequestBody) (*api.GetOzonFBOResponse, error) {
+
+	attemption := 3
+
+	for {
+		ctxCancel, _ := context.WithTimeout(ctx, time.Second*time.Duration(c.config.Timeout))
+		response, err := client.GetOzonFBOWithResponse(ctxCancel, *req)
+		attemption--
+		if err == nil || attemption == 0 {
+			return response, err
+		}
+		time.Sleep(5 * time.Second)
 	}
 }
 
