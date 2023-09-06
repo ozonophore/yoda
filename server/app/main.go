@@ -46,7 +46,7 @@ func main() {
 	uo := integration.NewUpdaterOrganisations(config.Integration)
 	dictionary.InitDictionary(config.Integration)
 
-	scheduler := timer.NewScheduler(config)
+	scheduler := timer.NewScheduler(config, repository)
 	scheduler.Subscribe(event.CreateObserver())
 	event.Subscribe(scheduler)
 	event.SubscribeOrg(uo)
