@@ -54,7 +54,7 @@ func JobByTag(s *gocron.Scheduler, jobId int) *gocron.Job {
 	return jobs[0]
 }
 
-func RunRegularLoad(config *configuration.Config, ctx context.Context, jobID int, s *gocron.Scheduler, onBefore onBeforeJobExecution, onAfter onAfterJobExecution) {
+func RunRegularLoad(config *configuration.Config, ctx context.Context, jobID int, s *gocron.Scheduler, onBefore onBeforeJobExecution, onAfter onAfterJobExecution, repository IRepository) {
 	loadDictionary()
 	job, err := storage.GetJobWithOwnerByJobId(jobID)
 	if err != nil {
@@ -74,6 +74,12 @@ func RunRegularLoad(config *configuration.Config, ctx context.Context, jobID int
 	callOnBeforeJonExecution(job, transactionID, gJob, onBefore)
 	err = execute(config, ctx, jobID, job, err, transactionID)
 	callOnAfterJonExecution(job, transactionID, gJob, err, onAfter)
+	//TODO: Run report preporation
+	err = repository.CallReportOrdersByDay(transactionID)
+	if err != nil {
+		logrus.Errorf("Error after call report orders by day: %s", err)
+		//TODO: Добавить запись в табличку со сквозным логированием
+	}
 }
 
 func execute(config *configuration.Config, ctx context.Context, jobID int, job *model.Job, err error, transactionID int64) error {

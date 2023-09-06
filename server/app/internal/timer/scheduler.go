@@ -12,11 +12,16 @@ import (
 	"time"
 )
 
+type IRepository interface {
+	CallReportOrdersByDay(id int64) error
+}
+
 type Scheduler struct {
 	scheduler       *gocron.Scheduler
 	systemScheduler *gocron.Scheduler
 	config          *configuration.Config
 	observers       []observer.SchedulerObserver
+	repository      IRepository
 }
 
 type JobFunc = func(config *configuration.Config, ctx context.Context, jobID int)
@@ -35,7 +40,7 @@ func (s Scheduler) handleAfterJobExecution(job *model.Job, transactionID int64, 
 	s.notifyJobExecution(job.ID)
 }
 
-func NewScheduler(config *configuration.Config) *Scheduler {
+func NewScheduler(config *configuration.Config, repository IRepository) *Scheduler {
 	scheduler := gocron.NewScheduler(time.Local)
 	dao.CreateScheduler(model.SCHEEDULER_MAIN)
 	scheduler.SingletonModeAll()
@@ -46,6 +51,7 @@ func NewScheduler(config *configuration.Config) *Scheduler {
 		scheduler:       scheduler,
 		systemScheduler: system,
 		config:          config,
+		repository:      repository,
 	}
 }
 

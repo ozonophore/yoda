@@ -37,6 +37,7 @@ func main() {
 	database := storage.InitDatabase(config.Database)
 	storage.NewRepositoryDAO(database)
 	dao.NewDao(database)
+	repository := storage.NewRepository(database, config)
 
 	ctxCancel, cancel := context.WithCancel(ctx)
 	event.InitEvent(ctxCancel, config.Mq)
@@ -52,7 +53,7 @@ func main() {
 	scheduler.InitJob()
 	startStockAggregator(database, scheduler.GetScheduler(), config)
 	client, _ := InitClient(config)
-	StartInitializer(storage.NewRepository(database, config), scheduler.GetScheduler(), client)
+	StartInitializer(repository, scheduler.GetScheduler(), client)
 
 	scheduler.Start()
 	defer scheduler.StopAll()

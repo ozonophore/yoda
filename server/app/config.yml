@@ -1,6 +1,6 @@
 database:
 #  logging_level: info
-  dsn: postgresql://user:password@212.48.159.224:5432/test
+  dsn: postgresql://user:password@212.48.159.224:5432/db
 #  dsn: postgres://user:password@localhost:5432/db
 timeout: 60
 mq:

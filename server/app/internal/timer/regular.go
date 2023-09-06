@@ -44,7 +44,7 @@ func (sch Scheduler) initRegular(ctx context.Context) bool {
 		s := sch.scheduler.Every(1)
 		atTime := strings.ReplaceAll(*job.AtTime, ",", ";")
 		logrus.Debugf("Init job: %d, %s, %s", job.ID, *job.WeekDays, atTime)
-		job, err := PrepareWeekDay(*job.WeekDays, s).At(atTime).Tag(tag).Do(RunRegularLoad, config, ctx, job.ID, scheduler, sch.handleBeforeJobExecution, sch.handleAfterJobExecution)
+		job, err := PrepareWeekDay(*job.WeekDays, s).At(atTime).Tag(tag).Do(RunRegularLoad, config, ctx, job.ID, scheduler, sch.handleBeforeJobExecution, sch.handleAfterJobExecution, sch.repository)
 		logrus.Debugf("Next run: %s", job.NextRun())
 		if err != nil {
 			logrus.Panicf("Error after create job: %s", err)
