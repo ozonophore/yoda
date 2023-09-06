@@ -393,7 +393,11 @@ func getFBOList(ctx context.Context, client *api.ClientWithResponses, c *OzonSer
 		ctxCancel, _ := context.WithTimeout(ctx, time.Second*time.Duration(c.config.Timeout))
 		response, err := client.GetOzonFBOWithResponse(ctxCancel, *req)
 		attemption--
-		if err == nil || attemption == 0 {
+		if err == nil && response.StatusCode() == 200 {
+			return response, err
+		}
+		if attemption == 0 {
+			logrus.Errorf("Couldn't get response from Ozon fbolist. Attemptions exceeded")
 			return response, err
 		}
 		time.Sleep(5 * time.Second)
