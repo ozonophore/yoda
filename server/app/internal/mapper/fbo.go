@@ -2,9 +2,12 @@ package mapper
 
 import (
 	"fmt"
+	"github.com/pkg/errors"
+	"github.com/sirupsen/logrus"
 	"github.com/yoda/app/internal/api"
 	"github.com/yoda/app/internal/service/dictionary"
 	"github.com/yoda/common/pkg/model"
+	"strconv"
 	"time"
 )
 
@@ -13,11 +16,12 @@ func MapFBOToOrder(fbo *api.FBO, transactionId int64, source string, ownerCode s
 	var finData = make(map[int64]*api.PostingFinancialDataProduct)
 
 	finDate := fbo.FinancialData
-	if finDate == nil || fbo.FinancialData.Products == nil {
-		return nil, fmt.Errorf("financial data is empty for order %d", *fbo.OrderId)
-	}
-	for _, f := range *finDate.Products {
-		finData[f.ProductId] = &f
+	if finDate == nil || finDate.Products == nil {
+		logrus.Error("financial data is empty for order %d", *fbo.OrderId)
+	} else {
+		for _, f := range *finDate.Products {
+			finData[f.ProductId] = &f
+		}
 	}
 	gNumber := fmt.Sprintf(`%d`, *fbo.OrderId)
 
@@ -39,6 +43,20 @@ func MapFBOToOrder(fbo *api.FBO, transactionId int64, source string, ownerCode s
 			}
 		}
 		supplierArticle := product.OfferId
+
+		oldPrice := float64(0)
+		totalDiscountPercent := float64(0)
+		totalDiscountValue := float64(0)
+		price, err := strconv.ParseFloat(product.Price, 64)
+		if err != nil {
+			return nil, errors.Errorf("invalid price %s for order %d", product.Price, *fbo.OrderId)
+		}
+		if finData != nil {
+			oldPrice = finData[product.Sku].OldPrice
+			totalDiscountPercent = finData[product.Sku].TotalDiscountPercent
+			totalDiscountValue = finData[product.Sku].TotalDiscountValue
+		}
+
 		orders[i] = model.Order{
 			TransactionID:     transactionId,
 			TransactionDate:   time.Now(),
@@ -48,10 +66,10 @@ func MapFBOToOrder(fbo *api.FBO, transactionId int64, source string, ownerCode s
 			OrderTime:         fbo.CreatedAt,
 			SupplierArticle:   &supplierArticle,
 			Barcode:           barcode,
-			TotalPrice:        finData[product.Sku].OldPrice,
-			DiscountPercent:   finData[product.Sku].TotalDiscountPercent,
-			DiscountValue:     finData[product.Sku].TotalDiscountValue,
-			PriceWithDiscount: finData[product.Sku].Price,
+			TotalPrice:        oldPrice,
+			DiscountPercent:   totalDiscountPercent,
+			DiscountValue:     totalDiscountValue,
+			PriceWithDiscount: price,
 			WarehouseName:     ToUpper(fbo.AnalyticsData.WarehouseName),
 			Oblast:            fbo.AnalyticsData.Region,
 			IncomeID:          nil,
