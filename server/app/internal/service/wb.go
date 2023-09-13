@@ -186,22 +186,18 @@ func (c *WBService) callOrders(client *api.ClientWithResponses, df time.Time) (*
 	sleepTime := 30 * time.Second
 	for {
 		response, err := client.GetWBOrdersWithResponse(ctx, &request)
-		if err != nil {
-			return nil, err
+		if err == nil && response.StatusCode() == 200 {
+			orders := response.JSON200
+			return orders, err
 		}
-		if response.StatusCode() == 429 {
-			attemption--
-			if attemption != 0 {
-				time.Sleep(sleepTime)
-				logrus.Debugf("response status: %d, sleep %s", response.StatusCode(), sleepTime.String())
-				continue
+		attemption--
+		if attemption == 0 {
+			if err != nil {
+				return nil, errors.New(fmt.Sprintf("Response status : %d msg: %s", response.StatusCode(), err.Error()))
 			}
-		}
-		if response.StatusCode() != 200 {
 			return nil, errors.New(fmt.Sprintf("Response status : %d msg: %s", response.StatusCode(), response.Status()))
 		}
-		orders := response.JSON200
-		return orders, err
+		time.Sleep(sleepTime)
 	}
 }
 
