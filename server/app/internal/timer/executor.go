@@ -75,10 +75,22 @@ func RunRegularLoad(config *configuration.Config, ctx context.Context, jobID int
 	err = execute(config, ctx, jobID, job, err, transactionID)
 	callOnAfterJonExecution(job, transactionID, gJob, err, onAfter)
 	//TODO: Run report preporation
-	err = repository.CallReportOrdersByDay(transactionID)
-	if err != nil {
-		logrus.Errorf("Error after call report orders by day: %s", err)
-		//TODO: Добавить запись в табличку со сквозным логированием
+	callReportOrderByDay(repository, transactionID)
+}
+
+func callReportOrderByDay(repository IRepository, transactionID int64) {
+	attemption := 3
+	for {
+		err := repository.CallReportOrdersByDay(transactionID)
+		attemption--
+		if err != nil {
+			logrus.Errorf("Error after call report orders by day: %s attemption: %d", err, attemption)
+			//TODO: Добавить запись в табличку со сквозным логированием
+		}
+		if attemption == 0 {
+			return
+		}
+		time.Sleep(15 * time.Second)
 	}
 }
 
