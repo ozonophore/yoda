@@ -45,12 +45,9 @@ func (c *WBService) Parsing(context context.Context, transactionID int64) error 
 	logrus.Debugf("Date from: %s", dateFrom.String())
 
 	request := api.GetSupplierStocksParams{DateFrom: dateFrom}
-	resp, err := clnt.GetSupplierStocksWithResponse(context, &request)
+	resp, err := getSupplierStock(context, clnt, request)
 	if err != nil {
 		return err
-	}
-	if resp.StatusCode()/100 != 2 {
-		return errors.New(fmt.Sprintf("Http status: %s msg: %s", resp.Status(), resp.Status()))
 	}
 	items := *resp.JSON200
 	length := len(items)
@@ -81,6 +78,26 @@ func (c *WBService) Parsing(context context.Context, transactionID int64) error 
 	logrus.Info("Finish load orders from wb")
 	logrus.Info("Finish parsing wb")
 	return nil
+}
+
+func getSupplierStock(context context.Context, clnt *api.ClientWithResponses, request api.GetSupplierStocksParams) (*api.GetSupplierStocksResponse, error) {
+	attempt := 3
+	for {
+		resp, err := clnt.GetSupplierStocksWithResponse(context, &request)
+		if err == nil && resp.StatusCode() == 200 {
+			return resp, err
+		}
+		attempt--
+		if attempt == 0 {
+			if err != nil {
+				return nil, errors.New(fmt.Errorf("GetSupplierStocksWithResponse: %w", err).Error())
+			}
+			if resp.StatusCode()/100 != 2 {
+				return nil, errors.New(fmt.Sprintf("Http status: %s msg: %s", resp.Status(), resp.Status()))
+			}
+		}
+		time.Sleep(25 * time.Second)
+	}
 }
 
 func (c *WBService) extractOrdersAndSales(ctx context.Context, transactionID int64, clnt *api.ClientWithResponses, source string) error {
