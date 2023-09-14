@@ -210,9 +210,9 @@ func (c *WBService) callOrders(client *api.ClientWithResponses, df time.Time) (*
 		attemption--
 		if attemption == 0 {
 			if err != nil {
-				return nil, errors.New(fmt.Sprintf("Response status : %d msg: %s", response.StatusCode(), err.Error()))
+				return nil, errors.New(fmt.Sprintf("Response WBOrder msg: %s", err.Error()))
 			}
-			return nil, errors.New(fmt.Sprintf("Response status : %d msg: %s", response.StatusCode(), response.Status()))
+			return nil, errors.New(fmt.Sprintf("Response WBOrder status : %d msg: %s", response.StatusCode(), response.Status()))
 		}
 		time.Sleep(sleepTime)
 	}
