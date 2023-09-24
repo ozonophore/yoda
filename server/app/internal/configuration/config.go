@@ -100,6 +100,7 @@ func InitConfig(path string) *Config {
 		"integration.host":          "http://d4440c0ccab0.sn.mynetname.net:8899/ERP_IIS/hs/Market",
 		"integration.logging_level": "info",
 		"system.logging_level":      "info",
+		"oerder.loaded_days":        70,
 	}, "."), nil)
 	if fileExists(path) {
 		k.Load(file.Provider(path), yaml.Parser())

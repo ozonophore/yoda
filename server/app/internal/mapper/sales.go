@@ -9,10 +9,12 @@ import (
 	"time"
 )
 
-func MapSaleArray(sales *[]api.SalesItem, transactionId int64, source *string, ownerCode string, callback func(item *int64)) []model.Sale {
+func MapSaleArray(sales *[]api.SalesItem, transactionId int64, source *string, ownerCode string, callback func(item *api.SalesItem)) []model.Sale {
 	var result []model.Sale
 	for _, s := range *sales {
-		callback(s.Odid)
+		//callback(s.Odid)
+		item := s
+		callback(&item)
 		result = append(result, *MapSale(s, transactionId, source, ownerCode))
 	}
 	return result

@@ -41,7 +41,9 @@ type Order struct {
 	Quantity          int64      `gorm:"column:quantity" json:"quantity"`                                          // Количество
 	ItemId            *string    `gorm:"column:item_id" json:"item_id"`                                            // Уникальный идентификатор товара
 	BarcodeId         *string    `gorm:"column:barcode_id" json:"barcode_id"`                                      // Уникальный идентификатор штрихкода
-	Message           *string    `gorm:"column:message" json:"message"`                                            // Сообщение
+	Message           *string    `gorm:"column:message" json:"message"`
+	Country           *string    `gorm:"column:country" json:"country"` // Старана доставки
+	Region            *string    `gorm:"column:region" json:"region"`   // Регион доставки
 }
 
 // TableName Order's table name

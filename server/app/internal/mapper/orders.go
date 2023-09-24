@@ -11,12 +11,13 @@ import (
 	"time"
 )
 
-func MapOrderArray(orders *[]api.OrdersItem, transactionId int64, source string, ownerCode string, wasSold func(odid *int64) bool) (*[]model.Order, *time.Time, error) {
+func MapOrderArray(orders *[]api.OrdersItem, transactionId int64, source string, ownerCode string, soldMap map[int64]*model.DeliveredAddress) (*[]model.Order, *time.Time, error) {
 	var result []model.Order
 	var lastChangeDate *time.Time
 	decoder := dictionary.GetItemDecoder()
 	for _, order := range *orders {
-		newOrder, err := MapOrder(&order, transactionId, source, ownerCode, wasSold)
+		address, wasSold := soldMap[*order.Odid]
+		newOrder, err := MapOrder(&order, transactionId, source, ownerCode, wasSold, address)
 		var barcodeId, itemId, message *string
 		if newOrder.Barcode != nil {
 			decode, err := decoder.Decode(ownerCode, source, *newOrder.Barcode)
@@ -50,7 +51,7 @@ func ToUpper(v *string) *string {
 	return &result
 }
 
-func MapOrder(order *api.OrdersItem, transactionId int64, source string, ownerCode string, wasSold func(odid *int64) bool) (result *model.Order, err error) {
+func MapOrder(order *api.OrdersItem, transactionId int64, source string, ownerCode string, wasSold bool, address *model.DeliveredAddress) (result *model.Order, err error) {
 	orderDate := types.CustomTimeToTime(order.Date)
 	if err != nil {
 		return nil, err
@@ -60,13 +61,24 @@ func MapOrder(order *api.OrdersItem, transactionId int64, source string, ownerCo
 		cancelDt = types.CustomTimeToTime(order.CancelDt)
 	}
 	status := "awaiting_deliver"
-	if wasSold(order.Odid) {
+	if wasSold {
 		status = "delivered"
 	} else if utils.BooleanToBoolean(order.IsCancel) {
 		status = "canceled"
 	}
 	discountPercent := float64(*order.DiscountPercent)
 	newSrid := fmt.Sprintf(`%d`, *order.Odid)
+	var (
+		country *string
+		region  *string
+		oblast  *string
+	)
+	if address != nil {
+		country = address.Country
+		region = address.Region
+		oblast = address.Okrug
+	}
+
 	return &model.Order{
 		TransactionID:     transactionId,
 		TransactionDate:   time.Now(),
@@ -83,7 +95,7 @@ func MapOrder(order *api.OrdersItem, transactionId int64, source string, ownerCo
 		DiscountPercent:   discountPercent,
 		PriceWithDiscount: *order.TotalPrice * (1 - discountPercent/100),
 		WarehouseName:     ToUpper(order.WarehouseName),
-		Oblast:            order.Oblast,
+		Oblast:            oblast,
 		IncomeID:          order.IncomeID,
 		ExternalCode:      fmt.Sprintf(`%d`, *order.NmId),
 		Odid:              order.Odid,
@@ -97,5 +109,7 @@ func MapOrder(order *api.OrdersItem, transactionId int64, source string, ownerCo
 		Sticker:           order.Sticker,
 		Srid:              &newSrid,
 		Quantity:          int64(1),
+		Country:           country,
+		Region:            region,
 	}, nil
 }

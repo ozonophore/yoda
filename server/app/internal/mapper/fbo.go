@@ -72,6 +72,7 @@ func MapFBOToOrder(fbo *api.FBO, transactionId int64, source string, ownerCode s
 			PriceWithDiscount: price,
 			WarehouseName:     ToUpper(fbo.AnalyticsData.WarehouseName),
 			Oblast:            fbo.AnalyticsData.Region,
+			Region:            fbo.AnalyticsData.City,
 			IncomeID:          nil,
 			ExternalCode:      fmt.Sprintf(`%d`, product.Sku),
 			Odid:              nil,

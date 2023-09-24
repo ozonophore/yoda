@@ -22,7 +22,7 @@ type WBService struct {
 	ownerCode string
 	apiKey    string
 	config    configuration.Config
-	salesSet  map[int64]bool
+	salesSet  map[int64]*model.DeliveredAddress
 }
 
 func NewWBService(ownerCode, apiKey string, config *configuration.Config) *WBService {
@@ -120,9 +120,7 @@ func (c *WBService) extractOrdersAndSales(ctx context.Context, transactionID int
 			return err
 		}
 		start := time.Now()
-		newOrders, lastChangeDate, err := mapper.MapOrderArray(orders, transactionID, source, c.ownerCode, func(item *int64) bool {
-			return c.salesSet[*item]
-		})
+		newOrders, lastChangeDate, err := mapper.MapOrderArray(orders, transactionID, source, c.ownerCode, c.salesSet)
 		if err != nil {
 			return err
 		}
@@ -173,12 +171,16 @@ func (c *WBService) extractSales(ctx context.Context, transactionID int64, clnt 
 
 	logrus.Debugf("Sales count: %d", len(*salesItems))
 	if c.salesSet == nil {
-		c.salesSet = make(map[int64]bool, len(*salesItems))
+		c.salesSet = make(map[int64]*model.DeliveredAddress, len(*salesItems))
 	}
 
 	if err = CallbackBatch[api.SalesItem](salesItems, c.config.BatchSize, func(items *[]api.SalesItem) error {
-		newItems := mapper.MapSaleArray(items, transactionID, &source, c.ownerCode, func(item *int64) {
-			c.salesSet[*item] = true
+		newItems := mapper.MapSaleArray(items, transactionID, &source, c.ownerCode, func(item *api.SalesItem) {
+			c.salesSet[*item.Odid] = &model.DeliveredAddress{
+				Country: item.CountryName,
+				Region:  item.RegionName,
+				Okrug:   item.OblastOkrugName,
+			}
 		})
 		if err := storage.SaveSales(&newItems); err != nil {
 			return err
