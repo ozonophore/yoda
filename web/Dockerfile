@@ -15,6 +15,7 @@ FROM centos:7
 WORKDIR /app
 
 COPY --from=build /app/openapi /app/openapi
+COPY --from=build /app/public /app/public
 
 VOLUME /tmp
 

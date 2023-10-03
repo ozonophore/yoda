@@ -14,7 +14,88 @@ import (
 
 const (
 	ApiKeyAuthScopes = "ApiKeyAuth.Scopes"
+	CookieAuthScopes = "CookieAuth.Scopes"
 )
+
+// Defines values for Permission.
+const (
+	ORDERS  Permission = "ORDERS"
+	PROFILE Permission = "PROFILE"
+	SALES   Permission = "SALES"
+)
+
+// AuthInfo defines model for AuthInfo.
+type AuthInfo struct {
+	AccessToken *string `json:"access_token,omitempty"`
+	Description *string `json:"description,omitempty"`
+	Success     bool    `json:"success"`
+}
+
+// LoginInfo defines model for LoginInfo.
+type LoginInfo struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+// Order defines model for Order.
+type Order struct {
+	Balance         int32   `json:"balance"`
+	Barcode         string  `json:"barcode"`
+	Brand           string  `json:"brand"`
+	Code1c          string  `json:"code1c"`
+	ExternalCode    string  `json:"externalCode"`
+	Id              int32   `json:"id"`
+	Name            string  `json:"name"`
+	OrderSum        float32 `json:"orderSum"`
+	OrderedQuantity int32   `json:"orderedQuantity"`
+	Source          string  `json:"source"`
+	SupplierArticle string  `json:"supplierArticle"`
+}
+
+// Orders defines model for Orders.
+type Orders struct {
+	// Count Count of stocks
+	Count int32   `json:"count"`
+	Items []Order `json:"items"`
+}
+
+// Permission defines model for Permission.
+type Permission string
+
+// Profile defines model for Profile.
+type Profile struct {
+	// Email Email пользователя
+	Email string `json:"email"`
+
+	// Name Имя пользователя
+	Name string `json:"name"`
+
+	// Permissions Права пользователя
+	Permissions []Permission `json:"permissions"`
+}
+
+// Sale defines model for Sale.
+type Sale struct {
+	Barcode         string  `json:"barcode"`
+	Code1c          string  `json:"code1c"`
+	Country         string  `json:"country"`
+	ExternalCode    string  `json:"externalCode"`
+	Id              int32   `json:"id"`
+	Name            string  `json:"name"`
+	Oblast          string  `json:"oblast"`
+	Quantity        int32   `json:"quantity"`
+	Region          string  `json:"region"`
+	Source          string  `json:"source"`
+	SupplierArticle string  `json:"supplierArticle"`
+	TotalPrice      float64 `json:"total_price"`
+}
+
+// Sales defines model for Sales.
+type Sales struct {
+	// Count Count of saleses
+	Count int32  `json:"count"`
+	Items []Sale `json:"items"`
+}
 
 // Stock defines model for Stock.
 type Stock struct {
@@ -44,8 +125,63 @@ type Stocks struct {
 	Items []Stock `json:"items"`
 }
 
+// UnauthorizedError defines model for UnauthorizedError.
+type UnauthorizedError = AuthInfo
+
+// GetOrdersParams defines parameters for GetOrders.
+type GetOrdersParams struct {
+	Date   *openapi_types.Date `form:"date,omitempty" json:"date,omitempty"`
+	Page   int32               `form:"page" json:"page"`
+	Size   int32               `form:"size" json:"size"`
+	Filter *string             `form:"filter,omitempty" json:"filter,omitempty"`
+	Source *string             `form:"source,omitempty" json:"source,omitempty"`
+}
+
+// GetOrdersReportParams defines parameters for GetOrdersReport.
+type GetOrdersReportParams struct {
+	Date *openapi_types.Date `form:"date,omitempty" json:"date,omitempty"`
+}
+
+// GetSalesByMonthWithPaginationParams defines parameters for GetSalesByMonthWithPagination.
+type GetSalesByMonthWithPaginationParams struct {
+	Year  int32 `form:"year" json:"year"`
+	Month int32 `form:"month" json:"month"`
+	Page  int32 `form:"page" json:"page"`
+	Size  int32 `form:"size" json:"size"`
+}
+
+// GetSalesByMonthReportParams defines parameters for GetSalesByMonthReport.
+type GetSalesByMonthReportParams struct {
+	Year  int32 `form:"year" json:"year"`
+	Month int32 `form:"month" json:"month"`
+}
+
+// LoginJSONRequestBody defines body for Login for application/json ContentType.
+type LoginJSONRequestBody = LoginInfo
+
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
+
+	// (POST /auth/login)
+	Login(ctx echo.Context) error
+
+	// (GET /auth/profile)
+	Profile(ctx echo.Context) error
+
+	// (GET /auth/refresh)
+	Refresh(ctx echo.Context) error
+
+	// (GET /orders)
+	GetOrders(ctx echo.Context, params GetOrdersParams) error
+
+	// (GET /orders/report)
+	GetOrdersReport(ctx echo.Context, params GetOrdersReportParams) error
+
+	// (GET /sales)
+	GetSalesByMonthWithPagination(ctx echo.Context, params GetSalesByMonthWithPaginationParams) error
+
+	// (GET /sales/report)
+	GetSalesByMonthReport(ctx echo.Context, params GetSalesByMonthReportParams) error
 	// Получение остатков товаров
 	// (GET /stocks/{date})
 	GetStocksDate(ctx echo.Context, date openapi_types.Date) error
@@ -54,6 +190,177 @@ type ServerInterface interface {
 // ServerInterfaceWrapper converts echo contexts to parameters.
 type ServerInterfaceWrapper struct {
 	Handler ServerInterface
+}
+
+// Login converts echo context to params.
+func (w *ServerInterfaceWrapper) Login(ctx echo.Context) error {
+	var err error
+
+	ctx.Set(ApiKeyAuthScopes, []string{""})
+
+	ctx.Set(CookieAuthScopes, []string{""})
+
+	// Invoke the callback with all the unmarshalled arguments
+	err = w.Handler.Login(ctx)
+	return err
+}
+
+// Profile converts echo context to params.
+func (w *ServerInterfaceWrapper) Profile(ctx echo.Context) error {
+	var err error
+
+	ctx.Set(ApiKeyAuthScopes, []string{""})
+
+	// Invoke the callback with all the unmarshalled arguments
+	err = w.Handler.Profile(ctx)
+	return err
+}
+
+// Refresh converts echo context to params.
+func (w *ServerInterfaceWrapper) Refresh(ctx echo.Context) error {
+	var err error
+
+	ctx.Set(ApiKeyAuthScopes, []string{""})
+
+	// Invoke the callback with all the unmarshalled arguments
+	err = w.Handler.Refresh(ctx)
+	return err
+}
+
+// GetOrders converts echo context to params.
+func (w *ServerInterfaceWrapper) GetOrders(ctx echo.Context) error {
+	var err error
+
+	ctx.Set(ApiKeyAuthScopes, []string{""})
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetOrdersParams
+	// ------------- Optional query parameter "date" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "date", ctx.QueryParams(), &params.Date)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter date: %s", err))
+	}
+
+	// ------------- Required query parameter "page" -------------
+
+	err = runtime.BindQueryParameter("form", true, true, "page", ctx.QueryParams(), &params.Page)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter page: %s", err))
+	}
+
+	// ------------- Required query parameter "size" -------------
+
+	err = runtime.BindQueryParameter("form", true, true, "size", ctx.QueryParams(), &params.Size)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter size: %s", err))
+	}
+
+	// ------------- Optional query parameter "filter" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "filter", ctx.QueryParams(), &params.Filter)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter filter: %s", err))
+	}
+
+	// ------------- Optional query parameter "source" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "source", ctx.QueryParams(), &params.Source)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter source: %s", err))
+	}
+
+	// Invoke the callback with all the unmarshalled arguments
+	err = w.Handler.GetOrders(ctx, params)
+	return err
+}
+
+// GetOrdersReport converts echo context to params.
+func (w *ServerInterfaceWrapper) GetOrdersReport(ctx echo.Context) error {
+	var err error
+
+	ctx.Set(ApiKeyAuthScopes, []string{""})
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetOrdersReportParams
+	// ------------- Optional query parameter "date" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "date", ctx.QueryParams(), &params.Date)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter date: %s", err))
+	}
+
+	// Invoke the callback with all the unmarshalled arguments
+	err = w.Handler.GetOrdersReport(ctx, params)
+	return err
+}
+
+// GetSalesByMonthWithPagination converts echo context to params.
+func (w *ServerInterfaceWrapper) GetSalesByMonthWithPagination(ctx echo.Context) error {
+	var err error
+
+	ctx.Set(CookieAuthScopes, []string{""})
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetSalesByMonthWithPaginationParams
+	// ------------- Required query parameter "year" -------------
+
+	err = runtime.BindQueryParameter("form", true, true, "year", ctx.QueryParams(), &params.Year)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter year: %s", err))
+	}
+
+	// ------------- Required query parameter "month" -------------
+
+	err = runtime.BindQueryParameter("form", true, true, "month", ctx.QueryParams(), &params.Month)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter month: %s", err))
+	}
+
+	// ------------- Required query parameter "page" -------------
+
+	err = runtime.BindQueryParameter("form", true, true, "page", ctx.QueryParams(), &params.Page)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter page: %s", err))
+	}
+
+	// ------------- Required query parameter "size" -------------
+
+	err = runtime.BindQueryParameter("form", true, true, "size", ctx.QueryParams(), &params.Size)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter size: %s", err))
+	}
+
+	// Invoke the callback with all the unmarshalled arguments
+	err = w.Handler.GetSalesByMonthWithPagination(ctx, params)
+	return err
+}
+
+// GetSalesByMonthReport converts echo context to params.
+func (w *ServerInterfaceWrapper) GetSalesByMonthReport(ctx echo.Context) error {
+	var err error
+
+	ctx.Set(ApiKeyAuthScopes, []string{""})
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetSalesByMonthReportParams
+	// ------------- Required query parameter "year" -------------
+
+	err = runtime.BindQueryParameter("form", true, true, "year", ctx.QueryParams(), &params.Year)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter year: %s", err))
+	}
+
+	// ------------- Required query parameter "month" -------------
+
+	err = runtime.BindQueryParameter("form", true, true, "month", ctx.QueryParams(), &params.Month)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter month: %s", err))
+	}
+
+	// Invoke the callback with all the unmarshalled arguments
+	err = w.Handler.GetSalesByMonthReport(ctx, params)
+	return err
 }
 
 // GetStocksDate converts echo context to params.
@@ -102,6 +409,13 @@ func RegisterHandlersWithBaseURL(router EchoRouter, si ServerInterface, baseURL 
 		Handler: si,
 	}
 
+	router.POST(baseURL+"/auth/login", wrapper.Login)
+	router.GET(baseURL+"/auth/profile", wrapper.Profile)
+	router.GET(baseURL+"/auth/refresh", wrapper.Refresh)
+	router.GET(baseURL+"/orders", wrapper.GetOrders)
+	router.GET(baseURL+"/orders/report", wrapper.GetOrdersReport)
+	router.GET(baseURL+"/sales", wrapper.GetSalesByMonthWithPagination)
+	router.GET(baseURL+"/sales/report", wrapper.GetSalesByMonthReport)
 	router.GET(baseURL+"/stocks/:date", wrapper.GetStocksDate)
 
 }

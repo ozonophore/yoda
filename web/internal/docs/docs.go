@@ -30,7 +30,7 @@ const docTemplate = `{
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
 	Host:             "",
-	BasePath:         "/v2",
+	BasePath:         "/rest",
 	Schemes:          []string{},
 	Title:            "OpenApi",
 	Description:      "Use for an external integration.",

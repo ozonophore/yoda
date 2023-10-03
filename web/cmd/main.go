@@ -2,38 +2,50 @@ package main
 
 import (
 	"fmt"
+	"github.com/gorilla/sessions"
+	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
 	echoSwagger "github.com/swaggo/echo-swagger"
 	"github.com/yoda/web/internal/api"
 	"github.com/yoda/web/internal/config"
-	stock "github.com/yoda/web/internal/controller"
+	"github.com/yoda/web/internal/controller"
 	_ "github.com/yoda/web/internal/docs"
+	"github.com/yoda/web/internal/middleware"
+	"github.com/yoda/web/internal/service"
+	"github.com/yoda/web/internal/service/auth"
+	"github.com/yoda/web/internal/service/sale"
 	"github.com/yoda/web/internal/storage"
-	"strings"
+	"os"
 )
 
+// @BasePath /rest
+// @Host petstore.swagger.io
+// @title Swagger Example API
 func main() {
 	config := config.LoadConfig("config.yml")
 	store := storage.NewStorage(config.Database)
-	srv := stock.NewServer(store)
+
+	orderService := service.NewOrderService(store)
+	saleService := sale.NewSaleService(store)
+	authService := auth.NewAuthService(store)
+
+	controller := controller.NewController(store, orderService, saleService, authService)
 
 	e := echo.New()
-	e.Use(middleware.KeyAuthWithConfig(middleware.KeyAuthConfig{
-		Skipper: func(c echo.Context) bool {
-			return strings.Contains(c.Path(), "/swagger") || strings.Contains(c.Path(), "/api")
-		},
-		KeyLookup: "header:X-API-KEY",
-		Validator: func(key string, c echo.Context) (bool, error) {
-			return key == "9609c3c0-2026-11ee-be56-0242ac120002", nil
-		},
-	}))
+	e.Use(middleware.JWTValidationMiddleware(authService))
+
 	e.Debug = true
 
-	api.RegisterHandlers(e, srv)
+	api.RegisterHandlersWithBaseURL(e, controller, "/rest")
 
-	e.Static("/api", "openapi")
 	e.GET("/swagger/*", echoSwagger.EchoWrapHandler(echoSwagger.URL("/api/openapi.yml")))
+	e.Static("/api", "openapi")
+	e.Static("/", "public")
 
 	e.Logger.Fatal(e.Start(fmt.Sprintf(":%d", config.Port)))
+}
+
+func initSessionMiddleware(e *echo.Echo) {
+	var sessionStore = sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
+	e.Use(session.Middleware(sessionStore))
 }
