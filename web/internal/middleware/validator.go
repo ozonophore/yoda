@@ -35,7 +35,8 @@ func JWTValidationMiddleware(service IAuthService) echo.MiddlewareFunc {
 		ContextKey: ACCESS_TOKEN,
 		SigningKey: JwtKey,
 		Skipper: func(c echo.Context) bool {
-			return !strings.Contains(c.Path(), "/rest") || c.Request().Header.Get("X-API-KEY") != ""
+			_, hasKey := c.Request().Header["X-API-KEY"]
+			return strings.Contains(c.Path(), "/rest/auth/login") || !strings.Contains(c.Path(), "/rest") || hasKey
 		},
 		ErrorHandler: func(c echo.Context, err error) error {
 			message := err.Error()
