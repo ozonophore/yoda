@@ -28,7 +28,7 @@ func (s *Storage) GetPermissionByUserId(id int32) (*[]string, error) {
 	if slices.Contains(roles, "ADMIN") {
 		tx = s.db.Raw(`select rp.code from ml.permission rp`).Scan(&permissions)
 	} else {
-		tx = s.db.Raw(`select distinct rp.code from ml.role_permission rp
+		tx = s.db.Raw(`select distinct rp.permission_code from ml.role_permission rp
 			where rp.role_code in (?)`, roles).Scan(&permissions)
 	}
 	if tx.Error != nil {
@@ -39,7 +39,14 @@ func (s *Storage) GetPermissionByUserId(id int32) (*[]string, error) {
 
 func (s *Storage) GetProleByLogin(login string) (*UserProfile, error) {
 	var profile UserProfile
-	s.db.Raw(`select id, email, name, password from ml.users where email=?`, login).Scan(&profile)
+	tx := s.db.Raw(`select id, email, name, password from ml.users where email=?`, login).First(&profile)
+	err := tx.Error
+	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, errors.New("user not found")
+	}
+	if err != nil {
+		return nil, err
+	}
 	permissions, err := s.GetPermissionByUserId(profile.UserId)
 	if err != nil {
 		return nil, err
