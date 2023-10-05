@@ -23,6 +23,11 @@ var headers = []column{
 		field: "Source",
 	},
 	{
+		title: "Юр. лицо",
+		width: 25,
+		field: "OrgName",
+	},
+	{
 		title: "Бренд",
 		width: 20,
 		field: "Brand",
@@ -84,15 +89,59 @@ func NewOrderService(repository OrderRepositoryInterface) *OrderService {
 	}
 }
 
+type sheetType struct {
+	Row  int
+	Name string
+}
+
 func (s *OrderService) PrepareAndReturnExcel(writer io.Writer, date time.Time) error {
 	f := excelize.NewFile()
 	defer f.Close()
 
 	headerStyle, _ := f.NewStyle(GetHeaderStyle())
 	sheetIndex := f.GetActiveSheetIndex()
-	sheetName := fmt.Sprintf("Заказы за %s", date.Format(time.DateOnly))
-	f.SetSheetName(f.GetSheetName(sheetIndex), sheetName)
 
+	sheets := make(map[string]*sheetType, 2)
+
+	orders, err := s.repository.GetOrdersByDay(date)
+	if err != nil {
+		return err
+	}
+	for _, order := range *orders {
+		sheet, ok := sheets[order.Source]
+		if !ok {
+			sheetName := fmt.Sprintf("Заказы %s за %s", order.Source, date.Format(time.DateOnly))
+			sheet = &sheetType{
+				Row:  4,
+				Name: sheetName,
+			}
+			sheets[order.Source] = sheet
+			if len(sheets) == 1 {
+				f.SetSheetName(f.GetSheetName(sheetIndex), sheetName)
+			} else {
+				f.NewSheet(sheetName)
+			}
+			s.createHeaders(f, sheetName, headerStyle)
+		}
+		fields := structs.Map(&order)
+		for index, header := range headers {
+			colChar := ToChar(index)
+			cell := fmt.Sprintf("%s%d", colChar, sheet.Row)
+			field := fields[header.field]
+			f.SetCellValue(sheet.Name, cell, field)
+		}
+		sheet.Row++
+	}
+
+	lastColName := ToChar(len(headers) - 1)
+	for _, sheet := range sheets {
+		f.AutoFilter(sheet.Name, fmt.Sprintf("A3:%s3", lastColName), []excelize.AutoFilterOptions{})
+	}
+
+	return f.Write(writer)
+}
+
+func (s *OrderService) createHeaders(f *excelize.File, sheetName string, headerStyle int) {
 	for index, header := range headers {
 		colChar := ToChar(index)
 		cell := fmt.Sprintf("%s3", colChar)
@@ -100,26 +149,6 @@ func (s *OrderService) PrepareAndReturnExcel(writer io.Writer, date time.Time) e
 		f.SetCellStyle(sheetName, cell, cell, headerStyle)
 		f.SetColWidth(sheetName, "A", colChar, header.width)
 	}
-
-	orders, err := s.repository.GetOrdersByDay(date)
-	if err != nil {
-		return err
-	}
-	for rowIndex, order := range *orders {
-		row := rowIndex + 4
-		fields := structs.Map(&order)
-		for index, header := range headers {
-			colChar := ToChar(index)
-			cell := fmt.Sprintf("%s%d", colChar, row)
-			field := fields[header.field]
-			f.SetCellValue(sheetName, cell, field)
-		}
-	}
-
-	lastColName := ToChar(len(headers) - 1)
-	f.AutoFilter(sheetName, fmt.Sprintf("A3:%s3", lastColName), []excelize.AutoFilterOptions{})
-
-	return f.Write(writer)
 }
 
 func (s *OrderService) GetOrders(date time.Time, filter string, source string, page int32, size int32) (*api.Orders, error) {
@@ -152,6 +181,7 @@ func (s *OrderService) GetOrders(date time.Time, filter string, source string, p
 			OrderedQuantity: order.OrderedQuantity,
 			OrderSum:        order.OrderSum,
 			Balance:         order.Balance,
+			Org:             order.OrgName,
 		}
 	}
 	return &api.Orders{

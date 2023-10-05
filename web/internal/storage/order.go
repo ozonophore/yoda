@@ -20,6 +20,8 @@ type Order struct {
 	OrderSum        float32 `gorm:"column:order_sum"`
 	Balance         int32   `gorm:"column:balance"`
 	Total           int32   `gorm:"column:total"`
+	OwnerCode       string  `gorm:"column:owner_code"`
+	OrgName         string  `gorm:"column:org_name"`
 }
 
 const orderSQL = `with data as (select 
@@ -33,6 +35,7 @@ const orderSQL = `with data as (select
 					brand,
 					ordered_quantity,
 					order_sum,
+                    org_name,
 					balance from dl.report_order_by_day where report_date = @date
                     and %s)
 					select 
@@ -46,9 +49,13 @@ const orderSQL = `with data as (select
 					brand,
 					ordered_quantity,
 					order_sum,
+				    org_name,
 					balance, (select count(1) from data) as total from data`
 
-var orderSQLFilter = `and (supplier_article like @filter or code_1c like @filter or external_code like @filter or name like @filter or barcode like @filter or brand like @filter)`
+var orderSQLFilter = `and (supplier_article like @filter or 
+                      code_1c like @filter or external_code like @filter 
+                      or org_name like @filter
+                      or name like @filter or barcode like @filter or brand like @filter)`
 
 func (s *Storage) GetOrdersByDay(date time.Time) (*[]Order, error) {
 	var orders []Order
@@ -66,7 +73,7 @@ func (s *Storage) GetOrdersByDayWithPagging(date time.Time, filter string, sourc
 	var orders []Order
 
 	where := " 1=1 "
-	if source != "" {
+	if filter != "" {
 		where += orderSQLFilter
 	}
 	if source != "" {

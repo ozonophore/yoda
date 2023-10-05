@@ -19,9 +19,11 @@ const (
 
 // Defines values for Permission.
 const (
-	ORDERS  Permission = "ORDERS"
-	PROFILE Permission = "PROFILE"
-	SALES   Permission = "SALES"
+	DASHBOARD Permission = "DASHBOARD"
+	HOME      Permission = "HOME"
+	ORDERS    Permission = "ORDERS"
+	PROFILE   Permission = "PROFILE"
+	SALES     Permission = "SALES"
 )
 
 // AuthInfo defines model for AuthInfo.
@@ -48,6 +50,7 @@ type Order struct {
 	Name            string  `json:"name"`
 	OrderSum        float32 `json:"orderSum"`
 	OrderedQuantity int32   `json:"orderedQuantity"`
+	Org             string  `json:"org"`
 	Source          string  `json:"source"`
 	SupplierArticle string  `json:"supplierArticle"`
 }

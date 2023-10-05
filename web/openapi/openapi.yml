@@ -104,6 +104,7 @@ components:
       required:
         - id
         - source
+        - org
         - supplierArticle
         - code1c
         - externalCode
@@ -118,6 +119,8 @@ components:
           type: integer
           format: int32
         source:
+          type: string
+        org:
           type: string
         supplierArticle:
           type: string
