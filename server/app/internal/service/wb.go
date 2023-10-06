@@ -200,10 +200,10 @@ func (c *WBService) callOrders(client *api.ClientWithResponses, df time.Time) (*
 		Flag:     &flag,
 	}
 	logrus.Debugf("Request to wb by date: %s", dateFrom.String())
-	ctx, _ := context.WithTimeout(context.Background(), time.Duration(c.config.Timeout)*time.Second)
 	attemption := 3
 	sleepTime := 30 * time.Second
 	for {
+		ctx, _ := context.WithTimeout(context.Background(), time.Duration(c.config.Timeout)*time.Second)
 		response, err := client.GetWBOrdersWithResponse(ctx, &request)
 		if err == nil && response.StatusCode() == 200 {
 			orders := response.JSON200
