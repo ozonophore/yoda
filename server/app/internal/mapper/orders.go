@@ -111,5 +111,6 @@ func MapOrder(order *api.OrdersItem, transactionId int64, source string, ownerCo
 		Quantity:          int64(1),
 		Country:           country,
 		Region:            region,
+		SaleDate:          address.Date,
 	}, nil
 }

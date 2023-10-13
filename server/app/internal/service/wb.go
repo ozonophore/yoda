@@ -176,10 +176,12 @@ func (c *WBService) extractSales(ctx context.Context, transactionID int64, clnt 
 
 	if err = CallbackBatch[api.SalesItem](salesItems, c.config.BatchSize, func(items *[]api.SalesItem) error {
 		newItems := mapper.MapSaleArray(items, transactionID, &source, c.ownerCode, func(item *api.SalesItem) {
+			saleDate, _ := time.Parse(time.DateOnly+"T"+time.TimeOnly, *item.Date)
 			c.salesSet[*item.Odid] = &model.DeliveredAddress{
 				Country: item.CountryName,
 				Region:  item.RegionName,
 				Okrug:   item.OblastOkrugName,
+				Date:    saleDate,
 			}
 		})
 		if err := storage.SaveSales(&newItems); err != nil {

@@ -89,6 +89,7 @@ func MapFBOToOrder(fbo *api.FBO, transactionId int64, source string, ownerCode s
 			BarcodeId:         barcodeId,
 			ItemId:            itemId,
 			Message:           message,
+			SaleDate:          fbo.ShipmentDate.ToTime(),
 		}
 	}
 	return &orders, nil

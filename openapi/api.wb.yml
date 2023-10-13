@@ -575,6 +575,7 @@ components:
       required:
         - created_at
         - status
+        - shipment_date
       properties:
         additional_data:
           type: array
@@ -590,6 +591,13 @@ components:
           type: string
           format: date-time
           description: Дата создания
+        shipment_date:
+          type: string
+          x-go-type: types.CustomTime
+          x-go-import:
+            name: types
+            package: github.com/yoda/common/pkg/types
+          description: Дата отгрузки
         financial_data:
           $ref: '#/components/schemas/PostingFinancialData'
         in_process_at:
