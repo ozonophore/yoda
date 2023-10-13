@@ -72,11 +72,13 @@ func MapOrder(order *api.OrdersItem, transactionId int64, source string, ownerCo
 		country *string
 		region  *string
 		oblast  *string
+		saleDt  *time.Time
 	)
 	if address != nil {
 		country = address.Country
 		region = address.Region
 		oblast = address.Okrug
+		saleDt = &address.Date
 	}
 
 	return &model.Order{
@@ -111,6 +113,6 @@ func MapOrder(order *api.OrdersItem, transactionId int64, source string, ownerCo
 		Quantity:          int64(1),
 		Country:           country,
 		Region:            region,
-		SaleDate:          address.Date,
+		SaleDate:          saleDt,
 	}, nil
 }

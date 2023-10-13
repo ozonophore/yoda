@@ -44,7 +44,7 @@ type Order struct {
 	Message           *string    `gorm:"column:message" json:"message"`
 	Country           *string    `gorm:"column:country" json:"country"` // Старана доставки
 	Region            *string    `gorm:"column:region" json:"region"`   // Регион доставки
-	SaleDate          time.Time  `gorm:"column:sale_date" json:"sale_date"`
+	SaleDate          *time.Time `gorm:"column:sale_date" json:"sale_date"`
 }
 
 // TableName Order's table name
