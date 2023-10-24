@@ -593,10 +593,6 @@ components:
           description: Дата создания
         shipment_date:
           type: string
-          x-go-type: types.CustomTime
-          x-go-import:
-            name: types
-            package: github.com/yoda/common/pkg/types
           description: Дата отгрузки
         financial_data:
           $ref: '#/components/schemas/PostingFinancialData'

@@ -51,9 +51,9 @@ func main() {
 	event.Subscribe(scheduler)
 	event.SubscribeOrg(uo)
 	scheduler.InitJob()
-	startStockAggregator(database, scheduler.GetScheduler(), config)
-	client, _ := InitClient(config)
-	StartInitializer(repository, scheduler.GetScheduler(), client)
+	//startStockAggregator(database, scheduler.GetScheduler(), config)
+	//client, _ := InitClient(config)
+	//StartInitializer(repository, scheduler.GetScheduler(), client)
 
 	scheduler.Start()
 	defer scheduler.StopAll()

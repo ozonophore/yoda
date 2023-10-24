@@ -106,7 +106,7 @@ type FBO struct {
 	Products *[]PostingProduct `json:"products,omitempty"`
 
 	// ShipmentDate Дата отгрузки
-	ShipmentDate types.CustomTime `json:"shipment_date"`
+	ShipmentDate string `json:"shipment_date"`
 
 	// Status Статус отправления.
 	Status FBOStatus `json:"status"`
