@@ -228,8 +228,8 @@ jobs:
       - name: Build and push app
         uses: docker/build-push-action@v4
         with:
-          context: ./web
-          file: ./web/Dockerfile
+          context: .
+          file: ./Dockerfile
           push: true
           tags: ghcr.io/${{ github.actor }}/yoda-web:latest,ghcr.io/${{ github.actor }}/yoda-web:${{ steps.get-version.outputs.substring }}
   release:

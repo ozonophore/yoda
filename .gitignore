@@ -24,3 +24,5 @@ coverage.html
 **/.docker-conf/**
 .*
 .data
+
+**/node_modules/**
