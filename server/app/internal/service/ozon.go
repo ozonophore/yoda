@@ -365,7 +365,7 @@ func (c *OzonService) loadOrders(ctx context.Context, client *api.ClientWithResp
 		if err != nil {
 			return errors2.Errorf("Error from GetFBO List: %s", err)
 		}
-		count, err := c.parseFBO(response, transactionId, source, c.ownerCode)
+		count, err, maxDate := c.parseFBO(response, transactionId, source, c.ownerCode, sinceDate)
 		affected += count
 		if err != nil {
 			return err
@@ -381,6 +381,11 @@ func (c *OzonService) loadOrders(ctx context.Context, client *api.ClientWithResp
 			}
 		} else {
 			offset += limit
+			if offset >= 20000 {
+				offset = 0
+				sinceDate = maxDate.Add(time.Second)
+				logrus.Debugf("Loaded date %s and %s", toDate.Format("2006-01-02"), sinceDate.Format("2006-01-02"))
+			}
 		}
 	}
 }
@@ -404,18 +409,18 @@ func getFBOList(ctx context.Context, client *api.ClientWithResponses, c *OzonSer
 	}
 }
 
-func (c *OzonService) parseFBO(FBOResponse *api.GetOzonFBOResponse, transactionId int64, source string, ownerCode string) (int64, error) {
+func (c *OzonService) parseFBO(FBOResponse *api.GetOzonFBOResponse, transactionId int64, source string, ownerCode string, sinceDate time.Time) (int64, error, time.Time) {
 	if FBOResponse.StatusCode() != 200 {
-		return 0, errors.New(fmt.Sprintf("Ozon resp code %d %s Body: %s", FBOResponse.StatusCode(), FBOResponse.Status(), string(FBOResponse.Body)))
+		return 0, errors.New(fmt.Sprintf("Ozon resp code %d %s Body: %s", FBOResponse.StatusCode(), FBOResponse.Status(), string(FBOResponse.Body))), sinceDate
 	}
 	if FBOResponse.JSON200 == nil {
-		return 0, errors.New("Ozon resp is nil")
+		return 0, errors.New("Ozon resp is nil"), sinceDate
 	}
 	FBOItems := FBOResponse.JSON200.Result
 	count := len(*FBOItems)
 	logrus.Debugf("Loaded %d orders", count)
 	if count == 0 {
-		return 0, nil
+		return 0, nil, sinceDate
 	}
 	var orders []model.Order
 	decoder := dictionary.GetItemDecoder()
@@ -428,15 +433,19 @@ func (c *OzonService) parseFBO(FBOResponse *api.GetOzonFBOResponse, transactionI
 		return info.Barcode
 	}
 
+	maxDate := sinceDate
 	for _, item := range *FBOItems {
+		if maxDate.Before(item.CreatedAt) {
+			maxDate = item.CreatedAt
+		}
 		o, err := mapper.MapFBOToOrder(&item, transactionId, source, ownerCode, searchFun, decoder)
 		if err != nil {
-			return 0, fmt.Errorf("Couldn't map a value at row %s (%w)", item, err)
+			return 0, fmt.Errorf("Couldn't map a value at row %s (%w)", item, err), sinceDate
 		}
 		orders = append(orders, *o...)
 	}
 	if err := storage.SaveOrders(&orders); err != nil {
-		return 0, err
+		return 0, err, sinceDate
 	}
-	return int64(count), nil
+	return int64(count), nil, maxDate
 }
