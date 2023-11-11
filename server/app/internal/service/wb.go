@@ -120,7 +120,7 @@ func (c *WBService) extractOrdersAndSales(ctx context.Context, transactionID int
 			return err
 		}
 		start := time.Now()
-		newOrders, lastChangeDate, err := mapper.MapOrderArray(orders, transactionID, source, c.ownerCode, c.salesSet)
+		newOrders, lastChangeDate, err := mapper.MapOrderArray(orders, transactionID, source, c.ownerCode, c.salesSet, sinceDate)
 		if err != nil {
 			return err
 		}
