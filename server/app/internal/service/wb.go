@@ -135,6 +135,7 @@ func (c *WBService) extractOrdersAndSales(ctx context.Context, transactionID int
 			break
 		}
 		sinceDate = lastChangeDate.Add(time.Second)
+		time.Sleep(10 * time.Second)
 	}
 	return nil
 }
@@ -202,7 +203,7 @@ func (c *WBService) callOrders(client *api.ClientWithResponses, df time.Time) (*
 		Flag:     &flag,
 	}
 	logrus.Debugf("Request to wb by date: %s", dateFrom.String())
-	attemption := 3
+	attemption := 5
 	sleepTime := 30 * time.Second
 	for {
 		ctx, _ := context.WithTimeout(context.Background(), time.Duration(c.config.Timeout)*time.Second)
