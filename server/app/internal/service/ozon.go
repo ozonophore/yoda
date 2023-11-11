@@ -372,9 +372,9 @@ func (c *OzonService) loadOrders(ctx context.Context, client *api.ClientWithResp
 		}
 		if count < limit {
 			offset = 0
-			toDate = sinceDate
+			toDate = toDate.AddDate(0, 0, -1)
 			sinceDate = toDate.AddDate(0, 0, -1)
-			logrus.Debugf("Loaded date %s and %s", toDate.Format("2006-01-02"), sinceDate.Format("2006-01-02"))
+			logrus.Debugf("Loaded date %s and %s", toDate.Format(time.DateTime), sinceDate.Format(time.DateTime))
 			if lastDate.After(sinceDate) {
 				logrus.Debugf("Loaded %d orders end date %s", affected, sinceDate.Format("2006-01-02"))
 				return nil
@@ -384,7 +384,7 @@ func (c *OzonService) loadOrders(ctx context.Context, client *api.ClientWithResp
 			if offset >= 20000 {
 				offset = 0
 				sinceDate = maxDate.Add(time.Second)
-				logrus.Debugf("Loaded date %s and %s", toDate.Format("2006-01-02"), sinceDate.Format("2006-01-02"))
+				logrus.Debugf("Loaded date %s and %s", toDate.Format(time.DateTime), sinceDate.Format(time.DateTime))
 			}
 		}
 	}
