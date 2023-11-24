@@ -4,6 +4,7 @@ import (
 	"github.com/yoda/app/internal/api"
 	"github.com/yoda/common/pkg/model"
 	"github.com/yoda/common/pkg/types"
+	"github.com/yoda/common/pkg/utils"
 )
 
 func MapReportDetailByPeriodItem(data *api.ReportDetailByPeriodItem, transactionId int64, source, ownerCode string, barcodeId, itemId, message *string) *model.ReportDetailByPeriod {
@@ -61,7 +62,7 @@ func MapReportDetailByPeriodItem(data *api.ReportDetailByPeriodItem, transaction
 		SalePercent:              data.SalePercent,
 		ShkID:                    data.ShkId,
 		SiteCountry:              data.SiteCountry,
-		Srid:                     data.Srid,
+		Srid:                     utils.Int64ToString(data.Srid),
 		StickerID:                data.StickerId,
 		SubjectName:              data.SubjectName,
 		SupplierOperName:         data.SupplierOperName,

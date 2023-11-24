@@ -30,6 +30,14 @@ func Int64ToInt32(s *int64) *int32 {
 	return &t
 }
 
+func Int64ToString(s *int64) *string {
+	if s == nil {
+		return nil
+	}
+	str := strconv.FormatInt(*s, 10)
+	return &str
+}
+
 func IntToBoolean(s *int) bool {
 	if s == nil {
 		return false

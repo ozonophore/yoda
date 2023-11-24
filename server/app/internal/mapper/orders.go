@@ -19,7 +19,7 @@ func MapOrderArray(orders *[]api.OrdersItem, transactionId int64, source string,
 		if order.Date.ToTime().Before(sinceDate) {
 			continue
 		}
-		address, wasSold := soldMap[*order.Odid]
+		address, wasSold := soldMap[*order.Srid]
 		newOrder, err := MapOrder(&order, transactionId, source, ownerCode, wasSold, address)
 		var barcodeId, itemId, message *string
 		if newOrder.Barcode != nil {
@@ -70,7 +70,7 @@ func MapOrder(order *api.OrdersItem, transactionId int64, source string, ownerCo
 		status = "canceled"
 	}
 	discountPercent := float64(*order.DiscountPercent)
-	newSrid := fmt.Sprintf(`%d`, *order.Odid)
+	newSrid := fmt.Sprintf(`%d`, *order.Srid)
 	var (
 		country *string
 		region  *string
@@ -103,7 +103,7 @@ func MapOrder(order *api.OrdersItem, transactionId int64, source string, ownerCo
 		Oblast:            oblast,
 		IncomeID:          order.IncomeID,
 		ExternalCode:      fmt.Sprintf(`%d`, *order.NmId),
-		Odid:              order.Odid,
+		Odid:              nil,
 		Subject:           order.Subject,
 		Category:          order.Category,
 		Brand:             order.Brand,
