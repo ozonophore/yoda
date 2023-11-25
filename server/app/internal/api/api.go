@@ -683,7 +683,7 @@ type SalesItem struct {
 	Spp *float32 `json:"spp,omitempty"`
 
 	// Srid Уникальный идентификатор заказа, функционально аналогичный `odid`/`rid`.  Данный параметр введен в июле'22 и в течение переходного периода может быть заполнен не во всех ответах. Примечание для работающих по системе Маркетплейс: `srid` равен `rid` в ответе на метод `GET /api/v2/orders`.
-	Srid *int64 `json:"srid,omitempty"`
+	Srid *string `json:"srid,omitempty"`
 
 	// Sticker Цифровое значение стикера, который клеится на товар в процессе сборки заказа по системе Маркетплейс.
 	Sticker *string `json:"sticker,omitempty"`

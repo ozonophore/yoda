@@ -64,6 +64,6 @@ func MapSale(s api.SalesItem, transactionId int64, source *string, ownerCode str
 		IsStorno:          &isStorno,
 		GNumber:           s.GNumber,
 		Sticker:           s.Sticker,
-		Srid:              utils.Int64ToString(s.Srid),
+		Srid:              s.Srid,
 	}
 }
