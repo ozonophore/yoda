@@ -76,7 +76,7 @@ func MapOrder(order *api.OrdersItem, transactionId int64, source string, ownerCo
 		status = "canceled"
 	}
 	discountPercent := float64(*order.DiscountPercent)
-	newSrid := fmt.Sprintf(`%d`, *order.Srid)
+	newSrid := fmt.Sprintf(`%s`, *order.Srid)
 	var (
 		country *string
 		region  *string
