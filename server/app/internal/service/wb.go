@@ -22,7 +22,7 @@ type WBService struct {
 	ownerCode string
 	apiKey    string
 	config    configuration.Config
-	salesSet  map[int64]*model.DeliveredAddress
+	salesSet  map[string]*model.DeliveredAddress
 }
 
 func NewWBService(ownerCode, apiKey string, config *configuration.Config) *WBService {
@@ -172,13 +172,13 @@ func (c *WBService) extractSales(ctx context.Context, transactionID int64, clnt 
 
 	logrus.Debugf("Sales count: %d", len(*salesItems))
 	if c.salesSet == nil {
-		c.salesSet = make(map[int64]*model.DeliveredAddress, len(*salesItems))
+		c.salesSet = make(map[string]*model.DeliveredAddress, len(*salesItems))
 	}
 
 	if err = CallbackBatch[api.SalesItem](salesItems, c.config.BatchSize, func(items *[]api.SalesItem) error {
 		newItems := mapper.MapSaleArray(items, transactionID, &source, c.ownerCode, func(item *api.SalesItem) {
 			saleDate, _ := time.Parse(time.DateOnly+"T"+time.TimeOnly, *item.Date)
-			c.salesSet[*item.Odid] = &model.DeliveredAddress{
+			c.salesSet[*item.Srid] = &model.DeliveredAddress{
 				Country: item.CountryName,
 				Region:  item.RegionName,
 				Okrug:   item.OblastOkrugName,

@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-func MapOrderArray(orders *[]api.OrdersItem, transactionId int64, source string, ownerCode string, soldMap map[int64]*model.DeliveredAddress, sinceDate time.Time) (*[]model.Order, *time.Time, error) {
+func MapOrderArray(orders *[]api.OrdersItem, transactionId int64, source string, ownerCode string, soldMap map[string]*model.DeliveredAddress, sinceDate time.Time) (*[]model.Order, *time.Time, error) {
 	var result []model.Order
 	var lastChangeDate *time.Time
 	decoder := dictionary.GetItemDecoder()
@@ -19,7 +19,8 @@ func MapOrderArray(orders *[]api.OrdersItem, transactionId int64, source string,
 		if order.Date.ToTime().Before(sinceDate) {
 			continue
 		}
-		address, wasSold := soldMap[*order.Srid]
+		srid := utils.Int64ToString(order.Srid)
+		address, wasSold := soldMap[*srid]
 		newOrder, err := MapOrder(&order, transactionId, source, ownerCode, wasSold, address)
 		var barcodeId, itemId, message *string
 		if newOrder.Barcode != nil {
