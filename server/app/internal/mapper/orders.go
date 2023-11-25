@@ -2,6 +2,7 @@ package mapper
 
 import (
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"github.com/yoda/app/internal/api"
 	"github.com/yoda/app/internal/service/dictionary"
 	"github.com/yoda/common/pkg/model"
@@ -20,6 +21,10 @@ func MapOrderArray(orders *[]api.OrdersItem, transactionId int64, source string,
 			continue
 		}
 		srid := order.Srid
+		l := len(*srid)
+		if l > 50 {
+			logrus.Info("Srif gretest then 50 %s", srid)
+		}
 		address, wasSold := soldMap[*srid]
 		newOrder, err := MapOrder(&order, transactionId, source, ownerCode, wasSold, address)
 		var barcodeId, itemId, message *string
