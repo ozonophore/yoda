@@ -388,8 +388,7 @@ components:
           description: Код маркировки
           example: "Код маркировки"
         srid:
-          type: integer
-          format: int64
+          type: string
           description: Уникальный идентификатор заказа
     PostingProduct:
       type: object
@@ -715,8 +714,7 @@ components:
           description: Цифровое значение стикера, который клеится на товар в процессе
             сборки заказа по системе Маркетплейс.
         srid:
-          type: integer
-          format: int64
+          type: string
           description: 'Уникальный идентификатор заказа, функционально аналогичный
                 `odid`/`rid`.  Данный параметр введен в июле''22 и в течение переходного
                 периода может быть заполнен не во всех ответах. Примечание для работающих

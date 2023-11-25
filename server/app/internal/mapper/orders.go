@@ -19,7 +19,7 @@ func MapOrderArray(orders *[]api.OrdersItem, transactionId int64, source string,
 		if order.Date.ToTime().Before(sinceDate) {
 			continue
 		}
-		srid := utils.Int64ToString(order.Srid)
+		srid := order.Srid
 		address, wasSold := soldMap[*srid]
 		newOrder, err := MapOrder(&order, transactionId, source, ownerCode, wasSold, address)
 		var barcodeId, itemId, message *string

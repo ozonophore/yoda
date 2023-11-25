@@ -219,7 +219,7 @@ type OrdersItem struct {
 	Oblast *string `json:"oblast,omitempty"`
 
 	// Srid Уникальный идентификатор заказа, функционально аналогичный `odid`/`rid`.  Данный параметр введен в июле'22 и в течение переходного периода может быть заполнен не во всех ответах. Примечание для работающих по системе Маркетплейс: `srid` равен `rid` в ответе на метод `GET /api/v2/orders`.
-	Srid *int64 `json:"srid,omitempty"`
+	Srid *string `json:"srid,omitempty"`
 
 	// Sticker Цифровое значение стикера, который клеится на товар в процессе сборки заказа по системе Маркетплейс.
 	Sticker *string `json:"sticker,omitempty"`
@@ -582,7 +582,7 @@ type ReportDetailByPeriodItem struct {
 	SiteCountry *string `json:"site_country,omitempty"`
 
 	// Srid Уникальный идентификатор заказа
-	Srid *int64 `json:"srid,omitempty"`
+	Srid *string `json:"srid,omitempty"`
 
 	// StickerId Цифровое значение стикера, который клеится на товар в процессе сборки заказа по схеме "Маркетплейс"
 	StickerId *string `json:"sticker_id,omitempty"`
