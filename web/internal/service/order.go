@@ -7,6 +7,7 @@ import (
 	"github.com/yoda/web/internal/api"
 	"github.com/yoda/web/internal/storage"
 	"io"
+	"net/http"
 	"time"
 )
 
@@ -77,6 +78,8 @@ var headers = []column{
 type OrderRepositoryInterface interface {
 	GetOrdersByDay(date time.Time) (*[]storage.Order, error)
 	GetOrdersByDayWithPagging(date time.Time, filter string, source string, page int32, size int32) (*[]storage.Order, error)
+	GetOrdersProductWithoutPage(dateFrom time.Time, dateTo time.Time, filter *string, groupBy *string) (*[]storage.OrderProduct, error)
+	GetOrdersProduct(dateFrom time.Time, dateTo time.Time, filter *string, offset int32, limit int32, groupBy *string) (*[]storage.OrderProduct, error)
 }
 
 type OrderService struct {
@@ -188,4 +191,98 @@ func (s *OrderService) GetOrders(date time.Time, filter string, source string, p
 		Items: items,
 		Count: total,
 	}, nil
+}
+
+func (s *OrderService) GetOrdersProduct(dateFrom time.Time, dateTo time.Time, filter *string, offset int32, limit int32, groupBy *string) (*api.OrderProducts, error) {
+	orders, err := s.repository.GetOrdersProduct(dateFrom, dateTo, filter, offset, limit, groupBy)
+	if err != nil {
+		return nil, err
+	}
+	len := int32(len(*orders))
+	if len == 0 {
+		return &api.OrderProducts{
+			Items: []api.OrderProduct{},
+			Count: 0,
+		}, nil
+	}
+	result := make([]api.OrderProduct, len)
+	total := int32(0)
+	for i, order := range *orders {
+		total = order.Total
+
+		orderDate := order.OrderDate.Format(time.DateOnly)
+		newOrder := api.OrderProduct{
+			Id:                     order.RowNumber,
+			Source:                 order.Source,
+			Brand:                  order.Brand,
+			Org:                    order.OrgName,
+			SupplierArticle:        order.SupplierArticle,
+			Barcode:                order.Barcode,
+			ExternalCode:           order.ExternalCode,
+			Code1c:                 order.ItemID,
+			OrderedQuantity:        order.Quantity,
+			OrderQuantityCanceled:  order.QuantityCanceled,
+			OrderQuantityDelivered: order.QuantityDelivered,
+			Name:                   order.ItemName,
+			OrderDate:              &orderDate,
+		}
+		result[i] = newOrder
+	}
+	return &api.OrderProducts{
+		Items: result,
+		Count: total,
+	}, nil
+}
+
+var orderHeader = []ExcelHeaderColumn{
+	{
+		Title: "Дата",
+		Width: 20,
+		Field: "OrderDate",
+	}, {
+		Title: "Площадка",
+		Width: 40,
+		Field: "Source",
+	}, {
+		Title: "Кабинет",
+		Width: 40,
+		Field: "OrgName",
+	}, {
+		Title: "Бренд",
+		Width: 40,
+		Field: "Brand",
+	}, {
+		Title: "Код 1С",
+		Width: 40,
+		Field: "ItemID",
+	}, {
+		Title: "Наименование",
+		Width: 40,
+		Field: "ItemName",
+	}, {
+		Title: "Кол-во",
+		Width: 40,
+		Field: "Quantity",
+	}, {
+		Title: "Кол-во отменено",
+		Width: 40,
+		Field: "QuantityCanceled",
+	}, {
+		Title: "Кол-во доставлено",
+		Width: 40,
+		Field: "QuantityDelivered",
+	},
+}
+
+func (s *OrderService) ExportOrderProductReport(writer http.ResponseWriter, dateFrom time.Time, dateTo time.Time, filter *string, groupBy *string) error {
+	orders, err := s.repository.GetOrdersProductWithoutPage(dateFrom, dateTo, filter, groupBy)
+	if err != nil {
+		return err
+	}
+	headers := orderHeader
+	if groupBy != nil {
+		headers = orderHeader[1:]
+	}
+
+	return GenerateExcelDoc(writer, "Заказы", orders, &headers)
 }

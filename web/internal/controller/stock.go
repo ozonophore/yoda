@@ -13,6 +13,8 @@ import (
 type OrderService interface {
 	PrepareAndReturnExcel(writer io.Writer, date time.Time) error
 	GetOrders(date time.Time, filter string, source string, page int32, size int32) (*api.Orders, error)
+	GetOrdersProduct(dateFrom time.Time, dateTo time.Time, filter *string, offset int32, limit int32, groupBy *string) (*api.OrderProducts, error)
+	ExportOrderProductReport(writer http.ResponseWriter, dateFrom time.Time, dateTo time.Time, filter *string, groupBy *string) error
 }
 
 type SaleService interface {
@@ -25,19 +27,30 @@ type AuthService interface {
 	GetProfile(auth string) (*api.Profile, error)
 }
 
+type DictionaryService interface {
+	GetPositions(offset int32, limit int32, source []string, filter *string) (*api.DictPositions, error)
+	GetWarehouses(offset int32, limit int32, source []string, code *string, cluster *string) (*api.Warehouses, error)
+}
+
 type Controller struct {
 	store        *storage.Storage
 	orderService OrderService
 	saleService  SaleService
 	authService  AuthService
+	dictService  DictionaryService
 }
 
-func NewController(store *storage.Storage, orderService OrderService, saleService SaleService, authService AuthService) *Controller {
+func NewController(store *storage.Storage,
+	orderService OrderService,
+	saleService SaleService,
+	authService AuthService,
+	dictService DictionaryService) *Controller {
 	return &Controller{
 		store:        store,
 		orderService: orderService,
 		saleService:  saleService,
 		authService:  authService,
+		dictService:  dictService,
 	}
 }
 

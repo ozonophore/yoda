@@ -28,11 +28,13 @@ func main() {
 	orderService := service.NewOrderService(store)
 	saleService := sale.NewSaleService(store)
 	authService := auth.NewAuthService(store)
+	dictionaryService := service.NewDictionaryService(store)
 
-	controller := controller.NewController(store, orderService, saleService, authService)
+	controller := controller.NewController(store, orderService, saleService, authService, dictionaryService)
 
 	e := echo.New()
 	e.Use(middleware.JWTValidationMiddleware(authService))
+	e.HTTPErrorHandler = middleware.ErrorHandler
 
 	e.Debug = true
 

@@ -33,6 +33,8 @@ github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/deepmap/oapi-codegen v1.14.0 h1:b51/kQwH69rjN5pu+8j/Q5fUGD/rUclLAcGLQWQwa3E=
 github.com/deepmap/oapi-codegen v1.14.0/go.mod h1:QcEpzjVDwJEH3Fq6I7XYkI0M/JwvoL82ToYveaeVMAw=
+github.com/devfeel/mapper v0.7.13 h1:IE6ZITgrMH8W/xhUvJ6PInjVV8QW29idDJAUZPc9bbw=
+github.com/devfeel/mapper v0.7.13/go.mod h1:foz4u16jrssGoDfnWYQGFcthjlU6uBV5UV8uYJfKneA=
 github.com/fatih/color v1.15.0 h1:kOqh6YHBtK8aywxGerMG2Eq3H6Qgoqeo13Bk2Mv/nBs=
 github.com/fatih/structs v1.1.0 h1:Q7juDM0QtcnhCpeyLGQKyg4TOIghuNXrkL32pHAUMxo=
 github.com/fatih/structs v1.1.0/go.mod h1:9NiDSp5zOcgEDl+j00MP/WkGVPOlPRLejGD8Ga6PJ7M=
