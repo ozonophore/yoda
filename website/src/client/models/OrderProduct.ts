@@ -5,7 +5,7 @@
 
 export type OrderProduct = {
     id: number;
-    orderDate: string;
+    orderDate?: string;
     source: string;
     org: string;
     supplierArticle: string;

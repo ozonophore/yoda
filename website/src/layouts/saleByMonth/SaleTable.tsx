@@ -45,7 +45,6 @@ export default function SaleTable({year, month}: IProps) {
     const {items, count} = data
 
     useEffect(() => {
-        OpenAPI.TOKEN = sessionStorage.getItem('access_token') ?? ''
         SalesesService.getSalesByMonthWithPagination(year, month, page + 1, rowsPerPage)
             .then(resp => {
                 setData(resp)

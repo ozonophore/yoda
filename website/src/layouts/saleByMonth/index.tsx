@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Fragment, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import Typography from '@mui/joy/Typography';
 import Button from '@mui/joy/Button';
 import DownloadRoundedIcon from '@mui/icons-material/DownloadRounded';
@@ -12,14 +12,15 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import 'dayjs/locale/ru';
 import dayjs from 'dayjs';
 import { CustomSalesService } from 'layouts/saleByMonth/customSalesService';
-import { OpenAPI } from 'client';
+import { useController } from 'context';
+import { SetMenuActive } from 'context/actions';
 
 export function SaleByMonth() {
     const [date, setDate] = useState(dayjs().subtract(1, 'month'))
     const [isLoading, setIsLoading] = useState(false)
+    const{ dispatch } = useController()
 
     const handleDownloadFile = () => {
-        OpenAPI.TOKEN = sessionStorage.getItem('access_token') ?? ''
         CustomSalesService.getSalesByMonthReport(
             () => setIsLoading(true),
             () => setIsLoading(false),
@@ -27,6 +28,10 @@ export function SaleByMonth() {
             date.month() + 1
         )
     }
+
+    useEffect(() => {
+        dispatch(SetMenuActive("menu-dict-clusters-id"))
+    }, []);
 
     return (
         <Fragment>

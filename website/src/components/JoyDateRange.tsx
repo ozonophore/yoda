@@ -13,24 +13,32 @@ import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
 
 interface IProps {
-    dateFormat?: string | undefined;
+    dateFrom: Date
+    dateTo: Date
+    width?: number | string | undefined
+    dateFormat?: string | undefined
+    onRangeChange: (startDate: Date, endDate: Date) => void
 }
 
-export default function JoyDataRange(props: IProps): ReactElement {
+function getMessage(startDate: Date, endDate: Date, dateFormat: string): string {
+    const startDateStr = dayjs(startDate).format(dateFormat)
+    const endDateStr = dayjs(endDate).format(dateFormat)
+    return startDate.getDate() === endDate.getDate() ? `${startDateStr}` : `${startDateStr} - ${endDateStr}`
+}
 
-    const dateFormat = props.dateFormat ?? 'DD-MM-YYYY'
+export default function JoyDateRange({width, onRangeChange, dateFrom, dateTo, dateFormat = 'DD.MM.YYYY'}: IProps): ReactElement {
 
     const [dateRange, setDateRange] = useState<Range[]>([
         {
-            startDate: new Date(),
-            endDate: undefined,
+            startDate: dateFrom,
+            endDate: dateTo,
             key: 'selection'
         }
     ])
     const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
     const inputRef = React.useRef(null);
-    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-        //setAnchorEl(event.currentTarget);
+    const [inputValue, setInputValue] = useState(getMessage(dateFrom, dateTo, dateFormat))
+    const handleClick = () => {
         setAnchorEl(inputRef.current)
     };
     const handleClose = () => {
@@ -38,15 +46,39 @@ export default function JoyDataRange(props: IProps): ReactElement {
     };
     const open = Boolean(anchorEl);
     const id = open ? 'simple-popover' : undefined;
-    const rangeDate = dateRange[0];
-    const startDate = dayjs(rangeDate.startDate).format(dateFormat)
-    const endDate = dayjs(rangeDate.endDate).format(dateFormat)
-    const msg = startDate === endDate ? `${startDate}` : `${startDate} - ${endDate}`
+
+    function handleSubmit() {
+        const {startDate, endDate} = dateRange[0]
+        setInputValue(getMessage(startDate ?? dateFrom, endDate ?? dateTo, dateFormat))
+        onRangeChange(startDate ?? new Date(), endDate ?? new Date())
+        handleClose()
+    }
+
+    function handleSetToday() {
+        const today = new Date()
+        setDateRange([{
+            startDate: today,
+            endDate: today,
+            key: 'selection'
+        }])
+    }
+
+    function handleSetYesterday() {
+        const yesterday = new Date()
+        yesterday.setDate(yesterday.getDate() - 1)
+        setDateRange([{
+            startDate: yesterday,
+            endDate: yesterday,
+            key: 'selection'
+        }])
+    }
+
     return (
         <Fragment>
-            <div ref={inputRef}>
-            <Input size='sm' aria-describedby={id} value={msg} endDecorator={<IconButton onClick={handleClick}><CalendarIcon/>
-            </IconButton>}/></div>
+            <div ref={inputRef} style={{width: width}}>
+                <Input size='sm' aria-describedby={id} value={inputValue} onClick={handleClick} onKeyUp={handleClick}
+                       endDecorator={<IconButton onClick={handleClick}><CalendarIcon/>
+                       </IconButton>}/></div>
             <Popover id={id}
                      open={open}
                      anchorEl={anchorEl}
@@ -65,15 +97,17 @@ export default function JoyDataRange(props: IProps): ReactElement {
                         onChange={(item: RangeKeyDict) => {
                             setDateRange([item.selection])
                         }}
-                        //onChange={item => setState([item.selection])}
-                        //showSelectionPreview={true}
                         moveRangeOnFirstSelection={false}
+                        showPreview={true}
                         months={2}
                         ranges={dateRange}
                         direction="horizontal"
                         locale={ru}
                         startDatePlaceholder='Начало периода'
                         endDatePlaceholder='Окончание периода'
+                        classNames={{
+                            dayToday: 'Сегодня'
+                        }}
                     />
                 </div>
                 <Box sx={{
@@ -82,9 +116,17 @@ export default function JoyDataRange(props: IProps): ReactElement {
                     pb: 2,
                     display: 'flex',
                     flexWrap: 'wrap',
-                    justifyContent: 'end',
+                    justifyContent: 'space-between',
                 }}>
-                    <Button size='sm' variant="outlined" onClick={handleClose}>Готово</Button>
+                    <Box sx={{
+                        gap: 2,
+                        display: 'flex',
+                        flexWrap: 'wrap',
+                        justifyContent: 'space-between'}}>
+                        <Button size='sm' onClick={handleSetToday}>Сегодня</Button>
+                        <Button size='sm' onClick={handleSetYesterday}>Вчера</Button>
+                    </Box>
+                    <Button size='sm' variant="outlined" onClick={handleSubmit}>Готово</Button>
                 </Box>
             </Popover>
         </Fragment>

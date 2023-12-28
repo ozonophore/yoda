@@ -7,7 +7,17 @@ export type ProductParams = {
     dateFrom: string;
     dateTo: string;
     filter?: string;
-    limit: number;
-    offset: number;
+    limit?: number;
+    offset?: number;
+    groupBy?: ProductParams.groupBy;
 };
+
+export namespace ProductParams {
+
+    export enum groupBy {
+        POSITION = 'POSITION',
+    }
+
+
+}
 

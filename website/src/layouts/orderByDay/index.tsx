@@ -1,25 +1,30 @@
 import * as React from 'react';
-import { Fragment, useState } from 'react';
+import {Fragment, useEffect, useState} from 'react';
 import Typography from '@mui/joy/Typography';
 import Button from '@mui/joy/Button';
 import DownloadRoundedIcon from '@mui/icons-material/DownloadRounded';
 import Box from '@mui/joy/Box';
 import OrderTable from './OrderTable';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
 import JoyDatePicker from 'components/JoyDatePicker';
-import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import {LocalizationProvider} from '@mui/x-date-pickers';
 
 import 'dayjs/locale/ru';
 import dayjs from 'dayjs';
-import { CustomOrdersService } from 'layouts/orderByDay/customOrderService';
-import { OpenAPI } from 'client';
+import {CustomOrdersService} from 'layouts/orderByDay/customOrderService';
+import {SetMenuActive} from "../../context/actions";
+import {useController} from "../../context";
 
 export function OrderByDay() {
+    const {dispatch} = useController()
     const [date, setDate] = useState(dayjs().subtract(1, 'day'))
     const [isLoading, setIsLoading] = useState(false)
 
+    useEffect(() => {
+        dispatch(SetMenuActive("menu-orders-day-id"))
+    }, []);
+
     const handleDownloadFile = () => {
-        OpenAPI.TOKEN = sessionStorage.getItem('access_token') ?? ''
         CustomOrdersService.getOrdersReport(
             () => setIsLoading(true),
             () => setIsLoading(false),

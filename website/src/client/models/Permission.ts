@@ -9,4 +9,5 @@ export enum Permission {
     PROFILE = 'PROFILE',
     SALES = 'SALES',
     ORDERS = 'ORDERS',
+    DICTIONARY = 'DICTIONARY',
 }

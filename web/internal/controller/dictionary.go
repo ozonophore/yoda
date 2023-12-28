@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"github.com/labstack/echo/v4"
 	"github.com/yoda/web/internal/api"
 	"net/http"
@@ -32,7 +33,28 @@ func (c *Controller) GetWarehouses(ctx echo.Context, params api.GetWarehousesPar
 	return ctx.JSON(http.StatusOK, whs)
 }
 
-func (c *Controller) AddWarehouse(ctx echo.Context) error {
-	//TODO implement me
-	panic("implement me")
+func (c *Controller) UpdateWarehouse(ctx echo.Context) error {
+	var params api.Warehouse
+	ctx.Bind(&params)
+	r, err := c.store.UpdateWarehouse(&params)
+	if err != nil {
+		return err
+	}
+	return ctx.JSON(http.StatusOK, r)
+}
+
+func (c *Controller) GetClusters(ctx echo.Context, params api.GetClustersParams) error {
+	values, err := c.store.GetClusters(ctx.Request().Context(), params.Filter)
+	if err != nil {
+		return err
+	}
+	return ctx.JSON(http.StatusOK, values)
+}
+
+func (c *Controller) ExportWarehouses(ctx echo.Context, params api.ExportWarehousesParams) error {
+	fileName := "warehouses_.xlsx"
+	ctx.Response().Header().Set(echo.HeaderContentType, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+	ctx.Response().Header().Set("Content-Disposition", fmt.Sprintf(`attachment; filename="%s"`, fileName))
+	ctx.Response().WriteHeader(http.StatusOK)
+	return c.dictService.ExportWarehouses(ctx.Response().Writer, params.Source, params.Cluster, params.Code)
 }

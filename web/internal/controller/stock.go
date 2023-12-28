@@ -1,8 +1,8 @@
 package controller
 
 import (
-	openapi_types "github.com/deepmap/oapi-codegen/pkg/types"
 	"github.com/labstack/echo/v4"
+	"github.com/oapi-codegen/runtime/types"
 	"github.com/yoda/web/internal/api"
 	"github.com/yoda/web/internal/storage"
 	"io"
@@ -29,6 +29,7 @@ type AuthService interface {
 
 type DictionaryService interface {
 	GetPositions(offset int32, limit int32, source []string, filter *string) (*api.DictPositions, error)
+	ExportWarehouses(writer http.ResponseWriter, source []string, code *string, cluster *string) error
 	GetWarehouses(offset int32, limit int32, source []string, code *string, cluster *string) (*api.Warehouses, error)
 }
 
@@ -54,7 +55,7 @@ func NewController(store *storage.Storage,
 	}
 }
 
-func (c *Controller) GetStocksDate(ctx echo.Context, date openapi_types.Date) error {
+func (c *Controller) GetStocksDate(ctx echo.Context, date types.Date) error {
 	items, err := c.store.GetStocksByDate(date.Time)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, err)

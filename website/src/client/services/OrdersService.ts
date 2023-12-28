@@ -2,7 +2,9 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { OrderProducts } from '../models/OrderProducts';
 import type { Orders } from '../models/Orders';
+import type { ProductParams } from '../models/ProductParams';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
@@ -40,6 +42,50 @@ export class OrdersService {
             errors: {
                 401: `Unauthorized`,
                 404: `Not Found`,
+            },
+        });
+    }
+
+    /**
+     * Заказы по продукту
+     * @param requestBody
+     * @returns OrderProducts Ok
+     * @throws ApiError
+     */
+    public static getOrdersProduct(
+        requestBody: ProductParams,
+    ): CancelablePromise<OrderProducts> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/orders/product',
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                401: `Unauthorized`,
+                404: `Not Found`,
+                418: `Error`,
+            },
+        });
+    }
+
+    /**
+     * Выгрузка в excel заказов по продукту
+     * @param requestBody
+     * @returns binary Ok
+     * @throws ApiError
+     */
+    public static exportOrdersProductToExcel(
+        requestBody: ProductParams,
+    ): CancelablePromise<Blob> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/orders/product/report',
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                401: `Unauthorized`,
+                404: `Not Found`,
+                418: `Error`,
             },
         });
     }

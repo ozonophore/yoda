@@ -1,12 +1,15 @@
-package service
+package dictionary
 
 import (
+	"context"
 	"github.com/yoda/web/internal/api"
 	"github.com/yoda/web/internal/storage"
 )
 
 type IDictionaryRepository interface {
+	GetClusters(context context.Context, filter *string) (*[]string, error)
 	GetPositions(offset int32, limit int32, source []string, filter *string) (*[]storage.Position, error)
+	GetWarehousesWithoutPages(source []string, code *string, cluster *string) (*[]storage.Warehouse, error)
 	GetWarehouses(offset int32, limit int32, source []string, code *string, cluster *string) (*[]storage.Warehouse, error)
 }
 
@@ -50,34 +53,6 @@ func (s *DictionaryService) GetPositions(offset int32, limit int32, source []str
 	}
 	return &api.DictPositions{
 		Count: total,
-		Items: items,
-	}, nil
-}
-
-func (s *DictionaryService) GetWarehouses(offset int32, limit int32, source []string, code *string, cluster *string) (*api.Warehouses, error) {
-	wh, err := s.repository.GetWarehouses(offset, limit, source, code, cluster)
-	if err != nil {
-		return nil, err
-	}
-	count := int32(len(*wh))
-	if count == 0 {
-		return &api.Warehouses{
-			Count: 0,
-			Items: []api.Warehouse{},
-		}, nil
-	}
-	items := make([]api.Warehouse, count)
-
-	for i, item := range *wh {
-		count = item.Total
-		items[i] = api.Warehouse{
-			Code:    item.Code,
-			Cluster: item.Cluster,
-			Source:  item.Source,
-		}
-	}
-	return &api.Warehouses{
-		Count: count,
 		Items: items,
 	}, nil
 }

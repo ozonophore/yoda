@@ -33,7 +33,12 @@ interface IMenuData {
     subMenu?: ISubMenuData[]
 }
 
+interface ISideBar {
+    active: string,
+}
+
 interface IContent {
+    sidebar: ISideBar,
     auth: IAuth
     profile?: Profile,
     menu: {
@@ -63,6 +68,9 @@ export interface IAuth {
 }
 
 const InitState: IContent = {
+    sidebar: {
+        active: "menu-home-id",
+    },
     auth: {
         isAuth: sessionStorage.getItem("access_token") ? true : false,
         isLoading: false
@@ -132,6 +140,16 @@ YContext.displayName = "YContext"
 
 function reducer(state: IContent, action: IAction): IContent {
     switch (action.type) {
+        case "SET_SIDEBAR_ACTIVE": {
+            console.log("#", action.payload)
+            return {
+                ...state,
+                sidebar: {
+                    ...state.sidebar,
+                    active: action.payload
+                }
+            }
+        }
         case "SET_AUTH_LOADING": {
             return {
                 ...state, auth: { ...state.auth, isLoading: action.payload }

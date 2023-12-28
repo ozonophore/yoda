@@ -4,6 +4,8 @@
 /* eslint-disable */
 
 export type PageProductParams = {
+    filter?: string;
+    source: Array<string>;
     limit: number;
     offset: number;
 };

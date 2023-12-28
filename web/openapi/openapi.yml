@@ -752,6 +752,59 @@ paths:
       tags:
         - Dictionaries
 
+  /dictionaries/clusters:
+    get:
+      operationId: getClusters
+      parameters:
+        - in: query
+          name: filter
+          schema:
+            type: string
+      tags:
+        - Dictionaries
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+
+  /dictionaries/warehouses/export:
+    get:
+      description: Получение списка складов
+      operationId: ExportWarehouses
+      security:
+        - ApiKeyAuth: [ ]
+      parameters:
+        - in: query
+          name: source
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: cluster
+          schema:
+            type: string
+        - in: query
+          name: code
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+      tags:
+        - Dictionaries
+
   /dictionaries/warehouses:
     get:
       description: Получение списка складов
@@ -793,8 +846,8 @@ paths:
       tags:
         - Dictionaries
     post:
-      description: Добавление склада в кластер
-      operationId: addWarehouse
+      description: Добавление кластера к существующему складу
+      operationId: updateWarehouse
       security:
           - ApiKeyAuth: [ ]
       requestBody:

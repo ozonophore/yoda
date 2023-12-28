@@ -9,6 +9,7 @@ import { CancelablePromise } from './CancelablePromise';
 import type { OnCancel } from './CancelablePromise';
 import type { OpenAPIConfig } from './OpenAPI';
 
+//Custom request
 export const isDefined = <T>(value: T | null | undefined): value is Exclude<T, null | undefined> => {
     return value !== undefined && value !== null;
 };
@@ -141,7 +142,7 @@ export const getHeaders = async (config: OpenAPIConfig, options: ApiRequestOptio
     const username = await resolve(options, config.USERNAME);
     const password = await resolve(options, config.PASSWORD);
     const additionalHeaders = await resolve(options, config.HEADERS);
-    console.log('# ' + token)
+
     const headers = Object.entries({
         Accept: 'application/json',
         ...additionalHeaders,
@@ -236,6 +237,11 @@ export const getResponseBody = async (response: Response): Promise<any> => {
                 const isJSON = jsonTypes.some(type => contentType.toLowerCase().startsWith(type));
                 if (isJSON) {
                     return await response.json();
+                }
+                const xlsxTypes = ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
+                const isXLSX = xlsxTypes.some(type => contentType.toLowerCase().startsWith(type));
+                if (isXLSX) {
+                    return await response.blob();
                 } else {
                     return await response.text();
                 }
