@@ -16,9 +16,13 @@ COPY web/openapi/openapi.yml /app/openapi.yml
 RUN npm run build
 
 ## Build
-FROM golang:1.20 AS build-backend
+FROM golang:1.21 AS build-backend
 
 WORKDIR /app
+
+COPY web/go.mod ./
+COPY web/go.sum ./
+RUN go mod download && go mod verify
 
 COPY web/cmd ./cmd
 COPY web/internal ./internal
@@ -26,8 +30,6 @@ COPY web/openapi ./openapi
 COPY web/go.mod ./go.mod
 COPY web/go.sum ./go.sum
 COPY web/Makefile ./Makefile
-
-RUN go mod download
 
 RUN make build
 
