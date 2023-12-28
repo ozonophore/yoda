@@ -55,7 +55,6 @@ export default function OrderTable(props: { date: string }): React.JSX.Element {
 
     const refreshData = () => {
         setLoading(true)
-        OpenAPI.TOKEN = sessionStorage.getItem("access_token") ?? ""
         OrdersService.getOrders(page + 1, rowsPerPage, date, filter, source)
             .then(result => {
                 setOrders(result)

@@ -1,13 +1,11 @@
 import Box from '@mui/joy/Box';
-import FormControl from '@mui/joy/FormControl';
-import FormLabel from '@mui/joy/FormLabel';
 import Select from '@mui/joy/Select';
 import Option from '@mui/joy/Option';
 import Typography from '@mui/joy/Typography';
 import IconButton from '@mui/joy/IconButton';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import { Grid } from '@mui/joy';
+import {Grid} from '@mui/joy';
 import * as React from 'react';
 
 interface IProps {
@@ -28,10 +26,10 @@ function labelDisplayedRows({
     to: number;
     count: number;
 }) {
-    return `${from}–${to} of ${count !== -1 ? count : `more than ${to}`}`;
+    return `${from}–${to} из ${count !== -1 ? count : `больше чем ${to}`}`;
 }
 
-const YodaPagination = (props: IProps) : React.JSX.Element => {
+const YodaPagination = (props: IProps): React.JSX.Element => {
 
     const getLabelDisplayedRowsTo = () => {
         if (props.pageLength === -1) {
@@ -54,19 +52,17 @@ const YodaPagination = (props: IProps) : React.JSX.Element => {
                     justifyContent: 'flex-end',
                 }}
             >
-                <FormControl orientation="horizontal" size='sm'>
-                    <FormLabel>Rows per page:</FormLabel>
-                    <Select onChange={props.onChangeRowsPerPage} value={props.rowsPerPage}>
-                        <Option value={25}>25</Option>
-                        <Option value={30}>30</Option>
-                        <Option value={50}>50</Option>
-                    </Select>
-                </FormControl>
+                <Typography level="body-sm">Строк на странице:</Typography>
+                <Select size='sm' onChange={props.onChangeRowsPerPage} value={props.rowsPerPage}>
+                    <Option value={25}>25</Option>
+                    <Option value={30}>30</Option>
+                    <Option value={50}>50</Option>
+                </Select>
                 <Typography
+                    level="body-sm"
                     textAlign="center"
                     sx={{
-                        minWidth: 70,
-                        fontSize: 'var(--FormLabel-fontSize, var(--joy-fontSize-sm))'
+                        minWidth: 100,
                     }}>
                     {labelDisplayedRows({
                         from: props.pageLength === 0 ? 0 : props.page * props.rowsPerPage + 1,

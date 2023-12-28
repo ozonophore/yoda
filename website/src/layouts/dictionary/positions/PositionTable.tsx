@@ -1,121 +1,181 @@
 import * as React from 'react';
-import { useEffect, useState } from 'react';
-import Box from '@mui/joy/Box';
-import Button from '@mui/joy/Button';
-import Divider from '@mui/joy/Divider';
+import { Fragment, useEffect, useState } from 'react';
 import FormControl from '@mui/joy/FormControl';
-import FormLabel from '@mui/joy/FormLabel';
 import Input from '@mui/joy/Input';
-import Modal from '@mui/joy/Modal';
-import ModalDialog from '@mui/joy/ModalDialog';
-import ModalClose from '@mui/joy/ModalClose';
+// icons
+import SearchIcon from '@mui/icons-material/Search';
+import { DictionariesService, DictPosition } from 'client';
+import JoyDataGrid, { IColumn } from 'components/JoyDataGrid';
+
 import Select from '@mui/joy/Select';
 import Option from '@mui/joy/Option';
-import Table from '@mui/joy/Table';
-import Sheet from '@mui/joy/Sheet';
-import IconButton from '@mui/joy/IconButton';
-import Typography from '@mui/joy/Typography';
-// icons
-import FilterAltIcon from '@mui/icons-material/FilterAlt';
-import SearchIcon from '@mui/icons-material/Search';
-import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
-import { Orders, OrdersService } from 'client';
-import YodaPagination from 'components/YodaPagination';
-import { Checkbox } from '@mui/joy';
+import { Box, Chip } from '@mui/joy';
+import { KeyboardArrowDown, Logout } from '@mui/icons-material';
+import { useController } from 'context';
+import { SetLogout } from 'context/actions';
 
-function labelDisplayedRows({
-                                from,
-                                to,
-                                count,
-                            }: {
-    from: number;
-    to: number;
-    count: number;
-}) {
-    return `${from}–${to} of ${count !== -1 ? count : `more than ${to}`}`;
-}
+const columnsModel: IColumn[] = [
+    {
+        field: 'name',
+        width: 170,
+        headerName: 'Наименование',
+        headerTextAlign: 'center'
+    },
+    {
+        field: 'marketplace',
+        width: 60,
+        headerName: 'Площадка',
+    },
+    {
+        field: 'org',
+        width: 100,
+        headerName: 'Кабинет',
+        headerTextAlign: 'center',
+    },
+    {
+        field: 'barcode',
+        width: 80,
+        headerName: 'Штрихкод',
+        headerTextAlign: 'center',
+    },
+    {
+        field: 'code1c',
+        width: 100,
+        headerName: 'Код 1С',
+        headerTextAlign: 'center',
+    },
+]
 
-const initOrders: Orders = {items: [], count: 0}
+export default function PositionTable(props: {
+    date: string
+}): React.JSX.Element {
+    const { dispatch } = useController()
 
-export default function PositionTable(props: { date: string }): React.JSX.Element {
-    const [selected, setSelected] = React.useState<readonly string[]>([]);
-    const [open, setOpen] = React.useState(false);
+    const [page, setPage] = useState(0)
+    const [pageSize, setPageSize] = useState(25)
+    const [total, setTotal] = useState(0)
+    const [rows, setRows] = useState<DictPosition[]>([])
+    const [isLoading, setIsLoading] = useState(false)
+    const [filter, setFilter] = useState()
+    const [filterVelue, setFilterValue] = useState()
+    const [isGroup, setIsGroup] = useState(false)
+    const [columns, setColumns] = useState<IColumn[]>(columnsModel)
+    const [source, setSource] = useState<string[]>(["WB", "OZON"])
 
-    const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(25);
+    function handleDownloadFile() {
 
-    const [orders, setOrders] = useState<Orders>(initOrders)
-    const {date} = props
-    const {count, items} = orders
+    }
+
+    function handlePagChange(page: number) {
+        setPage(page)
+    }
+
+    function handleOnPageSizeChange(pageSize: number) {
+        setPageSize(pageSize)
+    }
 
     useEffect(() => {
-        OrdersService.getOrders(page + 1, rowsPerPage, date)
-            .then(result => {
-                setOrders(result)
-            })
-    }, [page, rowsPerPage, date]);
-
-    const handleChangePage = (newPage: number) => {
-        setPage(newPage);
-    };
-
-    const handleChangeRowsPerPage = (event: any, newValue: number | null) => {
-        setRowsPerPage(parseInt(newValue!.toString(), 10));
-        setPage(0);
-    };
-
-    const getLabelDisplayedRowsTo = () => {
-        if (orders.items.length === -1) {
-            return (page + 1) * rowsPerPage;
+        const cl = !isGroup ? columnsModel : columnsModel.slice(1)
+        setColumns(cl)
+        setIsLoading(true)
+        const req = {
+            limit: pageSize,
+            offset: pageSize * page,
+            source: source,
+            filter: filter,
         }
-        return rowsPerPage === -1
-            ? orders.items.length
-            : Math.min(orders.items.length, (page + 1) * rowsPerPage);
+        DictionariesService.getPositions(req)
+            .then(data => {
+                setTotal(data.count)
+                setRows(data.items)
+            })
+            .catch(reason => {
+                dispatch(SetLogout(reason.description))
+            })
+            .finally(() => {
+                setIsLoading(false)
+            })
+    }, [page, pageSize, filterVelue, isGroup, source]);
+
+
+    function handleChangeFilterText(event: any) {
+        if (!event.target.value) {
+            setFilter(undefined)
+            return
+        }
+        setPage(0)
+        setFilter(event.target.value);
+    }
+
+    function handleOnKeyDown(event: any) {
+        if (event.key === 'Enter') {
+            setFilterValue(filter);
+            event.preventDefault();
+        }
+    }
+
+    const handleSourceChange = (
+        event: React.SyntheticEvent | null,
+        newValue: string[] | null,
+    ) => {
+        setSource(newValue ?? source)
     };
+
+    const renderFilters = () => (
+        <React.Fragment>
+            <FormControl size="sm" sx={{width: '100%'}}>
+                <Box
+                    sx={{
+                        gap: 2,
+                        display: "flex",
+                    }}
+                >
+                    <Select
+                        size="sm"
+                        multiple
+                        indicator={<KeyboardArrowDown/>}
+                        placeholder="Площадка..."
+                        defaultValue={['WB', 'OZON']}
+                        onChange={handleSourceChange}
+                        renderValue={(selected) => (
+                            <Box sx={{display: 'flex', gap: '0.25rem'}}>
+                                {selected.map((selectedOption) => (
+                                    <Chip size="sm" variant="soft" color="primary">
+                                        {selectedOption.label}
+                                    </Chip>
+                                ))}
+                            </Box>
+                        )}
+                        sx={{
+                            minWidth: '140px',
+                            width: '140px'
+                        }}
+                        slotProps={{
+                            listbox: {
+                                sx: {
+                                    width: '100%',
+                                },
+                            },
+                        }}
+                    >
+                        <Option value="WB">WB</Option>
+                        <Option value="OZON">OZON</Option>
+                    </Select>
+                    <Input
+                        fullWidth={true}
+                        size="sm"
+                        placeholder="Поиск"
+                        startDecorator={<SearchIcon/>}
+                        onChange={handleChangeFilterText}
+                        onKeyDown={handleOnKeyDown}
+                    />
+                </Box>
+            </FormControl>
+        </React.Fragment>
+    );
 
     return (
-        <React.Fragment>
-            <Sheet
-                className="SearchAndFilters-mobile"
-                sx={{
-                    display: {
-                        xs: 'flex',
-                        sm: 'none',
-                    },
-                    my: 1,
-                    gap: 1,
-                }}
-            >
-                <Input
-                    size="sm"
-                    placeholder="Поиск"
-                    startDecorator={<SearchIcon/>}
-                    sx={{flexGrow: 1}}
-                />
-                <IconButton
-                    size="sm"
-                    variant="outlined"
-                    color="neutral"
-                    onClick={() => setOpen(true)}
-                >
-                    <FilterAltIcon/>
-                </IconButton>
-                <Modal open={open} onClose={() => setOpen(false)}>
-                    <ModalDialog aria-labelledby="filter-modal" layout="fullscreen">
-                        <ModalClose/>
-                        <Typography id="filter-modal" level="h2">
-                            Filters
-                        </Typography>
-                        <Divider sx={{my: 2}}/>
-                        <Sheet sx={{display: 'flex', flexDirection: 'column', gap: 2}}>
-                            <Button color="primary" onClick={() => setOpen(false)}>
-                                Submit
-                            </Button>
-                        </Sheet>
-                    </ModalDialog>
-                </Modal>
-            </Sheet>
+        <Fragment>
             <Box
                 className="SearchAndFilters-tabletUp"
                 sx={{
@@ -135,103 +195,12 @@ export default function PositionTable(props: { date: string }): React.JSX.Elemen
                     },
                 }}
             >
-                <FormControl sx={{flex: 1}} size="sm">
-                    <FormLabel>Поиск</FormLabel>
-                    <Input size="sm" placeholder="Поиск" startDecorator={<SearchIcon/>}/>
-                </FormControl>
+                {renderFilters()}
             </Box>
-            <Sheet
-                className="OrderTableContainer"
-                variant="outlined"
-                sx={{
-                    display: {xs: 'none', sm: 'initial'},
-                    width: '100%',
-                    borderRadius: 'sm',
-                    flexShrink: 1,
-                    overflow: 'auto',
-                    minHeight: 0,
-                    height: '100%'
-                }}
-            >
-                <Table
-                    aria-labelledby="tableTitle"
-                    stickyHeader
-                    hoverRow
-                    sx={{
-                        '--TableCell-headBackground': 'var(--joy-palette-background-level1)',
-                        '--Table-headerUnderlineThickness': '1px',
-                        '--TableRow-hoverBackground': 'var(--joy-palette-background-level1)',
-                        '--TableCell-paddingY': '4px',
-                        '--TableCell-paddingX': '8px',
-                        '& tr > th': {textAlign: 'center'}
-                    }}
-                >
-                    <thead>
-                    <tr>
-                        <th style={{width: 48, textAlign: 'center', padding: '12px 6px' }} aria-label='empty'>
-                            <Checkbox
-                                size="sm"
-                                indeterminate={
-                                    selected.length > 0 && selected.length !== orders.items.length
-                                }
-                                checked={selected.length === orders.items.length}
-                                onChange={(event) => {
-
-                                }}
-                                color={
-                                    selected.length > 0 || selected.length === orders.items.length
-                                        ? 'primary'
-                                        : undefined
-                                }
-                                sx={{ verticalAlign: 'text-bottom' }}
-                            />
-                        </th>
-                        <th style={{width: 250, padding: '12px 6px'}}>Наименование</th>
-                        <th style={{width: 140, padding: '12px 6px'}}>Штрих-код</th>
-                        <th style={{width: 140, padding: '12px 6px'}}>Код 1С</th>
-                        <th style={{width: 140, padding: '12px 6px'}}>Бренд</th>
-                        <th style={{width: 100, padding: '12px 6px'}}>SKU МП</th>
-                        <th style={{width: 100, padding: '12px 6px'}}>Дата</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {orders.items.map((row) => (
-                        <tr key={`row_${row.id}`}>
-                            <td style={{textAlign: 'center', width: 120}}>
-                                {row.source}
-                            </td>
-                            <td>
-                                {row.name}
-                            </td>
-                            <td>
-                                {row.barcode}
-                            </td>
-                            <td>
-                                {row.code1c}
-                            </td>
-                            <td>
-                                {row.brand}
-                            </td>
-                            <td>
-                                {row.externalCode}
-                            </td>
-                            <td style={{textAlign: 'right'}}>
-                                {row.balance}
-                            </td>
-                            <td style={{textAlign: 'right'}}>
-                                {row.orderSum.toFixed(2)}
-                            </td>
-                            <td style={{textAlign: 'right'}}>
-                                {row.orderedQuantity}
-                            </td>
-                        </tr>
-                    ))}
-                    </tbody>
-                </Table>
-            </Sheet>
-            <YodaPagination page={page} count={count} rowsPerPage={rowsPerPage} pageLength={items.length}
-                            onChangeRowsPerPage={handleChangeRowsPerPage}
-                            onChangePage={handleChangePage}/>
-        </React.Fragment>
-    );
+            <JoyDataGrid isLoading={isLoading} rows={rows} count={total} pageSize={pageSize} page={page}
+                         onPageChange={handlePagChange} onPageSizeChange={handleOnPageSizeChange}
+                         showColumns={true}
+                         columns={columns}/>
+        </Fragment>
+    )
 }

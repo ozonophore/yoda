@@ -13,6 +13,7 @@ import (
 	"github.com/yoda/web/internal/middleware"
 	"github.com/yoda/web/internal/service"
 	"github.com/yoda/web/internal/service/auth"
+	"github.com/yoda/web/internal/service/dictionary"
 	"github.com/yoda/web/internal/service/sale"
 	"github.com/yoda/web/internal/storage"
 	"os"
@@ -28,11 +29,13 @@ func main() {
 	orderService := service.NewOrderService(store)
 	saleService := sale.NewSaleService(store)
 	authService := auth.NewAuthService(store)
+	dictionaryService := dictionary.NewDictionaryService(store)
 
-	controller := controller.NewController(store, orderService, saleService, authService)
+	controller := controller.NewController(store, orderService, saleService, authService, dictionaryService)
 
 	e := echo.New()
 	e.Use(middleware.JWTValidationMiddleware(authService))
+	e.HTTPErrorHandler = middleware.ErrorHandler
 
 	e.Debug = true
 

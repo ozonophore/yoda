@@ -1,8 +1,8 @@
 package controller
 
 import (
-	openapi_types "github.com/deepmap/oapi-codegen/pkg/types"
 	"github.com/labstack/echo/v4"
+	"github.com/oapi-codegen/runtime/types"
 	"github.com/yoda/web/internal/api"
 	"github.com/yoda/web/internal/storage"
 	"io"
@@ -13,6 +13,8 @@ import (
 type OrderService interface {
 	PrepareAndReturnExcel(writer io.Writer, date time.Time) error
 	GetOrders(date time.Time, filter string, source string, page int32, size int32) (*api.Orders, error)
+	GetOrdersProduct(dateFrom time.Time, dateTo time.Time, filter *string, offset int32, limit int32, groupBy *string) (*api.OrderProducts, error)
+	ExportOrderProductReport(writer http.ResponseWriter, dateFrom time.Time, dateTo time.Time, filter *string, groupBy *string) error
 }
 
 type SaleService interface {
@@ -25,23 +27,35 @@ type AuthService interface {
 	GetProfile(auth string) (*api.Profile, error)
 }
 
+type DictionaryService interface {
+	GetPositions(offset int32, limit int32, source []string, filter *string) (*api.DictPositions, error)
+	ExportWarehouses(writer http.ResponseWriter, source []string, code *string, cluster *string) error
+	GetWarehouses(offset int32, limit int32, source []string, code *string, cluster *string) (*api.Warehouses, error)
+}
+
 type Controller struct {
 	store        *storage.Storage
 	orderService OrderService
 	saleService  SaleService
 	authService  AuthService
+	dictService  DictionaryService
 }
 
-func NewController(store *storage.Storage, orderService OrderService, saleService SaleService, authService AuthService) *Controller {
+func NewController(store *storage.Storage,
+	orderService OrderService,
+	saleService SaleService,
+	authService AuthService,
+	dictService DictionaryService) *Controller {
 	return &Controller{
 		store:        store,
 		orderService: orderService,
 		saleService:  saleService,
 		authService:  authService,
+		dictService:  dictService,
 	}
 }
 
-func (c *Controller) GetStocksDate(ctx echo.Context, date openapi_types.Date) error {
+func (c *Controller) GetStocksDate(ctx echo.Context, date types.Date) error {
 	items, err := c.store.GetStocksByDate(date.Time)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, err)

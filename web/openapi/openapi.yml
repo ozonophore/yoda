@@ -26,6 +26,12 @@ components:
       in: cookie
       name: access_token
   responses:
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorData'
     UnauthorizedError:
       description: Unauthorized
       content:
@@ -34,6 +40,49 @@ components:
             $ref: '#/components/schemas/AuthInfo'
 
   schemas:
+    PageProductParams:
+      type: object
+      required:
+        - source
+        - limit
+        - offset
+      properties:
+        filter:
+          type: string
+        source:
+          type: array
+          items:
+              type: string
+        limit:
+          type: integer
+          format: int32
+        offset:
+          type: integer
+          format: int32
+    ProductParams:
+      type: object
+      required:
+        - dateFrom
+        - dateTo
+      properties:
+        dateFrom:
+          type: string
+          format: date
+        dateTo:
+          type: string
+          format: date
+        filter:
+          type: string
+        limit:
+          type: integer
+          format: int32
+        offset:
+          type: integer
+          format: int32
+        groupBy:
+          type: string
+          enum:
+            - POSITION
     Permission:
       type: string
       enum:
@@ -42,6 +91,7 @@ components:
         - PROFILE
         - SALES
         - ORDERS
+        - DICTIONARY
     Stocks:
       type: object
       properties:
@@ -85,6 +135,20 @@ components:
           - marketplace_id
           - barcode
           - quantity
+    OrderProducts:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+          description: Count of stocks
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderProduct'
+      required:
+        - count
+        - items
     Orders:
       type: object
       properties:
@@ -142,6 +206,52 @@ components:
         balance:
           type: integer
           format: int32
+    OrderProduct:
+        type: object
+        required:
+            - id
+            - source
+            - org
+            - supplierArticle
+            - code1c
+            - externalCode
+            - name
+            - barcode
+            - brand
+            - orderedQuantity
+            - orderQuantityCanceled
+            - orderQuantityDelivered
+        properties:
+            id:
+              type: integer
+              format: int32
+            orderDate:
+              type: string
+            source:
+              type: string
+            org:
+              type: string
+            supplierArticle:
+              type: string
+            code1c:
+              type: string
+            externalCode:
+              type: string
+            name:
+              type: string
+            barcode:
+              type: string
+            brand:
+              type: string
+            orderedQuantity:
+              type: integer
+              format: int32
+            orderQuantityCanceled:
+              type: integer
+              format: int32
+            orderQuantityDelivered:
+              type: integer
+              format: int32
     Sales:
       type: object
       properties:
@@ -209,6 +319,16 @@ components:
       required:
         - email
         - password
+    ErrorData:
+      type: object
+      properties:
+        success:
+          type: boolean
+        description:
+          type: string
+      required:
+        - success
+        - description
     AuthInfo:
       type: object
       properties:
@@ -238,7 +358,83 @@ components:
         - name
         - permissions
         - email
-
+    DictPosition:
+        type: object
+        properties:
+            id:
+              type: integer
+              format: int32
+              description: ID строки
+            name:
+                type: string
+                description: Наименование позиции
+            barcode:
+                type: string
+                description: Штрихкод
+            org:
+                type: string
+                description: Организация
+            code1c:
+                type: string
+                description: Код 1С
+            marketplace:
+                type: string
+                description: Торговая точка
+            marketplaceId:
+                type: string
+                description: Наименование точки
+        required:
+            - id
+            - name
+            - barcode
+            - org
+            - code1c
+            - marketplace
+            - marketplaceId
+    DictPositions:
+      type: object
+      properties:
+          count:
+            type: integer
+            format: int32
+            description: Count of positions
+          items:
+            type: array
+            items:
+                $ref: '#/components/schemas/DictPosition'
+      required:
+          - count
+          - items
+    Warehouses:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+          description: Count of positions
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Warehouse'
+      required:
+        - count
+        - items
+    Warehouse:
+      type: object
+      properties:
+        code:
+            type: string
+            description: Код склада
+        cluster:
+            type: string
+            description: Наименование кластера
+        source:
+            type: string
+            description: Источник
+      required:
+        - code
+        - cluster
+        - source
 paths:
   /stocks/{date}:
     get:
@@ -320,6 +516,72 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
       tags:
         - Orders
+
+  /orders/product:
+    post:
+      tags:
+        - Orders
+      description: Заказы по продукту
+      security:
+        - ApiKeyAuth: [ ]
+      operationId: getOrdersProduct
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductParams'
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderProducts'
+        404:
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+          summary: Получение заказов за день
+        418:
+          $ref: '#/components/responses/Error'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+  /orders/product/report:
+    post:
+      tags:
+        - Orders
+      description: Выгрузка в excel заказов по продукту
+      security:
+        - ApiKeyAuth: [ ]
+      operationId: exportOrdersProductToExcel
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductParams'
+      responses:
+        200:
+          description: Ok
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        404:
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+          summary: Получение заказов за день
+        418:
+          $ref: '#/components/responses/Error'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
 
   /orders/report:
     get:
@@ -467,6 +729,143 @@ paths:
                     $ref: '#/components/schemas/Profile'
         tags:
             - Auth
+
+  /dictionaries/positions:
+    post:
+      description: Получение списка позиций
+      operationId: getPositions
+      security:
+        - ApiKeyAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PageProductParams'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DictPositions'
+      tags:
+        - Dictionaries
+
+  /dictionaries/clusters:
+    get:
+      operationId: getClusters
+      parameters:
+        - in: query
+          name: filter
+          schema:
+            type: string
+      tags:
+        - Dictionaries
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+
+  /dictionaries/warehouses/export:
+    get:
+      description: Получение списка складов
+      operationId: ExportWarehouses
+      security:
+        - ApiKeyAuth: [ ]
+      parameters:
+        - in: query
+          name: source
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: cluster
+          schema:
+            type: string
+        - in: query
+          name: code
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+      tags:
+        - Dictionaries
+
+  /dictionaries/warehouses:
+    get:
+      description: Получение списка складов
+      operationId: getWarehouses
+      security:
+        - ApiKeyAuth: [ ]
+      parameters:
+        - in: query
+          name: source
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            format: int32
+        - in: query
+          name: offset
+          schema:
+              type: integer
+              format: int32
+        - in: query
+          name: cluster
+          schema:
+            type: string
+        - in: query
+          name: code
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Warehouses'
+      tags:
+        - Dictionaries
+    post:
+      description: Добавление кластера к существующему складу
+      operationId: updateWarehouse
+      security:
+          - ApiKeyAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Warehouse'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Warehouse'
+
+      tags:
+        - Dictionaries
 
 
 

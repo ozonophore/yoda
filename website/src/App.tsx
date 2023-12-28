@@ -9,26 +9,35 @@ import {
     Experimental_CssVarsProvider as MaterialCssVarsProvider,
     experimental_extendTheme as materialExtendTheme,
     THEME_ID as MATERIAL_THEME_ID,
+    ThemeProvider,
 } from '@mui/material/styles';
 // icons
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
-import ColorSchemeToggle from './components/ColorSchemeToggle';
 import Header from './components/Header';
-import Sidebar from './components/Sidebar';
 import { Outlet, Route, Routes } from 'react-router-dom';
 import { Cluster } from './layouts/dictionary/cluster';
 import Dashboard from './layouts/dashboard';
 import Home from './layouts/home';
 import { OrderByDay } from './layouts/orderByDay';
 import { SaleByMonth } from 'layouts/saleByMonth';
-import { Positions } from 'layouts/dictionary/positions';
-import { Snackbar } from '@mui/material';
+import { DictPositions } from 'layouts/dictionary/positions';
+import { createTheme, Snackbar } from '@mui/material';
 import { Alert } from '@mui/joy';
 import useError from 'hooks/useError';
 import { SetError } from 'context/actions';
 import IconButton from '@mui/joy/IconButton';
 
 import Close from '@mui/icons-material/Close';
+import { OrderProductByDay } from 'layouts/order/productByday';
+import { OpenAPI } from 'client';
+import Sidebar from 'components/Sidebar';
+import { Test } from 'layouts/test';
+
+const getToken = async () => {
+    return sessionStorage.getItem("access_token") ?? "";
+};
+
+OpenAPI.TOKEN = getToken
 
 const useEnhancedEffect =
     typeof window !== 'undefined' ? React.useLayoutEffect : React.useEffect;
@@ -40,7 +49,7 @@ function Layout() {
         dispatch(SetError(undefined))
     }
     return (<Fragment>
-        <Sidebar/>
+
         <Box
             component="main"
             className="MainContent"
@@ -75,9 +84,6 @@ function Layout() {
                 >
 
                 </Breadcrumbs>
-                <ColorSchemeToggle
-                    sx={{ml: 'auto', display: {xs: 'none', md: 'inline-flex'}}}
-                />
             </Box>
             <Outlet/>
             <Snackbar
@@ -86,10 +92,11 @@ function Layout() {
                 onClose={handleClose}
                 anchorOrigin={{vertical: "bottom", horizontal: "center"}}
             >
-                <Alert size="md"
+                <Alert size="sm"
                        color="danger"
                        endDecorator={
                            <IconButton
+                               size='sm'
                                variant="plain"
                                sx={{
                                    '--IconButton-size': '32px',
@@ -110,27 +117,39 @@ function Layout() {
 
 const materialTheme = materialExtendTheme();
 
+const darkTheme = createTheme({
+    palette: {
+        mode: 'dark',
+    },
+});
+
 export default function App() {
     return (
         <MaterialCssVarsProvider theme={{[MATERIAL_THEME_ID]: materialTheme}}>
-            <StyledEngineProvider injectFirst>
-                <CssVarsProvider disableTransitionOnChange>
-                    <CssBaseline/>
-                    <Box sx={{display: 'flex', minHeight: '100dvh'}}>
-                        <Header/>
-                        <Routes>
-                            <Route path="/" element={<Layout/>}>
-                                <Route index element={<Home/>}/>
-                                <Route path="dashboard" element={<Dashboard/>}/>
-                                <Route path="clusters" element={<Cluster/>}/>
-                                <Route path="order-by-day" element={<OrderByDay/>}/>
-                                <Route path="sales-by-month" element={<SaleByMonth/>}/>
-                                <Route path="positions" element={<Positions/>}/>
-                            </Route>
-                        </Routes>
-                    </Box>
-                </CssVarsProvider>
-            </StyledEngineProvider>
+            <ThemeProvider theme={darkTheme}>
+                <StyledEngineProvider injectFirst>
+                    <CssVarsProvider disableTransitionOnChange>
+                        <CssBaseline/>
+                        <Box sx={{display: 'flex', minHeight: '100dvh'}}>
+                            <Header/>
+                            <Sidebar/>
+                            <Routes>
+                                <Route path="/" element={<Layout/>}>
+                                    <Route index element={<Home/>}/>
+                                    <Route path="dashboard" element={<Dashboard/>}/>
+                                    <Route path="clusters" element={<Cluster/>}/>
+                                    <Route path="order-by-day" element={<OrderByDay/>}/>
+                                    <Route path="sales-by-month" element={<SaleByMonth/>}/>
+                                    <Route path="positions" element={<DictPositions/>}/>
+                                    <Route path="order-product-by-day" element={<OrderProductByDay/>}/>
+                                    <Route path="dict-position" element={<DictPositions/>}/>
+                                    <Route path="test" element={<Test/>}/>
+                                </Route>
+                            </Routes>
+                        </Box>
+                    </CssVarsProvider>
+                </StyledEngineProvider>
+            </ThemeProvider>
         </MaterialCssVarsProvider>
     );
 }

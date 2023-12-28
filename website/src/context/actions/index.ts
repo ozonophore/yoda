@@ -91,7 +91,6 @@ const CleanProfile = (): IAction => {
 
 const LoadProfile = (): IActionFunction => {
     return (dispatch: Dispatch<IActionFunction | IAction>) => {
-        OpenAPI.TOKEN = sessionStorage.getItem("access_token") || ""
         AuthService.profile()
             .then(resp => {
                 dispatch(SetProfile(resp))
@@ -99,6 +98,14 @@ const LoadProfile = (): IActionFunction => {
                 const description = err.body.description
                 dispatch(SetLogout(description));
         })
+    }
+}
+
+const SetMenuActive = (key: string): IAction  => {
+    console.log("#", key)
+    return {
+        type: "SET_SIDEBAR_ACTIVE",
+        payload: key
     }
 }
 
@@ -112,5 +119,6 @@ export {
     SetLogout,
     SetError,
     SetAuthLoading,
-    LoadProfile
+    LoadProfile,
+    SetMenuActive
 }

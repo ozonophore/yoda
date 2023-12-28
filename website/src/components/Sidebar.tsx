@@ -1,188 +1,84 @@
 import * as React from 'react';
-import { Fragment, useEffect } from 'react';
-import { styled } from '@mui/joy/styles';
 import GlobalStyles from '@mui/joy/GlobalStyles';
-import Avatar from '@mui/joy/Avatar';
 import Box from '@mui/joy/Box';
 import Divider from '@mui/joy/Divider';
 import IconButton from '@mui/joy/IconButton';
 import List from '@mui/joy/List';
 import ListItem from '@mui/joy/ListItem';
-import ListItemButton from '@mui/joy/ListItemButton';
+import ListItemButton, {listItemButtonClasses} from '@mui/joy/ListItemButton';
 import ListItemContent from '@mui/joy/ListItemContent';
-import ListItemDecorator from '@mui/joy/ListItemDecorator';
 import Typography from '@mui/joy/Typography';
 import Sheet from '@mui/joy/Sheet';
-import { closeSidebar } from '../utils';
-
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
-import DynamicFeedRoundedIcon from '@mui/icons-material/DynamicFeedRounded';
-import DashboardRoundedIcon from '@mui/icons-material/DashboardRounded';
+import ShoppingCartRoundedIcon from '@mui/icons-material/ShoppingCartRounded';
 import FolderRoundedIcon from '@mui/icons-material/FolderRounded';
-import DeviceHubRoundedIcon from '@mui/icons-material/DeviceHubRounded';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import PointOfSaleRoundedIcon from '@mui/icons-material/PointOfSaleRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
-import DensitySmallRoundedIcon from '@mui/icons-material/DensitySmallRounded';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
-import ListSubheader from '@mui/joy/ListSubheader';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { SetLogout } from 'context/actions';
+import ColorSchemeToggle from './ColorSchemeToggle';
+import {closeSidebar} from '../utils';
+import {Link} from 'react-router-dom';
 import useProfile from 'hooks/useProfile';
-import { Permission } from 'client';
+import MenuIcon from '@mui/icons-material/Menu';
+import {useController} from 'context';
 
-interface IMenuItem {
-    id: string
-    title: string
-    icon: React.JSX.Element
-    href?: string
-    menu?: IMenuItem[]
-    permission?: string
+function Toggler({
+                     defaultExpanded = false,
+                     renderToggle,
+                     children,
+                 }: {
+    defaultExpanded?: boolean;
+    children: React.ReactNode;
+    renderToggle: (params: {
+        open: boolean;
+        setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+    }) => React.ReactNode;
+}) {
+    const [open, setOpen] = React.useState(defaultExpanded);
+    return (
+        <React.Fragment>
+            {renderToggle({open, setOpen})}
+            <Box
+                sx={{
+                    display: 'grid',
+                    gridTemplateRows: open ? '1fr' : '0fr',
+                    transition: '0.2s ease',
+                    '& > *': {
+                        overflow: 'hidden',
+                    },
+                }}
+            >
+                {children}
+            </Box>
+        </React.Fragment>
+    );
 }
 
-const menu = [
-    {
-        id: "/",
-        title: "Главная",
-        permission: Permission.HOME,
-        icon: <HomeRoundedIcon/>,
-        href: "/"
-    }, {
-        id: "menu_1",
-        title: "Dashboard",
-        permission: Permission.DASHBOARD,
-        icon: <DashboardRoundedIcon/>,
-        href: "dashboard"
-    }, {
-        id: "menu_2",
-        title: "Справочники",
-        icon: <DynamicFeedRoundedIcon/>,
-        menu: [
-            {
-                id: "/clusters",
-                title: "Кластеры",
-                icon: <DeviceHubRoundedIcon/>,
-                href: "clusters"
-            },
-            {
-                id: "/positions",
-                title: "Позиции",
-                icon: <DensitySmallRoundedIcon/>,
-                href: "positions"
-            }
-        ]
-    }, {
-        id: "menu_3",
-        title: "Отчеты",
-        icon: <FolderRoundedIcon/>,
-        menu: [
-            {
-                id: "/order-by-day",
-                title: "Заказы за день",
-                permission: Permission.ORDERS,
-                icon: <ShoppingCartIcon/>,
-                href: "order-by-day"
-            },
-            {
-                id: "/sales-by-month",
-                title: "Продажи за месяц",
-                permission: Permission.SALES,
-                icon: <PointOfSaleRoundedIcon/>,
-                href: "sales-by-month"
-            }
-        ]
-    }
-]
-
-const Dropdown = styled('i')(({theme}) => ({
-    color: theme.vars.palette.text.tertiary,
-}));
-
-export default function Sidebar() {
-
+export default function Sidebar(this: any) {
+    const {state} = useController()
     const {profile, dispatch} = useProfile()
-    const [permissions, setPermissions] = React.useState<Permission[]>([])
 
-    const navigate = useNavigate();
+    const {active} = state.sidebar
 
-    const {pathname} = useLocation();
-
-    const selected = !pathname ? "/" : pathname
-
-    useEffect(() => {
-        setPermissions(profile?.permissions ?? [])
-    }, [profile]);
-
-    function contains(items: Permission[], item: IMenuItem): boolean {
-        if (!item.permission && item.menu) {
-            for (const i of item.menu) {
-                if (contains(items, i)) return true
-            }
-        }
-        const value = item?.permission ?? ""
-        if (!value) return false
-        return items.includes(value as Permission)
-    }
-
-    function renderMenu(menu: IMenuItem[]): React.JSX.Element[] {
-        return (menu.map((item: IMenuItem) => (
-                <Fragment>
-                    {contains(permissions, item) &&
-                        <ListItem key={item.id} nested={!!item.menu}>
-                            {!!(item.href) && <ListItemButton
-                                to={item.href}
-                                state={{selected: item.id}}
-                                selected={item.id === selected}
-                                style={{
-                                    color: (item.id === selected) ? '#0052cc' : ''
-                                }}
-                                component={Link}>
-                                <ListItemDecorator>
-                                    {item.icon}
-                                </ListItemDecorator>
-                                <ListItemContent>
-                                    {item.title}
-                                </ListItemContent>
-                            </ListItemButton>}
-                            {!(item.href) && <ListSubheader>
-                                <ListItemDecorator>
-                                    {item.icon}
-                                </ListItemDecorator>
-                                <ListItemContent>{item.title}</ListItemContent>
-                            </ListSubheader>}
-                            {!!(item.menu) && <List>
-                                {renderMenu(item.menu)}
-                            </List>}
-                        </ListItem>
-                }
-                </Fragment>
-            ))
-        )
-    }
-
-    const handleLogout = (event: React.FormEvent) => {
-        dispatch(SetLogout())
+    function handleOnClickMenu(event: any) {
+        console.log(event.target.id)
     }
 
     return (
         <Sheet
             className="Sidebar"
             sx={{
-                position: {
-                    xs: 'fixed',
-                    md: 'sticky',
-                },
+                position: {xs: 'fixed', md: 'sticky'},
                 transform: {
                     xs: 'translateX(calc(100% * (var(--SideNavigation-slideIn, 0) - 1)))',
                     md: 'none',
                 },
                 transition: 'transform 0.4s, width 0.4s',
-                zIndex: 1000,
+                zIndex: 10000,
                 height: '100dvh',
                 width: 'var(--Sidebar-width)',
                 top: 0,
-                p: 1.5,
-                py: 3,
+                p: 2,
                 flexShrink: 0,
                 display: 'flex',
                 flexDirection: 'column',
@@ -194,9 +90,9 @@ export default function Sidebar() {
             <GlobalStyles
                 styles={(theme) => ({
                     ':root': {
-                        '--Sidebar-width': '230px',
+                        '--Sidebar-width': '220px',
                         [theme.breakpoints.up('lg')]: {
-                            '--Sidebar-width': '230px',
+                            '--Sidebar-width': '240px',
                         },
                     },
                 })}
@@ -210,8 +106,8 @@ export default function Sidebar() {
                     left: 0,
                     width: '100vw',
                     height: '100vh',
-
-                    opacity: 'calc(var(--SideNavigation-slideIn, 0) - 0.2)',
+                    opacity: 'var(--SideNavigation-slideIn)',
+                    backgroundColor: 'var(--joy-palette-background-backdrop)',
                     transition: 'opacity 0.4s',
                     transform: {
                         xs: 'translateX(calc(100% * (var(--SideNavigation-slideIn, 0) - 1) + var(--SideNavigation-slideIn, 0) * var(--Sidebar-width, 0px)))',
@@ -220,6 +116,13 @@ export default function Sidebar() {
                 }}
                 onClick={() => closeSidebar()}
             />
+            <Box sx={{display: 'flex', gap: 1, alignItems: 'center'}}>
+                <IconButton variant="soft" color="primary" size="sm">
+                    <MenuIcon/>
+                </IconButton>
+                <ColorSchemeToggle sx={{ml: 'auto'}}/>
+            </Box>
+            <Divider/>
             <Box
                 sx={{
                     minHeight: 0,
@@ -227,34 +130,161 @@ export default function Sidebar() {
                     flexGrow: 1,
                     display: 'flex',
                     flexDirection: 'column',
+                    [`& .${listItemButtonClasses.root}`]: {
+                        gap: 1.5,
+                    },
                 }}
             >
                 <List
                     size="sm"
                     sx={{
-                        '--ListItem-radius': '6px',
-                        '--List-gap': '4px',
-                        '--List-nestedInsetStart': '20px',
+                        gap: 1,
+                        '--List-nestedInsetStart': '30px',
+                        '--ListItem-radius': (theme) => theme.vars.radius.sm,
                     }}
                 >
-                    {renderMenu(menu)}
+                    <ListItem>
+                        <ListItemButton id="menu-home-id" selected={active === "menu-home-id"}
+                                        onClick={handleOnClickMenu}>
+                            <HomeRoundedIcon/>
+                            <ListItemContent>
+                                <Typography style={{textDecoration: 'none'}} to={"/"} component={Link}
+                                            level="title-sm">Home</Typography>
+                            </ListItemContent>
+                        </ListItemButton>
+                    </ListItem>
+
+                    <ListItem nested>
+                        <Toggler renderToggle={({open, setOpen}) => (
+                            <ListItemButton onClick={() => setOpen(!open)}>
+                                <ShoppingCartRoundedIcon/>
+                                <ListItemContent>
+                                    <Typography level="title-sm">Заказы</Typography>
+                                </ListItemContent>
+                                <KeyboardArrowDownIcon
+                                    sx={{transform: open ? 'rotate(180deg)' : 'none'}}
+                                />
+                            </ListItemButton>
+                        )}>
+                            <List sx={{gap: 0.5}}>
+                                <ListItem sx={{mt: 0.5}}>
+                                    <ListItemButton
+                                        id="menu-orders-day-id"
+                                        selected={active === "menu-orders-day-id"}
+                                        onClick={handleOnClickMenu}
+                                        to="/order-by-day"
+                                        component={Link}>
+                                        На день
+                                    </ListItemButton>
+                                </ListItem>
+                                <ListItem sx={{mt: 0.5}}>
+                                    <ListItemButton
+                                        id="menu-orders-period-id"
+                                        selected={active === "menu-orders-period-id"}
+                                        onClick={handleOnClickMenu}
+                                        to="/order-product-by-day"
+                                        component={Link}>
+                                        За период
+                                    </ListItemButton>
+                                </ListItem>
+                            </List>
+                        </Toggler>
+                    </ListItem>
+
+                    <ListItem nested>
+                        <Toggler
+                            renderToggle={({open, setOpen}) => (
+                                <ListItemButton onClick={() => setOpen(!open)}>
+                                    <FolderRoundedIcon/>
+                                    <ListItemContent>
+                                        <Typography level="title-sm">Справочники</Typography>
+                                    </ListItemContent>
+                                    <KeyboardArrowDownIcon
+                                        sx={{transform: open ? 'rotate(180deg)' : 'none'}}
+                                    />
+                                </ListItemButton>
+                            )}
+                        >
+                            <List sx={{gap: 0.5}}>
+                                <ListItem sx={{mt: 0.5}}>
+                                    <ListItemButton
+                                        id="menu-dict-item1c-id"
+                                        selected={active === "menu-dict-item1c-id"}
+                                        onClick={handleOnClickMenu}
+                                        to="/dict-position"
+                                        component={Link}>Позиций 1С</ListItemButton>
+                                </ListItem>
+                                <ListItem>
+                                    <ListItemButton
+                                        id="menu-dict-clusters-id"
+                                        selected={active === "menu-dict-clusters-id"}
+                                        onClick={handleOnClickMenu}
+                                        to="/clusters"
+                                        component={Link}>Кластеры</ListItemButton>
+                                </ListItem>
+                            </List>
+                        </Toggler>
+                    </ListItem>
+
+                    {/*<ListItem>*/}
+                    {/*    <ListItemButton*/}
+                    {/*        role="menuitem"*/}
+                    {/*        component="a"*/}
+                    {/*        href="/joy-ui/getting-started/templates/messages/"*/}
+                    {/*    >*/}
+                    {/*        <QuestionAnswerRoundedIcon/>*/}
+                    {/*        <ListItemContent>*/}
+                    {/*            <Typography level="title-sm">Messages</Typography>*/}
+                    {/*        </ListItemContent>*/}
+                    {/*        <Chip size="sm" color="primary" variant="solid">*/}
+                    {/*            4*/}
+                    {/*        </Chip>*/}
+                    {/*    </ListItemButton>*/}
+                    {/*</ListItem>*/}
+
+                    {/*<ListItem nested>*/}
+                    {/*    <Toggler*/}
+                    {/*        renderToggle={({open, setOpen}) => (*/}
+                    {/*            <ListItemButton onClick={() => setOpen(!open)}>*/}
+                    {/*                <GroupRoundedIcon/>*/}
+                    {/*                <ListItemContent>*/}
+                    {/*                    <Typography level="title-sm">Users</Typography>*/}
+                    {/*                </ListItemContent>*/}
+                    {/*                <KeyboardArrowDownIcon*/}
+                    {/*                    sx={{transform: open ? 'rotate(180deg)' : 'none'}}*/}
+                    {/*                />*/}
+                    {/*            </ListItemButton>*/}
+                    {/*        )}*/}
+                    {/*    >*/}
+                    {/*        <List sx={{gap: 0.5}}>*/}
+                    {/*            <ListItem sx={{mt: 0.5}}>*/}
+                    {/*                <ListItemButton*/}
+                    {/*                    role="menuitem"*/}
+                    {/*                    component="a"*/}
+                    {/*                    href="/joy-ui/getting-started/templates/profile-dashboard/"*/}
+                    {/*                >*/}
+                    {/*                    My profile*/}
+                    {/*                </ListItemButton>*/}
+                    {/*            </ListItem>*/}
+                    {/*            <ListItem>*/}
+                    {/*                <ListItemButton>Create a new user</ListItemButton>*/}
+                    {/*            </ListItem>*/}
+                    {/*            <ListItem>*/}
+                    {/*                <ListItemButton>Roles & permission</ListItemButton>*/}
+                    {/*            </ListItem>*/}
+                    {/*        </List>*/}
+                    {/*    </Toggler>*/}
+                    {/*</ListItem>*/}
                 </List>
+
             </Box>
             <Divider/>
             <Box sx={{display: 'flex', gap: 1, alignItems: 'center'}}>
-                <Avatar variant="outlined" src="/static/images/avatar/3.jpg"/>
                 <Box sx={{minWidth: 0, flex: 1}}>
-                    <Typography fontSize="sm" fontWeight="lg">
-                        {profile?.name ?? 'Неизвесный пользователь'}
-                    </Typography>
-                    <Typography level="body-xs"></Typography>
+                    <Typography level="title-sm">{profile?.name ?? 'Неизвесный пользователь'}</Typography>
+                    <Typography level="body-xs">{profile?.email}</Typography>
                 </Box>
-                <IconButton
-                    onClick={handleLogout}
-                    // component={Link}
-                    // to="/logout"
-                    variant="plain"
-                    color="neutral">
+                <IconButton size="sm" variant="plain" color="neutral">
                     <LogoutRoundedIcon/>
                 </IconButton>
             </Box>

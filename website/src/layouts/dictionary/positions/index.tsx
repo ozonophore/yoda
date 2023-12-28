@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Fragment, useState } from 'react';
+import {Fragment, useEffect, useState} from 'react';
 import Typography from '@mui/joy/Typography';
 import Button from '@mui/joy/Button';
 import DownloadRoundedIcon from '@mui/icons-material/DownloadRounded';
@@ -8,10 +8,15 @@ import PositionTable from 'layouts/dictionary/positions/PositionTable';
 
 import 'dayjs/locale/ru';
 import dayjs from 'dayjs';
+import {SetMenuActive} from "../../../context/actions";
+import {useController} from "../../../context";
 
-export function Positions() {
+export function DictPositions() {
+    const {dispatch} = useController()
     const [date, setDate] = useState(dayjs().subtract(1, 'day'))
-
+    useEffect(() => {
+        dispatch(SetMenuActive("menu-dict-item1c-id"))
+    }, []);
     return (
         <Fragment>
             <Box
