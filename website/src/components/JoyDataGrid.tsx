@@ -16,6 +16,7 @@ import ClearRoundedIcon from '@mui/icons-material/ClearRounded';
 import IconButton from '@mui/joy/IconButton';
 import {jsx} from '@emotion/react';
 import dayjs from "dayjs";
+import {SxProps} from "@mui/joy/styles/types";
 import JSX = jsx.JSX;
 
 interface IDataGridContext {
@@ -55,6 +56,7 @@ export interface IColumn {
     textAlign?: 'left' | 'right' | 'center' | undefined,
     headerTextAlign?: 'left' | 'right' | 'center' | undefined,
     renderComponent?: (props: IComponentProps) => JSX.Element,
+    lines?: number,
 }
 
 interface IJoyDataSortModel {
@@ -139,6 +141,19 @@ interface IRowDataGridProps<R> {
     editable?: boolean
 }
 
+function getCellStyle(column: IColumn): SxProps {
+    if (!column.lines || column.lines === 0) {
+        return {}
+    }
+    return {
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+        display: "-webkit-box",
+        WebkitLineClamp: column.lines,
+        WebkitBoxOrient: "vertical",
+    }
+}
+
 function JoyRowDataGrid<R>({keyValue, columns, row, onSave, editable}: IRowDataGridProps<R>) {
     const [saveDisable, setSaveDisabled] = useState(deepEqual(row.oldData, row.newData))
     const [data, setData] = useState(row.newData)
@@ -193,10 +208,32 @@ function JoyRowDataGrid<R>({keyValue, columns, row, onSave, editable}: IRowDataG
                 }
                 {
                     !Boolean(column.editable) &&
-                    <Tooltip title={getValue(data, column)}>
-                        <Typography noWrap={column.noWrap} level='body-xs' style={{minWidth: column.minWith}}>
-                            {getValue(data, column)}
-                        </Typography>
+                    <Tooltip
+                        variant="outlined"
+                        size='sm'
+                        arrow={true}
+                        title={
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    maxWidth: 320,
+                                    justifyContent: 'center',
+                                    p: 1,
+                                }}
+                            >
+                                {getValue(data, column)}
+                            </Box>
+                        }>
+                        <div>
+                            <Typography
+                                noWrap={column.noWrap}
+                                sx={getCellStyle(column)}
+                                level='body-xs'
+                                style={{minWidth: column.minWith}}>
+                                {getValue(data, column)}
+                            </Typography>
+                        </div>
                     </Tooltip>
                 }
             </td>)
