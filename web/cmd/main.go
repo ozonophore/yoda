@@ -15,6 +15,7 @@ import (
 	"github.com/yoda/web/internal/service/auth"
 	"github.com/yoda/web/internal/service/dictionary"
 	"github.com/yoda/web/internal/service/sale"
+	"github.com/yoda/web/internal/service/stock"
 	"github.com/yoda/web/internal/storage"
 	"os"
 )
@@ -30,8 +31,15 @@ func main() {
 	saleService := sale.NewSaleService(store)
 	authService := auth.NewAuthService(store)
 	dictionaryService := dictionary.NewDictionaryService(store)
+	stockService := stock.NewStockService(store)
 
-	controller := controller.NewController(store, orderService, saleService, authService, dictionaryService)
+	controller := controller.NewController(store,
+		orderService,
+		saleService,
+		authService,
+		dictionaryService,
+		stockService,
+	)
 
 	e := echo.New()
 	e.Use(middleware.JWTValidationMiddleware(authService))

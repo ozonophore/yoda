@@ -3,6 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { Stocks } from '../models/Stocks';
+import type { StocksFull } from '../models/StocksFull';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
@@ -25,6 +26,34 @@ export class StocksService {
             url: '/stocks/{date}',
             path: {
                 'date': date,
+            },
+            errors: {
+                404: `Not Found`,
+            },
+        });
+    }
+
+    /**
+     * Получение остатков товаров
+     * Получение отстатоков за дату
+     * @param date Дата (YYYY-MM-DD)
+     * @param limit
+     * @param offset
+     * @returns StocksFull OK
+     * @throws ApiError
+     */
+    public static getStocksWithPages(
+        date: string,
+        limit: number,
+        offset: number,
+    ): CancelablePromise<StocksFull> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/stocks',
+            query: {
+                'date': date,
+                'limit': limit,
+                'offset': offset,
             },
             errors: {
                 404: `Not Found`,

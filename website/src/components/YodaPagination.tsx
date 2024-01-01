@@ -7,6 +7,7 @@ import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import {Grid} from '@mui/joy';
 import * as React from 'react';
+import {RefreshRounded} from "@mui/icons-material";
 
 interface IProps {
     page: number
@@ -14,7 +15,8 @@ interface IProps {
     rowsPerPage: number
     pageLength: number
     onChangeRowsPerPage: (event: any, newValue: number | null) => void
-    onChangePage: (page: number) => void
+    onChangePage: (page: number) => void,
+    onRefresh?: (page: number) => void,
 }
 
 function labelDisplayedRows({
@@ -75,6 +77,7 @@ const YodaPagination = (props: IProps): React.JSX.Element => {
                         size="sm"
                         color="neutral"
                         variant="outlined"
+                        title="Предыдущая"
                         disabled={props.page === 0}
                         onClick={() => props.onChangePage(props.page - 1)}
                         sx={{bgcolor: 'background.surface'}}
@@ -85,6 +88,7 @@ const YodaPagination = (props: IProps): React.JSX.Element => {
                         size="sm"
                         color="neutral"
                         variant="outlined"
+                        title="Следующая"
                         disabled={
                             props.pageLength !== 0
                                 ? props.page >= Math.ceil(props.count / props.rowsPerPage) - 1
@@ -95,6 +99,22 @@ const YodaPagination = (props: IProps): React.JSX.Element => {
                     >
                         <KeyboardArrowRightIcon/>
                     </IconButton>
+                    { props.onRefresh &&
+                    <IconButton
+                        size="sm"
+                        color="neutral"
+                        variant="outlined"
+                        title="Обновить"
+                        disabled={props.pageLength === 0}
+                        onClick={() => {
+                            if (props.onRefresh) {
+                                props.onRefresh(props.page)
+                            }
+                        }}
+                    >
+                        <RefreshRounded/>
+                    </IconButton>
+                    }
                 </Box>
             </Box>
         </Grid>

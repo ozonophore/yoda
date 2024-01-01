@@ -6,6 +6,7 @@ package api
 import (
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/labstack/echo/v4"
 	"github.com/oapi-codegen/runtime"
@@ -209,11 +210,38 @@ type Stock struct {
 	Quantity int32 `json:"quantity"`
 }
 
+// StockFull defines model for StockFull.
+type StockFull struct {
+	Barcode string `json:"barcode"`
+	Brand   string `json:"brand"`
+	Name    string `json:"name"`
+
+	// Organization Организация
+	Organization      string  `json:"organization"`
+	Price             float32 `json:"price"`
+	PriceWithDiscount float32 `json:"priceWithDiscount"`
+
+	// Quantity Stock quantity
+	Quantity        float32   `json:"quantity"`
+	Sku             string    `json:"sku"`
+	Source          string    `json:"source"`
+	StockDate       time.Time `json:"stockDate"`
+	SupplierArticle string    `json:"supplierArticle"`
+	Warehouse       string    `json:"warehouse"`
+}
+
 // Stocks defines model for Stocks.
 type Stocks struct {
 	// Count Count of stocks
 	Count int32   `json:"count"`
 	Items []Stock `json:"items"`
+}
+
+// StocksFull defines model for StocksFull.
+type StocksFull struct {
+	// Count Count of stocks
+	Count int32       `json:"count"`
+	Items []StockFull `json:"items"`
 }
 
 // Warehouse defines model for Warehouse.
@@ -290,6 +318,14 @@ type GetSalesByMonthReportParams struct {
 	Month int32 `form:"month" json:"month"`
 }
 
+// GetStocksWithPagesParams defines parameters for GetStocksWithPages.
+type GetStocksWithPagesParams struct {
+	// Date Дата (YYYY-MM-DD)
+	Date   openapi_types.Date `form:"date" json:"date"`
+	Limit  int                `form:"limit" json:"limit"`
+	Offset int                `form:"offset" json:"offset"`
+}
+
 // LoginJSONRequestBody defines body for Login for application/json ContentType.
 type LoginJSONRequestBody = LoginInfo
 
@@ -350,8 +386,11 @@ type ServerInterface interface {
 	// (GET /sales/report)
 	GetSalesByMonthReport(ctx echo.Context, params GetSalesByMonthReportParams) error
 	// Получение остатков товаров
+	// (GET /stocks)
+	GetStocksWithPages(ctx echo.Context, params GetStocksWithPagesParams) error
+	// Получение остатков товаров
 	// (GET /stocks/{date})
-	GetStocksDate(ctx echo.Context, date openapi_types.Date) error
+	GetStocks(ctx echo.Context, date openapi_types.Date) error
 }
 
 // ServerInterfaceWrapper converts echo contexts to parameters.
@@ -678,8 +717,42 @@ func (w *ServerInterfaceWrapper) GetSalesByMonthReport(ctx echo.Context) error {
 	return err
 }
 
-// GetStocksDate converts echo context to params.
-func (w *ServerInterfaceWrapper) GetStocksDate(ctx echo.Context) error {
+// GetStocksWithPages converts echo context to params.
+func (w *ServerInterfaceWrapper) GetStocksWithPages(ctx echo.Context) error {
+	var err error
+
+	ctx.Set(ApiKeyAuthScopes, []string{})
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetStocksWithPagesParams
+	// ------------- Required query parameter "date" -------------
+
+	err = runtime.BindQueryParameter("form", true, true, "date", ctx.QueryParams(), &params.Date)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter date: %s", err))
+	}
+
+	// ------------- Required query parameter "limit" -------------
+
+	err = runtime.BindQueryParameter("form", true, true, "limit", ctx.QueryParams(), &params.Limit)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter limit: %s", err))
+	}
+
+	// ------------- Required query parameter "offset" -------------
+
+	err = runtime.BindQueryParameter("form", true, true, "offset", ctx.QueryParams(), &params.Offset)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter offset: %s", err))
+	}
+
+	// Invoke the callback with all the unmarshaled arguments
+	err = w.Handler.GetStocksWithPages(ctx, params)
+	return err
+}
+
+// GetStocks converts echo context to params.
+func (w *ServerInterfaceWrapper) GetStocks(ctx echo.Context) error {
 	var err error
 	// ------------- Path parameter "date" -------------
 	var date openapi_types.Date
@@ -692,7 +765,7 @@ func (w *ServerInterfaceWrapper) GetStocksDate(ctx echo.Context) error {
 	ctx.Set(ApiKeyAuthScopes, []string{})
 
 	// Invoke the callback with all the unmarshaled arguments
-	err = w.Handler.GetStocksDate(ctx, date)
+	err = w.Handler.GetStocks(ctx, date)
 	return err
 }
 
@@ -738,6 +811,7 @@ func RegisterHandlersWithBaseURL(router EchoRouter, si ServerInterface, baseURL 
 	router.GET(baseURL+"/orders/report", wrapper.GetOrdersReport)
 	router.GET(baseURL+"/sales", wrapper.GetSalesByMonthWithPagination)
 	router.GET(baseURL+"/sales/report", wrapper.GetSalesByMonthReport)
-	router.GET(baseURL+"/stocks/:date", wrapper.GetStocksDate)
+	router.GET(baseURL+"/stocks", wrapper.GetStocksWithPages)
+	router.GET(baseURL+"/stocks/:date", wrapper.GetStocks)
 
 }

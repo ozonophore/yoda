@@ -3,9 +3,9 @@ import {createContext, Fragment, useEffect, useState} from 'react';
 import Table from '@mui/joy/Table';
 import Sheet from '@mui/joy/Sheet';
 // icons
-import { Orders } from 'client';
+import {Orders} from 'client';
 import YodaPagination from 'components/YodaPagination';
-import { LinearProgress, Tooltip } from '@mui/joy';
+import {LinearProgress, Tooltip} from '@mui/joy';
 import Typography from '@mui/joy/Typography';
 import Input from '@mui/joy/Input';
 import deepEqual from 'deep-equal';
@@ -14,7 +14,8 @@ import Box from '@mui/joy/Box';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import ClearRoundedIcon from '@mui/icons-material/ClearRounded';
 import IconButton from '@mui/joy/IconButton';
-import { jsx } from '@emotion/react';
+import {jsx} from '@emotion/react';
+import dayjs from "dayjs";
 import JSX = jsx.JSX;
 
 interface IDataGridContext {
@@ -45,6 +46,7 @@ interface IComponentProps {
 export interface IColumn {
     field: string,
     editable?: boolean,
+    noWrap?: boolean,
     type?: 'int' | 'number' | 'string' | 'bool' | 'date',
     width?: number | string | undefined,
     minWith?: number | string | undefined,
@@ -103,6 +105,7 @@ interface IProps<R> {
     showColumns?: boolean
     isLoading: boolean,
     onSave?: (oldValue: R, newValue: R) => void,
+    onRefresh?: (page: number) => void,
 }
 
 interface IData<R> {
@@ -146,15 +149,29 @@ function JoyRowDataGrid<R>({keyValue, columns, row, onSave, editable}: IRowDataG
     }
 
     useEffect(() => {
+        setData(row.newData)
+    }, [row]);
+
+    useEffect(() => {
 
     }, [saveDisable]);
 
-    return (<tr key={keyValue} color='red'>
+    function getValue(data: R, column: IColumn): string {
+        if (column.type === 'date') {
+            const v = (data as Record<string, any>)[column.field]
+            const date = dayjs(v).format('YYYY-MM-DD')
+            return date
+        }
+        return (data as Record<string, any>)[column.field]
+    }
+
+    return (<tr key={keyValue}>
         {
             columns.map(column => <td key={`${keyValue}_${column.field}`} style={{textAlign: column.textAlign}}>
                 {column.editable &&
                     (column.renderComponent ?
-                        column.renderComponent({ value: (data as Record<string, any>)[column.field],
+                        column.renderComponent({
+                            value: (data as Record<string, any>)[column.field],
                             onChange: (value) => {
                                 const newData = {
                                     ...data,
@@ -162,7 +179,8 @@ function JoyRowDataGrid<R>({keyValue, columns, row, onSave, editable}: IRowDataG
                                 }
                                 setData(newData)
                                 setSaveDisabled(deepEqual(row.oldData, newData))
-                            }}) :
+                            }
+                        }) :
                         <DataGridInput value={(data as Record<string, any>)[column.field]}
                                        onChange={(value: string) => {
                                            const newData = {
@@ -175,9 +193,11 @@ function JoyRowDataGrid<R>({keyValue, columns, row, onSave, editable}: IRowDataG
                 }
                 {
                     !Boolean(column.editable) &&
-                    <Typography level='body-sm' style={{minWidth: column.minWith}}>
-                        {(data as Record<string, any>)[column.field]}
-                    </Typography>
+                    <Tooltip title={getValue(data, column)}>
+                        <Typography noWrap={column.noWrap} level='body-xs' style={{minWidth: column.minWith}}>
+                            {getValue(data, column)}
+                        </Typography>
+                    </Tooltip>
                 }
             </td>)
         }
@@ -213,11 +233,12 @@ export default function JoyDataGrid<R>({
                                            onPageSizeChange,
                                            isLoading,
                                            onSave,
+                                           onRefresh,
                                            size = 'sm',
                                            showColumns = false
                                        }: IProps<R>): React.JSX.Element {
 
-    const [data, setData] = useState<{oldData: R,newData: R}[]>([])
+    const [data, setData] = useState<{ oldData: R, newData: R }[]>([])
     useEffect(() => {
         const newData: IData<R>[] = rows.map(row => {
             return {
@@ -227,6 +248,12 @@ export default function JoyDataGrid<R>({
         })
         setData(newData)
     }, [rows]);
+
+    useEffect(() => {
+        if (isLoading) {
+            setData([])
+        }
+    }, [isLoading]);
 
     function handleOnSave(oldValue: R, newValue: R) {
         if (onSave) {
@@ -356,7 +383,9 @@ export default function JoyDataGrid<R>({
             <YodaPagination page={page} count={count} rowsPerPage={pageSize}
                             pageLength={page * pageSize + rows.length}
                             onChangeRowsPerPage={handleChangeRowsPerPage}
-                            onChangePage={handleChangePage}/>
+                            onChangePage={handleChangePage}
+                            onRefresh={onRefresh}
+            />
         </React.Fragment>
     );
 }

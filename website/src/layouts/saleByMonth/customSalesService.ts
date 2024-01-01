@@ -10,7 +10,6 @@ export class CustomSalesService {
     ) {
 
         const url = OpenAPI.BASE + `/sales/report?year=${year}&month=${month}`
-        console.log("# " + url)
         const authHeader = `Bearer ${OpenAPI.TOKEN}`
 
         const options = {

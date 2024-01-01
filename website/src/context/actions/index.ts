@@ -102,7 +102,6 @@ const LoadProfile = (): IActionFunction => {
 }
 
 const SetMenuActive = (key: string): IAction  => {
-    console.log("#", key)
     return {
         type: "SET_SIDEBAR_ACTIVE",
         payload: key

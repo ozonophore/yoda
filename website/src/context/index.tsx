@@ -141,7 +141,6 @@ YContext.displayName = "YContext"
 function reducer(state: IContent, action: IAction): IContent {
     switch (action.type) {
         case "SET_SIDEBAR_ACTIVE": {
-            console.log("#", action.payload)
             return {
                 ...state,
                 sidebar: {

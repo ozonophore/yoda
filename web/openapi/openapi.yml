@@ -135,6 +135,66 @@ components:
           - marketplace_id
           - barcode
           - quantity
+    StocksFull:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+          description: Count of stocks
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/StockFull'
+      required:
+        - count
+        - items
+    StockFull:
+      type: object
+      properties:
+        stockDate:
+          type: string
+          format: date-time
+        source:
+          type: string
+        organization:
+          type: string
+          description: Организация
+        supplierArticle:
+          type: string
+        barcode:
+          type: string
+        sku:
+          type: string
+        name:
+          type: string
+        brand:
+          type: string
+        warehouse:
+          type: string
+        quantity:
+          type: number
+          format: float
+          description: Stock quantity
+        price:
+          type: number
+          format: float
+        priceWithDiscount:
+          type: number
+          format: float
+      required:
+        - organization
+        - stockDate
+        - source
+        - supplierArticle
+        - barcode
+        - sku
+        - name
+        - brand
+        - warehouse
+        - quantity
+        - price
+        - priceWithDiscount
     OrderProducts:
       type: object
       properties:
@@ -438,6 +498,7 @@ components:
 paths:
   /stocks/{date}:
     get:
+      operationId: getStocks
       security:
         - ApiKeyAuth: []
       parameters:
@@ -465,6 +526,48 @@ paths:
       summary: Получение остатков товаров
       tags:
         - Stocks
+
+  /stocks:
+    get:
+      operationId: getStocksWithPages
+      security:
+        - ApiKeyAuth: [ ]
+      parameters:
+        - description: Дата (YYYY-MM-DD)
+          in: query
+          name: date
+          required: true
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: limit
+          required: true
+          schema:
+            type: integer
+        - in: query
+          name: offset
+          required: true
+          schema:
+            type: integer
+      description: Получение отстатоков за дату
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StocksFull'
+          description: OK
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+      summary: Получение остатков товаров
+      tags:
+        - Stocks
+
 
   /orders:
     get:

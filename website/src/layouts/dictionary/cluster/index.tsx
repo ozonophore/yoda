@@ -16,14 +16,6 @@ import {DictionariesService, Warehouse} from 'client';
 import IconButton from '@mui/joy/IconButton';
 import deepEqual from "deep-equal";
 
-const rows = [
-    {
-        code: "Code",
-        cluster: "cluster",
-        source: "WB"
-    }
-]
-
 interface IFilter {
     cluster: string | undefined
     code: string | undefined,
@@ -50,13 +42,6 @@ function ClusterAutocomplete({value, onChange}: {
                     setOptions(data)
                 }
             })
-        // (async () => {
-        //     await sleep(1e3); // For demo purposes.
-        //
-        //     if (active) {
-        //         setOptions([...topFilms]);
-        //     }
-        // })();
 
         return () => {
             active = false;
@@ -71,8 +56,11 @@ function ClusterAutocomplete({value, onChange}: {
 
     return <Autocomplete
         size='sm'
-        variant="plain" sx={{border: 0, background: 'transparent'}}
-        placeholder="Кластер..."
+        variant="plain" sx={{
+            border: 0,
+            background: 'transparent',
+            color: 'var(--joy-palette-text-tertiary, var(--joy-palette-neutral-600, #555E68))'
+    }}
         open={open}
         onChange={(event, newInputValue) => onChange(newInputValue)}
         onInputChange={(event, newInputValue) => {
@@ -101,7 +89,8 @@ const columns: IColumn[] = [
     {
         field: 'code',
         minWith: '140px',
-        headerName: 'Код склада'
+        headerName: 'Код склада',
+        noWrap: true,
     }, {
         field: 'cluster',
         headerName: 'Кластер',
@@ -284,7 +273,9 @@ export function Cluster() {
                 }}
                 page={page}
                 onSave={handleOnSave}
-                pageSize={pageSize}/>
+                pageSize={pageSize}
+                onRefresh={refreshRows}
+            />
         </Fragment>
     )
 }

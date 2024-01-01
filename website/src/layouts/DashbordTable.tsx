@@ -38,9 +38,6 @@ export default function DashboardTable() {
     <CssVarsProvider disableTransitionOnChange>
       <CssBaseline />
       <Box sx={{ display: 'flex', minHeight: '100dvh' }}>
-        <Header />
-        <FirstSidebar />
-        <SecondSidebar />
         <Box
           component="main"
           className="MainContent"

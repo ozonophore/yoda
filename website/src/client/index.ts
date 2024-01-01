@@ -23,7 +23,9 @@ export type { Profile } from './models/Profile';
 export type { Sale } from './models/Sale';
 export type { Sales } from './models/Sales';
 export type { Stock } from './models/Stock';
+export type { StockFull } from './models/StockFull';
 export type { Stocks } from './models/Stocks';
+export type { StocksFull } from './models/StocksFull';
 export type { Warehouse } from './models/Warehouse';
 export type { Warehouses } from './models/Warehouses';
 

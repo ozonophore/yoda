@@ -14,9 +14,10 @@ import ShoppingCartRoundedIcon from '@mui/icons-material/ShoppingCartRounded';
 import FolderRoundedIcon from '@mui/icons-material/FolderRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import StorefrontRoundedIcon from '@mui/icons-material/StorefrontRounded';
 
 import ColorSchemeToggle from './ColorSchemeToggle';
-import {closeSidebar} from '../utils';
+import {closeSidebar, toggleSidebar} from '../utils';
 import {Link} from 'react-router-dom';
 import useProfile from 'hooks/useProfile';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -61,7 +62,6 @@ export default function Sidebar(this: any) {
     const {active} = state.sidebar
 
     function handleOnClickMenu(event: any) {
-        console.log(event.target.id)
     }
 
     return (
@@ -117,7 +117,17 @@ export default function Sidebar(this: any) {
                 onClick={() => closeSidebar()}
             />
             <Box sx={{display: 'flex', gap: 1, alignItems: 'center'}}>
-                <IconButton variant="soft" color="primary" size="sm">
+                <IconButton
+                    onClick={() => toggleSidebar()}
+                    variant="outlined"
+                    color="neutral"
+                    size='sm'
+                    sx={{
+                        display: {
+                            md: 'none'
+                        }
+                    }}
+                >
                     <MenuIcon/>
                 </IconButton>
                 <ColorSchemeToggle sx={{ml: 'auto'}}/>
@@ -143,6 +153,7 @@ export default function Sidebar(this: any) {
                         '--ListItem-radius': (theme) => theme.vars.radius.sm,
                     }}
                 >
+
                     <ListItem>
                         <ListItemButton id="menu-home-id" selected={active === "menu-home-id"}
                                         onClick={handleOnClickMenu}>
@@ -185,6 +196,33 @@ export default function Sidebar(this: any) {
                                         to="/order-product-by-day"
                                         component={Link}>
                                         За период
+                                    </ListItemButton>
+                                </ListItem>
+                            </List>
+                        </Toggler>
+                    </ListItem>
+
+                    <ListItem nested>
+                        <Toggler renderToggle={({open, setOpen}) => (
+                            <ListItemButton onClick={() => setOpen(!open)}>
+                                <StorefrontRoundedIcon/>
+                                <ListItemContent>
+                                    <Typography level="title-sm">Остатки</Typography>
+                                </ListItemContent>
+                                <KeyboardArrowDownIcon
+                                    sx={{transform: open ? 'rotate(180deg)' : 'none'}}
+                                />
+                            </ListItemButton>
+                        )}>
+                            <List sx={{gap: 0.5}}>
+                                <ListItem sx={{mt: 0.5}}>
+                                    <ListItemButton
+                                        id="menu-stocks-id"
+                                        selected={active === "menu-stocks-id"}
+                                        onClick={handleOnClickMenu}
+                                        to="/stocks"
+                                        component={Link}>
+                                        На день
                                     </ListItemButton>
                                 </ListItem>
                             </List>

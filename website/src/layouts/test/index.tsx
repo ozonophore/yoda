@@ -1,6 +1,6 @@
-import React, { Fragment } from 'react';
-import JoyDataGrid, { IColumn } from 'components/JoyDataGrid';
-import { Autocomplete } from '@mui/joy';
+import React, {Fragment} from 'react';
+import JoyDataGrid, {IColumn} from 'components/JoyDataGrid';
+import Typography from "@mui/joy/Typography";
 
 const columns: IColumn[] = [
     {
@@ -26,7 +26,26 @@ const rows = [
 
 export function Test() {
     return <Fragment>
-        <JoyDataGrid columns={columns} rows={rows} page={0} pageSize={2} count={2} onPageChange={() => {}}
-                     onPageSizeChange={() => {}} isLoading={false} showColumns={true}/>
+        <div>
+            <Typography noWrap={true} sx={{
+                sm: {
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    display: "-webkit-box",
+                    WebkitLineClamp: "1",
+                    WebkitBoxOrient: "vertical",
+                },
+                backgroundColor: {
+                    sm: 'red',
+                    xs: 'green'
+                }
+            }}>
+                fsdfsdssdsfsdfsdfsfsdfasdfasdfwefsadfsadfsdfsdfsdfsdfsdfsafrfdsvvferferfsdferfevsdfsdfgerfgerfergerfsferfcsddddddasfwefewdvewdfgsdfvefververvdfververvevevrevesve
+            </Typography>
+        </div>
+        <JoyDataGrid columns={columns} rows={rows} page={0} pageSize={2} count={2} onPageChange={() => {
+        }}
+                     onPageSizeChange={() => {
+                     }} isLoading={false} showColumns={true}/>
     </Fragment>
 }

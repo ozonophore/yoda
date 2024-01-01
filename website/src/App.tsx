@@ -32,6 +32,7 @@ import { OrderProductByDay } from 'layouts/order/productByday';
 import { OpenAPI } from 'client';
 import Sidebar from 'components/Sidebar';
 import { Test } from 'layouts/test';
+import Stocks from "./layouts/stock";
 
 const getToken = async () => {
     return sessionStorage.getItem("access_token") ?? "";
@@ -143,6 +144,7 @@ export default function App() {
                                     <Route path="positions" element={<DictPositions/>}/>
                                     <Route path="order-product-by-day" element={<OrderProductByDay/>}/>
                                     <Route path="dict-position" element={<DictPositions/>}/>
+                                    <Route path="stocks" element={<Stocks/>}/>
                                     <Route path="test" element={<Test/>}/>
                                 </Route>
                             </Routes>

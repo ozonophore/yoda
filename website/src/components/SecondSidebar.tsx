@@ -20,7 +20,6 @@ export default function SecondSidebar() {
     const isNotEmpty = menu.length !== 0
 
     useEffect(() => {
-        console.log("# change")
     }, [activeIndex, activeSubIndex])
 
     const handleOnClick = (index: number) => {

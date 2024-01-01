@@ -25,6 +25,7 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import PointOfSaleRoundedIcon from '@mui/icons-material/PointOfSaleRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import DensitySmallRoundedIcon from '@mui/icons-material/DensitySmallRounded';
+import ShoppingCartRoundedIcon from '@mui/icons-material/ShoppingCartRounded';
 
 import ListSubheader from '@mui/joy/ListSubheader';
 import { Link, useLocation, useNavigate } from 'react-router-dom';

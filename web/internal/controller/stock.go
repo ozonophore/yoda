@@ -27,6 +27,10 @@ type AuthService interface {
 	GetProfile(auth string) (*api.Profile, error)
 }
 
+type IStockService interface {
+	GetStocks(stockDate time.Time, limit, offset int) (*api.StocksFull, error)
+}
+
 type DictionaryService interface {
 	GetPositions(offset int32, limit int32, source []string, filter *string) (*api.DictPositions, error)
 	ExportWarehouses(writer http.ResponseWriter, source []string, code *string, cluster *string) error
@@ -39,23 +43,26 @@ type Controller struct {
 	saleService  SaleService
 	authService  AuthService
 	dictService  DictionaryService
+	stockService IStockService
 }
 
 func NewController(store *storage.Storage,
 	orderService OrderService,
 	saleService SaleService,
 	authService AuthService,
-	dictService DictionaryService) *Controller {
+	dictService DictionaryService,
+	stockService IStockService) *Controller {
 	return &Controller{
 		store:        store,
 		orderService: orderService,
 		saleService:  saleService,
 		authService:  authService,
 		dictService:  dictService,
+		stockService: stockService,
 	}
 }
 
-func (c *Controller) GetStocksDate(ctx echo.Context, date types.Date) error {
+func (c *Controller) GetStocks(ctx echo.Context, date types.Date) error {
 	items, err := c.store.GetStocksByDate(date.Time)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, err)
@@ -65,8 +72,15 @@ func (c *Controller) GetStocksDate(ctx echo.Context, date types.Date) error {
 		Count: int32(len(*items)),
 		Items: mapStocks(items),
 	}
-	ctx.JSON(http.StatusOK, stocks)
-	return nil
+	return ctx.JSON(http.StatusOK, stocks)
+}
+
+func (c *Controller) GetStocksWithPages(ctx echo.Context, params api.GetStocksWithPagesParams) error {
+	stocks, err := c.stockService.GetStocks(params.Date.Time, params.Limit, params.Offset)
+	if err != nil {
+		return err
+	}
+	return ctx.JSON(http.StatusOK, stocks)
 }
 
 func mapStocks(items *[]storage.Stock) []api.Stock {

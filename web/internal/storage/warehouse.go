@@ -15,7 +15,7 @@ type Warehouse struct {
 }
 
 const WH_SQL = `select code, cluster, source from dl.warehouse 
-                             where 1 = 1 %s`
+                             where 1 = 1 %s order by code`
 
 const WH_SQL_WITH_PAGE = `with wh as (
     ` + WH_SQL + `
