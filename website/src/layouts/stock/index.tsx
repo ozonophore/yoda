@@ -11,7 +11,7 @@ import {LocalizationProvider} from "@mui/x-date-pickers";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import JoyDatePicker from "../../components/JoyDatePicker";
 import dayjs from "dayjs";
-import {DictionariesService, type StockFull, StocksService} from "../../client";
+import {type StockFull, StocksService} from "../../client";
 
 const columns: IColumn[] = [
     {

@@ -2,7 +2,6 @@ package controller
 
 import (
 	"github.com/labstack/echo/v4"
-	"github.com/oapi-codegen/runtime/types"
 	"github.com/yoda/web/internal/api"
 	"github.com/yoda/web/internal/storage"
 	"io"
@@ -62,8 +61,8 @@ func NewController(store *storage.Storage,
 	}
 }
 
-func (c *Controller) GetStocks(ctx echo.Context, date types.Date) error {
-	items, err := c.store.GetStocksByDate(date.Time)
+func (c *Controller) GetStocks(ctx echo.Context, date time.Time) error {
+	items, err := c.store.GetStocksByDate(date)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, err)
 		return err
