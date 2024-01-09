@@ -43,7 +43,7 @@ func (s *AuthService) CreateToken(login *api.LoginInfo) (string, time.Time, erro
 		UserName:    profile.UserName,
 		UserId:      profile.UserId,
 		UserEmail:   profile.Email,
-		Permissions: profile.Permissions,
+		Permissions: *(profile.Permissions),
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(expirationTime),
 		},

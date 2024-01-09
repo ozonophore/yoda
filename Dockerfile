@@ -12,8 +12,11 @@ COPY website/package-lock.json /app
 COPY website/public /app/public
 COPY website/tsconfig.json /app
 
-COPY web/openapi/openapi.yml /app/openapi.yml
+RUN npm install
 RUN npm run build
+
+COPY web/openapi/openapi.yml /app/openapi.yml
+
 
 ## Build
 FROM golang:1.21 AS build-backend

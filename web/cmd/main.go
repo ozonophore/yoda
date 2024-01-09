@@ -51,7 +51,7 @@ func main() {
 
 	e.GET("/swagger/*", echoSwagger.EchoWrapHandler(echoSwagger.URL("/api/openapi.yml")))
 	e.Static("/api", "openapi")
-	e.Static("/", "public")
+	e.Static("/", "./public/")
 
 	e.Logger.Fatal(e.Start(fmt.Sprintf(":%d", config.Port)))
 }

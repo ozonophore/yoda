@@ -7,11 +7,11 @@ import (
 )
 
 type UserProfile struct {
-	UserId      int32  `gorm:"column:id"`
-	Email       string `gorm:"column:email"`
-	UserName    string `gorm:"column:name"`
-	Password    string `gorm:"column:password"`
-	Permissions []string
+	UserId      int32     `gorm:"column:id"`
+	Email       string    `gorm:"column:email"`
+	UserName    string    `gorm:"column:name"`
+	Password    string    `gorm:"column:password"`
+	Permissions *[]string `gorm:"-"`
 }
 
 func (s *Storage) GetPermissionByUserId(id int32) (*[]string, error) {
@@ -51,7 +51,7 @@ func (s *Storage) GetProleByLogin(login string) (*UserProfile, error) {
 	if err != nil {
 		return nil, err
 	}
-	profile.Permissions = *permissions
+	profile.Permissions = permissions
 	return &profile, nil
 }
 
