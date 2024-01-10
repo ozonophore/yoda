@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"errors"
+	"fmt"
 	"github.com/labstack/echo/v4"
 	"github.com/yoda/web/internal/api"
 	"github.com/yoda/web/internal/storage"
@@ -61,8 +63,12 @@ func NewController(store *storage.Storage,
 	}
 }
 
-func (c *Controller) GetStocks(ctx echo.Context, date time.Time) error {
-	items, err := c.store.GetStocksByDate(date)
+func (c *Controller) GetStocks(ctx echo.Context, date string) error {
+	parsedDate, err := time.Parse(time.DateOnly, date)
+	if err != nil {
+		return errors.New(fmt.Sprintf("Ошибка при парсинге строки в дату:", err))
+	}
+	items, err := c.store.GetStocksByDate(parsedDate)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, err)
 		return err

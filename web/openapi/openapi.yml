@@ -508,8 +508,6 @@ paths:
           required: true
           schema:
             type: string
-            format: date-time
-      description: Получение отстатоков за дату
       responses:
         "200":
           content:

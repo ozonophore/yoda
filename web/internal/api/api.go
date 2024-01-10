@@ -390,7 +390,7 @@ type ServerInterface interface {
 	GetStocksWithPages(ctx echo.Context, params GetStocksWithPagesParams) error
 	// Получение остатков товаров
 	// (GET /stocks/{date})
-	GetStocks(ctx echo.Context, date time.Time) error
+	GetStocks(ctx echo.Context, date string) error
 }
 
 // ServerInterfaceWrapper converts echo contexts to parameters.
@@ -755,7 +755,7 @@ func (w *ServerInterfaceWrapper) GetStocksWithPages(ctx echo.Context) error {
 func (w *ServerInterfaceWrapper) GetStocks(ctx echo.Context) error {
 	var err error
 	// ------------- Path parameter "date" -------------
-	var date time.Time
+	var date string
 
 	err = runtime.BindStyledParameterWithLocation("simple", false, "date", runtime.ParamLocationPath, ctx.Param("date"), &date)
 	if err != nil {
