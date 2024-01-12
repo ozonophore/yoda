@@ -326,6 +326,12 @@ type GetStocksWithPagesParams struct {
 	Offset int                `form:"offset" json:"offset"`
 }
 
+// ExportStocksParams defines parameters for ExportStocks.
+type ExportStocksParams struct {
+	// Date Дата (YYYY-MM-DD)
+	Date openapi_types.Date `form:"date" json:"date"`
+}
+
 // LoginJSONRequestBody defines body for Login for application/json ContentType.
 type LoginJSONRequestBody = LoginInfo
 
@@ -388,6 +394,9 @@ type ServerInterface interface {
 	// Получение остатков товаров
 	// (GET /stocks)
 	GetStocksWithPages(ctx echo.Context, params GetStocksWithPagesParams) error
+	// Получение остатков товаров
+	// (GET /stocks/export)
+	ExportStocks(ctx echo.Context, params ExportStocksParams) error
 	// Получение остатков товаров
 	// (GET /stocks/{date})
 	GetStocks(ctx echo.Context, date string) error
@@ -751,6 +760,26 @@ func (w *ServerInterfaceWrapper) GetStocksWithPages(ctx echo.Context) error {
 	return err
 }
 
+// ExportStocks converts echo context to params.
+func (w *ServerInterfaceWrapper) ExportStocks(ctx echo.Context) error {
+	var err error
+
+	ctx.Set(ApiKeyAuthScopes, []string{})
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ExportStocksParams
+	// ------------- Required query parameter "date" -------------
+
+	err = runtime.BindQueryParameter("form", true, true, "date", ctx.QueryParams(), &params.Date)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter date: %s", err))
+	}
+
+	// Invoke the callback with all the unmarshaled arguments
+	err = w.Handler.ExportStocks(ctx, params)
+	return err
+}
+
 // GetStocks converts echo context to params.
 func (w *ServerInterfaceWrapper) GetStocks(ctx echo.Context) error {
 	var err error
@@ -812,6 +841,7 @@ func RegisterHandlersWithBaseURL(router EchoRouter, si ServerInterface, baseURL 
 	router.GET(baseURL+"/sales", wrapper.GetSalesByMonthWithPagination)
 	router.GET(baseURL+"/sales/report", wrapper.GetSalesByMonthReport)
 	router.GET(baseURL+"/stocks", wrapper.GetStocksWithPages)
+	router.GET(baseURL+"/stocks/export", wrapper.ExportStocks)
 	router.GET(baseURL+"/stocks/:date", wrapper.GetStocks)
 
 }

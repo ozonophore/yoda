@@ -525,6 +525,32 @@ paths:
       tags:
         - Stocks
 
+  /stocks/export:
+    get:
+      operationId: exportStocks
+      security:
+        - ApiKeyAuth: [ ]
+      parameters:
+        - description: Дата (YYYY-MM-DD)
+          in: query
+          name: date
+          required: true
+          schema:
+            type: string
+            format: date
+      description: Выгрузка отчета отстатоков за дату
+      responses:
+        200:
+          description: OK
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+      summary: Получение остатков товаров
+      tags:
+        - Stocks
+
   /stocks:
     get:
       operationId: getStocksWithPages

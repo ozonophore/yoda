@@ -46,11 +46,13 @@ func (s *Storage) GetStocksByDate(date time.Time) (*[]Stock, error) {
 	return &stocks, nil
 }
 
-const sql_stocks = `with t as (select s.stock_date, s.source, o.name org, s.supplier_article, s.barcode, s.external_code sku,
+const sql_stocks_base = `select s.stock_date, s.source, o.name org, s.supplier_article, s.barcode, s.external_code sku,
        s.name, s.brand, s.warehouse, s.quantity, s.price, s.price_with_discount
        from bl.stock s
 inner join ml.owner o on o.code = s.owner_code
-where stock_date =@stock_date) 
+where stock_date =@stock_date`
+
+const sql_stocks = `with t as (` + sql_stocks_base + `) 
 select 
 stock_date, 
 source, 
@@ -74,6 +76,17 @@ func (s *Storage) GetSticksWithPage(stockDate time.Time, limit, offset int) (*[]
 		sql2.Named("stock_date", stockDate),
 		sql2.Named("limit", limit),
 		sql2.Named("offset", offset),
+	).Scan(&stocks).Error
+	if err != nil {
+		return nil, err
+	}
+	return &stocks, nil
+}
+
+func (s *Storage) GetStocks(stockDate time.Time) (*[]StockFull, error) {
+	var stocks []StockFull
+	err := s.db.Raw(sql_stocks_base,
+		sql2.Named("stock_date", stockDate),
 	).Scan(&stocks).Error
 	if err != nil {
 		return nil, err

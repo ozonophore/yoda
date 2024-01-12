@@ -30,6 +30,7 @@ type AuthService interface {
 
 type IStockService interface {
 	GetStocks(stockDate time.Time, limit, offset int) (*api.StocksFull, error)
+	ExportStocks(writer http.ResponseWriter, stockDate time.Time) error
 }
 
 type DictionaryService interface {
@@ -61,6 +62,15 @@ func NewController(store *storage.Storage,
 		dictService:  dictService,
 		stockService: stockService,
 	}
+}
+
+func (c *Controller) ExportStocks(ctx echo.Context, params api.ExportStocksParams) error {
+	fileName := fmt.Sprintf("stocks_%s.xlsx", params.Date.Time.Format("20060102"))
+	ctx.Response().Header().Set(echo.HeaderContentType, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+	ctx.Response().Header().Set("Content-Disposition", fmt.Sprintf(`attachment; filename="%s"`, fileName))
+	ctx.Response().WriteHeader(http.StatusOK)
+	return c.stockService.ExportStocks(ctx.Response().Writer, params.Date.Time)
+
 }
 
 func (c *Controller) GetStocks(ctx echo.Context, date string) error {

@@ -11,7 +11,7 @@ import {LocalizationProvider} from "@mui/x-date-pickers";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import JoyDatePicker from "../../components/JoyDatePicker";
 import dayjs from "dayjs";
-import {type StockFull, StocksService} from "../../client";
+import { OrdersService, ProductParams, type StockFull, StocksService } from "../../client";
 
 const columns: IColumn[] = [
     {
@@ -81,6 +81,7 @@ export default function Stocks() {
     const [total, setTotal] = useState(0)
     const [rows, setRows] = useState<StockFull[]>([])
     const [isLoading, setIsLoading] = useState(false)
+    const [isDownload, setIsDownload] = useState(false)
 
     const [date, setDate] = useState(dayjs().subtract(1, 'day'))
 
@@ -89,7 +90,17 @@ export default function Stocks() {
     }, []);
 
     function handleDownloadFile() {
-
+        setIsDownload(true)
+        StocksService.exportStocks(date.format("YYYY-MM-DD"))
+            .then((blob: Blob) => {
+                    //const blob: Blob = new Blob([data], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+                    const fileURL = URL.createObjectURL(blob);
+                    const fileLink = document.createElement('a');
+                    fileLink.href = fileURL;
+                    fileLink.download = 'orders.xlsx';
+                    fileLink.click();
+                }
+            ).finally(() => setIsDownload(false))
     }
 
     const refreshRows = () => {
@@ -157,7 +168,7 @@ export default function Stocks() {
                         startDecorator={<DownloadRoundedIcon/>}
                         size="sm"
                         onClick={handleDownloadFile}
-                        disabled={isLoading}
+                        disabled={isLoading || isDownload}
                     >
                         Скачать Excel
                     </Button>

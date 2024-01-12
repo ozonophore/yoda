@@ -13,7 +13,6 @@ export class StocksService {
 
     /**
      * Получение остатков товаров
-     * Получение отстатоков за дату
      * @param date Дата (YYYY-MM-DD)
      * @returns Stocks OK
      * @throws ApiError
@@ -29,6 +28,25 @@ export class StocksService {
             },
             errors: {
                 404: `Not Found`,
+            },
+        });
+    }
+
+    /**
+     * Получение остатков товаров
+     * Выгрузка отчета отстатоков за дату
+     * @param date Дата (YYYY-MM-DD)
+     * @returns binary OK
+     * @throws ApiError
+     */
+    public static exportStocks(
+        date: string,
+    ): CancelablePromise<Blob> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/stocks/export',
+            query: {
+                'date': date,
             },
         });
     }
