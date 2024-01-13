@@ -43,6 +43,7 @@ func main() {
 
 	e := echo.New()
 	e.Use(middleware.JWTValidationMiddleware(authService))
+	e.Use(middleware.Static(e.Filesystem, "/rest", "/swagger", "/api"))
 	e.HTTPErrorHandler = middleware.ErrorHandler
 
 	e.Debug = true
@@ -51,7 +52,7 @@ func main() {
 
 	e.GET("/swagger/*", echoSwagger.EchoWrapHandler(echoSwagger.URL("/api/openapi.yml")))
 	e.Static("/api", "openapi")
-	e.Static("/", "./public/")
+	//e.Static("/", "./public/")
 
 	e.Logger.Fatal(e.Start(fmt.Sprintf(":%d", config.Port)))
 }
