@@ -26,3 +26,4 @@ coverage.html
 
 **/node_modules/**
 web/config.yml
+web/public
