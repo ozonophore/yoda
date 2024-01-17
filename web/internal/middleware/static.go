@@ -1,14 +1,6 @@
 package middleware
 
 import (
-<<<<<<< Updated upstream
-	"github.com/labstack/echo/v4"
-	middleware2 "github.com/labstack/echo/v4/middleware"
-	"io/fs"
-	"strings"
-)
-
-=======
 	"errors"
 	"github.com/labstack/echo/v4"
 	middleware2 "github.com/labstack/echo/v4/middleware"
@@ -24,7 +16,6 @@ const (
 	indexPage = "index.html"
 )
 
->>>>>>> Stashed changes
 type (
 	// StaticConfig defines the config for Static middleware.
 	StaticConfig struct {
@@ -73,11 +64,7 @@ func Static(filesystem fs.FS, skipedUrls ...string) echo.MiddlewareFunc {
 	c.Filesystem = filesystem
 	c.Skipper = func(c echo.Context) bool {
 		for _, url := range skipedUrls {
-<<<<<<< Updated upstream
-			if strings.Contains(c.Path(), url) {
-=======
 			if strings.Contains(c.Request().URL.Path, url) {
->>>>>>> Stashed changes
 				return true
 			}
 		}
@@ -103,12 +90,6 @@ func StaticWithConfig(config StaticConfig) echo.MiddlewareFunc {
 			if config.Skipper(c) {
 				return next(c)
 			}
-<<<<<<< Updated upstream
-			return echo.StaticFileHandler(config.Root, config.Filesystem)(c)
-		}
-	}
-}
-=======
 			return StaticFileHandler(config.Root, config.Filesystem)(c)
 		}
 	}
@@ -169,4 +150,3 @@ func normalizeFolderName(foldeerName string) string {
 	}
 	return "/" + foldeerName
 }
->>>>>>> Stashed changes
