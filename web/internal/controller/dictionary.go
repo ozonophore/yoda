@@ -43,6 +43,14 @@ func (c *Controller) UpdateWarehouse(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, r)
 }
 
+func (c *Controller) GetDictionaries(ctx echo.Context) error {
+	dict, err := c.dictService.GetDictionary(ctx.Request().Context())
+	if err != nil {
+		return err
+	}
+	return ctx.JSON(http.StatusOK, dict)
+}
+
 func (c *Controller) GetClusters(ctx echo.Context, params api.GetClustersParams) error {
 	values, err := c.store.GetClusters(ctx.Request().Context(), params.Filter)
 	if err != nil {

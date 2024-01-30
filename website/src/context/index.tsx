@@ -1,13 +1,5 @@
 import * as React from 'react';
-import {
-    createContext,
-    Dispatch,
-    ReactNode,
-    ReducerStateWithoutAction,
-    ReducerWithoutAction,
-    useContext,
-    useReducer
-} from 'react';
+import { createContext, Dispatch, ReactNode, useContext, useReducer } from 'react';
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import DashboardRoundedIcon from '@mui/icons-material/DashboardRounded';
 import DynamicFeedRoundedIcon from '@mui/icons-material/DynamicFeedRounded';
@@ -17,7 +9,7 @@ import QrCode2RoundedIcon from '@mui/icons-material/QrCode2Rounded';
 import BlockRoundedIcon from '@mui/icons-material/BlockRounded';
 import DeviceHubRoundedIcon from '@mui/icons-material/DeviceHubRounded';
 import { Cluster } from '../layouts/dictionary/cluster';
-import { Profile } from 'client';
+import { Dictionaries, Profile } from 'client';
 
 interface ISubMenuData {
     name: string,
@@ -26,6 +18,7 @@ interface ISubMenuData {
     icon?: React.JSX.Element,
     component?: React.JSX.Element
 }
+
 interface IMenuData {
     name: string,
     href?: string,
@@ -46,6 +39,7 @@ interface IContent {
         activeSubIndex: number,
         data: IMenuData[]
     },
+    dicts: IDicts,
     error?: string
 }
 
@@ -67,6 +61,16 @@ export interface IAuth {
     error?: string
 }
 
+export interface IMarketplaceDictItem {
+    code: string
+    name: string
+    shortName: string
+}
+
+export interface IDicts {
+    marketplaces: IMarketplaceDictItem[]
+}
+
 const InitState: IContent = {
     sidebar: {
         active: "menu-home-id",
@@ -74,6 +78,9 @@ const InitState: IContent = {
     auth: {
         isAuth: sessionStorage.getItem("access_token") ? true : false,
         isLoading: false
+    },
+    dicts: {
+        marketplaces: []
     },
     menu: {
         activeIndex: 0,
@@ -107,18 +114,18 @@ const InitState: IContent = {
                     {
                         name: "Справочники",
                         type: "header"
-                    },{
+                    }, {
                         name: "Кластеры",
                         type: "menu",
                         index: 0,
                         icon: <DeviceHubRoundedIcon/>,
                         component: <Cluster/>
-                    },{
+                    }, {
                         name: "Выведенные позиции",
                         type: "menu",
                         index: 1,
                         icon: <BlockRoundedIcon/>
-                    },{
+                    }, {
                         name: "Штрих-коды",
                         type: "menu",
                         index: 2,
@@ -140,6 +147,13 @@ YContext.displayName = "YContext"
 
 function reducer(state: IContent, action: IAction): IContent {
     switch (action.type) {
+        case "SET_DICT": {
+            console.log(action.payload)
+            return {
+                ...state,
+                dicts: action.payload
+            }
+        }
         case "SET_SIDEBAR_ACTIVE": {
             return {
                 ...state,
@@ -151,7 +165,7 @@ function reducer(state: IContent, action: IAction): IContent {
         }
         case "SET_AUTH_LOADING": {
             return {
-                ...state, auth: { ...state.auth, isLoading: action.payload }
+                ...state, auth: {...state.auth, isLoading: action.payload}
             }
         }
         case "SET_ERROR": {
@@ -161,7 +175,7 @@ function reducer(state: IContent, action: IAction): IContent {
         }
         case "SET_AUTH": {
             return {
-                ...state, auth: { ...state.auth, ...action.payload }
+                ...state, auth: {...state.auth, ...action.payload}
             }
         }
         case "FIRST_MENU_SET_ACTIVE": {

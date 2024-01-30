@@ -118,7 +118,12 @@ const JoyDatePicker = React.forwardRef(
             <DatePicker
                 ref={ref}
                 {...props}
-                slots={{field: JoyDateField, ...props.slots}}
+                slots={{field: JoyDateField}}
+                sx={{
+                    border: 0,
+                    color: 'var(--joy-palette-text-tertiary, var(--joy-palette-neutral-600, #555E68))',
+                    background: 'transparent'
+                }}
                 slotProps={{
                     field: {
                         formControlSx: {

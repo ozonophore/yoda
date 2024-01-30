@@ -1,7 +1,7 @@
 package storage
 
 import (
-	sql2 "database/sql"
+	"github.com/yoda/web/internal/storage/builder"
 	"time"
 )
 
@@ -50,7 +50,7 @@ const sql_stocks_base = `select s.stock_date, s.source, o.name org, s.supplier_a
        s.name, s.brand, s.warehouse, s.quantity, s.price, s.price_with_discount
        from bl.stock s
 inner join ml.owner o on o.code = s.owner_code
-where stock_date =@stock_date`
+where stock_date =@stock_date and source in @source`
 
 const sql_stocks = `with t as (` + sql_stocks_base + `) 
 select 
@@ -67,27 +67,27 @@ quantity,
 price, 
 price_with_discount, 
 (select count(1) from t) total
-from t 
+from t
 limit @limit offset @offset`
 
-func (s *Storage) GetSticksWithPage(stockDate time.Time, limit, offset int) (*[]StockFull, error) {
+func (s *Storage) GetSticksWithPage(stockDate time.Time, limit, offset int, source *[]string, filter *string) (*[]StockFull, error) {
 	var stocks []StockFull
-	err := s.db.Raw(sql_stocks,
-		sql2.Named("stock_date", stockDate),
-		sql2.Named("limit", limit),
-		sql2.Named("offset", offset),
-	).Scan(&stocks).Error
+
+	b := builder.NewStockSQLBuilder(stockDate).Sources(source).Filter(filter).Limit(&limit).Offset(&offset)
+	sql, params := b.Build()
+
+	err := s.db.Raw(sql, params).Scan(&stocks).Error
 	if err != nil {
 		return nil, err
 	}
 	return &stocks, nil
 }
 
-func (s *Storage) GetStocks(stockDate time.Time) (*[]StockFull, error) {
+func (s *Storage) GetStocks(stockDate time.Time, source *[]string, filter *string) (*[]StockFull, error) {
 	var stocks []StockFull
-	err := s.db.Raw(sql_stocks_base,
-		sql2.Named("stock_date", stockDate),
-	).Scan(&stocks).Error
+	b := builder.NewStockSQLBuilder(stockDate).Sources(source).Filter(filter)
+	sql, params := b.Build()
+	err := s.db.Raw(sql, params).Scan(&stocks).Error
 	if err != nil {
 		return nil, err
 	}

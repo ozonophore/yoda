@@ -1,5 +1,5 @@
 import { IAction, IActionFunction } from '../index';
-import { AuthService, OpenAPI, Profile } from 'client';
+import { AuthService, Dictionaries, DictionariesService, OpenAPI, Profile } from 'client';
 import { Dispatch } from 'react';
 
 const SetError = (error?: string): IAction => {
@@ -82,6 +82,13 @@ const SetProfile = (profile: Profile): IAction => {
     }
 }
 
+const SetDicts = (dicts: Dictionaries): IAction => {
+    return {
+        type: "SET_DICT",
+        payload: dicts
+    }
+}
+
 const CleanProfile = (): IAction => {
     return {
         type: "SET_PROFILE",
@@ -91,17 +98,24 @@ const CleanProfile = (): IAction => {
 
 const LoadProfile = (): IActionFunction => {
     return (dispatch: Dispatch<IActionFunction | IAction>) => {
-        AuthService.profile()
-            .then(resp => {
-                dispatch(SetProfile(resp))
-            }).catch(err => {
-                const description = err.body.description
-                dispatch(SetLogout(description));
+
+        const reqProfile = AuthService.profile()
+        const reqDicts = DictionariesService.getDictionaries()
+
+        Promise.all([reqProfile, reqDicts]).then(([
+                                                      respProfile,
+                                                      respDicts
+                                                  ]) => {
+            dispatch(SetDicts(respDicts))
+            dispatch(SetProfile(respProfile))
+        }).catch(err => {
+            const description = err.body.description
+            dispatch(SetLogout(description));
         })
     }
 }
 
-const SetMenuActive = (key: string): IAction  => {
+const SetMenuActive = (key: string): IAction => {
     return {
         type: "SET_SIDEBAR_ACTIVE",
         payload: key
@@ -119,5 +133,6 @@ export {
     SetError,
     SetAuthLoading,
     LoadProfile,
-    SetMenuActive
+    SetMenuActive,
+    SetDicts
 }

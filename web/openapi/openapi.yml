@@ -40,6 +40,28 @@ components:
             $ref: '#/components/schemas/AuthInfo'
 
   schemas:
+    Marketplace:
+      type: object
+      properties:
+        code:
+          type: string
+        name:
+          type: string
+        shortName:
+          type: string
+      required:
+        - code
+        - name
+        - shortName
+    Dictionaries:
+      type: object
+      properties:
+        marketplaces:
+          type: array
+          items:
+            $ref: '#/components/schemas/Marketplace'
+      required:
+        - marketplaces
     PageProductParams:
       type: object
       required:
@@ -538,6 +560,16 @@ paths:
           schema:
             type: string
             format: date
+        - in: query
+          name: source
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: filter
+          schema:
+            type: string
       description: Выгрузка отчета отстатоков за дату
       responses:
         200:
@@ -574,6 +606,16 @@ paths:
           required: true
           schema:
             type: integer
+        - in: query
+          name: source
+          schema:
+              type: array
+              items:
+                type: string
+        - in: query
+          name: filter
+          schema:
+              type: string
       description: Получение отстатоков за дату
       responses:
         "200":
@@ -856,6 +898,21 @@ paths:
                     $ref: '#/components/schemas/Profile'
         tags:
             - Auth
+  /dictionaries:
+    get:
+      description: Получение списка словарей
+      operationId: getDictionaries
+      security:
+        - ApiKeyAuth: [ ]
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dictionaries'
+      tags:
+          - Dictionaries
 
   /dictionaries/positions:
     post:

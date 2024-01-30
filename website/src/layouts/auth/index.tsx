@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import LoginPage from 'layouts/loginPage';
-import useAuth from 'hooks/useAuth';
 import { LoadProfile } from 'context/actions';
 import ProfileLoader from 'layouts/profileLoader';
 import { useController } from 'context';
@@ -12,7 +11,7 @@ interface IAuthProviderProps {
 function AuthProvider(props: IAuthProviderProps): React.JSX.Element {
     const {state, dispatch} = useController();
     const {isAuth} = state.auth;
-    const {profile} = state;
+    const {profile, dicts} = state;
 
     useEffect(() => {
         if (isAuth) {

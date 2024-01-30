@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"github.com/labstack/echo/v4"
@@ -29,11 +30,12 @@ type AuthService interface {
 }
 
 type IStockService interface {
-	GetStocks(stockDate time.Time, limit, offset int) (*api.StocksFull, error)
-	ExportStocks(writer http.ResponseWriter, stockDate time.Time) error
+	GetStocks(stockDate time.Time, limit, offset int, source *[]string, filter *string) (*api.StocksFull, error)
+	ExportStocks(writer http.ResponseWriter, stockDate time.Time, source *[]string, filter *string) error
 }
 
 type DictionaryService interface {
+	GetDictionary(ctx context.Context) (*api.Dictionaries, error)
 	GetPositions(offset int32, limit int32, source []string, filter *string) (*api.DictPositions, error)
 	ExportWarehouses(writer http.ResponseWriter, source []string, code *string, cluster *string) error
 	GetWarehouses(offset int32, limit int32, source []string, code *string, cluster *string) (*api.Warehouses, error)
@@ -69,7 +71,7 @@ func (c *Controller) ExportStocks(ctx echo.Context, params api.ExportStocksParam
 	ctx.Response().Header().Set(echo.HeaderContentType, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
 	ctx.Response().Header().Set("Content-Disposition", fmt.Sprintf(`attachment; filename="%s"`, fileName))
 	ctx.Response().WriteHeader(http.StatusOK)
-	return c.stockService.ExportStocks(ctx.Response().Writer, params.Date.Time)
+	return c.stockService.ExportStocks(ctx.Response().Writer, params.Date.Time, params.Source, params.Filter)
 
 }
 
@@ -91,7 +93,7 @@ func (c *Controller) GetStocks(ctx echo.Context, date string) error {
 }
 
 func (c *Controller) GetStocksWithPages(ctx echo.Context, params api.GetStocksWithPagesParams) error {
-	stocks, err := c.stockService.GetStocks(params.Date.Time, params.Limit, params.Offset)
+	stocks, err := c.stockService.GetStocks(params.Date.Time, params.Limit, params.Offset, params.Source, params.Filter)
 	if err != nil {
 		return err
 	}

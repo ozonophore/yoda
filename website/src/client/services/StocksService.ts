@@ -36,17 +36,23 @@ export class StocksService {
      * Получение остатков товаров
      * Выгрузка отчета отстатоков за дату
      * @param date Дата (YYYY-MM-DD)
+     * @param source
+     * @param filter
      * @returns binary OK
      * @throws ApiError
      */
     public static exportStocks(
         date: string,
+        source?: Array<string>,
+        filter?: string,
     ): CancelablePromise<Blob> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/stocks/export',
             query: {
                 'date': date,
+                'source': source,
+                'filter': filter,
             },
         });
     }
@@ -57,6 +63,8 @@ export class StocksService {
      * @param date Дата (YYYY-MM-DD)
      * @param limit
      * @param offset
+     * @param source
+     * @param filter
      * @returns StocksFull OK
      * @throws ApiError
      */
@@ -64,6 +72,8 @@ export class StocksService {
         date: string,
         limit: number,
         offset: number,
+        source?: Array<string>,
+        filter?: string,
     ): CancelablePromise<StocksFull> {
         return __request(OpenAPI, {
             method: 'GET',
@@ -72,6 +82,8 @@ export class StocksService {
                 'date': date,
                 'limit': limit,
                 'offset': offset,
+                'source': source,
+                'filter': filter,
             },
             errors: {
                 404: `Not Found`,

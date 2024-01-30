@@ -7,6 +7,7 @@ import (
 )
 
 type IDictionaryRepository interface {
+	GetMarketplaces(ctx context.Context) (*[]storage.Marketplace, error)
 	GetClusters(context context.Context, filter *string) (*[]string, error)
 	GetPositions(offset int32, limit int32, source []string, filter *string) (*[]storage.Position, error)
 	GetWarehousesWithoutPages(source []string, code *string, cluster *string) (*[]storage.Warehouse, error)
@@ -21,6 +22,24 @@ func NewDictionaryService(repository IDictionaryRepository) *DictionaryService {
 	return &DictionaryService{
 		repository: repository,
 	}
+}
+
+func (s *DictionaryService) GetDictionary(ctx context.Context) (*api.Dictionaries, error) {
+	marketplaces, err := s.repository.GetMarketplaces(ctx)
+	if err != nil {
+		return nil, err
+	}
+	mp := make([]api.Marketplace, len(*marketplaces))
+	for i, item := range *marketplaces {
+		mp[i] = api.Marketplace{
+			Code:      item.Code,
+			Name:      item.Name,
+			ShortName: item.ShortName,
+		}
+	}
+	return &api.Dictionaries{
+		Marketplaces: mp,
+	}, nil
 }
 
 func (s *DictionaryService) GetPositions(offset int32, limit int32, source []string, filter *string) (*api.DictPositions, error) {

@@ -8,10 +8,12 @@ export { OpenAPI } from './core/OpenAPI';
 export type { OpenAPIConfig } from './core/OpenAPI';
 
 export type { AuthInfo } from './models/AuthInfo';
+export type { Dictionaries } from './models/Dictionaries';
 export type { DictPosition } from './models/DictPosition';
 export type { DictPositions } from './models/DictPositions';
 export type { ErrorData } from './models/ErrorData';
 export type { LoginInfo } from './models/LoginInfo';
+export type { Marketplace } from './models/Marketplace';
 export type { Order } from './models/Order';
 export type { OrderProduct } from './models/OrderProduct';
 export type { OrderProducts } from './models/OrderProducts';

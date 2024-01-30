@@ -2,6 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { Dictionaries } from '../models/Dictionaries';
 import type { DictPositions } from '../models/DictPositions';
 import type { PageProductParams } from '../models/PageProductParams';
 import type { Warehouse } from '../models/Warehouse';
@@ -12,6 +13,18 @@ import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
 
 export class DictionariesService {
+
+    /**
+     * Получение списка словарей
+     * @returns Dictionaries OK
+     * @throws ApiError
+     */
+    public static getDictionaries(): CancelablePromise<Dictionaries> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/dictionaries',
+        });
+    }
 
     /**
      * Получение списка позиций

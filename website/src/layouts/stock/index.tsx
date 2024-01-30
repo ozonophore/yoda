@@ -2,23 +2,27 @@ import Box from "@mui/joy/Box";
 import Typography from "@mui/joy/Typography";
 import Button from "@mui/joy/Button";
 import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
-import JoyDataGrid, {IColumn} from "../../components/JoyDataGrid";
+import JoyDataGrid, { IColumn } from "../../components/JoyDataGrid";
 import * as React from "react";
-import {Fragment, useEffect, useState} from "react";
-import {SetError, SetMenuActive} from "../../context/actions";
-import {useController} from "../../context";
-import {LocalizationProvider} from "@mui/x-date-pickers";
-import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
-import JoyDatePicker from "../../components/JoyDatePicker";
+import { Fragment, useEffect, useState } from "react";
+import { SetError, SetMenuActive } from "../../context/actions";
+import { useController } from "../../context";
 import dayjs from "dayjs";
-import { OrdersService, ProductParams, type StockFull, StocksService } from "../../client";
+import { type StockFull, StocksService } from "../../client";
+import Select from '@mui/joy/Select';
+import Option from '@mui/joy/Option';
+import Input from '@mui/joy/Input';
+import SearchIcon from '@mui/icons-material/Search';
+import { KeyboardArrowDown } from '@mui/icons-material';
+import { Chip } from '@mui/joy';
+import PickerWithJoyField from 'components/PickerWithJoyField';
 
 const columns: IColumn[] = [
     {
         field: 'stockDate',
         headerName: 'Дата',
         width: '100px',
-        type:'date'
+        type: 'date'
     }, {
         field: 'source',
         headerName: 'МП',
@@ -75,13 +79,19 @@ const columns: IColumn[] = [
 ]
 
 export default function Stocks() {
-    const {dispatch} = useController()
+    const {dispatch, state} = useController()
+
+    const {marketplaces} = state.dicts
+    const defaultMarketplaces = marketplaces.map(mp => mp.code)
+
     const [page, setPage] = useState(0)
     const [pageSize, setPageSize] = useState(25)
     const [total, setTotal] = useState(0)
     const [rows, setRows] = useState<StockFull[]>([])
     const [isLoading, setIsLoading] = useState(false)
     const [isDownload, setIsDownload] = useState(false)
+    const [sources, setSources] = useState<string[]>(defaultMarketplaces)
+    const [filter, setFilter] = useState<string | undefined>(undefined)
 
     const [date, setDate] = useState(dayjs().subtract(1, 'day'))
 
@@ -91,7 +101,7 @@ export default function Stocks() {
 
     function handleDownloadFile() {
         setIsDownload(true)
-        StocksService.exportStocks(date.format("YYYY-MM-DD"))
+        StocksService.exportStocks(date.format("YYYY-MM-DD"), sources, filter)
             .then((blob: Blob) => {
                     //const blob: Blob = new Blob([data], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
                     const fileURL = URL.createObjectURL(blob);
@@ -108,11 +118,13 @@ export default function Stocks() {
         StocksService.getStocksWithPages(
             date.format('YYYY-MM-DD'),
             pageSize,
-            page * pageSize
+            page * pageSize,
+            sources,
+            filter
         ).then(req => {
-                setTotal(req.count)
-                setRows(req.items)
-            })
+            setTotal(req.count)
+            setRows(req.items)
+        })
             .catch(err => {
                 dispatch(SetError(err.body.description))
             })
@@ -121,7 +133,78 @@ export default function Stocks() {
 
     useEffect(() => {
         refreshRows()
-    }, [date, page, pageSize]);
+    }, [date, page, pageSize, sources, filter]);
+
+    const handleSourceChange = (
+        event: React.SyntheticEvent | null,
+        newValue: string[] | null,
+    ) => {
+        setSources(newValue ?? sources)
+        setPage(0)
+    };
+
+    const handleOnKeyDown = (event: any) => {
+        if (event.key === 'Enter') {
+            setFilter(event.target.value)
+            setPage(0)
+            event.preventDefault();
+        }
+    }
+
+    function renderFilters() {
+        return <React.Fragment>
+            <Box
+                width='100%'
+                sx={{
+                    gap: 2,
+                    display: "flex",
+                }}
+            >
+                <Select
+                    size="sm"
+                    multiple
+                    indicator={<KeyboardArrowDown/>}
+                    placeholder="Площадка..."
+                    defaultValue={defaultMarketplaces}
+                    onChange={handleSourceChange}
+                    renderValue={(selected) => (
+                        <Box sx={{display: 'flex', gap: '0.25rem'}}>
+                            {selected.map((selectedOption) => (
+                                <Chip key={selectedOption.id} size="sm" variant="soft" color="primary">
+                                    {selectedOption.label}
+                                </Chip>
+                            ))}
+                        </Box>
+                    )}
+                    sx={{
+                        minWidth: '270px',
+                        width: '270px'
+                    }}
+                    slotProps={{
+                        listbox: {
+                            sx: {
+                                width: '100%',
+                            },
+                        },
+                    }}
+                >
+                    {
+                        marketplaces.map(item => (
+                            <Option key={item.code} value={item.code}>{item.shortName}</Option>
+                        ))
+                    }
+                </Select>
+                <Input
+                    fullWidth={true}
+                    size="sm"
+                    placeholder="Поиск"
+                    startDecorator={<SearchIcon/>}
+                    // onChange={handleChangeFilterText}
+                    onKeyDown={handleOnKeyDown}
+                />
+            </Box>
+        </React.Fragment>
+    }
 
     return (
         <Fragment>
@@ -148,20 +231,15 @@ export default function Stocks() {
                         justifyContent: 'space-between',
                     }}
                 >
-                    <LocalizationProvider
-                        adapterLocale='ru'
-                        dateAdapter={AdapterDayjs}>
-                        <JoyDatePicker
-                            size="sm"
-                            sx={{
-                                width: '150px'
-                            }}
-                            defaultValue={date}
-                            minDate={dayjs(Date.parse('2023-01-01'))}
-                            maxDate={dayjs().subtract(1, 'day')}
-                            onChange={(event) => setDate(event ?? date)}
-                        />
-                    </LocalizationProvider>
+                    <PickerWithJoyField
+                        defaultValue={date}
+                        minDate={dayjs(Date.parse('2023-01-01'))}
+                        maxDate={dayjs().subtract(1, 'day')}
+                        onChange={(event) => {
+                            setDate(event ?? date)
+                            setPage(0)
+                        }}
+                    />
 
                     <Button
                         color="primary"
@@ -174,7 +252,27 @@ export default function Stocks() {
                     </Button>
                 </Box>
             </Box>
-            {/*{renderFilters()}*/}
+            <Box
+                className="SearchAndFilters-tabletUp"
+                sx={{
+                    borderRadius: 'sm',
+                    py: 2,
+                    display: {
+                        xs: 'none',
+                        sm: 'flex',
+                    },
+                    flexWrap: 'wrap',
+                    gap: 1.5,
+                    '& > *': {
+                        minWidth: {
+                            xs: '120px',
+                            md: '160px',
+                        },
+                    },
+                }}
+            >
+                {renderFilters()}
+            </Box>
             <JoyDataGrid
                 showColumns
                 columns={columns}

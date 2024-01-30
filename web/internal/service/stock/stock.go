@@ -61,8 +61,8 @@ var header []service.ExcelHeaderColumn = []service.ExcelHeaderColumn{
 }
 
 type IStockRepository interface {
-	GetSticksWithPage(stockDate time.Time, limit, offset int) (*[]storage.StockFull, error)
-	GetStocks(stockDate time.Time) (*[]storage.StockFull, error)
+	GetSticksWithPage(stockDate time.Time, limit, offset int, source *[]string, filter *string) (*[]storage.StockFull, error)
+	GetStocks(stockDate time.Time, source *[]string, filter *string) (*[]storage.StockFull, error)
 }
 
 type Service struct {
@@ -75,8 +75,8 @@ func NewStockService(repository IStockRepository) *Service {
 	}
 }
 
-func (s *Service) ExportStocks(writer http.ResponseWriter, stockDate time.Time) error {
-	stocks, err := s.repository.GetStocks(stockDate)
+func (s *Service) ExportStocks(writer http.ResponseWriter, stockDate time.Time, source *[]string, filter *string) error {
+	stocks, err := s.repository.GetStocks(stockDate, source, filter)
 	if err != nil {
 		return err
 	}
@@ -84,8 +84,8 @@ func (s *Service) ExportStocks(writer http.ResponseWriter, stockDate time.Time) 
 }
 
 // Get stocks with the pagginations
-func (s *Service) GetStocks(stockDate time.Time, limit, offset int) (*api.StocksFull, error) {
-	stocks, err := s.repository.GetSticksWithPage(stockDate, limit, offset)
+func (s *Service) GetStocks(stockDate time.Time, limit, offset int, source *[]string, filter *string) (*api.StocksFull, error) {
+	stocks, err := s.repository.GetSticksWithPage(stockDate, limit, offset, source, filter)
 	if err != nil {
 		return nil, err
 	}

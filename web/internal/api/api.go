@@ -71,6 +71,11 @@ type DictPositions struct {
 	Items []DictPosition `json:"items"`
 }
 
+// Dictionaries defines model for Dictionaries.
+type Dictionaries struct {
+	Marketplaces []Marketplace `json:"marketplaces"`
+}
+
 // ErrorData defines model for ErrorData.
 type ErrorData struct {
 	Description string `json:"description"`
@@ -81,6 +86,13 @@ type ErrorData struct {
 type LoginInfo struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
+}
+
+// Marketplace defines model for Marketplace.
+type Marketplace struct {
+	Code      string `json:"code"`
+	Name      string `json:"name"`
+	ShortName string `json:"shortName"`
 }
 
 // Order defines model for Order.
@@ -324,12 +336,16 @@ type GetStocksWithPagesParams struct {
 	Date   openapi_types.Date `form:"date" json:"date"`
 	Limit  int                `form:"limit" json:"limit"`
 	Offset int                `form:"offset" json:"offset"`
+	Source *[]string          `form:"source,omitempty" json:"source,omitempty"`
+	Filter *string            `form:"filter,omitempty" json:"filter,omitempty"`
 }
 
 // ExportStocksParams defines parameters for ExportStocks.
 type ExportStocksParams struct {
 	// Date Дата (YYYY-MM-DD)
-	Date openapi_types.Date `form:"date" json:"date"`
+	Date   openapi_types.Date `form:"date" json:"date"`
+	Source *[]string          `form:"source,omitempty" json:"source,omitempty"`
+	Filter *string            `form:"filter,omitempty" json:"filter,omitempty"`
 }
 
 // LoginJSONRequestBody defines body for Login for application/json ContentType.
@@ -358,6 +374,9 @@ type ServerInterface interface {
 
 	// (GET /auth/refresh)
 	Refresh(ctx echo.Context) error
+
+	// (GET /dictionaries)
+	GetDictionaries(ctx echo.Context) error
 
 	// (GET /dictionaries/clusters)
 	GetClusters(ctx echo.Context, params GetClustersParams) error
@@ -439,6 +458,17 @@ func (w *ServerInterfaceWrapper) Refresh(ctx echo.Context) error {
 
 	// Invoke the callback with all the unmarshaled arguments
 	err = w.Handler.Refresh(ctx)
+	return err
+}
+
+// GetDictionaries converts echo context to params.
+func (w *ServerInterfaceWrapper) GetDictionaries(ctx echo.Context) error {
+	var err error
+
+	ctx.Set(ApiKeyAuthScopes, []string{})
+
+	// Invoke the callback with all the unmarshaled arguments
+	err = w.Handler.GetDictionaries(ctx)
 	return err
 }
 
@@ -755,6 +785,20 @@ func (w *ServerInterfaceWrapper) GetStocksWithPages(ctx echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter offset: %s", err))
 	}
 
+	// ------------- Optional query parameter "source" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "source", ctx.QueryParams(), &params.Source)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter source: %s", err))
+	}
+
+	// ------------- Optional query parameter "filter" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "filter", ctx.QueryParams(), &params.Filter)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter filter: %s", err))
+	}
+
 	// Invoke the callback with all the unmarshaled arguments
 	err = w.Handler.GetStocksWithPages(ctx, params)
 	return err
@@ -773,6 +817,20 @@ func (w *ServerInterfaceWrapper) ExportStocks(ctx echo.Context) error {
 	err = runtime.BindQueryParameter("form", true, true, "date", ctx.QueryParams(), &params.Date)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter date: %s", err))
+	}
+
+	// ------------- Optional query parameter "source" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "source", ctx.QueryParams(), &params.Source)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter source: %s", err))
+	}
+
+	// ------------- Optional query parameter "filter" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "filter", ctx.QueryParams(), &params.Filter)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter filter: %s", err))
 	}
 
 	// Invoke the callback with all the unmarshaled arguments
@@ -829,6 +887,7 @@ func RegisterHandlersWithBaseURL(router EchoRouter, si ServerInterface, baseURL 
 	router.POST(baseURL+"/auth/login", wrapper.Login)
 	router.GET(baseURL+"/auth/profile", wrapper.Profile)
 	router.GET(baseURL+"/auth/refresh", wrapper.Refresh)
+	router.GET(baseURL+"/dictionaries", wrapper.GetDictionaries)
 	router.GET(baseURL+"/dictionaries/clusters", wrapper.GetClusters)
 	router.POST(baseURL+"/dictionaries/positions", wrapper.GetPositions)
 	router.GET(baseURL+"/dictionaries/warehouses", wrapper.GetWarehouses)
