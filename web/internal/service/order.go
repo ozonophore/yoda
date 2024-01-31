@@ -260,6 +260,10 @@ var orderHeader = []ExcelHeaderColumn{
 		Width: 40,
 		Field: "ItemName",
 	}, {
+		Title: "Код поставщика",
+		Width: 50,
+		Field: "ExternalCode",
+	}, {
 		Title: "Кол-во",
 		Width: 40,
 		Field: "Quantity",
