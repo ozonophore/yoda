@@ -15,18 +15,18 @@ type Stock struct {
 }
 
 type StockFull struct {
-	StockDate         time.Time `gorm:"column:stock_date"`
-	Source            string    `gorm:"column:source"`
-	Org               string    `gorm:"column:org"`
-	SupplierArticle   string    `gorm:"column:supplier_article"`
-	Barcode           string    `gorm:"column:barcode"`
-	Sku               string    `gorm:"column:sku"`
-	Name              string    `gorm:"column:name"`
-	Brand             string    `gorm:"column:brand"`
-	Warehouse         string    `gorm:"column:warehouse"`
-	Quantity          float32   `gorm:"column:quantity"`
-	Price             float32   `gorm:"column:price"`
-	PriceWithDiscount float32   `gorm:"column:price_with_discount"`
+	StockDate         time.Time `gorm:"column:stock_date" excel:"title:Дата; width:40"`
+	Source            string    `gorm:"column:source" excel:"title:МП; width:20"`
+	Org               string    `gorm:"column:org" excel:"title:Кабинет; width:40"`
+	SupplierArticle   string    `gorm:"column:supplier_article" excel:"title:Артикул поставщика; width:40"`
+	Barcode           string    `gorm:"column:barcode" excel:"title:Штрихкод; width:40"`
+	Sku               string    `gorm:"column:sku" excel:"title:SKU; width:40"`
+	Name              string    `gorm:"column:name" excel:"title:Наименование; width:40"`
+	Brand             string    `gorm:"column:brand" excel:"title:Бренд; width:40"`
+	Warehouse         string    `gorm:"column:warehouse" excel:"title:Склад; width:40"`
+	Quantity          float32   `gorm:"column:quantity" excel:"title:Количество; width:40"`
+	Price             float32   `gorm:"column:price" excel:"title:Цена; width:40"`
+	PriceWithDiscount float32   `gorm:"column:price_with_discount" excel:"title:Цена со скидкой; width:40"`
 	Total             int32     `gorm:"column:total"`
 }
 

@@ -8,58 +8,6 @@ import (
 	"time"
 )
 
-var header []service.ExcelHeaderColumn = []service.ExcelHeaderColumn{
-	{
-		Title: "МП",
-		Width: 20,
-		Field: "Source",
-	}, {
-		Title: "Дата",
-		Width: 40,
-		Field: "StockDate",
-	}, {
-		Title: "Кабинет",
-		Width: 40,
-		Field: "Org",
-	}, {
-		Title: "Артикул поставщика",
-		Width: 40,
-		Field: "SupplierArticle",
-	}, {
-		Title: "Штрихкод",
-		Width: 40,
-		Field: "Barcode",
-	}, {
-		Title: "SKU",
-		Width: 40,
-		Field: "Sku",
-	}, {
-		Title: "Наименование",
-		Width: 40,
-		Field: "Name",
-	}, {
-		Title: "Бренд",
-		Width: 40,
-		Field: "Brand",
-	}, {
-		Title: "Склад",
-		Width: 40,
-		Field: "Warehouse",
-	}, {
-		Title: "Количество",
-		Width: 40,
-		Field: "Quantity",
-	}, {
-		Title: "Цена",
-		Width: 40,
-		Field: "Price",
-	}, {
-		Title: "Цена со скидкой",
-		Width: 40,
-		Field: "PriceWithDiscount",
-	},
-}
-
 type IStockRepository interface {
 	GetSticksWithPage(stockDate time.Time, limit, offset int, source *[]string, filter *string) (*[]storage.StockFull, error)
 	GetStocks(stockDate time.Time, source *[]string, filter *string) (*[]storage.StockFull, error)
@@ -80,7 +28,8 @@ func (s *Service) ExportStocks(writer http.ResponseWriter, stockDate time.Time, 
 	if err != nil {
 		return err
 	}
-	return service.GenerateExcelDoc(writer, "Заказы", stocks, &header)
+	headers := service.GetExcelHeaders(storage.StockFull{})
+	return service.GenerateExcelDoc(writer, "Заказы", stocks, headers)
 }
 
 // Get stocks with the pagginations

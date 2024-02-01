@@ -5,6 +5,8 @@ import (
 	"github.com/fatih/structs"
 	"github.com/xuri/excelize/v2"
 	"io"
+	"reflect"
+	"strings"
 )
 
 type ExcelHeaderColumn struct {
@@ -36,10 +38,10 @@ func GetHeaderStyle() *excelize.Style {
 }
 
 func ToChar(i int) string {
-	value := string('A' + i)
+	value := string('A' + rune(i))
 	if i > 25 {
-		pref := string('A' + i/26 - 1)
-		value = pref + string('A'+i%26)
+		pref := string('A' + rune(i/26-1))
+		value = pref + string('A'+rune(i%26))
 	}
 	return value
 }
@@ -81,4 +83,49 @@ func GenerateExcelDoc[T any](writer io.Writer, sheetName string, data *[]T, head
 	f.AutoFilter(sheetName, fmt.Sprintf("A%d:%s%d", rowIndex, lastColName, rowIndex), []excelize.AutoFilterOptions{})
 
 	return f.Write(writer)
+}
+
+func GetExcelHeaders(model interface{}) *[]ExcelHeaderColumn {
+	typeOf := reflect.TypeOf(model)
+
+	list := make([]ExcelHeaderColumn, 0)
+	for i := 0; i < typeOf.NumField(); i++ {
+		field := typeOf.Field(i)
+		excelTag := field.Tag.Get("excel")
+		if excelTag == "" {
+			continue
+		}
+		header := parseMetadata(excelTag)
+		header.Field = field.Name
+		list = append(list, header)
+	}
+	return &list
+}
+
+func parseMetadata(tag string) ExcelHeaderColumn {
+	metadata := ExcelHeaderColumn{}
+
+	// Разделение строки метаданных по точкам с запятыми
+	pairs := strings.Split(tag, ";")
+
+	// Обработка каждой пары ключ-значение
+	for _, pair := range pairs {
+		// Разделение пары по двоеточиям
+		parts := strings.Split(pair, ":")
+		if len(parts) == 2 {
+			key := strings.ToLower(strings.TrimSpace(parts[0]))
+			value := strings.TrimSpace(parts[1])
+
+			switch key {
+			case "title":
+				metadata.Title = value
+			case "width":
+				var width float64
+				fmt.Sscanf(value, "%f", &width)
+				metadata.Width = width
+			}
+		}
+	}
+
+	return metadata
 }
