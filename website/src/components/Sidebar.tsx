@@ -24,7 +24,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import {useController} from 'context';
 
 function Toggler({
-                     defaultExpanded = false,
+                     defaultExpanded = true,
                      renderToggle,
                      children,
                  }: {
