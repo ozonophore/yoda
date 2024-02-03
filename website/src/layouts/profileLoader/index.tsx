@@ -48,7 +48,7 @@ function ProfileLoader(): React.JSX.Element {
                 </Box>
                 <Box component="footer" sx={{py: 3}}>
                     <Typography level="body-xs" textAlign="center">
-                        © {new Date().getFullYear()}
+                        © {new Date().getFullYear()} ({process.env.REACT_APP_VERSION})
                     </Typography>
                 </Box>
             </Box>

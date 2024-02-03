@@ -34,8 +34,8 @@
   },
   "main": "index.tsx",
   "scripts": {
-    "start": "NODE_ENV=production && react-scripts start",
-    "startDev": "NODE_ENV=development && react-scripts start",
+    "start": "REACT_APP_NODE_ENV=production && react-scripts start",
+    "startDev": "REACT_APP_NODE_ENV=development && react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",

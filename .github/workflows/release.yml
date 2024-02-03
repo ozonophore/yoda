@@ -227,6 +227,9 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build and push app
         uses: docker/build-push-action@v4
+        build-args: |
+          - REACT_APP_VERSION=${{ steps.bump-semver.outputs.new_version }}
+          - REACT_APP_NODE_ENV=production
         with:
           context: .
           file: ./Dockerfile
