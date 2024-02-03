@@ -18,8 +18,10 @@ COPY website/package-lock.json /app
 COPY website/public /app/public
 COPY website/tsconfig.json /app
 
+RUN echo $REACT_APP_VERSION
+
 RUN npm install
-RUN npm REACT_APP_VERSION=$REACT_APP_VERSION run build
+RUN npm run build
 
 COPY web/openapi/openapi.yml /app/openapi.yml
 
