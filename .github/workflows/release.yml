@@ -233,8 +233,8 @@ jobs:
           push: true
           tags: ghcr.io/${{ github.actor }}/yoda-web:latest,ghcr.io/${{ github.actor }}/yoda-web:${{ steps.get-version.outputs.substring }}
           build-args: |
-            - REACT_APP_VERSION=${{ steps.bump-semver.outputs.new_version }}
-            - REACT_APP_NODE_ENV=production
+            REACT_APP_VERSION=${{ steps.bump-semver.outputs.new_version }}
+            REACT_APP_NODE_ENV=production
   release:
     runs-on: ubuntu-20.04
     needs:
