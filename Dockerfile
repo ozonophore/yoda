@@ -19,7 +19,7 @@ COPY website/public /app/public
 COPY website/tsconfig.json /app
 
 RUN npm install
-RUN npm run build
+RUN npm REACT_APP_VERSION=$REACT_APP_VERSION run build
 
 COPY web/openapi/openapi.yml /app/openapi.yml
 
