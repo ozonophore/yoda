@@ -234,7 +234,7 @@ export default function Stocks() {
                     <PickerWithJoyField
                         defaultValue={date}
                         minDate={dayjs(Date.parse('2023-01-01'))}
-                        maxDate={dayjs().subtract(1, 'day')}
+                        maxDate={dayjs()}
                         onChange={(event) => {
                             setDate(event ?? date)
                             setPage(0)
