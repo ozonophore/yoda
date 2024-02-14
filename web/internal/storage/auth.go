@@ -55,6 +55,10 @@ func (s *Storage) GetProleByLogin(login string) (*UserProfile, error) {
 	return &profile, nil
 }
 
+func (s *Storage) UpdateLastLogin(id int32) error {
+	return s.db.Exec(`update ml.users set last_login = now() where id=?`, id).Error
+}
+
 func (s *Storage) UserExists(id int32) bool {
 	var count int32
 	s.db.Raw(`select count(1) from ml.users where id=?`, id).Scan(&count)

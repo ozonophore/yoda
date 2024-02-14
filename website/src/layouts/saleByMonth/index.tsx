@@ -16,7 +16,7 @@ import { useController } from 'context';
 import { SetMenuActive } from 'context/actions';
 
 export function SaleByMonth() {
-    const [date, setDate] = useState(dayjs().subtract(1, 'month'))
+    const [date, setDate] = useState(dayjs())
     const [isLoading, setIsLoading] = useState(false)
     const{ dispatch } = useController()
 

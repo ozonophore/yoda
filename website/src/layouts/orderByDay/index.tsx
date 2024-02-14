@@ -1,23 +1,21 @@
 import * as React from 'react';
-import {Fragment, useEffect, useState} from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import Typography from '@mui/joy/Typography';
 import Button from '@mui/joy/Button';
 import DownloadRoundedIcon from '@mui/icons-material/DownloadRounded';
 import Box from '@mui/joy/Box';
 import OrderTable from './OrderTable';
-import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
-import JoyDatePicker from 'components/JoyDatePicker';
-import {LocalizationProvider} from '@mui/x-date-pickers';
 
 import 'dayjs/locale/ru';
 import dayjs from 'dayjs';
-import {CustomOrdersService} from 'layouts/orderByDay/customOrderService';
-import {SetMenuActive} from "../../context/actions";
-import {useController} from "../../context";
+import { CustomOrdersService } from 'layouts/orderByDay/customOrderService';
+import { SetMenuActive } from "../../context/actions";
+import { useController } from "../../context";
+import PickerWithJoyField from 'components/PickerWithJoyField';
 
 export function OrderByDay() {
     const {dispatch} = useController()
-    const [date, setDate] = useState(dayjs().subtract(1, 'day'))
+    const [date, setDate] = useState(dayjs())
     const [isLoading, setIsLoading] = useState(false)
 
     useEffect(() => {
@@ -57,21 +55,12 @@ export function OrderByDay() {
                         justifyContent: 'space-between',
                     }}
                 >
-                    <LocalizationProvider
-                        adapterLocale='ru'
-                        dateAdapter={AdapterDayjs}>
-                        <JoyDatePicker
-                            size="sm"
-                            sx={{
-                                width: '150px'
-                            }}
-                            defaultValue={date}
-                            minDate={dayjs(Date.parse('2023-01-01'))}
-                            maxDate={dayjs()}
-                            onChange={(event) => setDate(event ?? date)}
-                        />
-                    </LocalizationProvider>
-
+                    <PickerWithJoyField
+                        defaultValue={date}
+                        minDate={dayjs(Date.parse('2023-01-01'))}
+                        maxDate={dayjs()}
+                        onChange={(event) => setDate(event ?? date)}
+                    />
                     <Button
                         color="primary"
                         startDecorator={<DownloadRoundedIcon/>}

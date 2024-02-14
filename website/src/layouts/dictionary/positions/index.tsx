@@ -13,7 +13,7 @@ import {useController} from "../../../context";
 
 export function DictPositions() {
     const {dispatch} = useController()
-    const [date, setDate] = useState(dayjs().subtract(1, 'day'))
+    const [date, setDate] = useState(dayjs())
     useEffect(() => {
         dispatch(SetMenuActive("menu-dict-item1c-id"))
     }, []);

@@ -116,7 +116,21 @@ export default function Sidebar(this: any) {
                 }}
                 onClick={() => closeSidebar()}
             />
+
             <Box sx={{display: 'flex', gap: 1, alignItems: 'center'}}>
+                <Box
+                    component="span"
+                    sx={{
+                        width: 24,
+                        height: 24,
+                        background: (theme) =>
+                            `linear-gradient(45deg, ${theme.vars.palette.primary.solidBg}, ${theme.vars.palette.primary.solidBg} 30%, ${theme.vars.palette.primary.softBg})`,
+                        borderRadius: '50%',
+                        boxShadow: (theme) => theme.shadow.md,
+                        '--joy-shadowChannel': (theme) =>
+                            theme.vars.palette.primary.mainChannel,
+                    }}
+                />
                 <IconButton
                     onClick={() => toggleSidebar()}
                     variant="outlined"
@@ -130,7 +144,7 @@ export default function Sidebar(this: any) {
                 >
                     <MenuIcon/>
                 </IconButton>
-                <ColorSchemeToggle sx={{ml: 'auto'}}/>
+                {/*<ColorSchemeToggle sx={{ml: 'auto'}}/>*/}
             </Box>
             <Divider/>
             <Box

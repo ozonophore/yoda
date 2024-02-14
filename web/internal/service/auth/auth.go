@@ -3,6 +3,7 @@ package auth
 import (
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/pkg/errors"
+	"github.com/sirupsen/logrus"
 	"github.com/yoda/web/internal/api"
 	"github.com/yoda/web/internal/middleware"
 	"github.com/yoda/web/internal/storage"
@@ -12,6 +13,7 @@ import (
 type IAuthStorage interface {
 	GetPermissionByUserId(id int32) (*[]string, error)
 	GetProleByLogin(login string) (*storage.UserProfile, error)
+	UpdateLastLogin(id int32) error
 	UserExists(id int32) bool
 }
 
@@ -54,6 +56,12 @@ func (s *AuthService) CreateToken(login *api.LoginInfo) (string, time.Time, erro
 }
 
 func (s *AuthService) CheckUserById(id int32) bool {
+	go func(id int32) {
+		err := s.storage.UpdateLastLogin(id)
+		if err != nil {
+			logrus.Error("failed to update last login: ", err)
+		}
+	}(id)
 	return s.storage.UserExists(id)
 }
 

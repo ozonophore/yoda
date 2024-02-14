@@ -93,7 +93,7 @@ export default function Stocks() {
     const [sources, setSources] = useState<string[]>(defaultMarketplaces)
     const [filter, setFilter] = useState<string | undefined>(undefined)
 
-    const [date, setDate] = useState(dayjs().subtract(1, 'day'))
+    const [date, setDate] = useState(dayjs())
 
     useEffect(() => {
         dispatch(SetMenuActive("menu-stocks-id"))
