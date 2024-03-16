@@ -123,20 +123,36 @@ from data`
 const SQl_WITH_GROUP = SQl_WITH_GROUP_WITHOUT_PAGE +
 	` limit @limit offset @offset`
 
-const orderSQL = `with data as (select 
-                    row_number() over () rn,
-                    source,
-					supplier_article,
-					code_1c,
-					external_code,
-					name,
-					barcode,
-					brand,
-					ordered_quantity,
-					order_sum,
-                    org_name,
-					balance from dl.report_order_by_day where report_date = @date
-                    and %s)
+const orderSQL = `with data as (
+					select row_number() over () rn,
+						   o.source,
+						   o.supplier_article,
+						   b.item_id code_1c,
+						   i.name,
+						   o.external_code,
+						   o.barcode,
+						   o.brand,
+						   sum(o.quantity) ordered_quantity,
+						   sum(o.price_with_discount * o.quantity) order_sum,
+						   ow.name org_name,
+						   s.quantity balance
+					from bl."order" o
+						left outer join ml.owner ow on ow.code = o.owner_code
+						inner join ml.marketplace m on m.code = o.source
+						left outer join dl.barcode b on b.barcode = o.barcode and b.marketplace_id = m.marketplace_id and b.organisation_id = ow.organisation_id
+						left outer join dl.item i on i.id = b.item_id
+						left outer join (
+										select source, stock_date, owner_code, barcode, sum(quantity)::numeric(10) quantity from bl.stock
+										where stock_date = @date
+										group by source, stock_date, owner_code, barcode
+									) s on s.source = o.source
+													 and s.owner_code = o.owner_code
+													 and s.barcode = o.barcode
+													 and s.stock_date = o.order_date
+                    where o.order_date = @date and %s
+					group by o.source, o.owner_code,
+						   o.supplier_article, o.external_code, o.barcode, b.item_id, i.name, o.brand, ow.name, s.quantity
+					)
 					select 
                     rn,
                     source,
@@ -151,10 +167,11 @@ const orderSQL = `with data as (select
 				    org_name,
 					balance, (select count(1) from data) as total from data`
 
-var orderSQLFilter = `and (supplier_article like @filter or 
-                      code_1c like @filter or external_code like @filter 
-                      or org_name like @filter
-                      or name like @filter or barcode like @filter or brand like @filter)`
+var orderSQLFilter = `and (o.supplier_article like @filter or 
+                      b.item_id like @filter 
+                      or external_code::varchar like @filter 
+                      or ow.name like @filter
+                      or i.name like @filter or o.barcode like @filter or o.brand like @filter)`
 
 func (s *Storage) GetOrdersByDay(date time.Time) (*[]Order, error) {
 	var orders []Order
